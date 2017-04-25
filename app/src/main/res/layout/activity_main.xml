@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context="com.example.sydney.psov3.MainActivity">
+
+    <fragment
+        android:id="@+id/frag_welcome"
+        android:name="com.example.sydney.psov3.FragmentWelcome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_welcome"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="7dp" />
+
+    <LinearLayout android:orientation="horizontal" android:padding="4dip"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="326dp">
+
+        <fragment android:name="com.example.sydney.psov3.MainActivity$FirstFragment"
+            android:id="@+id/fragment1" android:layout_weight="1"
+            android:layout_width="0dp" android:layout_height="match_parent" />
+
+    </LinearLayout>
+</RelativeLayout>
