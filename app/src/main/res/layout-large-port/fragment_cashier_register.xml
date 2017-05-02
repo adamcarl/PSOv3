@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Staff Registration"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/txt_emplname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Last Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/txt_empfname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="First Name"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/txt_empid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Employee Number"
+        android:inputType="text"
+        tools:inputType="text" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Position" />
+
+    <Spinner
+        android:id="@+id/spn_staffpos"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:entries="@array/cashstaffpos" />
+
+    <EditText
+        android:id="@+id/txt_emppass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btn_cashreg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign-up" />
+
+    <Button
+        android:id="@+id/btn_cashreg_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
+
+</LinearLayout>
