@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PSOv3</string>
+    <string name="cashpass">Cashier password</string>
+    <string-array name="cashstaffpos">
+        <item>Manager</item>
+        <item>Supervisor</item>
+        <item>Cashier</item>
+    </string-array>
 </resources>
