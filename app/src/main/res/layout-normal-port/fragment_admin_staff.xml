@@ -26,10 +26,10 @@
             android:text="Employee Number"
             android:textColor="#ff5722" />
 
-    <Spinner
-        android:id="@+id/spn_admin_staff_id"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <Spinner
+            android:id="@+id/spn_admin_staff_id"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -39,58 +39,58 @@
             android:layout_width="wrap_content"
             android:src="@drawable/ic_staff"
             android:layout_height="wrap_content" />
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-
-        <TextView
-            android:id="@+id/textView7"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Last Name"
-            android:textColor="#ff5722" />
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="First Name"
-            android:textColor="#ff5722" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2">
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Last Name"
+                    android:textColor="#ff5722" />
 
-        <EditText
-            android:id="@+id/txt_admin_staff_lname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName" />
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="First Name"
+                    android:textColor="#ff5722" />
+            </LinearLayout>
 
-        <EditText
-            android:id="@+id/txt_admin_staff_fname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-    </LinearLayout>
-</LinearLayout>
+                <EditText
+                    android:id="@+id/txt_admin_staff_lname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/txt_admin_staff_fname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
