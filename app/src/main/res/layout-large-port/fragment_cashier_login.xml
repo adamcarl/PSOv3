@@ -35,14 +35,14 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Cashier Login"
+                android:text="Staff Login"
                 android:textColor="#ff5722"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.318"
                 tools:layout_editor_absoluteX="115dp"
-                tools:text="Cashier Login" />
+                tools:text="Staff Login" />
 
         <LinearLayout
             android:layout_height="wrap_content"
@@ -53,12 +53,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_staff"/>
+
             <EditText
                 android:id="@+id/txt_cashname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Cashier name"
+                android:hint="Staff Id"
                 android:inputType="textPersonName" />
         </LinearLayout>
         <LinearLayout

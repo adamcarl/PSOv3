@@ -3,98 +3,141 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:id="@+id/rl_cashier"
     tools:context="com.example.sydney.psov3.Cashier">
-
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/lbl_bill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Billing"
-            android:textAlignment="center"
-            android:textColor="#ff5722"
-            android:textSize="36sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout"
-        android:layout_weight="3"
-        android:orientation="horizontal">
-
+        android:id="@+id/ll_ec"
+        android:layout_width="wrap_content"
+        android:focusable="false"
+        android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/txt_cashier_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:ems="10"
-            android:hint="Product Id"
-            android:inputType="number" />
-
-        <Button
-            android:id="@+id/btn_cashier_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="search"
-            android:text="Search"
-            android:textColor="#ff5722" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout2"
-        android:orientation="vertical">
-
-        <GridView
-            android:id="@+id/grd_sell"
+            android:id="@+id/txt_cash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:numColumns="3" />
+            android:ems="10"
+            android:focusable="true"
+            android:hint="Enter Cash"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+    <TabHost
+        android:layout_width="match_parent"
+        android:id="@+id/tabHost"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_ec">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Total:" />
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/lbl_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textAlignment="viewEnd" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lbl_bill"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Billing"
+                            android:textAlignment="center"
+                            android:textColor="#ff5722"
+                            android:textSize="36sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/txt_cashier_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="Product Id"
+                            android:inputType="number" />
+
+                        <Button
+                            android:id="@+id/btn_cashier_search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="search"
+                            android:text="Search"
+                            android:textColor="#ff5722" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="115dp"
+                        android:orientation="vertical"
+                        android:weightSum="1">
+
+                        <Button
+                            android:id="@+id/btn_print"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#d35400"
+                            android:onClick="priceClick"
+                            android:text="Cash"
+                            android:textColor="#ffffff" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                        </LinearLayout>
+
+                        <GridView
+                            android:id="@+id/grd_sell"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:numColumns="3" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
+    </TabHost>
 
-        <Button
-            android:id="@+id/btn_print"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="print"
-            android:text="Cash"
-            android:textColor="#ff5722" />
-
-    </LinearLayout>
 </RelativeLayout>
