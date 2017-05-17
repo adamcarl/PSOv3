@@ -28,15 +28,12 @@ public class AnimatedTabHostListener implements TabHost.OnTabChangeListener {
          * @param context
          * @param tabHost
          */
-        public AnimatedTabHostListener(Context context, TabHost tabHost)
-        {
+        public AnimatedTabHostListener(Context context, TabHost tabHost) {
             this.tabHost = tabHost;
             this.previousView = tabHost.getCurrentView();
             gestureDetector = new GestureDetector(context, new MyGestureDetector());
-            tabHost.setOnTouchListener(new View.OnTouchListener()
-            {
-                public boolean onTouch(View v, MotionEvent event)
-                {
+            tabHost.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
                     if (gestureDetector.onTouchEvent(event)) {
                         return false;
                     }

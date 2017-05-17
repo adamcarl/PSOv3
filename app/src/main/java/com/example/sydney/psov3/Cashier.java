@@ -2,30 +2,31 @@ package com.example.sydney.psov3;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ExpandedMenuView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.hdx.lib.serial.SerialParam;
@@ -41,14 +42,9 @@ import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    int temp = 0;
-    int temp2 = 1;
-    double vattable;
-    double vat;
-    double vattable2;
-    double vat2;
-    double cash;
-    double totalPrice;
+    int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol;
+    double vattable,vat,vattable2,vat2,due2,totalPrice,totalPrice2,itempriceCol,itempricetotalCol;
+    Double due;
     int dialogVar;
     Cursor cursor;
     DB_Data db_data;
@@ -56,23 +52,19 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String> items;
     EditText searchText,txt_cash;
     String itemnameCol;
-    double itempriceCol;
-    int quantityCount = 0;
     ArrayList<Integer>itemQuantityList = new ArrayList<Integer>();
     ArrayList<Double>itemPriceList = new ArrayList<Double>();
     ArrayList<String>itemNameList = new ArrayList<String>();
     ArrayList<Integer>itemCodeList  = new ArrayList<Integer>();
-    int itemcodeCol;
     String firstname;
     SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<String>();
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
-    TextView lbl_price;
     TabHost host;
-    AnimatedTabHostListener getTabHost;
-
+    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc;
+    Button btn_print;
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
@@ -91,9 +83,15 @@ public class Cashier extends AppCompatActivity {
         txt_cash = (EditText)findViewById(R.id.txt_cash);
         layout = (RelativeLayout)findViewById(R.id.rl_cashier);
         host = (TabHost)findViewById(R.id.tabHost);
-///        getTabHost = new AnimatedTabHostListener(this,host);
         host.setup();
-
+        lbl_sub=(TextView)findViewById(R.id.lbl_subtotal);
+        lbl_tax=(TextView)findViewById(R.id.lbl_tax);
+        lbl_total=(TextView)findViewById(R.id.lbl_total);
+        lbl_due=(TextView)findViewById(R.id.lbl_due);
+        lbl_dc=(TextView)findViewById(R.id.lbl_dc);
+        btn_print=(Button)findViewById(R.id.btn_print);
+        Toolbar mtoolBar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mtoolBar);
         //Tab 1
 
         TabHost.TabSpec spec = host.newTabSpec("Invoice");
@@ -112,7 +110,7 @@ public class Cashier extends AppCompatActivity {
 
         spec.setContent(R.id.tab2);
 
-        spec.setIndicator("Paayment");
+        spec.setIndicator("Payment");
 
         host.addTab(spec);
 
@@ -138,6 +136,7 @@ public class Cashier extends AppCompatActivity {
         items.add("Quantity");
         items.add("Name");
         items.add("Price");
+        items.add("Total Price");
         products.add("     ABZTRAK INC CONVENIENCE STORE");
         products.add("2nd Floor, #670,");
         products.add("Sgt. Bumatay St, Mandaluyong");
@@ -149,10 +148,8 @@ public class Cashier extends AppCompatActivity {
         GridView grid = (GridView) findViewById(R.id.grd_sell);
         grid.setAdapter(new ArrayAdapter<String>(this,R.layout.single_cell,items));
 
-        //host.setOnTabChangedListener(new AnimatedTabHostListener(this,host));
-    }
-    public void priceClick(View view) {
-        txt_cash.requestFocus();
+
+
         txt_cash.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -181,11 +178,29 @@ public class Cashier extends AppCompatActivity {
                     txt_cash.setSelection(formatted.length());
 
                     txt_cash.addTextChangedListener(this);
+
+                    String deym = txt_cash.getText().toString().replace(",", "");
+                    double d = Double.parseDouble(deym.replace("P",""));
+                    due = totalPrice - d;
+                    if (due>0 || due==0) {
+                        lbl_dc.setText("Due");
+                        lbl_due.setText("" + due + "");
+                        btn_print.setText("Print Tender");
+                    }
+                    else {
+                        lbl_dc.setText("Change");
+                        String change = due.toString().replace("-","");
+                        lbl_due.setText(change);
+                        btn_print.setText("Print Receipt");
+                    }
                 }
             }
         });
+        //host.setOnTabChangedListener(new AnimatedTabHostListener(this,host));
     }
-
+    public void priceClick(View view){
+        txt_cash.requestFocus();
+    }
     public void search(View view) {
         try {
             int code = Integer.parseInt(searchText.getText().toString());
@@ -200,6 +215,7 @@ public class Cashier extends AppCompatActivity {
                 dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Enter Quantity");
+                final DecimalFormat format = new DecimalFormat("#.##");
                 builder.setView(dialogText);
                 searchText.setText("");
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -211,19 +227,21 @@ public class Cashier extends AppCompatActivity {
                                 }
                                 else {
                                     dialogVar = Integer.parseInt(dialogText.getText().toString());
-                                    itempriceCol = cursor.getInt(cursor.getColumnIndex(PRICE_PRODUCT));
+                                    itempriceCol = cursor.getDouble(cursor.getColumnIndex(PRICE_PRODUCT));
                                     itemnameCol = cursor.getString(cursor.getColumnIndex(NAME_PRODUCT));
                                     itemcodeCol = cursor.getInt(cursor.getColumnIndex(ID_PRODUCT));
                                     itemQuantityList.add(dialogVar);
                                     itemPriceList.add(itempriceCol);
                                     itemNameList.add(itemnameCol);
                                     itemCodeList.add(itemcodeCol);
-                                    itempriceCol = dialogVar * itempriceCol;
+                                    itempricetotalCol = dialogVar * itempriceCol;
+                                    itempricetotalCol = Double.valueOf(format.format(itempricetotalCol));
                                     ArrayList<Double> total = new ArrayList<Double>();
-                                    total.add(itempriceCol);
+                                    total.add(itempricetotalCol);
                                     items.add("" + dialogVar + "");
                                     items.add("" + itemnameCol + "");
                                     items.add("" + itempriceCol + "");
+                                    items.add("" + itempricetotalCol + "");
                                     cursor.close();
                                     layout.invalidate();
                                     layout.requestLayout();
@@ -231,15 +249,24 @@ public class Cashier extends AppCompatActivity {
                                         totalPrice = totalPrice += total.get(x);
                                         quantityCount++;
                                     }
-                                    DecimalFormat format = new DecimalFormat("#.##");
                                     vattable = totalPrice / 1.12;
                                     vat = vattable * 0.12;
                                     vattable2 = Double.valueOf(format.format(vattable));
                                     vat2 = Double.valueOf(format.format(vat));
+                                    totalPrice2 = Double.valueOf(format.format(totalPrice));
                                     products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
+                                    lbl_sub.setText("" + vattable2 + "");
+                                    lbl_tax.setText("" + vat2 + "");
+                                    lbl_total.setText("" + totalPrice2 + "");
+                                    String deym = txt_cash.getText().toString();
+                                    double d = Double.parseDouble(deym.replaceAll("[P,.]",""));
+                                    due = totalPrice - d;
+                                    due2 = Double.valueOf(format.format(due));
+                                    lbl_due.setText("" + due2 + "");
                                 }
                         }catch (Exception ex){
                             ex.printStackTrace();
+                            lbl_due.setText(""+totalPrice+"");
                         }
                     }
                 });
@@ -309,10 +336,17 @@ public class Cashier extends AppCompatActivity {
                         products.add("--------------------------------------");
                         products.add("Invoice Number " + temp2 + "");
                         products.add(quantityCount + " item(s)" + "Subtotal\t" + totalPrice + "");
-                        products.add("Cash\t\t" + cash + "");
                         products.add("Vatable" + "" + "\t\t" + vattable2);
                         products.add("Vat" + "" + "\t\t " + vat2);
                         products.add("Total" + " \t\t" + totalPrice + "");
+                        products.add("Cash\t\t" + txt_cash.getText().toString() + "");
+                        if (due>0 || due==0) {
+                            products.add("Due" + " \t\t" + due + "");
+                        }
+                        else {
+                            String change = due.toString().replace("-", "");
+                            products.add("Change" + " \t\t" + change + "");
+                        }
                         mSerialPrinter.sydneyDotMatrix7by7();
                         mSerialPrinter.printString(products);
                         mSerialPrinter.walkPaper(50);
@@ -325,10 +359,42 @@ public class Cashier extends AppCompatActivity {
                         itemNameList.clear();
                         itemCodeList.clear();
                     }
+                    cancelna();
                 }
 //            });
 
 //    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.my_menu,menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_cancel:
+                cancelna();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    public void cancelna(){
+        txt_cash.setText("P0.00");
+        searchText.setText("");
+        items.clear();
+        items.add("Quantity");
+        items.add("Name");
+        items.add("Price");
+        items.add("Total Price");
+        searchText.requestFocus();
+        lbl_due.setText("P0.00");
+        lbl_total.setText("P0.00");
+        lbl_sub.setText("P0.00");
+        lbl_tax.setText("P0.00");
+    }
     private void sleep(int ms) {
         try {
             java.lang.Thread.sleep(ms);
@@ -348,5 +414,16 @@ public class Cashier extends AppCompatActivity {
             }
         }
     }
-    
+    public static class FirstFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_invoice, container, false);
+        }
+    }
+    public static class SecondFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_payment, container, false);
+        }
+    }
 }
