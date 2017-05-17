@@ -23,7 +23,10 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.501">
+            app:layout_constraintVertical_bias="0.501"
+            android:id="@+id/linearLayout3"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
             <TextView
                 android:id="@+id/ttx"
@@ -32,22 +35,42 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Cashier Login"
+                android:text="Staff Login"
+                android:textColor="#ff5722"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.318"
                 tools:layout_editor_absoluteX="115dp"
-                tools:text="Cashier Login" />
+                tools:text="Staff Login" />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_staff"/>
 
             <EditText
                 android:id="@+id/txt_cashname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Cashier name"
+                android:hint="Staff Id"
                 android:inputType="textPersonName" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_password"/>
             <EditText
                 android:id="@+id/txt_cashpass"
                 android:layout_width="match_parent"
@@ -57,12 +80,14 @@
                 android:hint="@string/cashpass"
                 android:inputType="textPassword"
                 tools:ignore="LabelFor" />
+        </LinearLayout>
 
             <Button
                 android:id="@+id/btn_cashlogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Log In"
+                android:textColor="#ff5722"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -72,85 +97,10 @@
                 android:layout_marginLeft="5dp"
                 android:paddingTop="20dp"
                 android:text="No account yet? Sign-up now!"
-                android:textColor="@android:color/holo_blue_dark" />
+                android:textColor="#ff5722" />
 
         </LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="301dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="Enter your password"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.318"
-            tools:layout_editor_absoluteX="115dp"
-            tools:text="Enter your password" />
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            tools:ignore="LabelFor" />
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Log In"
-            tools:ignore="HardcodedText" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="Enter your password"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.318"
-        tools:layout_editor_absoluteX="115dp"
-        tools:text="Enter your password" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"
-        tools:ignore="LabelFor" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log In"
-        tools:ignore="HardcodedText" />
 </LinearLayout>

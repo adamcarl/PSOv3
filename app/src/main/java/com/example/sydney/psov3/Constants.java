@@ -18,4 +18,12 @@ public interface Constants extends BaseColumns {
     String LASTNAME_CASHIER = "Lastname"; //Field name = Lastname
     String POSITION_CASHIER = "Position"; //Field name = Password
     String PASSWORD_CASHIER = "Password"; //Field name = Password
+
+    String TABLE_NAME_PRODUCT = "tbl_product";
+    String ID_PRODUCT = "ProdId";
+    String NAME_PRODUCT = "ProdName";
+    String DESC_PRODUCT = "ProdDesc";
+    String PRICE_PRODUCT = "ProdPrice";
+    String QUAN_PRODUCT = "ProdQuan";
+
 }

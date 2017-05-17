@@ -28,13 +28,17 @@
             android:layout_marginStart="16dp"
             android:gravity="center_vertical|center_horizontal"
             android:text="Admin Login"
+            android:textColor="#ff5722"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.318"
-            tools:layout_editor_absoluteX="115dp"
             tools:text="Admin Login" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_admin"/>
         <EditText
             android:id="@+id/txt_adminpass"
             android:layout_width="match_parent"
@@ -44,11 +48,14 @@
             android:inputType="textPassword"
             tools:ignore="LabelFor" />
 
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_adminlogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log In"
+            android:textColor="#ff5722"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>

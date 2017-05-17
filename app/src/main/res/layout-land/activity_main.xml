@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:layout_margin="20dp"
-    tools:context=".AdminActivity">
+    tools:context="com.example.sydney.psov3.MainActivity">
 
     <LinearLayout
-        android:id="@+id/ll_admin_welcome"
+        android:id="@+id/ll_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -21,15 +21,15 @@
         android:visibility="gone">
 
         <fragment
-            android:id="@+id/frag_admin_welcome"
-            android:name="com.example.sydney.psov3.AdminActivity$FirstFragment"
+            android:id="@+id/frag_welcome"
+            android:name="com.example.sydney.psov3.MainActivity$FourthFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_admin_staff"
+        android:id="@+id/ll_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -40,35 +40,17 @@
         android:orientation="horizontal"
         android:padding="4dip"
         android:visibility="gone">
+
         <fragment
-            android:id="@+id/frag_admin_staff"
-            android:name="com.example.sydney.psov3.AdminActivity$SecondFragment"
+            android:id="@+id/fragment1"
+            android:name="com.example.sydney.psov3.MainActivity$FirstFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_admin_prod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:baselineAligned="false"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dip"
-        android:visibility="gone">
-        <fragment
-            android:id="@+id/frag_admin_prod"
-            android:name="com.example.sydney.psov3.AdminActivity$ThirdFragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
     </LinearLayout>
-
     <LinearLayout
-        android:id="@+id/ll_admin_prod_add"
+        android:id="@+id/ll_cashlog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -79,15 +61,17 @@
         android:orientation="horizontal"
         android:padding="4dip"
         android:visibility="gone">
+
         <fragment
-            android:id="@+id/frag_admin_prod_add"
-            android:name="com.example.sydney.psov3.AdminActivity$FourthFragment"
+            android:id="@+id/fragment_cashlog"
+            android:name="com.example.sydney.psov3.MainActivity$SecondFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/ll_admin_prod_edit"
+        android:id="@+id/ll_cashsignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -98,11 +82,13 @@
         android:orientation="horizontal"
         android:padding="4dip"
         android:visibility="gone">
+
         <fragment
-            android:id="@+id/frag_admin_prod_edit"
-            android:name="com.example.sydney.psov3.AdminActivity$FifthFragment"
+            android:id="@+id/fragment_cashsignup"
+            android:name="com.example.sydney.psov3.MainActivity$ThirdFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
     </LinearLayout>
 </RelativeLayout>

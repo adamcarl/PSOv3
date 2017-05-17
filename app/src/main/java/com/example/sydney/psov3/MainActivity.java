@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 //db_data.addStudent("Mary","Parker",vpass);
                 int result= db_data.adminLogin(vpass);
                 if(result > 0){
+                    txt_adminpass.setText("");
                     Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
                     startActivity(myIntent);
                     Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 String cpass = txt_cashpass.getText().toString().trim();
                 int result=db_data.cashierLogin(cname,cpass);
                 if(result > 0){
-                    Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
+                    Intent myIntent = new Intent(MainActivity.this,Cashier.class);
                     startActivity(myIntent);
                     Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
                 }
