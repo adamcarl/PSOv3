@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_saveorder"
+        android:title="Save Order"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_vieworder"
+        android:title="View Order"
+        app:showAsAction="never"
+        />
+    <item android:id="@+id/action_credit"
+        android:title="Credit Card"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/action_cancel"
+        android:title="Cancel Sale"
+        app:showAsAction="never"
+        />
+    <item android:id="@+id/action_customer"
+        android:title="Customer"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_menu"
+        android:title="Menu Buttons"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_system"
+        android:title="System"
+        app:showAsAction="never"
+        />
+</menu>
