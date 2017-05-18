@@ -200,8 +200,8 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
                 txt_admin_prod_id_edit.setText(productArrayList.get(position).getP_id());
                 txt_admin_prod_name_edit.setText(productArrayList.get(position).getP_name());
                 txt_admin_prod_desc_edit.setText(productArrayList.get(position).getP_desc());
-                txt_admin_prod_price_edit.setText(productArrayList.get(position).getP_price()+"");
-                txt_admin_prod_quan_edit.setText(productArrayList.get(position).getP_quan()+"");
+                txt_admin_prod_price_edit.setText(""+productArrayList.get(position).getP_price()+"");
+                txt_admin_prod_quan_edit.setText(""+productArrayList.get(position).getP_quan()+"");
                 ll_admin_product.setVisibility(View.GONE);
                 ll_admin_product_edit.setVisibility(View.VISIBLE);
             }

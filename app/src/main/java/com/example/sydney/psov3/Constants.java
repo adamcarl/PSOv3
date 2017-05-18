@@ -25,5 +25,5 @@ public interface Constants extends BaseColumns {
     String DESC_PRODUCT = "ProdDesc";
     String PRICE_PRODUCT = "ProdPrice";
     String QUAN_PRODUCT = "ProdQuan";
-
+    String VATABLE = "Vatable";
 }

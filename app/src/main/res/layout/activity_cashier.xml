@@ -94,18 +94,13 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1" />
                         </LinearLayout>
-
                     </LinearLayout>
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
                         <LinearLayout
                             android:id="@+id/ll_cashier_payment"
                             android:baselineAligned="false"
@@ -123,13 +118,29 @@
                                 android:layout_weight="1" />
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/ll_cashier_shift"
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="4dip">
+
+                        <fragment
+                            android:id="@+id/fragment_shift"
+                            android:name="com.example.sydney.psov3.Cashier$ThirdFragment"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

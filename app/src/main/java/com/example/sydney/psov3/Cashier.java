@@ -144,7 +144,7 @@ public class Cashier extends AppCompatActivity {
         products.add("             Cash Invoice");
         products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
-        products.add("Quantity          Name           Price");
+        products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
         GridView grid = (GridView) findViewById(R.id.grd_sell);
         grid.setAdapter(new ArrayAdapter<String>(this,R.layout.single_cell,items));
 
@@ -185,13 +185,14 @@ public class Cashier extends AppCompatActivity {
                     if (due>0 || due==0) {
                         lbl_dc.setText("Due");
                         lbl_due.setText("" + due + "");
-                        btn_print.setText("Print Tender");
+                        btn_print.setVisibility(View.GONE);
                     }
                     else {
                         lbl_dc.setText("Change");
                         String change = due.toString().replace("-","");
                         lbl_due.setText(change);
                         btn_print.setText("Print Receipt");
+                        btn_print.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -362,9 +363,7 @@ public class Cashier extends AppCompatActivity {
                     cancelna();
                 }
 //            });
-
 //    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater = getMenuInflater();
@@ -381,6 +380,9 @@ public class Cashier extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    public void onBackPressed(){
+    host.setCurrentTab(0);
+    }
     public void cancelna(){
         txt_cash.setText("P0.00");
         searchText.setText("");
@@ -394,6 +396,23 @@ public class Cashier extends AppCompatActivity {
         lbl_total.setText("P0.00");
         lbl_sub.setText("P0.00");
         lbl_tax.setText("P0.00");
+        dialogVar=0;
+        vat=0.00;
+        vat2=0.00;
+        vattable=0.00;
+        vattable2=0.00;
+        itempriceCol=0.00;
+        itempricetotalCol=0.00;
+        itemcodeCol=0;
+        itemCodeList.clear();
+        itemnameCol="";
+        itemNameList.clear();
+        itemQuantityList.clear();
+        itemPriceList.clear();
+        due=0.00;
+        due2=0.00;
+        totalPrice=0.00;
+        totalPrice2=0.00;
     }
     private void sleep(int ms) {
         try {
@@ -424,6 +443,12 @@ public class Cashier extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_cashier_payment, container, false);
+        }
+    }
+    public static class ThirdFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
         }
     }
 }

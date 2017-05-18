@@ -63,7 +63,8 @@
             android:layout_height="wrap_content"
             android:onClick="print"
             android:text="Complete Transaction"
-            android:textColor="#ff5722" />
+            android:textColor="#ff5722"
+            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>
