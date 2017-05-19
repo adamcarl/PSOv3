@@ -189,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
 ////            }
 ////        });
 //    }
-
     public static class FirstFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

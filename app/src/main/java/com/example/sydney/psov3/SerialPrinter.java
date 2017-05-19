@@ -87,26 +87,17 @@ public class SerialPrinter {
 //
 //
 //    }
-
     public void printString(ArrayList<String> text) {
         for(int x =0;x<text.size();x++) {
             String gbk = UnicodeToGBK(text.get(x));
             int[] data = new int[gbk.length()];
-
             for (int i = 0; i < gbk.length(); ++i) {
                 data[i] = gbk.charAt(i);
-
             }
-
             this.mSerialPortOperaion.WriteData(data);
             this.mSerialPortOperaion.WriteData(new int[]{10});
-
         }
-
     }
-
-
-
 
     public void enlargeFontSize(int x, int y) throws Exception {
         if(x >= 0 && x <= 4 && y >= 0 && y <= 4) {

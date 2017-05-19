@@ -17,7 +17,6 @@ import static com.example.sydney.psov3.Constants.*;
 
 public class DB_Data extends SQLiteOpenHelper {
 
-    AdminActivity aa;
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
 

@@ -31,8 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
+import com.example.sydney.psov3.Bill;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
     int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol;
-    double vattable,vat,vattable2,vat2,due2,totalPrice,totalPrice2,itempriceCol,itempricetotalCol;
+    double vattable,vat,totalPrice,itempriceCol,itempricetotalCol;
     Double due;
     int dialogVar;
     Cursor cursor;
@@ -51,7 +51,7 @@ public class Cashier extends AppCompatActivity {
     ContentValues cv;
     ArrayList<String> items;
     EditText searchText,txt_cash;
-    String itemnameCol;
+    String itemnameCol,formatted,vat2,vattable2,totalPrice2,due2,itempricetotalCol2;
     ArrayList<Integer>itemQuantityList = new ArrayList<Integer>();
     ArrayList<Double>itemPriceList = new ArrayList<Double>();
     ArrayList<String>itemNameList = new ArrayList<String>();
@@ -69,6 +69,8 @@ public class Cashier extends AppCompatActivity {
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
+        Bill bill = new Bill();
+        bill.main();
         cv = new ContentValues();
         try {
             mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
@@ -114,8 +116,6 @@ public class Cashier extends AppCompatActivity {
 
         host.addTab(spec);
 
-
-
         //Tab 3
 
         spec = host.newTabSpec("Shift");
@@ -148,8 +148,6 @@ public class Cashier extends AppCompatActivity {
         GridView grid = (GridView) findViewById(R.id.grd_sell);
         grid.setAdapter(new ArrayAdapter<String>(this,R.layout.single_cell,items));
 
-
-
         txt_cash.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -171,7 +169,7 @@ public class Cashier extends AppCompatActivity {
                     String cleanString = s.toString().replaceAll("[P,.]", "");
 
                     double parsed = Double.parseDouble(cleanString);
-                    String formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
+                    formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
                     formatted = formatted.replace('$','P');
                     current = formatted;
                     txt_cash.setText(formatted);
@@ -182,15 +180,18 @@ public class Cashier extends AppCompatActivity {
                     String deym = txt_cash.getText().toString().replace(",", "");
                     double d = Double.parseDouble(deym.replace("P",""));
                     due = totalPrice - d;
+                    formatted = NumberFormat.getCurrencyInstance().format((due/1));
+                    formatted = formatted.replace("$","");
                     if (due>0 || due==0) {
                         lbl_dc.setText("Due");
-                        lbl_due.setText("" + due + "");
+                        lbl_due.setText(formatted);
                         btn_print.setVisibility(View.GONE);
                     }
                     else {
                         lbl_dc.setText("Change");
-                        String change = due.toString().replace("-","");
-                        lbl_due.setText(change);
+                        formatted = NumberFormat.getCurrencyInstance().format((due/1));
+                        formatted = formatted.replaceAll("[$-]","P");
+                        lbl_due.setText(formatted);
                         btn_print.setText("Print Receipt");
                         btn_print.setVisibility(View.VISIBLE);
                     }
@@ -216,7 +217,6 @@ public class Cashier extends AppCompatActivity {
                 dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Enter Quantity");
-                final DecimalFormat format = new DecimalFormat("#.##");
                 builder.setView(dialogText);
                 searchText.setText("");
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -236,7 +236,8 @@ public class Cashier extends AppCompatActivity {
                                     itemNameList.add(itemnameCol);
                                     itemCodeList.add(itemcodeCol);
                                     itempricetotalCol = dialogVar * itempriceCol;
-                                    itempricetotalCol = Double.valueOf(format.format(itempricetotalCol));
+                                    itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
+                                    itempricetotalCol2 = itempricetotalCol2.replace("$","");
                                     ArrayList<Double> total = new ArrayList<Double>();
                                     total.add(itempricetotalCol);
                                     items.add("" + dialogVar + "");
@@ -250,11 +251,15 @@ public class Cashier extends AppCompatActivity {
                                         totalPrice = totalPrice += total.get(x);
                                         quantityCount++;
                                     }
+
                                     vattable = totalPrice / 1.12;
                                     vat = vattable * 0.12;
-                                    vattable2 = Double.valueOf(format.format(vattable));
-                                    vat2 = Double.valueOf(format.format(vat));
-                                    totalPrice2 = Double.valueOf(format.format(totalPrice));
+                                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable/1));
+                                    vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
+                                    totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
+                                    vat2 = vat2.replace("$","");
+                                    vattable2 = vattable2.replace("$","");
+                                    totalPrice2 = totalPrice2.replace("$","");
                                     products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
                                     lbl_sub.setText("" + vattable2 + "");
                                     lbl_tax.setText("" + vat2 + "");
@@ -262,12 +267,13 @@ public class Cashier extends AppCompatActivity {
                                     String deym = txt_cash.getText().toString();
                                     double d = Double.parseDouble(deym.replaceAll("[P,.]",""));
                                     due = totalPrice - d;
-                                    due2 = Double.valueOf(format.format(due));
+                                    due2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
+                                    due2 = due2.replace("$","");
                                     lbl_due.setText("" + due2 + "");
                                 }
                         }catch (Exception ex){
                             ex.printStackTrace();
-                            lbl_due.setText(""+totalPrice+"");
+                            lbl_due.setText(totalPrice2);
                         }
                     }
                 });
@@ -392,15 +398,15 @@ public class Cashier extends AppCompatActivity {
         items.add("Price");
         items.add("Total Price");
         searchText.requestFocus();
-        lbl_due.setText("P0.00");
-        lbl_total.setText("P0.00");
-        lbl_sub.setText("P0.00");
-        lbl_tax.setText("P0.00");
+        lbl_due.setText("0.00");
+        lbl_total.setText("0.00");
+        lbl_sub.setText("0.00");
+        lbl_tax.setText("0.00");
         dialogVar=0;
         vat=0.00;
-        vat2=0.00;
+        vat2="";
         vattable=0.00;
-        vattable2=0.00;
+        vattable2="";
         itempriceCol=0.00;
         itempricetotalCol=0.00;
         itemcodeCol=0;
@@ -410,9 +416,9 @@ public class Cashier extends AppCompatActivity {
         itemQuantityList.clear();
         itemPriceList.clear();
         due=0.00;
-        due2=0.00;
+        due2="";
         totalPrice=0.00;
-        totalPrice2=0.00;
+        totalPrice2="";
     }
     private void sleep(int ms) {
         try {

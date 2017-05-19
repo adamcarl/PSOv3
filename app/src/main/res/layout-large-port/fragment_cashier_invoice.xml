@@ -57,14 +57,6 @@
             android:layout_height="wrap_content"
             android:numColumns="4" />
 
-        <Button
-            android:id="@+id/btn_print"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="print"
-            android:text="Complete Transaction"
-            android:textColor="#ff5722"
-            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>
