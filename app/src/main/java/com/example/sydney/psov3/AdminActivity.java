@@ -56,7 +56,6 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         adapterProd = new AdapterProd(this, R.layout.single_row, productArrayList);
         lv_admin_prod.setAdapter(adapterProd);
         search_prod=(android.widget.SearchView)findViewById(R.id.search_prod);
-
         btn_adminManStaff = (Button)findViewById(R.id.btn_adminManStaff);
         btn_staff_update_cancel = (Button)findViewById(R.id.btn_staff_update_cancel);
         btn_admin_staff_update = (Button)findViewById(R.id.btn_admin_staff_update);

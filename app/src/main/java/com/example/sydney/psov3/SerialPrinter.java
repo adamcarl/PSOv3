@@ -32,7 +32,6 @@ public class SerialPrinter {
         if(mSerialPrinter == null) {
             mSerialPrinter = new SerialPrinter();
         }
-
         return mSerialPrinter;
     }
 
@@ -41,7 +40,6 @@ public class SerialPrinter {
             throw new Exception("PRINTER OPENED");
         } else {
             this.mExternHandler = handle;
-
             try {
                 this.mSerialPortOperaion = new SerialPortOperaion(this.mExternHandler, param);
                 this.mSerialPortOperaion.StartSerial();
@@ -51,7 +49,6 @@ public class SerialPrinter {
             } catch (Exception var5) {
                 var5.printStackTrace();
             }
-
         }
     }
 
@@ -69,7 +66,6 @@ public class SerialPrinter {
         } catch (UnsupportedEncodingException var2) {
             return s;
         }
-
     }
 
 //    public void printHeader(String[] text) {
@@ -129,12 +125,10 @@ public class SerialPrinter {
             throw new Exception("Invalid Parameter");
         }
     }
-
     public void setHighlight(boolean reverse) {
         byte[] cmd = new byte[]{(byte)10, (byte)27, (byte)105, (byte)(reverse?1:0)};
         this.mSerialPortOperaion.WriteData(cmd);
     }
-
     public void setGray(int gray) throws Exception {
         if(gray >= 0 && gray <= 25) {
             byte[] cmd = new byte[]{(byte)10, (byte)29, (byte)77, (byte)gray};
@@ -154,21 +148,16 @@ public class SerialPrinter {
         this.mSerialPortOperaion.WriteData(27,33,1);
     }
 
-
-
     public  void sydneyResetSettings()
     {
         this.mSerialPortOperaion.WriteData(27,64);
     }
-
-
 
     public  void sydneySetUnderline()
     {
         ///27 45 n .. 1 = 0 CANCEL 2 = 1
         this.mSerialPortOperaion.WriteData(27, 45, 0);
     }
-
 
     public void setAlgin(int paramInt) throws Exception {
         throw new Exception("unsupported");
@@ -182,8 +171,6 @@ public class SerialPrinter {
             throw new Exception("Invalid Parameter");
         }
     }
-
-
     public void printBarCode(int type, byte[] code) throws Exception {
         if(type >= 0 && type <= 4) {
             byte[] cmd = new byte[]{(byte)10, (byte)29, (byte)107, (byte)type};
@@ -193,7 +180,6 @@ public class SerialPrinter {
             throw new Exception("Invalid Parameter");
         }
     }
-
     public void sendLineFeed() {
         this.mSerialPortOperaion.WriteData(new int[]{10});
     }
@@ -207,7 +193,6 @@ public class SerialPrinter {
         if(width > 384) {
             width = 384;
         }
-
         for(int i = 0; i < adjustedHeight / 8; ++i) {
             byte[] data = new byte[width];
             byte xL = (byte)(width % 256);
@@ -215,12 +200,10 @@ public class SerialPrinter {
             start2[2] = xL;
             start2[3] = xH;
             this.mSerialPortOperaion.WriteData(start2);
-
             int k;
             for(k = 0; k < width; ++k) {
                 data[k] = 0;
             }
-
             for(k = 0; k < 8; ++k) {
                 for(int x = startx; x < width; ++x) {
                     int y = i * 8 + k;
@@ -232,7 +215,6 @@ public class SerialPrinter {
                     }
                 }
             }
-
             this.mSerialPortOperaion.WriteData(data);
 
             try {
@@ -241,10 +223,7 @@ public class SerialPrinter {
 
             }
         }
-
         this.mSerialPortOperaion.WriteData(start1);
         this.mSerialPortOperaion.WriteData(start1);
     }
-
-
 }

@@ -47,7 +47,7 @@ public class Bill {
 //                Arrays.asList("INVOICE NO: 458-80-108", "")
 //        );
 //        String t2Desc = "SELLING DETAILS";
-        List<String> t2Headers = Arrays.asList("ITEM", "PRICE", "QTY", "VALUE");
+        List<String> t2Headers = Arrays.asList("ITEM", "PRICE ", "QTY", "VALUE");
         List<List<String>> t2Rows = Arrays.asList(
                 Arrays.asList("Optical mouse", "120.00", "20", "2400.00"),
                 Arrays.asList("Gaming keyboard", "550.00", "30", "16500.00"),
@@ -60,7 +60,7 @@ public class Bill {
                 Arrays.asList("WR-DVD", "122.00", "34", "4148.00"),
                 Arrays.asList("Adapter", "543.00", "28", "15204.00")
         );
-        List<Integer> t2ColWidths = Arrays.asList(16, 8, 3, 9);
+        List<Integer> t2ColWidths = Arrays.asList(16, 7, 3, 9);
 //        String t3Desc = "RETURNING DETAILS";
 //        List<String> t3Headers = Arrays.asList("ITEM", "PRICE($)", "QTY", "VALUE");
 //        List<List<String>> t3Rows = Arrays.asList(
