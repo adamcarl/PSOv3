@@ -29,7 +29,7 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+FIRSTNAME_ADMIN+" TEXT NOT NULL, "+LASTNAME_ADMIN+" TEXT NOT NULL, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL, "+FIRSTNAME_CASHIER+" TEXT NOT NULL, "+LASTNAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL ,"+VATABLE+" INTEGER NOT NULL );");
-        //arg0.execSQL("CREATE TABLE IF NOT EXISTS orders (itemname TEXT, itemprice REAL,itemcode INTEGER,orderquantity INTEGER,consecutivenumber INTEGER,invoicenumber INTEGER,transactionnumber INTEGER DEFAULT 1);");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_ORDER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, itemname TEXT, itemprice REAL,itemcode INTEGER,orderquantity INTEGER,consecutivenumber INTEGER,invoicenumber INTEGER,transactionnumber INTEGER DEFAULT 1);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,firstname TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
@@ -43,6 +43,8 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_CASHIER);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_PRODUCT);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_ORDER);
         onCreate(arg0);
     }
     private static String[] FROM_ADMIN = {PASSWORD_ADMIN};

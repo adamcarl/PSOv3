@@ -1,4 +1,4 @@
-package com.example.sydney.psov3;
+package com.example.sydney.psov3.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sydney.psov3.Product;
+import com.example.sydney.psov3.R;
 
 import java.util.ArrayList;
 

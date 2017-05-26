@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/ll_tender"
@@ -39,6 +40,7 @@
         </LinearLayout>
 
         <RadioGroup
+            android:id="@+id/rg_discount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -46,25 +48,26 @@
             android:padding="16dp">
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/rb_ndisc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:checked="true"
+                android:text="No discount" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/rb_rpdisc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:text="Senior/PWD" />
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/rb_ddisc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="RadioButton" />
+                android:text="Diplomat" />
         </RadioGroup>
     </LinearLayout>
 
@@ -91,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Subtotal:"
+                android:text="Vatable:"
                 android:textSize="30sp" />
 
             <TextView
@@ -99,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -129,7 +132,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="lbl_tax"
+                android:text="0.00"
+                android:textAlignment="textEnd"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Discount:"
+                android:textAlignment="textStart"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/lbl_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.00"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -159,7 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="lbl_tax"
+                android:text="0.00"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -170,7 +201,7 @@
             android:layout_margin="10dp"
             android:background="#000000"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="16dp">
 
         </LinearLayout>
 
@@ -199,9 +230,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Complete Transaction"
+        android:onClick="print"/>
 </LinearLayout>

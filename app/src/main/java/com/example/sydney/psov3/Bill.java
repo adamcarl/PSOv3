@@ -21,7 +21,7 @@ import hdx.HdxUtil;
 
 public class Bill {
 
-    public void main() {
+    public void main(List<List<String>> t2Rows) {
         SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
         ArrayList<String> products = new ArrayList<String>();
         try {
@@ -48,19 +48,19 @@ public class Bill {
 //        );
 //        String t2Desc = "SELLING DETAILS";
         List<String> t2Headers = Arrays.asList("ITEM", "PRICE ", "QTY", "VALUE");
-        List<List<String>> t2Rows = Arrays.asList(
-                Arrays.asList("Optical mouse", "120.00", "20", "2400.00"),
-                Arrays.asList("Gaming keyboard", "550.00", "30", "16500.00"),
-                Arrays.asList("320GB SATA HDD", "220.00", "32", "7040.00"),
-                Arrays.asList("500GB SATA HDD", "274.00", "13", "3562.00"),
-                Arrays.asList("1TB SATA HDD", "437.00", "11", "4807.00"),
-                Arrays.asList("RE-DVD ROM", "144.00", "29", "4176.00"),
-                Arrays.asList("DDR3 4GB RAM", "143.00", "13", "1859.00"),
-                Arrays.asList("Blu-ray DVD", "94.00", "28", "2632.00"),
-                Arrays.asList("WR-DVD", "122.00", "34", "4148.00"),
-                Arrays.asList("Adapter", "543.00", "28", "15204.00")
-        );
-        List<Integer> t2ColWidths = Arrays.asList(16, 7, 3, 9);
+//        List<List<String>> t2Rows = Arrays.asList(
+//                Arrays.asList("Optical mouse", "120.00", "20", "2400.00"),
+//                Arrays.asList("Gaming keyboard", "550.00", "30", "16500.00"),
+//                Arrays.asList("320GB SATA HDD", "220.00", "32", "7040.00"),
+//                Arrays.asList("500GB SATA HDD", "274.00", "13", "3562.00"),
+//                Arrays.asList("1TB SATA HDD", "437.00", "11", "4807.00"),
+//                Arrays.asList("RE-DVD ROM", "144.00", "29", "4176.00"),
+//                Arrays.asList("DDR3 4GB RAM", "143.00", "13", "1859.00"),
+//                Arrays.asList("Blu-ray DVD", "94.00", "28", "2632.00"),
+//                Arrays.asList("WR-DVD", "122.00", "34", "4148.00"),
+//                Arrays.asList("Adapter", "543.00", "28", "15204.00")
+//        );
+        List<Integer> t2ColWidths = Arrays.asList(12, 8, 4, 11);
 //        String t3Desc = "RETURNING DETAILS";
 //        List<String> t3Headers = Arrays.asList("ITEM", "PRICE($)", "QTY", "VALUE");
 //        List<List<String>> t3Rows = Arrays.asList(
@@ -96,8 +96,8 @@ public class Bill {
 
         //bookmark
         Board b = new Board(40);
-        b.setInitialBlock(new Block(b, 38, 7, company).allowGrid(false).setBlockAlign(Block.BLOCK_CENTRE).setDataAlign(Block.DATA_CENTER));
-//        b.appendTableTo(0, Board.APPEND_BELOW, new Table(b, 38, t1Headers, t1Rows));
+        b.setInitialBlock(new Block(b, 40, 7, company).allowGrid(false).setBlockAlign(Block.BLOCK_CENTRE).setDataAlign(Block.DATA_CENTER));
+        //b.appendTableTo(0, Board.APPEND_BELOW, new Table(b, 38, t1Headers, t1Rows));
 //        b.getBlock(3).setBelowBlock(new Block(b, 36, 1, t2Desc).setDataAlign(Block.DATA_CENTER));
         b.appendTableTo(0, Board.APPEND_BELOW, new Table(b, 38, t2Headers, t2Rows, t2ColWidths));
 //        b.getBlock(10).setBelowBlock(new Block(b, 36, 1, t3Desc).setDataAlign(Block.DATA_CENTER));

@@ -26,4 +26,20 @@ public interface Constants extends BaseColumns {
     String PRICE_PRODUCT = "ProdPrice";
     String QUAN_PRODUCT = "ProdQuan";
     String VATABLE = "Vatable";
+
+    String TABLE_NAME_ORDER = "tbl_order";
+    String NUMBER_ORDER = "";
+    String NAME_ORDER = "";
+    String ITEM_ORDER = "";
+    String TRANSACTION_ORDER = "";
+    String QUAN_ORDER = "";
+    String DATE_ORDER = "";
+
+    String TABLE_NAME_RECEIPT = "";
+    String NUMBER_RECEIPT = "";
+    String DISCOUNT_RECEIPT = "";
+    String TERMINAL_RECEIPT = "";
+    String CASH_RECEIPT = "";
+    String TRANSACTION_NUMBER_RECEIPT = "";
+    String DATE_RECEIPT = "";
 }

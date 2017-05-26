@@ -207,5 +207,4 @@ public class Board {
             invalidateBlock(block.getBelowBlock());
         }
     }
-
 }
