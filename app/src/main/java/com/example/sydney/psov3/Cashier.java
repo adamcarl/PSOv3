@@ -50,10 +50,9 @@ import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol;
+    int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
-    int dialogVar;
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
@@ -115,7 +114,7 @@ public class Cashier extends AppCompatActivity {
         lv_order = (ListView)findViewById(R.id.lv_cashier_order);
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
-        lv_order.setAdapter(adapterOrder);
+//        lv_order.setAdapter(adapterOrder);
         Toolbar mtoolBar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mtoolBar);
         //Tab 1
@@ -241,6 +240,7 @@ public class Cashier extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if(rb_spdisc.isChecked()){
+                    discType = 1;
                     discount = subTotal * 0.20;
                     vat = 0.0;
                     vattable = subTotal / 1.12;
@@ -263,6 +263,7 @@ public class Cashier extends AppCompatActivity {
                     lbl_due.setText(totalPrice2);
                 }
                 else if(rb_ddisc.isChecked()){
+                    discType=2;
                     vattable = subTotal / 1.12;
                     vat = vattable * 0.0;
 
@@ -304,7 +305,7 @@ public class Cashier extends AppCompatActivity {
     }
     public void search(View view) {
         try {
-            int code = Integer.parseInt(searchText.getText().toString());
+            code = Integer.parseInt(searchText.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
             String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, QUAN_PRODUCT, PRICE_PRODUCT};
             cursor = dbReader.query(TABLE_NAME_PRODUCT, WHERE, ID_PRODUCT + " LIKE ?", itemcode, null, null, null);
@@ -368,6 +369,7 @@ public class Cashier extends AppCompatActivity {
                                     temp.add(dialogVar+"");//example I don't know the order you need
                                     temp.add(itempricetotalCol2);//example I don't know the order you ne
                                     t2Rows.add(temp);
+                                    // TODO: 5/29/2017 addItem
                                     totalPrice = subTotal;
                                     due = totalPrice;
                                     due2 = NumberFormat.getCurrencyInstance().format((subTotal/1));
@@ -389,89 +391,41 @@ public class Cashier extends AppCompatActivity {
         }
     }
     public void print(View view) {
-//        bill.main(t2Rows);
-//            final EditText dialogText = new EditText(Cashier.this);
-//            dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//            AlertDialog.Builder builder = new AlertDialog.Builder(Cashier.this);
-//            builder.setTitle("Enter Amount");
-//            builder.setView(dialogText);
-//            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int whichButton) {
-//                    dialogVar = Integer.parseInt(dialogText.getText().toString());
-//                    double a1 = dialogVar - itempriceCol;
-//                    layout.invalidate();
-//                    layout.requestLayout();
-//                    DecimalFormat format = new DecimalFormat("#.##");
-//                    cash = a1;
-//                    cursor = dbReader.rawQuery("SELECT MAX(transactionnumber) AS maxix from receipts", null);
-//                    cursor.moveToFirst();
-//                    temp = cursor.getInt(cursor.getColumnIndex("maxix"));
-//                    if (temp < 1) {
-//                        for (int x = 0; x < itemPriceList.size(); x++) {
-//                            cv.put("itemname", "" + itemNameList.get(x) + "");
-//                            cv.put("itemprice", "" + itemPriceList.get(x) + "");
-//                            cv.put("itemcode", "" + itemCodeList.get(x) + "");
-//                            cv.put("orderquantity", "" + itemQuantityList.get(x) + "");
-//                            temp2 = 1;
-//                            dbWriter.insert("orders", null, cv);
+        bill.main();
+
+//        String deym = txt_cash.getText().toString().replaceAll("[P,]", "");
+//        String rDisc = discType+"";
+//        try {
+//                        db_data.addReceipt(rDisc,deym,null,null);
+//                        products.add("--------------------------------------");
+//                        products.add("Invoice Number " + temp2 + "");
+//                        products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
+//                        products.add("Vatable" + "" + "\t\t" + vattable2);
+//                        products.add("Vat" + "" + "\t\t " + vat2);
+//                        products.add("Total" + " \t\t" + subTotal + "");
+//                        products.add("Cash\t\t" + txt_cash.getText().toString() + "");
+//                        if (due>0 || due==0) {
+//                            products.add("Due" + " \t\t" + due + "");
 //                        }
-//                        dbWriter.execSQL("INSERT INTO receipts(transactionnumber) values(1)");
-//                        itemQuantityList.clear();
-//                        itemPriceList.clear();
-//                        itemNameList.clear();
-//                        itemCodeList.clear();
-//                        cursor.close();
-//                        Toast.makeText(Cashier.this, "aw", Toast.LENGTH_LONG).show();
-//                    } else {
-//                        dbWriter.execSQL("UPDATE receipts set transactionnumber = transactionnumber + 1");
-//                        cursor = dbReader.rawQuery("SELECT MAX(transactionnumber) AS maxix from receipts", null);
-//                        cursor.moveToFirst();
-//                        temp2 = cursor.getInt(cursor.getColumnIndex("maxix"));
-//                        for (int x = 0; x < itemPriceList.size(); x++) {
-//                            cv.put("itemname", "" + itemNameList.get(x) + "");
-//                            cv.put("itemprice", "" + itemPriceList.get(x) + "");
-//                            cv.put("itemcode", "" + itemCodeList.get(x) + "");
-//                            cv.put("orderquantity", "" + itemQuantityList.get(x) + "");
-//                            cv.put("transactionnumber", temp2);
-//                            dbWriter.insert("orders", null, cv);
+//                        else {
+//                            String change = due.toString().replace("-", "");
+//                            products.add("Change" + " \t\t" + change + "");
 //                        }
-//                        dbWriter.execSQL("INSERT INTO receipts(transactionnumber) values(" + temp2 + ") ");
-//                        dbWriter.execSQL("INSERT INTO receipts(invoicenumber) values(" + temp2 + ")");
+//                        mSerialPrinter.sydneyDotMatrix7by7();
+//                        mSerialPrinter.printString(products);
+//                        mSerialPrinter.walkPaper(50);
+//                        mSerialPrinter.sendLineFeed();
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    } finally {
 //                        itemQuantityList.clear();
 //                        itemPriceList.clear();
 //                        itemNameList.clear();
 //                        itemCodeList.clear();
 //                    }
-                    try {
-                        products.add("--------------------------------------");
-                        products.add("Invoice Number " + temp2 + "");
-                        products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
-                        products.add("Vatable" + "" + "\t\t" + vattable2);
-                        products.add("Vat" + "" + "\t\t " + vat2);
-                        products.add("Total" + " \t\t" + subTotal + "");
-                        products.add("Cash\t\t" + txt_cash.getText().toString() + "");
-                        if (due>0 || due==0) {
-                            products.add("Due" + " \t\t" + due + "");
-                        }
-                        else {
-                            String change = due.toString().replace("-", "");
-                            products.add("Change" + " \t\t" + change + "");
-                        }
-                        mSerialPrinter.sydneyDotMatrix7by7();
-                        mSerialPrinter.printString(products);
-                        mSerialPrinter.walkPaper(50);
-                        mSerialPrinter.sendLineFeed();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        itemQuantityList.clear();
-                        itemPriceList.clear();
-                        itemNameList.clear();
-                        itemCodeList.clear();
-                    }
-                    cancelna();
-//                }
+//                    cancelna();
+////                }
 //            });
     }
     @Override
@@ -549,32 +503,30 @@ public class Cashier extends AppCompatActivity {
             }
         }
     }
-    public void listGo(){
-        orderArrayList.clear();
-        String min = "min("+NUMBER_ORDER+")";
-        String[] ALL = {NAME_ORDER, min, DATE_ORDER};
-        String ASC = "ASC";
-        SQLiteDatabase db = db_data.getReadableDatabase();
-//        String table = "goal";
-//        String[] columns = new String[] { "distinct id", "date", "sum(goal)" };
-//        String selection = "id=? and date=?";
-//        String[] arguments = new String[] { "0", "Sep 15, 2015" };
-//        String groupBy = "id, date";
-//        String having = null;
-//        String orderBy = null;
-//        db.query(table, columns, selection, arguments, groupBy, having, orderBy);
-        Cursor curse = db.query(TABLE_NAME_ORDER, ALL, null, null, NUMBER_ORDER, null, ASC);
-        while (curse.moveToNext()) {
-            String oid = curse.getInt(0) + "";
-            String pname = curse.getString(1);
-            String pdesc = curse.getString(2);
-            double pdprice = curse.getDouble(3);
-            int pdquan = curse.getInt(4);
-            orderArrayList.add(new Product(pid, pname, pdesc, pdprice, pdquan));
-        }
-        adapterOrder.notifyDataSetChanged();
-        curse.close();
-    }
+//    public void listGo(){
+//        orderArrayList.clear();
+//        String min = "min("+NUMBER_ORDER+")";
+//        String[] ALL = {NAME_ORDER, min, DATE_ORDER};
+//        String ASC = "ASC";
+//        SQLiteDatabase db = db_data.getReadableDatabase();
+////        String table = "goal";
+////        String[] columns = new String[] { "distinct id", "date", "sum(goal)" };
+////        String selection = "id=? and date=?";
+////        String[] arguments = new String[] { "0", "Sep 15, 2015" };
+////        String groupBy = "id, date";
+////        String having = null;
+////        String orderBy = null;
+////        db.query(table, column    s, selection, arguments, groupBy, having, orderBy);
+//        Cursor curse = db.query(TABLE_NAME_ORDER, ALL, null, null, NUMBER_ORDER, null, ASC);
+//        while (curse.moveToNext()) {
+//            String oname = curse.getString(0);
+//            int onumber = curse.getInt(1);
+//            long pdate = curse.getLong(2);
+//            orderArrayList.add(new Order(oname, onumber, pdate));
+//        }
+//        adapterOrder.notifyDataSetChanged();
+//        curse.close();
+//    }
 
     public static class FirstFragment extends Fragment {
         @Override
