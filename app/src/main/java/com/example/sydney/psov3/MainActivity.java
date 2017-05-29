@@ -80,18 +80,22 @@ public class MainActivity extends AppCompatActivity {
         btn_adminlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String vpass = txt_adminpass.getText().toString().trim();
-                //db_data.addStudent("Mary","Parker",vpass);
-                int result= db_data.adminLogin(vpass);
-                if(result > 0){
-                    txt_adminpass.setText("");
+//                String vpass = txt_adminpass.getText().toString().trim();
+//                //db_data.addStudent("Mary","Parker",vpass);
+//                int result= db_data.adminLogin(vpass);
+//                if(result > 0){
+//                    txt_adminpass.setText("");
+//                    Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
+//                    startActivity(myIntent);
+//                    Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
+//                }
+
                     Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
                     startActivity(myIntent);
                     Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
-                }
             }
         });
         btn_cashlogin.setOnClickListener(new View.OnClickListener() {
