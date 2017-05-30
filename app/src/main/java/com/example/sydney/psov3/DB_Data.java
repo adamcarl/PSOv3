@@ -55,9 +55,9 @@ public class DB_Data extends SQLiteOpenHelper {
     }
     private static String[] FROM_ADMIN = {PASSWORD_ADMIN};
 
-    public int adminLogin(String vpass) {
-        String WHERE_ADMIN = "Password = ?";
-        String[] WHERE_ARGS_ADMIN = new String[]{vpass};
+    public int adminLogin(String user,String pass) {
+        String WHERE_ADMIN = "Username =? and Password = ?";
+        String[] WHERE_ARGS_ADMIN = new String[]{user,pass};
         try {
             int i;
             Cursor curse = dbr.query(TABLE_NAME_ADMIN,FROM_ADMIN,WHERE_ADMIN,WHERE_ARGS_ADMIN,null,null,null);

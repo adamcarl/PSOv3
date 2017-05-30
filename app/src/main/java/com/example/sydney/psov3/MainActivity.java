@@ -77,9 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 ll_cashlog.setVisibility(View.VISIBLE);
             }
         });
-        btn_adminlogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 //                String vpass = txt_adminpass.getText().toString().trim();
 //                //db_data.addStudent("Mary","Parker",vpass);
 //                int result= db_data.adminLogin(vpass);
@@ -96,21 +93,37 @@ public class MainActivity extends AppCompatActivity {
                     Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
                     startActivity(myIntent);
                     Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        btn_cashlogin.setOnClickListener(new View.OnClickListener() {
+        // TODO: 5/30/2017 Log in for both admin and staff
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cname = txt_cashname.getText().toString().trim();
-                String cpass = txt_cashpass.getText().toString().trim();
-                int result=db_data.cashierLogin(cname,cpass);
-                if(result > 0){
-                    Intent myIntent = new Intent(MainActivity.this,Cashier.class);
-                    startActivity(myIntent);
-                    Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+                String muser = txt_user.getText().toString();
+                String mpass = txt_pass.getText().toString();
+                if(chk_admin.isChecked){
+                    int result=db_data.adminLogin(muser,mpass);
+                    if(result > 0){
+                        txt_user.setText("");
+                        txt_pass.setText("");
+                        Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
+                        startActivity(myIntent);
+                        Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
+                        txt_pass.setText("");
+                    }
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
+                    int result=db_data.cashierLogin(muser,mpass);
+                    if(result > 0){
+                        Intent myIntent = new Intent(MainActivity.this,Cashier.class);
+                        startActivity(myIntent);
+                        Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
+                        txt_pass.setText("");
+                    }
                 }
             }
         });
@@ -132,22 +145,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-//    public int adminLogin(String pass){
-//        SQLiteDatabase db = DB_data.getReadableDatabase();
-//        String WHERE_ADMIN = "Password = ?";
-//        String[] WHERE_ARGS_ADMIN = new String[]{pass};
-//        try{
-//            int i=0;
-//            Cursor curse = db.query(TABLE_NAME_ADMIN,FROM_ADMIN,WHERE_ADMIN,WHERE_ARGS_ADMIN,null,null,null);
-//            curse.moveToFirst();
-//            i = curse.getCount();
-//            curse.close();
-//            return i;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return 0;
-//    }
     public void onBackPressed(){
         txt_adminpass.setText("");
         txt_cashpass.setText("");
@@ -158,41 +155,6 @@ public class MainActivity extends AppCompatActivity {
         ll_cashlog.setVisibility(View.GONE);
         ll_cashsignup.setVisibility(View.GONE);
     }
-//    private static String[] FROM_CASHIER = {NUMBER_CASHIER ,FIRSTNAME_CASHIER, LASTNAME_CASHIER, PASSWORD_CASHIER};
-//    private static String[] FROM_ADMIN = {PASSWORD_ADMIN};
-//    String WHERE_ADMIN = "Password = ?";
-//    String[] WHERE_ARGS_ADMIN = new String[]{};
-
-//    private Cursor getCashier(){
-//        SQLiteDatabase db = db_data.getReadableDatabase();
-//        Cursor curse = db.query(TABLE_NAME_CASHIER,FROM_CASHIER,WHERE_ADMIN,WHERE_ARGS_ADMIN,null,null,null);
-//        return(curse);
-//    }
-//    private Cursor getAdmin(){
-//        SQLiteDatabase db = DB_data.getReadableDatabase();
-//        Cursor curse = db.query(TABLE_NAME_ADMIN,FROM_ADMIN,null,null,null,null,null);
-//        return(curse);
-//    }
-//    private void showUser(Cursor c){
-//        StringBuilder str = new StringBuilder("Saved Users: \n");
-//        while(c.moveToNext()){
-//            String name = c.getString(1);
-//            str.append(name).append("");
-//
-//        }
-//        final String v = str.toString();
-////        Button view = (Button)findViewById(R.id.btn_view);
-////        view.setOnClickListener(new View.OnClickListener() {
-////
-////            @Override
-////            public void onClick(View arg0) {
-////                // TODO Auto-generated method stub
-////
-////                TextView myTxt = (TextView) findViewById(R.id.my_text);
-////                myTxt.setText(v);
-////            }
-////        });
-//    }
     public static class FirstFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
