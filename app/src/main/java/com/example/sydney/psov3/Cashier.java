@@ -57,7 +57,7 @@ public class Cashier extends AppCompatActivity {
     DB_Data db_data;
     ContentValues cv;
     ArrayList<String> items;
-    EditText searchText,txt_cash;
+    EditText txt_search,txt_cash;
     String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2,firstname;
     ArrayList<Integer>itemQuantityList = new ArrayList<Integer>();
     ArrayList<Double>itemPriceList = new ArrayList<Double>();
@@ -69,7 +69,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String> products = new ArrayList<String>();
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
-    TabHost host;
+    TabHost tab_host;
     TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
     Button btn_print;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
@@ -98,11 +98,11 @@ public class Cashier extends AppCompatActivity {
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
         rb_ddisc = (RadioButton)findViewById(R.id.rb_ddisc);
-        searchText =(EditText) findViewById(R.id.txt_cashier_search);
+        txt_search =(EditText) findViewById(R.id.txt_cashier_search);
         txt_cash = (EditText)findViewById(R.id.txt_cash);
         layout = (RelativeLayout)findViewById(R.id.rl_cashier);
-        host = (TabHost)findViewById(R.id.tabHost);
-        host.setup();
+        tab_host = (TabHost)findViewById(R.id.tabHost);
+        tab_host.setup();
         lbl_sub=(TextView)findViewById(R.id.lbl_subtotal);
         lbl_tax=(TextView)findViewById(R.id.lbl_tax);
         lbl_total=(TextView)findViewById(R.id.lbl_total);
@@ -119,33 +119,33 @@ public class Cashier extends AppCompatActivity {
         setSupportActionBar(mtoolBar);
         //Tab 1
 
-        TabHost.TabSpec spec = host.newTabSpec("Invoice");
+        TabHost.TabSpec spec = tab_host.newTabSpec("Invoice");
 
         spec.setContent(R.id.tab1);
 
         spec.setIndicator("Invoice");
 
-        host.addTab(spec);
+        tab_host.addTab(spec);
 
         //Tab 2
 
-        spec = host.newTabSpec("Payment");
+        spec = tab_host.newTabSpec("Payment");
 
         spec.setContent(R.id.tab2);
 
         spec.setIndicator("Payment");
 
-        host.addTab(spec);
+        tab_host.addTab(spec);
 
         //Tab 3
 
-        spec = host.newTabSpec("Shift");
+        spec = tab_host.newTabSpec("Shift");
 
         spec.setContent(R.id.tab3);
 
         spec.setIndicator("Shift");
 
-        host.addTab(spec);
+        tab_host.addTab(spec);
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
@@ -298,14 +298,14 @@ public class Cashier extends AppCompatActivity {
                 }
             }
         });
-        //host.setOnTabChangedListener(new AnimatedTabHostListener(this,host));
+        //tab_host.setOnTabChangedListener(new AnimatedTabHostListener(this,tab_host));
     }
     public void priceClick(View view){
         txt_cash.requestFocus();
     }
     public void search(View view) {
         try {
-            code = Integer.parseInt(searchText.getText().toString());
+            code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
             String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, QUAN_PRODUCT, PRICE_PRODUCT};
             cursor = dbReader.query(TABLE_NAME_PRODUCT, WHERE, ID_PRODUCT + " LIKE ?", itemcode, null, null, null);
@@ -318,7 +318,7 @@ public class Cashier extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Enter Quantity");
                 builder.setView(dialogText);
-                searchText.setText("");
+                txt_search.setText("");
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -446,17 +446,17 @@ public class Cashier extends AppCompatActivity {
         }
     }
     public void onBackPressed(){
-    host.setCurrentTab(0);
+    tab_host.setCurrentTab(0);
     }
     public void cancelna(){
         txt_cash.setText("P0.00");
-        searchText.setText("");
+        txt_search.setText("");
         items.clear();
         items.add("Quantity");
         items.add("Name");
         items.add("Price");
         items.add("Total Price");
-        searchText.requestFocus();
+        txt_search.requestFocus();
         lbl_due.setText("0.00");
         lbl_total.setText("0.00");
         lbl_sub.setText("0.00");
