@@ -169,7 +169,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
                 String pdesc=txt_admin_prod_desc.getText().toString().trim();
                 String pprice=txt_admin_prod_price.getText().toString().trim();
                 String pquan=txt_admin_prod_quan.getText().toString().trim();
-                try {
+//                try {
                     db_data.addProduct(pid,pname,pdesc,pprice,pquan);
                     Toast.makeText(AdminActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                     txt_admin_prod_id.setText("");
@@ -177,10 +177,10 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
                     txt_admin_prod_desc.setText("");
                     txt_admin_prod_price.setText("");
                     txt_admin_prod_quan.setText("");
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
+//                }
+//                catch (Exception e){
+//                    e.printStackTrace();
+//                }
             }
         });
         btn_admin_prod_import.setOnClickListener(new View.OnClickListener() {

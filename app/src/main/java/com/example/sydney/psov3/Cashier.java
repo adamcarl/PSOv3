@@ -64,7 +64,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String>itemNameList = new ArrayList<String>();
     List<String>row2t;
     ArrayList<Integer>itemCodeList  = new ArrayList<Integer>();
-    SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
+//    SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<String>();
     SQLiteDatabase dbReader;
@@ -87,8 +87,8 @@ public class Cashier extends AppCompatActivity {
         //bill.main();
         cv = new ContentValues();
         try {
-            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-            HdxUtil.SetPrinterPower(1);
+//            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
+//            HdxUtil.SetPrinterPower(1);
         }
         catch (Exception e) {
             e.printStackTrace();

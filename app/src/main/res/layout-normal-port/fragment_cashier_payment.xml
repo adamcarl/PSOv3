@@ -1,31 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/button8"
+    <LinearLayout
+        android:id="@+id/ll_tender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Credit Card Number" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter Gift Card Number" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <Button
-        android:id="@+id/button9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Other Tender Types" />
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter Credit Card Number" />
+
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter Gift Card Number" />
+
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Other Tender Types" />
+
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_discount"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <RadioButton
+                android:id="@+id/rb_ndisc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="No discount" />
+
+            <RadioButton
+                android:id="@+id/rb_rpdisc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Senior/PWD" />
+
+            <RadioButton
+                android:id="@+id/rb_ddisc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Diplomat" />
+        </RadioGroup>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,17 +94,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Subtotal:"
-                android:textSize="30sp" />
+                android:text="Vatable:"
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/lbl_subtotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,16 +125,44 @@
                 android:layout_weight="1"
                 android:text="Tax:"
                 android:textAlignment="textStart"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/lbl_tax"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Discount:"
+                android:textAlignment="textStart"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/lbl_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0.00"
+                android:textAlignment="textEnd"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -104,25 +183,25 @@
                 android:layout_weight="1"
                 android:text="Total:"
                 android:textAlignment="textStart"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/lbl_total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="595dp"
             android:layout_height="3dp"
             android:layout_margin="10dp"
             android:background="#000000"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="16dp">
 
         </LinearLayout>
 
@@ -138,23 +217,28 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/lbl_dc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Due:"
                 android:textAlignment="textStart"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/lbl_due"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="0.00"
                 android:textAlignment="textEnd"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Complete Transaction"
+        android:onClick="print"/>
 </LinearLayout>
