@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -15,128 +16,99 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    Button btn_adminlogin,btn_admin,btn_cash,btn_cashregcancel,btn_cashlogin,btn_cashreg;
-    TextView txt_signup;
-    EditText txt_adminpass,txt_cashname,txt_cashpass,txt_emplname,txt_empfname,txt_empid,txt_emppass;
-    LinearLayout ll_welcome,ll_log,ll_cashlog,ll_cashsignup;
-    Spinner spn_staff_pos;
+    //For Database
     DB_Data db_data;
+    
+    //For ActivityLogin
+    CheckBox chk_admin;
+    EditText et_usernum,et_pass;
+    Button btn_login;
+    TextView tv_signup;
+    
+    //For FragmentSignUp
+    LinearLayout layout_signup;
+    EditText et_regFname,et_regLname,et_regUsernum,et_regPass;
+    Spinner spn_regPosition;
+    Button btn_cancel,btn_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        db_data = new DB_Data(this);
-        
-        ll_log=(LinearLayout)findViewById(R.id.ll_log);
-        ll_welcome=(LinearLayout)findViewById(R.id.ll_welcome);
-        ll_cashlog=(LinearLayout)findViewById(R.id.ll_cashlog);
-        ll_cashsignup=(LinearLayout)findViewById(R.id.ll_cashsignup);
-        btn_adminlogin= (Button)findViewById(R.id.btn_adminlogin);
-        btn_admin=(Button)findViewById(R.id.btn_admin);
-        btn_cash=(Button)findViewById(R.id.btn_cash);
-        btn_cashlogin=(Button)findViewById(R.id.btn_cashlogin);
-        btn_cashregcancel=(Button)findViewById(R.id.btn_cashreg_cancel);
-        btn_cashreg=(Button)findViewById(R.id.btn_cashreg);
-        txt_signup=(TextView)findViewById(R.id.txt_signup);
-        txt_adminpass=(EditText)findViewById(R.id.txt_adminpass);
-        txt_cashname=(EditText)findViewById(R.id.txt_cashname);
-        txt_cashpass=(EditText)findViewById(R.id.txt_cashpass);
-        txt_empfname=(EditText)findViewById(R.id.txt_empfname);
-        txt_emplname=(EditText)findViewById(R.id.txt_emplname);
-        txt_empid=(EditText)findViewById(R.id.txt_empid);
-        txt_emppass=(EditText)findViewById(R.id.txt_emppass);
-        spn_staff_pos=(Spinner)findViewById(R.id.spn_staffpos);
+        setContentView(R.layout.activity_login);
+        init();
 
-        ll_welcome.setVisibility(View.VISIBLE);
-        btn_admin.setOnClickListener(new View.OnClickListener() {
+        //For ActivityLogin
+        tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ll_welcome.setVisibility(View.GONE);
-                ll_log.setVisibility(View.VISIBLE);
+                layout_signup.setVisibility(View.VISIBLE);
             }
         });
-        btn_cash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ll_welcome.setVisibility(View.GONE);
-                ll_cashlog.setVisibility(View.VISIBLE);
-            }
-        });
-        txt_signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ll_cashsignup.setVisibility(View.VISIBLE);
-                ll_cashlog.setVisibility(View.GONE);
-            }
-        });
-        btn_cashregcancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ll_cashsignup.setVisibility(View.GONE);
-                ll_cashlog.setVisibility(View.VISIBLE);
-            }
-        });
-//                String vpass = txt_adminpass.getText().toString().trim();
-//                //db_data.addStudent("Mary","Parker",vpass);
-//                int result= db_data.adminLogin(vpass);
-//                if(result > 0){
-//                    txt_adminpass.setText("");
-//                    Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
-//                    startActivity(myIntent);
-//                    Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
-//                }
-
-                    Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
-                    startActivity(myIntent);
-                    Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
-        // TODO: 5/30/2017 Log in for both admin and staff
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String muser = txt_user.getText().toString();
-                String mpass = txt_pass.getText().toString();
-                if(chk_admin.isChecked){
+                String muser = et_usernum.getText().toString();
+                String mpass = et_pass.getText().toString();
+                if(chk_admin.isChecked()){
                     int result=db_data.adminLogin(muser,mpass);
                     if(result > 0){
-                        txt_user.setText("");
-                        txt_pass.setText("");
+                        et_usernum.setText("");
+                        et_pass.setText("");
                         Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
                         startActivity(myIntent);
                         Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
-                        txt_pass.setText("");
+                        et_pass.setText("");
                     }
                 }
                 else{
                     int result=db_data.cashierLogin(muser,mpass);
                     if(result > 0){
+                        et_usernum.setText("");
+                        et_pass.setText("");
                         Intent myIntent = new Intent(MainActivity.this,Cashier.class);
                         startActivity(myIntent);
                         Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
-                        txt_pass.setText("");
+                        et_pass.setText("");
                     }
                 }
             }
         });
-        btn_cashreg.setOnClickListener(new View.OnClickListener() {
+
+        //For SignUp
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cfname = txt_empfname.getText().toString().trim();
-                String clname = txt_emplname.getText().toString().trim();
-                String cnum = txt_empid.getText().toString().trim();
-                String cpass = txt_emppass.getText().toString().trim();
-                String pos = spn_staff_pos.getSelectedItem().toString();
+                layout_signup.setVisibility(View.GONE);
+                et_regFname.setText("");
+                et_regLname.setText("");
+                et_regUsernum.setText("");
+                et_regPass.setText("");
+                spn_regPosition.setSelection(0);
+                et_usernum.setText("");
+                et_pass.setText("");
+            }
+        });
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mfname = et_regFname.getText().toString().trim();
+                String mlname = et_regLname.getText().toString().trim();
+                String mnum = et_regUsernum.getText().toString().trim();
+                String mpass = et_regPass.getText().toString().trim();
+                String mpos = spn_regPosition.getSelectedItem().toString();
                 try {
-                    db_data.addCashier(cfname,clname,cnum,cpass,pos);
+                    db_data.addCashier(mfname,mlname,mnum,mpass,mpos);
+                    et_regFname.setText("");
+                    et_regLname.setText("");
+                    et_regUsernum.setText("");
+                    et_regPass.setText("");
+                    spn_regPosition.setSelection(0);
                     Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
@@ -145,38 +117,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void onBackPressed(){
-        txt_adminpass.setText("");
-        txt_cashpass.setText("");
-        txt_cashname.setText("");
 
-        ll_log.setVisibility(View.GONE);
-        ll_welcome.setVisibility(View.VISIBLE);
-        ll_cashlog.setVisibility(View.GONE);
-        ll_cashsignup.setVisibility(View.GONE);
+    //Initialization
+    private void init() {
+        //Database
+        db_data = new DB_Data(this);
+        
+        //For LogIn
+        btn_login=(Button)findViewById(R.id.btn_login);
+        et_usernum=(EditText)findViewById(R.id.et_usernum);
+        et_pass=(EditText)findViewById(R.id.et_pass);
+        tv_signup=(TextView)findViewById(R.id.tv_signup);
+        
+        //For SignUp
+        layout_signup=(LinearLayout)findViewById(R.id.ll_signup);
+        btn_cancel=(Button)findViewById(R.id.btn_cancel);
+        btn_register=(Button)findViewById(R.id.btn_signup);
+        
+        //For Register
+        et_regFname=(EditText)findViewById(R.id.et_regFname);
+        et_regLname=(EditText)findViewById(R.id.et_regLname);
+        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
+        et_regPass=(EditText)findViewById(R.id.et_regPass);
+        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);        
     }
-    public static class FirstFragment extends Fragment {
+    //BackButton Holder
+    public void onBackPressed(){
+
+    }
+    //Fragments
+    public static class FragmentSignUp extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_login, container, false);
-        }
-    }
-    public static class SecondFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_cashier_login, container, false);
-        }
-    }
-    public static class ThirdFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_cashier_register, container, false);
-        }
-    }
-    public static class FourthFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_welcome, container, false);
+            return inflater.inflate(R.layout.fragment_signup, container, false);
         }
     }
 }

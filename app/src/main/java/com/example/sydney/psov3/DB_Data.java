@@ -55,9 +55,9 @@ public class DB_Data extends SQLiteOpenHelper {
     }
     private static String[] FROM_ADMIN = {PASSWORD_ADMIN};
 
-    public int adminLogin(String user,String pass) {
+    public int adminLogin(String usernum,String Pass) {
         String WHERE_ADMIN = "Username =? and Password = ?";
-        String[] WHERE_ARGS_ADMIN = new String[]{user,pass};
+        String[] WHERE_ARGS_ADMIN = new String[]{usernum,Pass};
         try {
             int i;
             Cursor curse = dbr.query(TABLE_NAME_ADMIN,FROM_ADMIN,WHERE_ADMIN,WHERE_ARGS_ADMIN,null,null,null);
@@ -71,13 +71,13 @@ public class DB_Data extends SQLiteOpenHelper {
         }
         return 0;
     }
-    public void addCashier(String LName,String FName,String EmpId, String pass, String Pos){
+    public void addCashier(String LName,String FName,String UserNum, String Pass, String Pos){
         cv.clear();
         cv.put(FIRSTNAME_CASHIER, FName);
         cv.put(LASTNAME_CASHIER, LName);
-        cv.put(NUMBER_CASHIER, EmpId);
+        cv.put(NUMBER_CASHIER, UserNum);
         cv.put(POSITION_CASHIER, Pos);
-        cv.put(PASSWORD_CASHIER, pass);
+        cv.put(PASSWORD_CASHIER, Pass);
         dbw.insertOrThrow(TABLE_NAME_CASHIER, null, cv);
         
     }
@@ -161,14 +161,14 @@ public class DB_Data extends SQLiteOpenHelper {
         
         return res_staff;
     }
-    public void updateStaff(String LName,String FName,String EmpId, String pass, String Pos){
+    public void updateStaff(String LName,String FName,String UserNum, String Pass, String Pos){
         cv.clear();
         String WHERE_CASH = "Cashiernum = ?";
-        String[] WHERE_ARGS_CASH = new String[]{EmpId};
+        String[] WHERE_ARGS_CASH = new String[]{UserNum};
         cv.put(FIRSTNAME_CASHIER, FName);
         cv.put(LASTNAME_CASHIER, LName);
         cv.put(POSITION_CASHIER, Pos);
-        cv.put(PASSWORD_CASHIER, pass);
+        cv.put(PASSWORD_CASHIER, Pass);
         dbw.update(TABLE_NAME_CASHIER, cv, WHERE_CASH,WHERE_ARGS_CASH);
         
     }
