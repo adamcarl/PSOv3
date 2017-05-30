@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="edittext_login" type="fraction">100%</item>
+    <item name="edittext_login_land" type="fraction">80%</item>
+</resources>

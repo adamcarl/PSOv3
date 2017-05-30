@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    //Mark's custom colors
+    <color name="myColorBackgroundOrange">#f44336</color>
+    <color name="myColorBackgroundWhite">#f1f1f1</color>
+    <color name="myColorLoginEditText">#f47857</color>
+    <color name="myColorLoginButton">#ff9c00</color>
+    <color name="myColorDontHaveAccount">#feab97</color>
+    <color name="myColorWhite">#ffffff</color>
+    <color name="myColorIconLock">#ffce9c</color>
+    <color name="myColorIconAdminPriveleges">#ffe1b1</color>
+    <color name="myColorActionBar">#e9291a</color>
+    <color name="myColorEditTextDialog">#a8a8a8</color>
+    <color name="myColorDialogBG">#cacaca</color>
+    <color name="myColorStatusBar">#da2214</color>
+
 </resources>
