@@ -13,8 +13,7 @@ public interface Constants extends BaseColumns {
 
     String TABLE_NAME_CASHIER = "tbl_cashier"; //Table name = tbl_cashier
     String NUMBER_CASHIER = "Cashiernum"; //Field name = Cashiernum
-    String FIRSTNAME_CASHIER = "Firstname"; //Field name = Firstname
-    String LASTNAME_CASHIER = "Lastname"; //Field name = Lastname
+    String NAME_CASHIER = "Name"; //Field name = Name
     String POSITION_CASHIER = "Position"; //Field name = Position
     String PASSWORD_CASHIER = "Password"; //Field name = Password
 

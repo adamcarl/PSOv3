@@ -30,7 +30,7 @@ public class DB_Data extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase arg0) {
         // TODO Auto-generated method stub
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL, "+FIRSTNAME_CASHIER+" TEXT NOT NULL, "+LASTNAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUM_INVOICE+" INTEGER NOT NULL, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL );");
@@ -71,10 +71,9 @@ public class DB_Data extends SQLiteOpenHelper {
         }
         return 0;
     }
-    public void addCashier(String LName,String FName,String UserNum, String Pass, String Pos){
+    public void addCashier(String Name,String UserNum, String Pass, String Pos){
         cv.clear();
-        cv.put(FIRSTNAME_CASHIER, FName);
-        cv.put(LASTNAME_CASHIER, LName);
+        cv.put(NAME_CASHIER, Name);
         cv.put(NUMBER_CASHIER, UserNum);
         cv.put(POSITION_CASHIER, Pos);
         cv.put(PASSWORD_CASHIER, Pass);
@@ -146,7 +145,7 @@ public class DB_Data extends SQLiteOpenHelper {
         
         return cashnum;
     }
-    private static String[] ALL = {NUMBER_CASHIER,LASTNAME_CASHIER,FIRSTNAME_CASHIER,POSITION_CASHIER,PASSWORD_CASHIER};
+    private static String[] ALL = {NUMBER_CASHIER,NAME_CASHIER,POSITION_CASHIER,PASSWORD_CASHIER};
     public String[] selectStaff(String cnum) {
         String WHERE_CASH = "Cashiernum = ?";
         String[] WHERE_ARGS_CASH = new String[]{cnum};
@@ -161,12 +160,11 @@ public class DB_Data extends SQLiteOpenHelper {
         
         return res_staff;
     }
-    public void updateStaff(String LName,String FName,String UserNum, String Pass, String Pos){
+    public void updateStaff(String Name,String UserNum, String Pass, String Pos){
         cv.clear();
         String WHERE_CASH = "Cashiernum = ?";
         String[] WHERE_ARGS_CASH = new String[]{UserNum};
-        cv.put(FIRSTNAME_CASHIER, FName);
-        cv.put(LASTNAME_CASHIER, LName);
+        cv.put(NAME_CASHIER, Name);
         cv.put(POSITION_CASHIER, Pos);
         cv.put(PASSWORD_CASHIER, Pass);
         dbw.update(TABLE_NAME_CASHIER, cv, WHERE_CASH,WHERE_ARGS_CASH);

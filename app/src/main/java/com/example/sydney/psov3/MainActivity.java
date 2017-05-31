@@ -1,9 +1,12 @@
 package com.example.sydney.psov3;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     
     //For FragmentSignUp
     LinearLayout layout_signup;
-    EditText et_regFname,et_regLname,et_regUsernum,et_regPass;
+    EditText et_regName,et_regUsernum,et_regPass;
     Spinner spn_regPosition;
     Button btn_cancel,btn_register;
 
@@ -34,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
 
-//        //For ActivityLogin
-//        tv_signup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                layout_signup.setVisibility(View.VISIBLE);
-//            }
-//        });
+        //For ActivityLogin
+        tv_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_signup.setVisibility(View.VISIBLE);
+            }
+        });
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
                         et_pass.setText("");
                         Intent myIntent = new Intent(MainActivity.this,AdminActivity.class);
                         startActivity(myIntent);
-                        Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        Toast.makeText(MainActivity.this, "Incorrect Password!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
                         et_pass.setText("");
                     }
                 }
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         et_pass.setText("");
                         Intent myIntent = new Intent(MainActivity.this,Cashier.class);
                         startActivity(myIntent);
-                        Toast.makeText(MainActivity.this, "Login Successfull!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
@@ -77,42 +80,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        //For SignUp
-//        btn_cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                layout_signup.setVisibility(View.GONE);
-//                et_regFname.setText("");
-//                et_regLname.setText("");
-//                et_regUsernum.setText("");
-//                et_regPass.setText("");
-//                spn_regPosition.setSelection(0);
-//                et_usernum.setText("");
-//                et_pass.setText("");
-//            }
-//        });
-//        btn_register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String mfname = et_regFname.getText().toString().trim();
-//                String mlname = et_regLname.getText().toString().trim();
-//                String mnum = et_regUsernum.getText().toString().trim();
-//                String mpass = et_regPass.getText().toString().trim();
-//                String mpos = spn_regPosition.getSelectedItem().toString();
-//                try {
-//                    db_data.addCashier(mfname,mlname,mnum,mpass,mpos);
-//                    et_regFname.setText("");
-//                    et_regLname.setText("");
-//                    et_regUsernum.setText("");
-//                    et_regPass.setText("");
-//                    spn_regPosition.setSelection(0);
-//                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-//                }
-//                catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        //For SignUp
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_signup.setVisibility(View.GONE);
+                et_regName.setText("");
+                et_regUsernum.setText("");
+                et_regPass.setText("");
+                spn_regPosition.setSelection(0);
+                et_usernum.setText("");
+                et_pass.setText("");
+            }
+        });
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mname = et_regName.getText().toString().trim();
+                String mnum = et_regUsernum.getText().toString().trim();
+                String mpass = et_regPass.getText().toString().trim();
+                String mpos = spn_regPosition.getSelectedItem().toString();
+                try {
+                    db_data.addCashier(mname,mnum,mpass,mpos);
+                    et_regName.setText("");
+                    et_regUsernum.setText("");
+                    et_regPass.setText("");
+                    spn_regPosition.setSelection(0);
+                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     //Initialization
@@ -126,27 +126,26 @@ public class MainActivity extends AppCompatActivity {
         et_pass=(EditText)findViewById(R.id.etPassword);
         tv_signup=(TextView)findViewById(R.id.txtSignup);
         
-//        //For SignUp
-//        layout_signup=(LinearLayout)findViewById(R.id.fragment_signup);
-//        btn_cancel=(Button)findViewById(R.id.btnCancel);
-//        btn_register=(Button)findViewById(R.id.btnSignup);
-//
-//        //For Register
-//        et_regFname=(EditText)findViewById(R.id.et_regFname);
-//        et_regLname=(EditText)findViewById(R.id.et_regLname);
-//        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
-//        et_regPass=(EditText)findViewById(R.id.et_regPass);
-//        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);
+        //For SignUp
+        layout_signup=(LinearLayout)findViewById(R.id.fragment_signup);
+        btn_cancel=(Button)findViewById(R.id.btnCancel);
+        btn_register=(Button)findViewById(R.id.btnSignup);
+
+        //For Register
+        et_regName=(EditText)findViewById(R.id.et_regName);
+        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
+        et_regPass=(EditText)findViewById(R.id.et_regPass);
+        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);
     }
     //BackButton Holder
     public void onBackPressed(){
 
     }
-//    //Fragments
-//    public static class FragmentSignUp extends Fragment {
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//            return inflater.inflate(R.layout.fragment_signup, container, false);
-//        }
-//    }
+    //Fragments
+    public static class FragmentSignUp extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_signup, container, false);
+        }
+    }
 }
