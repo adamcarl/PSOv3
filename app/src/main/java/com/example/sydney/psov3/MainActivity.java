@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
+        getSupportActionBar().hide();
 
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
@@ -124,22 +125,22 @@ public class MainActivity extends AppCompatActivity {
         db_data = new DB_Data(this);
         
         //For LogIn
-        btn_login=(Button)findViewById(R.id.btn_login);
-        et_usernum=(EditText)findViewById(R.id.et_usernum);
-        et_pass=(EditText)findViewById(R.id.et_pass);
-        tv_signup=(TextView)findViewById(R.id.tv_signup);
+        btn_login=(Button)findViewById(R.id.btnLogin);
+        et_usernum=(EditText)findViewById(R.id.etUsernum);
+        et_pass=(EditText)findViewById(R.id.etPassword);
+        tv_signup=(TextView)findViewById(R.id.txtSignup);
         
         //For SignUp
-        layout_signup=(LinearLayout)findViewById(R.id.ll_signup);
-        btn_cancel=(Button)findViewById(R.id.btn_cancel);
-        btn_register=(Button)findViewById(R.id.btn_signup);
-        
-        //For Register
-        et_regFname=(EditText)findViewById(R.id.et_regFname);
-        et_regLname=(EditText)findViewById(R.id.et_regLname);
-        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
-        et_regPass=(EditText)findViewById(R.id.et_regPass);
-        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);        
+//        layout_signup=(LinearLayout)findViewById(R.id.ll_signup);
+//        btn_cancel=(Button)findViewById(R.id.btn_cancel);
+//        btn_register=(Button)findViewById(R.id.btn_signup);
+//
+//        //For Register
+//        et_regFname=(EditText)findViewById(R.id.et_regFname);
+//        et_regLname=(EditText)findViewById(R.id.et_regLname);
+//        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
+//        et_regPass=(EditText)findViewById(R.id.et_regPass);
+//        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);
     }
     //BackButton Holder
     public void onBackPressed(){

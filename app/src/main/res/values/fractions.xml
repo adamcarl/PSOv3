@@ -2,4 +2,5 @@
 <resources>
     <item name="edittext_login" type="fraction">100%</item>
     <item name="edittext_login_land" type="fraction">80%</item>
+    <item name="edittext_signup_land_50perc" type="fraction">49%</item>
 </resources>
