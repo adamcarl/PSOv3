@@ -24,14 +24,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            app:layout_flexBasisPercent="@fraction/edittext_login">
+            app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 app:srcCompat="@drawable/ic_person_black_48px"
                 android:tint="@color/myColorIconLock"
-                app:layout_flexBasisPercent="@fraction/edittext_login"/>
+                app:layout_flexBasisPercent="@fraction/fraction80percent"/>
 
             <android.support.v7.widget.AppCompatEditText
                 android:layout_marginTop="10dp"

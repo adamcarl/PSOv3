@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/myColorBackgroundOrange"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
     android:gravity="center_vertical">
 
     <com.google.android.flexbox.FlexboxLayout
@@ -27,91 +25,116 @@
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 app:srcCompat="@drawable/ic_person_black_48px"
-                android:tint="@color/myColorIconLock"
-                app:layout_flexBasisPercent="@fraction/fraction80percent"/>
+                android:tint="@color/myColorIconLock"/>
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
-                android:id="@+id/etRegFirstname"
+                android:enabled="false"
+                android:maxLines="1"
+                android:layout_marginTop="20dp"
+                android:id="@+id/etSearchNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:hint="First Name"
+                android:hint="Enter User Number"
+                android:textColor="@color/myColorWhite"
                 android:textColorHint="@color/myColorBackgroundOrange"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_edittext_login" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:enabled="false"
+                android:maxLines="1"
+                android:layout_marginTop="10dp"
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:text="Name Placeholder"
+                android:textColor="@color/myColorWhite"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_edittext_login" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:enabled="false"
+                android:maxLines="1"
+                android:layout_marginTop="10dp"
+                android:id="@+id/etNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:text="User Number Placeholder"
+                android:textColor="@color/myColorWhite"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatEditText
+                android:enabled="false"
+                android:maxLines="1"
+                android:inputType="textPassword"
                 android:layout_marginTop="10dp"
-                android:id="@+id/etRegLastname"
+                android:id="@+id/etPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:hint="Last Name"
-                android:textColorHint="@color/myColorBackgroundOrange"
+                android:text="Placeholder"
+                android:textColor="@color/myColorWhite"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
-            <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
-                android:id="@+id/etRegUsernum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="4dp"
-                android:hint="User number"
-                android:textColorHint="@color/myColorBackgroundOrange"
-                android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
-
-            <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
-                android:id="@+id/etRegPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="4dp"
-                android:hint="Password"
-                android:textColorHint="@color/myColorBackgroundOrange"
-                android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatSpinner
                 android:layout_marginTop="10dp"
-                android:id="@+id/spinnerRegPosition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:id="@+id/spinnerUpdPos"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnRegister"
-                    android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:id="@+id/btnUpdate"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="4dp"
-                    android:hint="REGISTER"
-                    android:textColorHint="@color/myColorWhite"
+                    android:textStyle="bold"
+                    android:text="UPDATE"
+                    android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_button_login"/>
 
                 <android.support.v7.widget.AppCompatButton
+                    android:layout_weight=".5"
+                    android:visibility="invisible"
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:elevation="4dp"
+                    android:textStyle="bold"
+                    android:text="SAVE"
+                    android:textColor="@color/myColorWhite"
+                    android:shadowColor="@color/myColorActionBar"
+                    android:background="@drawable/custom_button_login"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:layout_weight=".5"
+                    android:visibility="invisible"
                     android:id="@+id/btnCancel"
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
-                    android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:elevation="4dp"
-                    android:hint="CANCEL"
-                    android:textColorHint="@color/myColorWhite"
+                    android:textStyle="bold"
+                    android:text="CANCEL"
+                    android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_button_login"/>
-
             </LinearLayout>
 
 

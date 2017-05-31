@@ -52,7 +52,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_admin_priveleges);
         db_data = new DB_Data(this);
         lv_admin_prod=(ListView)findViewById(R.id.lv_admin_prod);
         productArrayList = new ArrayList<>();
@@ -221,6 +221,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         });
         listGo();
     }
+
     public static class FirstFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
