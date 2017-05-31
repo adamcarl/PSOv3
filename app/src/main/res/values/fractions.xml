@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="edittext_login" type="fraction">100%</item>
+    //FOR LOGIN FRACTIONS
+    <item name="edittext_login" type="fraction">80%</item>
     <item name="edittext_login_land" type="fraction">80%</item>
     <item name="edittext_signup_land_50perc" type="fraction">49%</item>
+    <item name="edittext_login_xlarge" type="fraction">50%</item>
+
 </resources>

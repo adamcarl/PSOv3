@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
@@ -82,41 +84,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //For SignUp
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layout_signup.setVisibility(View.GONE);
-                et_regFname.setText("");
-                et_regLname.setText("");
-                et_regUsernum.setText("");
-                et_regPass.setText("");
-                spn_regPosition.setSelection(0);
-                et_usernum.setText("");
-                et_pass.setText("");
-            }
-        });
-        btn_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String mfname = et_regFname.getText().toString().trim();
-                String mlname = et_regLname.getText().toString().trim();
-                String mnum = et_regUsernum.getText().toString().trim();
-                String mpass = et_regPass.getText().toString().trim();
-                String mpos = spn_regPosition.getSelectedItem().toString();
-                try {
-                    db_data.addCashier(mfname,mlname,mnum,mpass,mpos);
-                    et_regFname.setText("");
-                    et_regLname.setText("");
-                    et_regUsernum.setText("");
-                    et_regPass.setText("");
-                    spn_regPosition.setSelection(0);
-                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
+//        btn_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                layout_signup.setVisibility(View.GONE);
+//                et_regFname.setText("");
+//                et_regLname.setText("");
+//                et_regUsernum.setText("");
+//                et_regPass.setText("");
+//                spn_regPosition.setSelection(0);
+//                et_usernum.setText("");
+//                et_pass.setText("");
+//            }
+//        });
+//        btn_register.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String mfname = et_regFname.getText().toString().trim();
+//                String mlname = et_regLname.getText().toString().trim();
+//                String mnum = et_regUsernum.getText().toString().trim();
+//                String mpass = et_regPass.getText().toString().trim();
+//                String mpos = spn_regPosition.getSelectedItem().toString();
+//                try {
+//                    db_data.addCashier(mfname,mlname,mnum,mpass,mpos);
+//                    et_regFname.setText("");
+//                    et_regLname.setText("");
+//                    et_regUsernum.setText("");
+//                    et_regPass.setText("");
+//                    spn_regPosition.setSelection(0);
+//                    Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+//                }
+//                catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     //Initialization
