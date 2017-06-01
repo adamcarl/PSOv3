@@ -53,10 +53,10 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_ITEM);
         onCreate(arg0);
     }
-    private static String[] FROM_ADMIN = {PASSWORD_ADMIN};
+    private static String[] FROM_ADMIN = {USERNAME_ADMIN,PASSWORD_ADMIN};
 
     public int adminLogin(String usernum,String Pass) {
-        String WHERE_ADMIN = "Username =? and Password = ?";
+        String WHERE_ADMIN = "Username = ? and Password = ?";
         String[] WHERE_ARGS_ADMIN = new String[]{usernum,Pass};
         try {
             int i;

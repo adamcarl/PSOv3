@@ -8,8 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.DrawableUtils;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
@@ -49,7 +53,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
     Spinner spn_admin_staff_id;
 
     //For Update Staff
-    EditText txt_admin_staff_name,txt_admin_staff_pass;
+    EditText et_admin_staff_name,et_admin_staff_pass, et_admin_staff_search;
     Button btn_staff_update_cancel;
     Spinner spn_admin_staff_pos;
 
@@ -73,14 +77,28 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
     Button btn_admin_prod_cancel,btn_admin_prod_add;
     EditText txt_admin_prod_id,txt_admin_prod_name,txt_admin_prod_desc,txt_admin_prod_price,txt_admin_prod_quan;
 
+    //FOR MANAGE JOURNAL
+    Button btn_journal;
 
+    //FOR MANAGE DUMMY A
+    Button btn_dummyA;
+
+    //FOR MANAGE DUMMY B
+    Button btn_dummyB;
+
+
+    //TO SUPPORT VECTOR DRAWABLES
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_admin_priveleges);
         init();
-        
+        hardcodedSetVectorDrawable();
+
         loadSpinnerData();
         spn_admin_staff_id.setOnItemSelectedListener(this);
 
@@ -107,7 +125,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         btn_admin_staff_update.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                db_data.updateStaff(txt_admin_staff_name.getText().toString(),spn_admin_staff_id.getSelectedItem().toString(),txt_admin_staff_pass.getText().toString(),spn_admin_staff_pos.getSelectedItem().toString());
+                db_data.updateStaff(et_admin_staff_name.getText().toString(),spn_admin_staff_id.getSelectedItem().toString(),et_admin_staff_pass.getText().toString(),spn_admin_staff_pos.getSelectedItem().toString());
             }
         });
         btn_admin_prod_add.setOnClickListener(new View.OnClickListener(){
@@ -170,55 +188,79 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         });
         listGo();
     }
+    private void hardcodedSetVectorDrawable() {
+        Drawable drawableTop1 = AppCompatResources.getDrawable(AdminActivity.this, R.drawable.ic_people_black_48px);
+        Drawable drawableTop2 = AppCompatResources.getDrawable(AdminActivity.this, R.drawable.ic_shopping_cart_black_48px);
+        Drawable drawableTop3 = AppCompatResources.getDrawable(AdminActivity.this, R.drawable.ic_assignment_black_48px);
+        Drawable drawableTop4 = AppCompatResources.getDrawable(AdminActivity.this, R.drawable.ic_assignment_black_48px);
+        Drawable drawableTop5 = AppCompatResources.getDrawable(AdminActivity.this, R.drawable.ic_assignment_black_48px);
+//        btn_adminManStaff.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop1, null, null);
+//        btn_adminManProd.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop2, null, null);
+//        btn_adminManStaff.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop3, null, null);
+//        btn_adminManStaff.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop4, null, null);
+//        btn_adminManStaff.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop5, null, null);
+        btn_adminManStaff.setCompoundDrawables(null, drawableTop1, null, null);
+        btn_adminManProd.setCompoundDrawables(null, drawableTop2, null, null);
+        btn_journal.setCompoundDrawables(null, drawableTop3, null, null);
+        btn_dummyA.setCompoundDrawables(null, drawableTop4, null, null);
+        btn_dummyB.setCompoundDrawables(null, drawableTop5, null, null);
+    }
 
     private void init(){
         //For Database
         db_data=new DB_Data(this);
 
-        //For Admin Privilege
-        btn_adminManStaff=(Button)findViewById(R.id.btn_adminManStaff);
-        btn_adminManProd=(Button)findViewById(R.id.btn_adminManProd);
+        //For Admin Privilege Screen
+        btn_adminManStaff=(Button)findViewById(R.id.btnStaff);
+        btn_adminManProd=(Button)findViewById(R.id.btnProduct);
+        btn_journal=(Button)findViewById(R.id.btnJournal);
+        btn_dummyA=(Button)findViewById(R.id.btnD);
+        btn_dummyB=(Button)findViewById(R.id.btnDu);
 
         //For Manage Staff
-        ll_admin_staff=(LinearLayout)findViewById(R.id.ll_admin_staff);
-        btn_admin_staff_update=(Button)findViewById(R.id.btn_admin_staff_update);
-        spn_admin_staff_id=(Spinner)findViewById(R.id.spn_admin_staff_id);
+        ll_admin_staff=(LinearLayout)findViewById(R.id.llAdminPriveleges);
+        btn_admin_staff_update=(Button)findViewById(R.id.btnUpdate);
+        spn_admin_staff_id=(Spinner)findViewById(R.id.spinnerUpdPos);
 
         //For Update Staff
-        txt_admin_staff_name=(EditText)findViewById(R.id.txt_admin_staff_name);
-        txt_admin_staff_pass=(EditText)findViewById(R.id.txt_admin_staff_pass);
-        btn_staff_update_cancel=(Button)findViewById(R.id.btn_staff_update_cancel);
-        spn_admin_staff_pos=(Spinner)findViewById(R.id.spn_admin_staff_pos);
+
+        et_admin_staff_name=(EditText)findViewById(R.id.etName);
+        et_admin_staff_pass=(EditText)findViewById(R.id.etPass);
+        btn_staff_update_cancel=(Button)findViewById(R.id.btnCancel);
+        spn_admin_staff_pos=(Spinner)findViewById(R.id.spinnerUpdPos);
 
         //For Manage Product
-        ll_admin_product=(LinearLayout)findViewById(R.id.ll_admin_prod);
-        lv_admin_prod=(ListView)findViewById(R.id.lv_admin_prod);
-        btn_admin_prod_import=(Button)findViewById(R.id.btn_admin_prod_import);
-        btn_prod=(Button)findViewById(R.id.btn_prod);
-        search_prod=(android.support.v7.widget.SearchView) findViewById(R.id.search_prod);
-        adapterProd=new AdapterProd(this,R.layout.single_row,productArrayList);
-        lv_admin_prod.setAdapter(adapterProd);
-        productArrayList=new ArrayList<>();
+//        ll_admin_product=(LinearLayout)findViewById(R.id.ll_admin_prod);
+//        lv_admin_prod=(ListView)findViewById(R.id.lv_admin_prod);
+//        btn_admin_prod_import=(Button)findViewById(R.id.btn_admin_prod_import);
+        btn_prod=(Button)findViewById(R.id.btnProduct);
+//        search_prod=(android.support.v7.widget.SearchView) findViewById(R.id.search_prod);
+//        adapterProd=new AdapterProd(this,R.layout.single_row,productArrayList);
+//        lv_admin_prod.setAdapter(adapterProd);
+//        productArrayList=new ArrayList<>();
+//
+//        //For Edit Product
+//        ll_admin_product_edit=(LinearLayout)findViewById(R.id.ll_admin_prod_edit);
+//        txt_admin_prod_id_edit=(EditText)findViewById(R.id.txt_admin_prod_id_edit);
+//        txt_admin_prod_name_edit=(EditText)findViewById(R.id.txt_admin_prod_name_edit);
+//        txt_admin_prod_desc_edit=(EditText)findViewById(R.id.txt_admin_prod_desc_edit);
+//        txt_admin_prod_price_edit=(EditText)findViewById(R.id.txt_admin_prod_price_edit);
+//        txt_admin_prod_quan_edit=(EditText)findViewById(R.id.txt_admin_prod_quan_edit);
+//        btn_admin_prod_cancel_edit=(Button)findViewById(R.id.btn_admin_prod_cancel_edit);
+//        btn_admin_prod_edit=(Button)findViewById(R.id.btn_admin_prod_add_edit);
+//
+//        //For Add Product
+//        ll_admin_product_add=(LinearLayout)findViewById(R.id.ll_admin_prod_add);
+//        btn_admin_prod_cancel=(Button)findViewById(R.id.btn_admin_prod_cancel);
+//        btn_admin_prod_add=(Button)findViewById(R.id.btn_admin_prod_add);
+//        txt_admin_prod_id=(EditText)findViewById(R.id.txt_admin_prod_id);
+//        txt_admin_prod_name=(EditText)findViewById(R.id.txt_admin_prod_name);
+//        txt_admin_prod_desc=(EditText)findViewById(R.id.txt_admin_prod_desc);
+//        txt_admin_prod_price=(EditText)findViewById(R.id.txt_admin_prod_price);
+//        txt_admin_prod_quan=(EditText)findViewById(R.id.txt_admin_prod_quan);
 
-        //For Edit Product
-        ll_admin_product_edit=(LinearLayout)findViewById(R.id.ll_admin_prod_edit);
-        txt_admin_prod_id_edit=(EditText)findViewById(R.id.txt_admin_prod_id_edit);
-        txt_admin_prod_name_edit=(EditText)findViewById(R.id.txt_admin_prod_name_edit);
-        txt_admin_prod_desc_edit=(EditText)findViewById(R.id.txt_admin_prod_desc_edit);
-        txt_admin_prod_price_edit=(EditText)findViewById(R.id.txt_admin_prod_price_edit);
-        txt_admin_prod_quan_edit=(EditText)findViewById(R.id.txt_admin_prod_quan_edit);
-        btn_admin_prod_cancel_edit=(Button)findViewById(R.id.btn_admin_prod_cancel_edit);
-        btn_admin_prod_edit=(Button)findViewById(R.id.btn_admin_prod_add_edit);
 
-        //For Add Product
-        ll_admin_product_add=(LinearLayout)findViewById(R.id.ll_admin_prod_add);
-        btn_admin_prod_cancel=(Button)findViewById(R.id.btn_admin_prod_cancel);
-        btn_admin_prod_add=(Button)findViewById(R.id.btn_admin_prod_add);
-        txt_admin_prod_id=(EditText)findViewById(R.id.txt_admin_prod_id);
-        txt_admin_prod_name=(EditText)findViewById(R.id.txt_admin_prod_name);
-        txt_admin_prod_desc=(EditText)findViewById(R.id.txt_admin_prod_desc);
-        txt_admin_prod_price=(EditText)findViewById(R.id.txt_admin_prod_price);
-        txt_admin_prod_quan=(EditText)findViewById(R.id.txt_admin_prod_quan);
+
 
     }
 
@@ -245,13 +287,13 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         // TODO Auto-generated method stub
     }
     private void loadStaff(){
-        String cnum=spn_admin_staff_id.getSelectedItem().toString();
+        String cnum = et_admin_staff_search.getText().toString();
         String[] staff111;
         staff111=db_data.selectStaff(cnum);
 //        String[] array=staff111.toArray(new String [staff111.size()]);
         //staff111=db_data.selectStaff(cnum);
-        txt_admin_staff_name.setText(staff111[0]);
-        txt_admin_staff_pass.setText(staff111[2]);
+        et_admin_staff_name.setText(staff111[0]);
+        et_admin_staff_pass.setText(staff111[2]);
         if(staff111[3].equals("Manager")){
             spn_admin_staff_pos.setSelection(0);
         }
@@ -379,25 +421,25 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
     public static class StaffFragment extends Fragment{
         @Override
         public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
-            return inflater.inflate(R.layout.fragment_admin_staff,container,false);
+            return inflater.inflate(R.layout.fragment_signup,container,false);
         }
     }
-    public static class ProductFragment extends Fragment{
-        @Override
-        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
-            return inflater.inflate(R.layout.fragment_admin_product,container,false);
-        }
-    }
-    public static class ProductAddFragment extends Fragment{
-        @Override
-        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
-            return inflater.inflate(R.layout.fragment_prod_add,container,false);
-        }
-    }
-    public static class ProductEditFragment extends Fragment{
-        @Override
-        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
-            return inflater.inflate(R.layout.fragment_prod_edit,container,false);
-        }
-    }
+//    public static class ProductFragment extends Fragment{
+//        @Override
+//        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
+//            return inflater.inflate(R.layout.fragment_admin_product,container,false);
+//        }
+//    }
+//    public static class ProductAddFragment extends Fragment{
+//        @Override
+//        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
+//            return inflater.inflate(R.layout.fragment_prod_add,container,false);
+//        }
+//    }
+//    public static class ProductEditFragment extends Fragment{
+//        @Override
+//        public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
+//            return inflater.inflate(R.layout.fragment_prod_edit,container,false);
+//        }
+//    }
 }
