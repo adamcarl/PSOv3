@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
+
 public class MainActivity extends AppCompatActivity {
     //For Database
     DB_Data db_data;
@@ -24,24 +26,55 @@ public class MainActivity extends AppCompatActivity {
     EditText et_usernum,et_pass;
     Button btn_login;
     TextView tv_signup;
-    
+
     //For FragmentSignUp
     LinearLayout layout_signup;
     EditText et_regName,et_regUsernum,et_regPass;
     Spinner spn_regPosition;
     Button btn_cancel,btn_register;
+    FlexboxLayout flexbakamo,flexNiSignUp;
 
+    //For Orientation
+    int o=0;
+    int or;
+    String ori,orie;
+    CharSequence userText;
+
+    protected void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        userText = o+"";
+        savedInstanceState.putCharSequence(ori,userText);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        userText = savedInstanceState.getCharSequence(ori);
+        or= Integer.parseInt(userText.toString());
+        if(or==0){
+            layout_signup.setVisibility(View.GONE);
+            flexbakamo.setVisibility(View.VISIBLE);
+            o=or;
+
+        }else if(or==1) {
+            flexbakamo.setVisibility(View.GONE);
+            layout_signup.setVisibility(View.VISIBLE);
+            o=or;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
-
+        getSupportActionBar().hide();
+        //db_data.addAdmin("1","1");
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flexbakamo.setVisibility(View.GONE);
                 layout_signup.setVisibility(View.VISIBLE);
+                o=1;
             }
         });
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -85,12 +118,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layout_signup.setVisibility(View.GONE);
+                flexbakamo.setVisibility(View.VISIBLE);
                 et_regName.setText("");
                 et_regUsernum.setText("");
                 et_regPass.setText("");
                 spn_regPosition.setSelection(0);
                 et_usernum.setText("");
                 et_pass.setText("");
+                o=0;
             }
         });
         btn_register.setOnClickListener(new View.OnClickListener() {
@@ -125,17 +160,21 @@ public class MainActivity extends AppCompatActivity {
         et_usernum=(EditText)findViewById(R.id.etUsernum);
         et_pass=(EditText)findViewById(R.id.etPassword);
         tv_signup=(TextView)findViewById(R.id.txtSignup);
-        
+        chk_admin=(CheckBox)findViewById(R.id.spinnerAdmin);
+
         //For SignUp
-        layout_signup=(LinearLayout)findViewById(R.id.fragment_signup);
-        btn_cancel=(Button)findViewById(R.id.btnCancel);
-        btn_register=(Button)findViewById(R.id.btnSignup);
+        layout_signup=(LinearLayout)findViewById(R.id.ll_signup);
+        btn_cancel=(Button)findViewById(R.id.btnSignupCancel);
+        btn_register=(Button)findViewById(R.id.btnRegister);
 
         //For Register
-        et_regName=(EditText)findViewById(R.id.et_regName);
-        et_regUsernum=(EditText)findViewById(R.id.et_regUsernum);
-        et_regPass=(EditText)findViewById(R.id.et_regPass);
-        spn_regPosition=(Spinner)findViewById(R.id.spn_regPosition);
+        et_regName=(EditText)findViewById(R.id.etRegName);
+        et_regUsernum=(EditText)findViewById(R.id.etRegUsernum);
+        et_regPass=(EditText)findViewById(R.id.etRegPassword);
+        spn_regPosition=(Spinner)findViewById(R.id.spinnerRegPosition);
+
+        flexbakamo = (FlexboxLayout)findViewById(R.id.forecast);
+        flexNiSignUp = (FlexboxLayout)findViewById(R.id.flexNiSignUp);
     }
     //BackButton Holder
     public void onBackPressed(){
