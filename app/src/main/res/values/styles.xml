@@ -5,6 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/myColorActionBar</item>
         <item name="colorPrimaryDark">@color/myColorStatusBar</item>
+        <item name="colorAccent">@color/myColorIconLock</item>
     </style>
 
 </resources>

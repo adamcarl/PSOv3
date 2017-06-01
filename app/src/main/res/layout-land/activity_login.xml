@@ -23,47 +23,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            app:layout_flexBasisPercent="@fraction/edittext_login_land">
+            app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatImageView
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_lock_black_48px"
                 android:tint="@color/myColorIconLock"/>
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="20dp"
+                android:maxLines="1"
+                android:layout_marginTop="5dp"
                 android:id="@+id/etUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:hint="User Number"
+                android:textColor="@color/myColorWhite"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="20dp"
+                android:maxLines="1"
+                android:layout_marginTop="10dp"
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:hint="Password"
+                android:textColor="@color/myColorWhite"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatCheckBox
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/spinnerAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Admin"
-                android:textColor="@color/myColorIconLock"
-                android:textColorHint="@color/myColorBackgroundOrange"
-                android:shadowColor="@color/myColorActionBar"/>
+                android:buttonTint="@color/myColorLoginEditText"
+                android:textColor="@color/myColorIconLock"/>
+
 
             <android.support.v7.widget.AppCompatButton
                 android:layout_marginTop="5dp"
@@ -71,13 +74,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:hint="LOGIN"
-                android:textColorHint="@color/myColorWhite"
+                android:text="LOGIN"
+                android:textColor="@color/myColorWhite"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_button_login"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:id="@+id/txtSignup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
