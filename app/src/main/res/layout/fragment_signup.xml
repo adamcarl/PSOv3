@@ -6,12 +6,13 @@
     android:background="@color/myColorBackgroundOrange"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:id="@+id/ll_signup">
 
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/forecast"
+        android:id="@+id/flexNiSignUp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:alignItems="center"
@@ -35,7 +36,7 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:layout_marginTop="10dp"
-                android:id="@+id/etRegFirstname"
+                android:id="@+id/etRegName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
@@ -101,7 +102,7 @@
                     android:background="@drawable/custom_button_login"/>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnCancel"
+                    android:id="@+id/btnSignupCancel"
                     android:layout_width="0dp"
                     android:layout_weight=".5"
                     android:layout_marginLeft="10dp"

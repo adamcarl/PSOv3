@@ -218,7 +218,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         btn_dummyB=(Button)findViewById(R.id.btnDu);
 
         //For Manage Staff
-        ll_admin_staff=(LinearLayout)findViewById(R.id.llAdminPriveleges);
+//        ll_admin_staff=(LinearLayout)findViewById();
         btn_admin_staff_update=(Button)findViewById(R.id.btnUpdate);
         spn_admin_staff_id=(Spinner)findViewById(R.id.spinnerUpdPos);
 

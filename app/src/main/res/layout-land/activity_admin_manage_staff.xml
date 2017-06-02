@@ -24,6 +24,7 @@
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexNiManageStaff"
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
