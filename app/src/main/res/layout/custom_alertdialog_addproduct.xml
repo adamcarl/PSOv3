@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/myColorDialogBG">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:elevation="2dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etProductName"
+            android:hint="Product Name"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:elevation="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etProductId"
+            android:hint="Product id"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:elevation="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etProductQuantity"
+            android:hint="Product quantity"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:elevation="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etProductPrice"
+            android:hint="Product price"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnSaveAddProduct"
+                android:text="SAVE"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCancelAddProduct"
+                android:text="CANCEL"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>

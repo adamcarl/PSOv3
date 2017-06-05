@@ -3,6 +3,9 @@
     <string name="cashpass">Staff
         password</string>
     <string name="res">Colgate \t \t \t 1 \t \t \t 51.0</string>
+    <string name="logout">Logout</string>
+    <string name="import_product">Import CSC</string>
+    <string name="add_product">Add Product</string>
     <string-array name="cashstaffpos">
         <item>Manager</item>
         <item>Supervisor</item>
