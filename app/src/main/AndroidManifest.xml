@@ -17,19 +17,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".AdminActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
+        <activity
+            android:name=".AdminActivity" android:label="Admin Priveleges">
         </activity>
+
         <activity android:name=".Cashier"></activity>
+
+        <activity android:name=".ManageStaff"
+            android:parentActivityName=".AdminActivity"
+            android:label="Manage Staff"/>
+
+        <activity android:name=".ManageProduct"
+            android:parentActivityName=".AdminActivity"
+            android:label="Manage Product">
+        </activity>
+
+        <activity android:name=".ManageJournal"
+            android:parentActivityName=".AdminActivity"
+            android:label="Manage Journal"/>
+
+        <activity android:name=".ManageProfile"
+            android:parentActivityName=".AdminActivity"
+            android:label="My Profile"/>
+
+
+
     </application>
 
 </manifest>

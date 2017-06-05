@@ -11,7 +11,7 @@
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/forecast"
+        android:id="@+id/flexNiLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:alignItems="center"
@@ -40,7 +40,7 @@
                 android:id="@+id/etUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="User Number"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -53,7 +53,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="Password"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -70,11 +70,12 @@
                 android:buttonTint="@color/myColorLoginEditText" />
 
             <android.support.v7.widget.AppCompatButton
+                android:textStyle="bold"
                 android:layout_marginTop="5dp"
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:text="LOGIN"
                 android:textColor="@color/myColorWhite"
                 android:shadowColor="@color/myColorActionBar"
@@ -107,6 +108,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_signup"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="4dip">
+
+        <fragment
+            android:id="@+id/fragment_signup"
+            android:name="com.example.sydney.psov3.MainActivity$FragmentSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </LinearLayout>

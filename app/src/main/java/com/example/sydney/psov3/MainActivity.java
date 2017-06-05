@@ -32,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
     EditText et_regName,et_regUsernum,et_regPass;
     Spinner spn_regPosition;
     Button btn_cancel,btn_register;
-    FlexboxLayout flexbakamo,flexNiSignUp;
+    FlexboxLayout flexNiLogin,flexNiSignUp;
 
     //For Orientation
     int o=0;
     int or;
-    String ori,orie;
+    String ori;
     CharSequence userText;
 
     protected void onSaveInstanceState(Bundle savedInstanceState){
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
         or= Integer.parseInt(userText.toString());
         if(or==0){
             layout_signup.setVisibility(View.GONE);
-            flexbakamo.setVisibility(View.VISIBLE);
+            flexNiLogin.setVisibility(View.VISIBLE);
             o=or;
         }else if(or==1) {
-            flexbakamo.setVisibility(View.GONE);
+            flexNiLogin.setVisibility(View.GONE);
             layout_signup.setVisibility(View.VISIBLE);
             o=or;
         }
@@ -64,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        //db_data.addAdmin("1","1");
+        db_data.addAdmin("1","1");
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flexbakamo.setVisibility(View.GONE);
+                flexNiLogin.setVisibility(View.GONE);
                 layout_signup.setVisibility(View.VISIBLE);
                 o=1;
             }
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layout_signup.setVisibility(View.GONE);
-                flexbakamo.setVisibility(View.VISIBLE);
+                flexNiLogin.setVisibility(View.VISIBLE);
                 et_regName.setText("");
                 et_regUsernum.setText("");
                 et_regPass.setText("");
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         et_regPass=(EditText)findViewById(R.id.etRegPassword);
         spn_regPosition=(Spinner)findViewById(R.id.spinnerRegPosition);
 
-        flexbakamo = (FlexboxLayout)findViewById(R.id.forecast);
+        flexNiLogin = (FlexboxLayout)findViewById(R.id.flexNiLogin);
         flexNiSignUp = (FlexboxLayout)findViewById(R.id.flexNiSignUp);
     }
     //BackButton Holder
