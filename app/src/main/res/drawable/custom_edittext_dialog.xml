@@ -2,17 +2,17 @@
 
     <item android:state_enabled="true">
         <shape>
-            <corners android:radius="200dp"/>
+            <corners android:radius="4dp"/>
             <padding android:left="15dp" android:top="15dp" android:right="15dp"  android:bottom="15dp"/>
-            <solid android:color="@color/myColorLoginEditText"/>
+            <solid android:color="@color/myColorEditTextDialog"/>
         </shape>
     </item>
 
     <item android:state_enabled="false">
         <shape>
-            <corners android:radius="200dp"/>
+            <corners android:radius="4dp"/>
             <padding android:left="15dp" android:top="15dp" android:right="15dp"  android:bottom="15dp"/>
-            <solid android:color="@color/myColorLoginEditTextDisabled"/>
+            <solid android:color="@color/myColorEditTextDialogDisable"/>
         </shape>
     </item>
 </selector>

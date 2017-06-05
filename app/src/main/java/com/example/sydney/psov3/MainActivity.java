@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     //For Orientation
     int o=0;
     int or;
-    String ori,orie;
+    String ori;
     CharSequence userText;
 
     protected void onSaveInstanceState(Bundle savedInstanceState)
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        //db_data.addAdmin("1","1");
+        db_data.addAdmin("1","1");
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         et_regPass=(EditText)findViewById(R.id.etRegPassword);
         spn_regPosition=(Spinner)findViewById(R.id.spinnerRegPosition);
 
-        flexNiLogin = (FlexboxLayout)findViewById(R.id.forecast);
+        flexNiLogin = (FlexboxLayout)findViewById(R.id.flexNiLogin);
         flexNiSignUp = (FlexboxLayout)findViewById(R.id.flexNiSignUp);
     }
     //BackButton Holder

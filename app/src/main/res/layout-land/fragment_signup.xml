@@ -39,7 +39,7 @@
                 android:id="@+id/etRegName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="First Name"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -50,7 +50,7 @@
                 android:id="@+id/etRegLastname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="Last Name"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -61,7 +61,7 @@
                 android:id="@+id/etRegUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="User number"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -72,7 +72,7 @@
                 android:id="@+id/etRegPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:hint="Password"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
@@ -91,6 +91,7 @@
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatButton
+                    android:textStyle="bold"
                     android:id="@+id/btnRegister"
                     android:layout_width="0dp"
                     android:layout_weight=".5"
@@ -102,6 +103,7 @@
                     android:background="@drawable/custom_button_login"/>
 
                 <android.support.v7.widget.AppCompatButton
+                    android:textStyle="bold"
                     android:id="@+id/btnSignupCancel"
                     android:layout_width="0dp"
                     android:layout_weight=".5"
