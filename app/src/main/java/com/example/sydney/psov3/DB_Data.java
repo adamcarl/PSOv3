@@ -19,20 +19,20 @@ public class DB_Data extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
-    SQLiteDatabase dbr = this.getReadableDatabase();
-    SQLiteDatabase dbw = this.getWritableDatabase();
-    ContentValues cv = new ContentValues();
+    private SQLiteDatabase dbr = this.getReadableDatabase();
+    private SQLiteDatabase dbw = this.getWritableDatabase();
+    private ContentValues cv = new ContentValues();
 
-    DB_Data(Context ctx){
+    public DB_Data(Context ctx){
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
     public void onCreate(SQLiteDatabase arg0) {
         // TODO Auto-generated method stub
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUM_INVOICE+" INTEGER NOT NULL, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL UNIQUE, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL UNIQUE, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL UNIQUE, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,firstname TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
@@ -180,7 +180,6 @@ public class DB_Data extends SQLiteOpenHelper {
         cv.put(PRICE_PRODUCT, P_price);
         cv.put(QUAN_PRODUCT, P_quan);
         dbw.update(TABLE_NAME_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        
     }
     public void updateAdmin(String A_name,String A_pass){
         cv.clear();
@@ -189,6 +188,22 @@ public class DB_Data extends SQLiteOpenHelper {
         cv.put(USERNAME_ADMIN,A_name);
         cv.put(PASSWORD_ADMIN,A_pass);
         dbw.update(TABLE_NAME_ADMIN, cv, WHERE,WHERE_ARGS);
-        
+    }
+    //For Invoice
+    public String[] searchProduct(String id){
+        String[] mALL = {ID_PRODUCT,NAME_PRODUCT,DESC_PRODUCT,PRICE_PRODUCT,QUAN_PRODUCT,VATABLE};
+        String mWHERE = ID_PRODUCT+" = ?";
+        String[] mWHERE_ARGS = new String[]{id};
+        String[] itemResult = new String[5];
+        Cursor cursor = dbr.query(TABLE_NAME_PRODUCT, mALL, mWHERE, mWHERE_ARGS, null, null, null);
+        cursor.moveToFirst();
+        itemResult[0]=cursor.getString(1);
+        itemResult[1]=cursor.getString(2);
+        itemResult[2]=cursor.getString(3);
+        itemResult[3]=cursor.getString(4);
+        itemResult[4]=cursor.getString(5);
+        itemResult[5]=cursor.getString(6);
+        cursor.close();
+        return itemResult;
     }
 }

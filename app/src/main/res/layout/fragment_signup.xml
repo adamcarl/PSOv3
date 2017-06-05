@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/myColorBackgroundOrange"
-    android:paddingRight="16dp"
-    android:paddingLeft="16dp"
-    android:gravity="center_vertical">
-
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/forecast"
+        android:id="@+id/flexNiSignUp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:alignItems="center"
@@ -35,25 +26,15 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:layout_marginTop="10dp"
-                android:id="@+id/etRegFirstname"
+                android:id="@+id/etRegName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:hint="First Name"
+                android:hint="Full Name"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
-            <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
-                android:id="@+id/etRegLastname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="4dp"
-                android:hint="Last Name"
-                android:textColorHint="@color/myColorBackgroundOrange"
-                android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatEditText
                 android:layout_marginTop="10dp"
@@ -81,6 +62,7 @@
                 android:layout_marginTop="10dp"
                 android:id="@+id/spinnerRegPosition"
                 android:layout_width="match_parent"
+                android:entries="@array/cashstaffpos"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
@@ -101,7 +83,7 @@
                     android:background="@drawable/custom_button_login"/>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnCancel"
+                    android:id="@+id/btnSignupCancel"
                     android:layout_width="0dp"
                     android:layout_weight=".5"
                     android:layout_marginLeft="10dp"
@@ -120,5 +102,3 @@
 
 
     </com.google.android.flexbox.FlexboxLayout>
-
-</LinearLayout>

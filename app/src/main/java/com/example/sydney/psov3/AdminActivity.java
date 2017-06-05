@@ -78,14 +78,13 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
     EditText txt_admin_prod_id,txt_admin_prod_name,txt_admin_prod_desc,txt_admin_prod_price,txt_admin_prod_quan;
 
     //FOR MANAGE JOURNAL
-    Button btn_journal;
+    Button btn_adminManJournal;
 
     //FOR MANAGE DUMMY A
-    Button btn_dummyA;
+    Button btn_adminManDummyA;
 
     //FOR MANAGE DUMMY B
-    Button btn_dummyB;
-
+    Button btn_adminManDummyB;
 
     //TO SUPPORT VECTOR DRAWABLES
     static {
@@ -201,9 +200,9 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
 //        btn_adminManStaff.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop5, null, null);
         btn_adminManStaff.setCompoundDrawables(null, drawableTop1, null, null);
         btn_adminManProd.setCompoundDrawables(null, drawableTop2, null, null);
-        btn_journal.setCompoundDrawables(null, drawableTop3, null, null);
-        btn_dummyA.setCompoundDrawables(null, drawableTop4, null, null);
-        btn_dummyB.setCompoundDrawables(null, drawableTop5, null, null);
+        btn_adminManJournal.setCompoundDrawables(null, drawableTop3, null, null);
+        btn_adminManDummyA.setCompoundDrawables(null, drawableTop4, null, null);
+        btn_adminManDummyB.setCompoundDrawables(null, drawableTop5, null, null);
     }
 
     private void init(){
@@ -213,9 +212,9 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
         //For Admin Privilege Screen
         btn_adminManStaff=(Button)findViewById(R.id.btnStaff);
         btn_adminManProd=(Button)findViewById(R.id.btnProduct);
-        btn_journal=(Button)findViewById(R.id.btnJournal);
-        btn_dummyA=(Button)findViewById(R.id.btnD);
-        btn_dummyB=(Button)findViewById(R.id.btnDu);
+        btn_adminManJournal=(Button)findViewById(R.id.btnJournal);
+        btn_adminManDummyA=(Button)findViewById(R.id.btnD);
+        btn_adminManDummyB=(Button)findViewById(R.id.btnDu);
 
         //For Manage Staff
         ll_admin_staff=(LinearLayout)findViewById(R.id.llAdminPriveleges);
@@ -233,7 +232,6 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
 //        ll_admin_product=(LinearLayout)findViewById(R.id.ll_admin_prod);
 //        lv_admin_prod=(ListView)findViewById(R.id.lv_admin_prod);
 //        btn_admin_prod_import=(Button)findViewById(R.id.btn_admin_prod_import);
-        btn_prod=(Button)findViewById(R.id.btnProduct);
 //        search_prod=(android.support.v7.widget.SearchView) findViewById(R.id.search_prod);
 //        adapterProd=new AdapterProd(this,R.layout.single_row,productArrayList);
 //        lv_admin_prod.setAdapter(adapterProd);
@@ -258,10 +256,7 @@ public class AdminActivity extends AppCompatActivity implements OnItemSelectedLi
 //        txt_admin_prod_desc=(EditText)findViewById(R.id.txt_admin_prod_desc);
 //        txt_admin_prod_price=(EditText)findViewById(R.id.txt_admin_prod_price);
 //        txt_admin_prod_quan=(EditText)findViewById(R.id.txt_admin_prod_quan);
-
-
-
-
+        
     }
 
     private void loadSpinnerData(){

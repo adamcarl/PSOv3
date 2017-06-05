@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/myColorBackgroundOrange"
+    android:animateLayoutChanges="true"
     android:paddingRight="16dp"
     android:paddingLeft="16dp">
 
@@ -91,5 +92,21 @@
         </LinearLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
+    <LinearLayout
+        android:id="@+id/ll_signup"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="4dip">
+
+        <fragment
+            android:id="@+id/fragment_signup"
+            android:name="com.example.sydney.psov3.MainActivity$FragmentSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </LinearLayout>

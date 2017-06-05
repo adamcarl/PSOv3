@@ -108,10 +108,8 @@ public class Cashier extends AppCompatActivity {
         lbl_total=(TextView)findViewById(R.id.lbl_total);
         lbl_due=(TextView)findViewById(R.id.lbl_due);
         lbl_dc=(TextView)findViewById(R.id.lbl_dc);
-        btn_print=(Button)findViewById(R.id.btn_print);
         rg_discount = (RadioGroup)findViewById(R.id.rg_discount);
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
-        lv_order = (ListView)findViewById(R.id.lv_cashier_order);
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
 //        lv_order.setAdapter(adapterOrder);

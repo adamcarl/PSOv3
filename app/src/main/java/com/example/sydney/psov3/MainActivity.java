@@ -40,21 +40,18 @@ public class MainActivity extends AppCompatActivity {
     String ori,orie;
     CharSequence userText;
 
-    protected void onSaveInstanceState(Bundle savedInstanceState)
-    {
+    protected void onSaveInstanceState(Bundle savedInstanceState){
         userText = o+"";
         savedInstanceState.putCharSequence(ori,userText);
         super.onSaveInstanceState(savedInstanceState);
     }
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
         userText = savedInstanceState.getCharSequence(ori);
         or= Integer.parseInt(userText.toString());
         if(or==0){
             layout_signup.setVisibility(View.GONE);
             flexbakamo.setVisibility(View.VISIBLE);
             o=or;
-
         }else if(or==1) {
             flexbakamo.setVisibility(View.GONE);
             layout_signup.setVisibility(View.VISIBLE);
@@ -149,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     //Initialization
     private void init() {
         //Database
@@ -178,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
     }
     //BackButton Holder
     public void onBackPressed(){
-
     }
     //Fragments
     public static class FragmentSignUp extends Fragment {
