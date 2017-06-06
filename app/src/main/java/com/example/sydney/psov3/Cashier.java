@@ -81,6 +81,8 @@ public class Cashier extends AppCompatActivity {
     ArrayList<Order> orderArrayList;
     AdapterOrder adapterOrder=null;
     public View myView;
+    String currentTime;
+    String dateformatted;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,9 +162,9 @@ public class Cashier extends AppCompatActivity {
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
-        String dateformatted = dateformat.format(c.getTime());
+        dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-        String currentTime = sdf.format(new Date());
+        currentTime = sdf.format(new Date());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
         items = new ArrayList<String>();
         items.add("Quantity");
@@ -418,7 +420,7 @@ public class Cashier extends AppCompatActivity {
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType+"";
             try {
-//                db_data.addInvoice();
+//                db_data.addInvoice(userNum, rDisc, customerCash, );
                 products.add("--------------------------------------");
                 products.add("Invoice Number " + temp2 + "");
                 products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");

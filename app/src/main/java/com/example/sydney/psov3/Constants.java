@@ -26,12 +26,11 @@ public interface Constants extends BaseColumns {
     String VATABLE = "Vatable";
 
     String TABLE_NAME_INVOICE = "tbl_invoice";
-    String NUM_INVOICE = "InNum";
     String CASHIER_INVOICE = "InCash";
     String CUSTOMER_DISCOUNT_INVOICE = "InDisc";
     String CUSTOMER_CASH_INVOICE = "InCustomer";
     String DATE_INVOICE = "InDate";
-    String TOTAL_INVOICE = "InTotal";
+    String TIME_INVOICE = "InTime";
 
     String TABLE_NAME_ITEM = "tbl_item";
     String INVOICE_NUM_ITEM = "ItemIn";
@@ -40,8 +39,11 @@ public interface Constants extends BaseColumns {
     String STATUS_ITEM = "ItemStatus";
 
     String TABLE_NAME_XREPORT = "tbl_xreport";
-    String XREPORT_TRANSACTION_NUMBER = "transactionNumber";
+    String XREPORT_TRANSACTION_NUMBER = "xreportNumber";
+    String XREPORT_DATE= "xreportDate";
+    String XREPORT_TIME= "xreportTime";
+    String XREPORT_CASHIER = "xreportCashier";
 
-    String TABLE_NAME_TRANS = "tbl_trans";
-    String NUMBER_TRANSACTION = "TransNum";
+    String TABLE_NAME_TRANSACTION = "tbl_trans";
+    String TRANSACTION_TYPE = "TransType";
 }
