@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -22,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sydney.psov3.adapter.AdapterOrder;
-import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 
 import java.text.NumberFormat;
@@ -46,11 +45,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
+    int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar,userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
     Cursor cursor;
@@ -58,7 +56,7 @@ public class Cashier extends AppCompatActivity {
     ContentValues cv;
     ArrayList<String> items;
     EditText txt_search,txt_cash;
-    String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2,firstname;
+    String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
     ArrayList<Integer>itemQuantityList = new ArrayList<Integer>();
     ArrayList<Double>itemPriceList = new ArrayList<Double>();
     ArrayList<String>itemNameList = new ArrayList<String>();
@@ -95,6 +93,10 @@ public class Cashier extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
+
+        Intent intent = getIntent();
+        userNum = intent.getExtras().getInt("CashNum");
+
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
         rb_ddisc = (RadioButton)findViewById(R.id.rb_ddisc);
@@ -150,7 +152,7 @@ public class Cashier extends AppCompatActivity {
         String dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         String currentTime = sdf.format(new Date());
-        dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+firstname+"') ");
+        dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
         items = new ArrayList<String>();
         items.add("Quantity");
         items.add("Name");
@@ -368,6 +370,7 @@ public class Cashier extends AppCompatActivity {
                                     temp.add(itempricetotalCol2);//example I don't know the order you ne
                                     t2Rows.add(temp);
                                     // TODO: 5/29/2017 addItem
+
                                     totalPrice = subTotal;
                                     due = totalPrice;
                                     due2 = NumberFormat.getCurrencyInstance().format((subTotal/1));
@@ -389,7 +392,7 @@ public class Cashier extends AppCompatActivity {
         }
     }
     public void print(View view) {
-        bill.main();
+//        bill.main();
 
 //        String deym = txt_cash.getText().toString().replaceAll("[P,]", "");
 //        String rDisc = discType+"";
@@ -479,7 +482,7 @@ public class Cashier extends AppCompatActivity {
     }
     public void cashierLogOut(View view){
         cancelna();
-        dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+firstname+"') ");
+        dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
         finish();
     }
     private void sleep(int ms) {

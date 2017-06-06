@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        db_data.addAdmin("1","1");
+        //db_data.addAdmin("1","1");
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
                     if(result > 0){
                         et_usernum.setText("");
                         et_pass.setText("");
-                        Intent myIntent = new Intent(MainActivity.this,Cashier.class);
-                        startActivity(myIntent);
+                        Intent myIntent = new Intent(getApplicationContext(),MainActivity.class);
+
+                        //PASS INDEX
+                        myIntent.putExtra("CashNum",muser);
                         Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(myIntent);
                     }
                     else{
                         Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();

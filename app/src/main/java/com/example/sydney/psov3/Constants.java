@@ -36,4 +36,7 @@ public interface Constants extends BaseColumns {
     String INVOICE_NUM_ITEM = "ItemIn";
     String PRODUCT_ID_ITEM = "ItemProd";
     String PRODUCT_QUANTITY_ITEM = "ItemQuan";
+
+    String TABLE_NAME_TRANS = "tbl_trans";
+    String NUMBER_TRANSACTION = "TransNum";
 }
