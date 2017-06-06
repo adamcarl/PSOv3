@@ -40,21 +40,18 @@ public class MainActivity extends AppCompatActivity {
     String ori;
     CharSequence userText;
 
-    protected void onSaveInstanceState(Bundle savedInstanceState)
-    {
+    protected void onSaveInstanceState(Bundle savedInstanceState){
         userText = o+"";
         savedInstanceState.putCharSequence(ori,userText);
         super.onSaveInstanceState(savedInstanceState);
     }
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
         userText = savedInstanceState.getCharSequence(ori);
         or= Integer.parseInt(userText.toString());
         if(or==0){
             layout_signup.setVisibility(View.GONE);
             flexNiLogin.setVisibility(View.VISIBLE);
             o=or;
-
         }else if(or==1) {
             flexNiLogin.setVisibility(View.GONE);
             layout_signup.setVisibility(View.VISIBLE);
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        db_data.addAdmin("1","1");
+        //db_data.addAdmin("1","1");
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
                     if(result > 0){
                         et_usernum.setText("");
                         et_pass.setText("");
-                        Intent myIntent = new Intent(MainActivity.this,Cashier.class);
-                        startActivity(myIntent);
+                        Intent myIntent = new Intent(getApplicationContext(),MainActivity.class);
+
+                        //PASS INDEX
+                        myIntent.putExtra("CashNum",muser);
                         Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(myIntent);
                     }
                     else{
                         Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     //Initialization
     private void init() {
         //Database
@@ -178,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
     }
     //BackButton Holder
     public void onBackPressed(){
-
     }
     //Fragments
     public static class FragmentSignUp extends Fragment {

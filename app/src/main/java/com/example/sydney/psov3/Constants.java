@@ -42,4 +42,6 @@ public interface Constants extends BaseColumns {
     String TABLE_NAME_XREPORT = "tbl_xreport";
     String XREPORT_TRANSACTION_NUMBER = "transactionNumber";
 
+    String TABLE_NAME_TRANS = "tbl_trans";
+    String NUMBER_TRANSACTION = "TransNum";
 }

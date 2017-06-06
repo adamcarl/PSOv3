@@ -106,7 +106,7 @@ public class ManageStaff extends AppCompatActivity {
         spinner_Position = (Spinner) findViewById(R.id.spinnerUpdPos);
     }
 
-    //MENU//MENU//MENU//MENU//MENU
+    //MENU
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
