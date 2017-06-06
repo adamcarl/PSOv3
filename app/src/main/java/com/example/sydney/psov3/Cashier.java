@@ -418,7 +418,7 @@ public class Cashier extends AppCompatActivity {
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType+"";
             try {
-                db_data.addInvoice();
+//                db_data.addInvoice();
                 products.add("--------------------------------------");
                 products.add("Invoice Number " + temp2 + "");
                 products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
