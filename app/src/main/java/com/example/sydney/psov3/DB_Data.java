@@ -32,12 +32,15 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUM_INVOICE+" INTEGER NOT NULL, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ CASHIER_INVOICE + " INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL" + STATUS_ITEM +" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,firstname TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
+
+        //Mark's execSQL
+        arg0.execSQL("CREATE TABLE " + TABLE_NAME_XREPORT + "(" + XREPORT_TRANSACTION_NUMBER + " INTEGER NOT NULL");
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -113,21 +116,21 @@ public class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_NAME_ADMIN, null, cv);
         
     }
-    public  void addInvoice(String inNum, String inCash, String inDisc, String inDate, String inTotal){
+    public  void addInvoice( String inCash, String inDisc,String inCustomer, String inDate){
         cv.clear();
-        cv.put(NUM_INVOICE,inNum);
         cv.put(CASHIER_INVOICE,inCash);
         cv.put(CUSTOMER_DISCOUNT_INVOICE,inDisc);
+        cv.put(CUSTOMER_CASH_INVOICE,inCustomer);
         cv.put(DATE_INVOICE,inDate);
-        cv.put(TOTAL_INVOICE,inTotal);
         dbw.insertOrThrow(TABLE_NAME_INVOICE, null, cv);
         
     }
-    public  void addItem(String itemIn, String itemProd, String itemQuan){
+    public  void addItem(String itemIn, String itemProd, String itemQuan, String itemStatus){
         cv.clear();
         cv.put(INVOICE_NUM_ITEM,itemIn);
         cv.put(PRODUCT_ID_ITEM,itemProd);
         cv.put(PRODUCT_QUANTITY_ITEM,itemQuan);
+        cv.put(STATUS_ITEM,itemStatus);
         dbw.insertOrThrow(TABLE_NAME_ITEM, null, cv);
         
     }

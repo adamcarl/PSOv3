@@ -64,7 +64,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String>itemNameList = new ArrayList<String>();
     List<String>row2t;
     ArrayList<Integer>itemCodeList  = new ArrayList<Integer>();
-//    SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
+    SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<String>();
     SQLiteDatabase dbReader;
@@ -79,6 +79,9 @@ public class Cashier extends AppCompatActivity {
     ListView lv_order;
     ArrayList<Order> orderArrayList;
     AdapterOrder adapterOrder=null;
+    public View myView;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
@@ -87,8 +90,8 @@ public class Cashier extends AppCompatActivity {
         //bill.main();
         cv = new ContentValues();
         try {
-//            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-//            HdxUtil.SetPrinterPower(1);
+            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
+            HdxUtil.SetPrinterPower(1);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -114,6 +117,11 @@ public class Cashier extends AppCompatActivity {
         lv_order = (ListView)findViewById(R.id.lv_cashier_order);
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
+
+        //Mark's Initialization
+        Button btnReportX = (Button) findViewById(R.id.btn_cashier_x_report);
+
+
 //        lv_order.setAdapter(adapterOrder);
         Toolbar mtoolBar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mtoolBar);
@@ -299,6 +307,16 @@ public class Cashier extends AppCompatActivity {
             }
         });
         //tab_host.setOnTabChangedListener(new AnimatedTabHostListener(this,tab_host));
+
+
+        //Mark's onClickListeners for Button reports
+        btnReportX.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
     public void priceClick(View view){
         txt_cash.requestFocus();
@@ -393,40 +411,38 @@ public class Cashier extends AppCompatActivity {
     public void print(View view) {
         bill.main();
 
-//        String deym = txt_cash.getText().toString().replaceAll("[P,]", "");
-//        String rDisc = discType+"";
-//        try {
-//                        db_data.addReceipt(rDisc,deym,null,null);
-//                        products.add("--------------------------------------");
-//                        products.add("Invoice Number " + temp2 + "");
-//                        products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
-//                        products.add("Vatable" + "" + "\t\t" + vattable2);
-//                        products.add("Vat" + "" + "\t\t " + vat2);
-//                        products.add("Total" + " \t\t" + subTotal + "");
-//                        products.add("Cash\t\t" + txt_cash.getText().toString() + "");
-//                        if (due>0 || due==0) {
-//                            products.add("Due" + " \t\t" + due + "");
-//                        }
-//                        else {
-//                            String change = due.toString().replace("-", "");
-//                            products.add("Change" + " \t\t" + change + "");
-//                        }
-//                        mSerialPrinter.sydneyDotMatrix7by7();
-//                        mSerialPrinter.printString(products);
-//                        mSerialPrinter.walkPaper(50);
-//                        mSerialPrinter.sendLineFeed();
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    } finally {
-//                        itemQuantityList.clear();
-//                        itemPriceList.clear();
-//                        itemNameList.clear();
-//                        itemCodeList.clear();
-//                    }
-//                    cancelna();
-////                }
-//            });
+        String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
+        String rDisc = discType+"";
+            try {
+                db_data.addInvoice();
+                products.add("--------------------------------------");
+                products.add("Invoice Number " + temp2 + "");
+                products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
+                products.add("Vatable" + "" + "\t\t" + vattable2);
+                products.add("Vat" + "" + "\t\t " + vat2);
+                products.add("Total" + " \t\t" + subTotal + "");
+                products.add("Cash\t\t" + txt_cash.getText().toString() + "");
+                if (due>0 || due==0) {
+                    products.add("Due" + " \t\t" + due + "");
+                }
+                else {
+                    String change = due.toString().replace("-", "");
+                    products.add("Change" + " \t\t" + change + "");
+                }
+                mSerialPrinter.sydneyDotMatrix7by7();
+                mSerialPrinter.printString(products);
+                mSerialPrinter.walkPaper(50);
+                mSerialPrinter.sendLineFeed();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                itemQuantityList.clear();
+                itemPriceList.clear();
+                itemNameList.clear();
+                itemCodeList.clear();
+            }
+            cancelna();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -544,6 +560,7 @@ public class Cashier extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
+
         }
     }
 }

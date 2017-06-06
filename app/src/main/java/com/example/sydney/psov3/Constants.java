@@ -29,6 +29,7 @@ public interface Constants extends BaseColumns {
     String NUM_INVOICE = "InNum";
     String CASHIER_INVOICE = "InCash";
     String CUSTOMER_DISCOUNT_INVOICE = "InDisc";
+    String CUSTOMER_CASH_INVOICE = "InCustomer";
     String DATE_INVOICE = "InDate";
     String TOTAL_INVOICE = "InTotal";
 
@@ -36,5 +37,9 @@ public interface Constants extends BaseColumns {
     String INVOICE_NUM_ITEM = "ItemIn";
     String PRODUCT_ID_ITEM = "ItemProd";
     String PRODUCT_QUANTITY_ITEM = "ItemQuan";
+    String STATUS_ITEM = "ItemStatus";
+
+    String TABLE_NAME_XREPORT = "tbl_xreport";
+    String XREPORT_TRANSACTION_NUMBER = "transactionNumber";
 
 }
