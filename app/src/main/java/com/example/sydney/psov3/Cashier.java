@@ -168,20 +168,14 @@ public class Cashier extends AppCompatActivity {
         products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
         GridView grid = (GridView) findViewById(R.id.grd_sell);
         grid.setAdapter(new ArrayAdapter<String>(this,R.layout.single_cell,items));
-
         txt_cash.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void afterTextChanged(Editable arg0) {
             }
-
             @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             private String current = "";
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().equals(current)) {

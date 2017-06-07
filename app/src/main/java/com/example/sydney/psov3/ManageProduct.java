@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -32,6 +34,8 @@ public class ManageProduct extends AppCompatActivity {
     AlertDialog alertDialog = null;
     DB_Data db_data = new DB_Data(this);
     public static final int requestcode = 1;
+
+    ArrayList<Product> productList = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,30 +80,44 @@ public class ManageProduct extends AppCompatActivity {
         final EditText productQuantity =(EditText) findViewById(R.id.etProductQuantity);
         final Button btnSave = (Button) findViewById(R.id.btnSaveAddProduct);
         final Button btnCancel = (Button) findViewById(R.id.btnCancelAddProduct);
-//        btnSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String mProductName = productName.getText().toString();
-//                String mProductPrice = productPrice.getText().toString();
-//                String mProductQuantity = productQuantity.getText().toString();
-//                String mProductId = productId.getText().toString();
-//
-//                if(mProductName.isEmpty() || mProductId.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
-//                    Toast.makeText(ManageProduct.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    Toast.makeText(ManageProduct.this, "Success! Must implement method for adding!", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        });
-//
-//        btnCancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                alertDialog.dismiss();
-//            }
-//        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mProductName = productName.getText().toString();
+                String mProductPrice = productPrice.getText().toString();
+                    double convertedProductPrice = Double.parseDouble(mProductPrice);
+                String mProductQuantity = productQuantity.getText().toString();
+                    int convertedProductQuantity = Integer.parseInt(mProductQuantity);
+                String mProductId = productId.getText().toString();
+
+                if(mProductName.isEmpty() || mProductId.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
+                    Toast.makeText(ManageProduct.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    try {
+                        Product product = new Product();
+                        product.setP_id(mProductId);
+                        product.setP_name(mProductId);
+                        product.setP_price(convertedProductPrice);
+                        product.setP_quan(convertedProductQuantity);
+
+                        db_data.addProduct(product);
+                        Toast.makeText(ManageProduct.this, "Success!", Toast.LENGTH_SHORT).show();
+                    } catch (NullPointerException npe){
+                        npe.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
     @Override
     protected void onDestroy() {

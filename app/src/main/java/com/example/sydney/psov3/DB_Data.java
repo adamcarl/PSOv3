@@ -31,7 +31,7 @@ public class DB_Data extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL UNIQUE, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL UNIQUE, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL UNIQUE, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL UNIQUE, "+NAME_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
@@ -80,13 +80,13 @@ public class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_NAME_CASHIER, null, cv);
         
     }
-    public void addProduct(String ProdId,String ProdName,String ProdDesc, String ProdPrice, String ProdQuan){
+    public void addProduct(Product product){
         cv.clear();
-        cv.put(ID_PRODUCT, ProdId);
-        cv.put(NAME_PRODUCT, ProdName);
-        cv.put(DESC_PRODUCT, ProdDesc);
-        cv.put(PRICE_PRODUCT, ProdPrice);
-        cv.put(QUAN_PRODUCT, ProdQuan);
+        cv.put(ID_PRODUCT, product.getP_id());
+        cv.put(NAME_PRODUCT, product.getP_name());
+//        cv.put(DESC_PRODUCT, ProdDesc);
+        cv.put(PRICE_PRODUCT, product.getP_price());
+        cv.put(QUAN_PRODUCT, product.getP_quan());
         dbw.insertOrThrow(TABLE_NAME_PRODUCT, null, cv);
         
     }
