@@ -83,7 +83,7 @@
                 app:drawableTopCompat="@drawable/ic_person_black_48px"
                 android:layout_margin="5dp"
                 android:drawableTint="@color/myColorIconAdminPriveleges"
-                android:id="@+id/btnDu"
+                android:id="@+id/btnProfile"
                 android:layout_width="115dp"
                 android:layout_height="115dp"
                 android:elevation="4dp"

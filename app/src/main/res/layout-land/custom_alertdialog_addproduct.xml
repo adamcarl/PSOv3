@@ -20,7 +20,7 @@
             app:justifyContent="space_around">
 
             <android.support.v7.widget.AppCompatEditText
-                app:layout_flexBasisPercent="@fraction/fraction48percent"
+                app:layout_flexBasisPercent="@fraction/fraction98percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
                 android:elevation="2dp"
@@ -35,11 +35,25 @@
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
                 android:elevation="2dp"
+                android:layout_marginTop="10dp"
+
                 android:background="@drawable/custom_edittext_dialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etProductId"
                 android:hint="Product id"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                app:layout_flexBasisPercent="@fraction/fraction48percent"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textColorHint="@color/myColorDialogBG"
+                android:elevation="2dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_edittext_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etProductDes"
+                android:hint="Product Description"/>
 
             <android.support.v7.widget.AppCompatEditText
                 app:layout_flexBasisPercent="@fraction/fraction48percent"

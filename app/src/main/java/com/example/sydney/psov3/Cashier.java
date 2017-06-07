@@ -13,7 +13,6 @@ import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -51,7 +50,8 @@ import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    ArrayList<String> itemCode123, itemQuan123;
+    ArrayList<String> itemCode123 = new ArrayList<String>();
+    ArrayList<String> itemQuan123 = new ArrayList<String>();
     int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar,userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
@@ -329,13 +329,13 @@ public class Cashier extends AppCompatActivity {
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
-            String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, QUAN_PRODUCT, PRICE_PRODUCT};
+            itemCode123.add(Integer.toString(code));
+            String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, DESC_PRODUCT ,QUAN_PRODUCT, PRICE_PRODUCT};
             cursor = dbReader.query(TABLE_NAME_PRODUCT, WHERE, ID_PRODUCT + " LIKE ?", itemcode, null, null, null);
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows >= 1) {
                 // 1. Instantiate an AlertDialog.Builder with its constructor
-                itemCode123.add(code+"");
                 final EditText dialogText = new EditText(this);
                 dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
