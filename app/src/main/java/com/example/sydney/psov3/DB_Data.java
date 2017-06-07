@@ -43,7 +43,7 @@ public class DB_Data extends SQLiteOpenHelper {
                                                 + XREPORT_DATE + " INTEGER NOT NULL,"
                                                 + XREPORT_TIME + " INTEGER NOT NULL,"
                                                 + XREPORT_CASHIER + " INTEGER NOT NULL);");
-        arg0.execSQL("CREATE TABLE "+ TABLE_NAME_TRANSACTION+ "("+ _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT" + TRANSACTION_TYPE + " TEXT NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_NAME_TRANSACTION+ "("+ _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TRANSACTION_TYPE + " TEXT NOT NULL);");
 
     }
     @Override

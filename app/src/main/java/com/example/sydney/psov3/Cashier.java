@@ -51,6 +51,7 @@ import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
+    ArrayList<String> itemCode123, itemQuan123;
     int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar,userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
@@ -128,8 +129,6 @@ public class Cashier extends AppCompatActivity {
 
 
 //        lv_order.setAdapter(adapterOrder);
-        Toolbar mtoolBar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(mtoolBar);
         //Tab 1
 
         TabHost.TabSpec spec = tab_host.newTabSpec("Invoice");
@@ -336,6 +335,7 @@ public class Cashier extends AppCompatActivity {
             int rows = cursor.getCount();
             if (rows >= 1) {
                 // 1. Instantiate an AlertDialog.Builder with its constructor
+                itemCode123.add(code+"");
                 final EditText dialogText = new EditText(this);
                 dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -351,6 +351,7 @@ public class Cashier extends AppCompatActivity {
                                 }
                                 else {
                                     dialogVar = Integer.parseInt(dialogText.getText().toString());
+                                    itemQuan123.add(dialogText.getText().toString());
                                     itempriceCol = cursor.getDouble(cursor.getColumnIndex(PRICE_PRODUCT));
                                     itemnameCol = cursor.getString(cursor.getColumnIndex(NAME_PRODUCT));
                                     itemcodeCol = cursor.getInt(cursor.getColumnIndex(ID_PRODUCT));
@@ -392,7 +393,6 @@ public class Cashier extends AppCompatActivity {
                                     temp.add(dialogVar+"");//example I don't know the order you need
                                     temp.add(itempricetotalCol2);//example I don't know the order you ne
                                     t2Rows.add(temp);
-                                    // TODO: 5/29/2017 addItem
 
                                     totalPrice = subTotal;
                                     due = totalPrice;
@@ -416,11 +416,24 @@ public class Cashier extends AppCompatActivity {
     }
     public void print(View view) {
 //        bill.main();
-
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
+        dateformatted = dateformat.format(c.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
-        String rDisc = discType+"";
-            try {
-//                db_data.addInvoice(userNum, rDisc, customerCash, );
+        String rDisc = discType + "";
+        try {
+            String[] itemID = new String[]{_ID};
+            db_data.addInvoice(userNum+"", rDisc, customerCash, dateformatted, currentTime);
+            Cursor cursor =   dbReader.query(TABLE_NAME_INVOICE, itemID, null, null, null, null, null);
+            cursor.moveToLast();
+            String abc=cursor.getString(0);
+            String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
+            String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
+            for (int a = 0; a < t2Rows.size(); a++){
+                db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
+            }
                 products.add("--------------------------------------");
                 products.add("Invoice Number " + temp2 + "");
                 products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
