@@ -13,7 +13,6 @@ import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -51,7 +50,8 @@ import hdx.HdxUtil;
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    ArrayList<String> itemCode123, itemQuan123;
+    ArrayList<String> itemCode123 = new ArrayList<String>();
+    ArrayList<String> itemQuan123 = new ArrayList<String>();
     int temp = 0,temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar,userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
@@ -84,6 +84,8 @@ public class Cashier extends AppCompatActivity {
     public View myView;
     String currentTime;
     String dateformatted;
+
+    String transType;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -323,13 +325,13 @@ public class Cashier extends AppCompatActivity {
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
-            String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, QUAN_PRODUCT, PRICE_PRODUCT};
+            itemCode123.add(Integer.toString(code));
+            String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, DESC_PRODUCT ,QUAN_PRODUCT, PRICE_PRODUCT};
             cursor = dbReader.query(TABLE_NAME_PRODUCT, WHERE, ID_PRODUCT + " LIKE ?", itemcode, null, null, null);
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows >= 1) {
                 // 1. Instantiate an AlertDialog.Builder with its constructor
-                itemCode123.add(code+"");
                 final EditText dialogText = new EditText(this);
                 dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -410,6 +412,7 @@ public class Cashier extends AppCompatActivity {
     }
     public void print(View view) {
 //        bill.main();
+        transType = "invoice";
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
         dateformatted = dateformat.format(c.getTime());
@@ -425,6 +428,8 @@ public class Cashier extends AppCompatActivity {
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
+            cursor.close();
+            db_data.addTransaction(transType);
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
             }
@@ -477,6 +482,7 @@ public class Cashier extends AppCompatActivity {
     public void onBackPressed(){
     tab_host.setCurrentTab(0);
     }
+
     public void cancelna(){
         txt_cash.setText("P0.00");
         txt_search.setText("");
@@ -507,6 +513,9 @@ public class Cashier extends AppCompatActivity {
         due2="";
         subTotal=0.00;
         subTotal2="";
+
+        transType ="cancel";
+        db_data.addTransaction(transType);
     }
     public void cashierLogOut(View view){
         cancelna();
@@ -521,7 +530,7 @@ public class Cashier extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private class SerialDataHandler extends Handler {
+    private static class SerialDataHandler extends Handler {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SerialPortOperaion.SERIAL_RECEIVED_DATA_MSG:

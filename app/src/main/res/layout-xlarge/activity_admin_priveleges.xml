@@ -55,7 +55,6 @@
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
             app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
-
             android:id="@+id/btnJournal"
             android:layout_width="115dp"
             android:layout_height="115dp"
@@ -71,7 +70,6 @@
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
             app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
-
             android:id="@+id/btnD"
             android:layout_width="115dp"
             android:layout_height="115dp"

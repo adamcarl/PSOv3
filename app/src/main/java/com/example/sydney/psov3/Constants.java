@@ -47,5 +47,6 @@ public interface Constants extends BaseColumns {
     String TABLE_NAME_TRANSACTION = "tbl_trans";
     String TRANSACTION_TYPE = "TransType";
 
-    String TABLE_NAME_TEMP_TABLE = "tbl_temp";
+    String LOG_TABLE_NAME = "tbl_log";
+    String LOG_FIELD = "logField";
 }

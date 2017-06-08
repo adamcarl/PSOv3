@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -32,14 +30,14 @@ import static com.example.sydney.psov3.Constants.*;
 public class ManageProduct extends AppCompatActivity {
     AlertDialog.Builder builder = null;
     AlertDialog alertDialog = null;
-    DB_Data db_data = new DB_Data(this);
+    DB_Data db_data;
     public static final int requestcode = 1;
-
-    ArrayList<Product> productList = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_manage_product);
+        db_data = new DB_Data(this);
+
         //CREATE DIALOG
         createMyDialog();
         alertDialog = builder.create();
@@ -74,39 +72,30 @@ public class ManageProduct extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_addproduct, null);
         builder.setView(alertLayout);
-        final EditText productName =(EditText) findViewById(R.id.etProductName);
-        final EditText productId =(EditText) findViewById(R.id.etProductId);
-        final EditText productPrice =(EditText) findViewById(R.id.etProductPrice);
-        final EditText productQuantity =(EditText) findViewById(R.id.etProductQuantity);
-        final Button btnSave = (Button) findViewById(R.id.btnSaveAddProduct);
-        final Button btnCancel = (Button) findViewById(R.id.btnCancelAddProduct);
+        final EditText productName =(EditText)alertLayout.findViewById(R.id.etProductName);
+        final EditText productId =(EditText) alertLayout.findViewById(R.id.etProductId);
+        final EditText productDes =(EditText) alertLayout.findViewById(R.id.etProductDes);
+        final EditText productQuantity =(EditText) alertLayout.findViewById(R.id.etProductQuantity);
+        final EditText productPrice =(EditText) alertLayout.findViewById(R.id.etProductPrice);
+        final Button btnSave = (Button) alertLayout.findViewById(R.id.btnSaveAddProduct);
+        final Button btnCancel = (Button) alertLayout.findViewById(R.id.btnCancelAddProduct);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String mProductName = productName.getText().toString();
                 String mProductPrice = productPrice.getText().toString();
-                    double convertedProductPrice = Double.parseDouble(mProductPrice);
+                String mProductDes = productDes.getText().toString();
                 String mProductQuantity = productQuantity.getText().toString();
-                    int convertedProductQuantity = Integer.parseInt(mProductQuantity);
                 String mProductId = productId.getText().toString();
 
-                if(mProductName.isEmpty() || mProductId.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
+                if(mProductName.isEmpty() || mProductId.isEmpty() || mProductDes.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
                     Toast.makeText(ManageProduct.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    try {
-                        Product product = new Product();
-                        product.setP_id(mProductId);
-                        product.setP_name(mProductId);
-                        product.setP_price(convertedProductPrice);
-                        product.setP_quan(convertedProductQuantity);
-
-                        db_data.addProduct(product);
-                        Toast.makeText(ManageProduct.this, "Success!", Toast.LENGTH_SHORT).show();
-                    } catch (NullPointerException npe){
-                        npe.printStackTrace();
-                    }
+                    db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
+                    Toast.makeText(ManageProduct.this, "Success! Must implement method for adding!", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
                 }
 
             }
@@ -119,11 +108,11 @@ public class ManageProduct extends AppCompatActivity {
             }
         });
     }
-    @Override
-    protected void onDestroy() {
-        alertDialog.dismiss();
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        alertDialog.dismiss();
+//        super.onDestroy();
+//    }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null)
             return;

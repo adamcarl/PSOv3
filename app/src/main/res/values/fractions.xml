@@ -8,4 +8,5 @@
     <item name="fraction70percent" type="fraction">70%</item>
     <item name="fraction80percent" type="fraction">80%</item>
     <item name="fraction100percent" type="fraction">100%</item>
+    <fraction name="fraction98percent">98%</fraction>
 </resources>
