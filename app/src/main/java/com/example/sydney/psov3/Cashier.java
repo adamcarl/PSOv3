@@ -35,8 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sydney.psov3.adapter.AdapterOrder;
-import com.hdx.lib.serial.SerialParam;
-import com.hdx.lib.serial.SerialPortOperaion;
+//import com.hdx.lib.serial.SerialParam;
+//import com.hdx.lib.serial.SerialPortOperaion;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +45,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import hdx.HdxUtil;
+//import hdx.HdxUtil;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -96,8 +96,8 @@ public class Cashier extends AppCompatActivity {
         //bill.main();
         cv = new ContentValues();
         try {
-            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-            HdxUtil.SetPrinterPower(1);
+//            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
+//            HdxUtil.SetPrinterPower(1);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -332,8 +332,8 @@ public class Cashier extends AppCompatActivity {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
             itemCode123.add(Integer.toString(code));
-            String[] WHERE = {ID_PRODUCT, NAME_PRODUCT, DESC_PRODUCT ,QUAN_PRODUCT, PRICE_PRODUCT};
-            cursor = dbReader.query(TABLE_NAME_PRODUCT, WHERE, ID_PRODUCT + " LIKE ?", itemcode, null, null, null);
+            String[] WHERE = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_PRICE};
+            cursor = dbReader.query(TABLE_PRODUCT, WHERE, COLUMN_PRODUCT_ID + " LIKE ?", itemcode, null, null, null);
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows >= 1) {
@@ -354,9 +354,9 @@ public class Cashier extends AppCompatActivity {
                                 else {
                                     dialogVar = Integer.parseInt(dialogText.getText().toString());
                                     itemQuan123.add(dialogText.getText().toString());
-                                    itempriceCol = cursor.getDouble(cursor.getColumnIndex(PRICE_PRODUCT));
-                                    itemnameCol = cursor.getString(cursor.getColumnIndex(NAME_PRODUCT));
-                                    itemcodeCol = cursor.getInt(cursor.getColumnIndex(ID_PRODUCT));
+                                    itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
+                                    itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
+                                    itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
                                     itemQuantityList.add(dialogVar);
                                     itemPriceList.add(itempriceCol);
                                     itemNameList.add(itemnameCol);
@@ -429,7 +429,7 @@ public class Cashier extends AppCompatActivity {
         try {
             String[] itemID = new String[]{_ID};
             db_data.addInvoice(userNum+"", rDisc, customerCash, dateformatted, currentTime);
-            Cursor cursor =   dbReader.query(TABLE_NAME_INVOICE, itemID, null, null, null, null, null);
+            Cursor cursor =   dbReader.query(TABLE_INVOICE, itemID, null, null, null, null, null);
             cursor.moveToLast();
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
@@ -540,11 +540,11 @@ public class Cashier extends AppCompatActivity {
     private class SerialDataHandler extends Handler {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SerialPortOperaion.SERIAL_RECEIVED_DATA_MSG:
-                    SerialPortOperaion.SerialReadData data = (SerialPortOperaion.SerialReadData)msg.obj;
-                    StringBuilder sb=new StringBuilder();
-                    for(int x=0;x<data.size;x++)
-                        sb.append(String.format("%02x", data.data[x]));
+//                case SerialPortOperaion.SERIAL_RECEIVED_DATA_MSG:
+//                    SerialPortOperaion.SerialReadData data = (SerialPortOperaion.SerialReadData)msg.obj;
+//                    StringBuilder sb=new StringBuilder();
+//                    for(int x=0;x<data.size;x++)
+//                        sb.append(String.format("%02x", data.data[x]));
             }
         }
     }

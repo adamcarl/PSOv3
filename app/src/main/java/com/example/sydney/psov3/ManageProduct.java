@@ -120,7 +120,7 @@ public class ManageProduct extends AppCompatActivity {
             case requestcode:
                 String filepath = data.getData().getPath();
                 SQLiteDatabase db = db_data.getWritableDatabase();
-                String tableName = TABLE_NAME_PRODUCT;
+                String tableName = TABLE_PRODUCT;
                 db.execSQL("delete from " + tableName);
                 try {
                     if (resultCode == RESULT_OK) {
@@ -138,11 +138,11 @@ public class ManageProduct extends AppCompatActivity {
                                 String pDesc = str[2];
                                 String pPrice = str[3];
                                 String pQuan = str[4];
-                                contentValues.put(ID_PRODUCT, pId);
-                                contentValues.put(NAME_PRODUCT, pName);
-                                contentValues.put(DESC_PRODUCT, pDesc);
-                                contentValues.put(PRICE_PRODUCT, pPrice);
-                                contentValues.put(QUAN_PRODUCT, pQuan);
+                                contentValues.put(COLUMN_PRODUCT_ID, pId);
+                                contentValues.put(COLUMN_PRODUCT_NAME, pName);
+                                contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
+                                contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
+                                contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
                                 db.insert(tableName, null, contentValues);
                                 Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             }

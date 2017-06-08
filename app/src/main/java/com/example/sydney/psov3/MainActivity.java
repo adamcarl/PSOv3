@@ -136,11 +136,14 @@ public class MainActivity extends AppCompatActivity {
                 String mpass = et_regPass.getText().toString().trim();
                 String mpos = spn_regPosition.getSelectedItem().toString();
                 try {
-                    db_data.addCashier(mname,mnum,mpass,mpos);
                     et_regName.setText("");
                     et_regUsernum.setText("");
                     et_regPass.setText("");
                     spn_regPosition.setSelection(0);
+
+                    int mposconverted = Integer.parseInt(mpos);
+
+                    db_data.addCashier(mname,mnum,mpass,mposconverted);
                     Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){

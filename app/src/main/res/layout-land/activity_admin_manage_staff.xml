@@ -55,7 +55,7 @@
                     android:background="@drawable/custom_edittext_login"/>
 
                 <android.support.v7.widget.AppCompatEditText
-                    app:layout_flexBasisPercent="@fraction/fraction100percent"
+                    app:layout_flexBasisPercent="@fraction/fraction49percent"
                     android:enabled="false"
                     android:maxLines="1"
                     android:layout_marginTop="5dp"
@@ -90,7 +90,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerUpdPos"/>
+                    android:id="@+id/spinnerUpdPos"
+                    android:entries="@array/cashstaffpos"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
