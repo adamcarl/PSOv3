@@ -31,13 +31,20 @@ public class DB_Data extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+USERNAME_ADMIN+" TEXT NOT NULL UNIQUE, "+PASSWORD_ADMIN+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_CASHIER+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+NUMBER_CASHIER+" INTEGER NOT NULL UNIQUE, "+NAME_CASHIER+" TEXT NOT NULL, "+POSITION_CASHIER+" TEXT NOT NULL,"+PASSWORD_CASHIER+" TEXT NOT NULL );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL UNIQUE, "+NAME_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
-        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+CASHIER_INVOICE+" INTEGER NOT NULL, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TOTAL_INVOICE+" DOUBLE NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_PRODUCT+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ID_PRODUCT+" INTEGER NOT NULL UNIQUE, "+NAME_PRODUCT+" TEXT NOT NULL, "+DESC_PRODUCT+" TEXT NOT NULL, "+PRICE_PRODUCT+" DOUBLE NOT NULL,"+QUAN_PRODUCT+" INTEGER NOT NULL, "+VATABLE+" INTEGER );");
+        arg0.execSQL("CREATE TABLE "+TABLE_NAME_INVOICE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+CUSTOMER_DISCOUNT_INVOICE+" INTEGER NOT NULL, "+DATE_INVOICE+" INTEGER NOT NULL, "+TIME_INVOICE+" DATETIME);");
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ITEM+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+INVOICE_NUM_ITEM+" INTEGER NOT NULL, "+PRODUCT_ID_ITEM+" INTEGER NOT NULL, "+PRODUCT_QUANTITY_ITEM+" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_NAME_XREPORT + "("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                + XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL,"
+                                                + XREPORT_DATE + " INTEGER NOT NULL,"
+                                                + XREPORT_TIME + " INTEGER NOT NULL,"
+                                                + XREPORT_CASHIER + " INTEGER NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_NAME_TRANSACTION+ "("+ _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TRANSACTION_TYPE + " TEXT NOT NULL);");
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -80,13 +87,13 @@ public class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_NAME_CASHIER, null, cv);
         
     }
-    public void addProduct(Product product){
+    public void addProduct(String ProdId,String ProdName,String ProdDesc, String ProdPrice, String ProdQuan){
         cv.clear();
-        cv.put(ID_PRODUCT, product.getP_id());
-        cv.put(NAME_PRODUCT, product.getP_name());
-//        cv.put(DESC_PRODUCT, ProdDesc);
-        cv.put(PRICE_PRODUCT, product.getP_price());
-        cv.put(QUAN_PRODUCT, product.getP_quan());
+        cv.put(ID_PRODUCT, ProdId);
+        cv.put(NAME_PRODUCT, ProdName);
+        cv.put(DESC_PRODUCT, ProdDesc);
+        cv.put(PRICE_PRODUCT, ProdPrice);
+        cv.put(QUAN_PRODUCT, ProdQuan);
         dbw.insertOrThrow(TABLE_NAME_PRODUCT, null, cv);
         
     }
@@ -113,13 +120,13 @@ public class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_NAME_ADMIN, null, cv);
         
     }
-    public  void addInvoice(String inNum, String inCash, String inDisc, String inDate, String inTotal){
+    public  void addInvoice( String inCash, String inDisc, String inCustomer, String inDate, String inTime){
         cv.clear();
-        cv.put(NUM_INVOICE,inNum);
         cv.put(CASHIER_INVOICE,inCash);
         cv.put(CUSTOMER_DISCOUNT_INVOICE,inDisc);
+        cv.put(CUSTOMER_CASH_INVOICE, inCustomer);
         cv.put(DATE_INVOICE,inDate);
-        cv.put(TOTAL_INVOICE,inTotal);
+        cv.put(TIME_INVOICE,inTime);
         dbw.insertOrThrow(TABLE_NAME_INVOICE, null, cv);
         
     }

@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     if(result > 0){
                         et_usernum.setText("");
                         et_pass.setText("");
-                        Intent myIntent = new Intent(getApplicationContext(),MainActivity.class);
+                        Intent myIntent = new Intent(getApplicationContext(),Cashier.class);
 
                         //PASS INDEX
                         myIntent.putExtra("CashNum",muser);
