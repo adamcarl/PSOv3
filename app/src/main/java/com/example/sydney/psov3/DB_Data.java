@@ -138,6 +138,13 @@ public class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_NAME_ITEM, null, cv);
         
     }
+
+    public void addTransaction(String transactionType){
+        cv.clear();
+        cv.put(TRANSACTION_TYPE,transactionType);
+        dbw.insertOrThrow(TABLE_NAME_TRANSACTION, null, cv);
+    }
+
     public List<String> getAllLabels(){
         String[] all = {NUMBER_CASHIER};
         Cursor cursor = dbr.query(TABLE_NAME_CASHIER,all,null,null,null,null,null);

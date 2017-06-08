@@ -85,6 +85,8 @@ public class Cashier extends AppCompatActivity {
     String currentTime;
     String dateformatted;
 
+    String transType;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
@@ -416,6 +418,7 @@ public class Cashier extends AppCompatActivity {
     }
     public void print(View view) {
 //        bill.main();
+        transType = "invoice";
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
         dateformatted = dateformat.format(c.getTime());
@@ -431,6 +434,9 @@ public class Cashier extends AppCompatActivity {
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
+
+            db_data.addTransaction(transType);
+
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
             }
@@ -483,6 +489,7 @@ public class Cashier extends AppCompatActivity {
     public void onBackPressed(){
     tab_host.setCurrentTab(0);
     }
+
     public void cancelna(){
         txt_cash.setText("P0.00");
         txt_search.setText("");
@@ -513,6 +520,9 @@ public class Cashier extends AppCompatActivity {
         due2="";
         subTotal=0.00;
         subTotal2="";
+
+        transType ="cancel";
+        db_data.addTransaction(transType);
     }
     public void cashierLogOut(View view){
         cancelna();
