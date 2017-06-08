@@ -175,15 +175,15 @@ public class DB_Data extends SQLiteOpenHelper {
         }
         return 0;
     }
-    public void updateStaff(String Name,String UserNum, String Pass, String Pos){
-        cv.clear();
-        String WHERE_CASH = "Cashiernum = ?";
-        String[] WHERE_ARGS_CASH = new String[]{UserNum};
-        cv.put(COLUMN_CASHIER_NAME, Name);
-        cv.put(COLUMN_CASHIER_POSITION, Pos);
-        cv.put(COLUMN_CASHIER_PASSWORD, Pass);
+
+    public void updateStaff(int cashierNumber,String newName, String newPassword, String newPosition){
+        String WHERE_CASH = COLUMN_CASHIER_NUMBER + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{cashierNumber + ""};
+        cv.put(COLUMN_CASHIER_NAME, newName);
+        cv.put(COLUMN_CASHIER_PASSWORD, newPassword);
+        cv.put(COLUMN_CASHIER_POSITION, newPosition);
         dbw.update(TABLE_CASHIER, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        
+
     }
     public void updateProd(String P_id,String P_name,String P_desc, String P_price, String P_quan){
         cv.clear();

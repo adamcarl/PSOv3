@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +26,9 @@ import static com.example.sydney.psov3.Constants.*;
 
 
 public class ManageStaff extends AppCompatActivity {
-    private Button btn_update,btn_save, btn_cancel;
+    AlertDialog.Builder builder = null;
+    AlertDialog alertDialog = null;
+    private Button btn_update;
     private EditText etSearchStaff,et_Name, et_Password;
     private Spinner spinner_Position;
 
@@ -42,6 +46,67 @@ public class ManageStaff extends AppCompatActivity {
 
         spinner_Position.setEnabled(false);//SET SPINNER TO DISABLE INITIALLY
         etSearchStaff.addTextChangedListener(myTextWatcher);//Automatic Search for staff number
+
+        //CREATE DIALOG
+        createMyDialog();
+        alertDialog = builder.create();
+    }
+
+    private void init() {
+        btn_update = (Button) findViewById(R.id.btnUpdate);
+        etSearchStaff = (EditText) findViewById(R.id.etSearchNumber);
+        et_Name = (EditText) findViewById(R.id.etName);
+        et_Password = (EditText) findViewById(R.id.etPass);
+        spinner_Position = (Spinner) findViewById(R.id.spinnerUpdPos);
+    }
+
+    private void createMyDialog() {
+
+        builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_updatestaff, null);
+        builder.setView(alertLayout);
+
+        final EditText staffName =(EditText)alertLayout.findViewById(R.id.etUpdateName);
+        final EditText staffPassword =(EditText) alertLayout.findViewById(R.id.etUpdatePassword);
+        final Spinner staffPosition =(Spinner) alertLayout.findViewById(R.id.spinnerUpdPos);
+
+        final Button btnSave = (Button) alertLayout.findViewById(R.id.btnSaveUpdateStaff);
+        final Button btnCancel = (Button) alertLayout.findViewById(R.id.btnCancelUpdateStaff);
+
+        staffPosition.setSelection(0); //initially Manager
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mStaffName = staffName.getText().toString();
+                String mStaffPassword = staffPassword.getText().toString();
+                String mStaffPosition = Integer.toString(staffPosition.getSelectedItemPosition());
+
+                et_Name.setText(mStaffName);
+                et_Password.setText(mStaffPassword);
+                spinner_Position.setSelection(Integer.parseInt(mStaffPosition));
+                int mCashierNumber = Integer.parseInt(etSearchStaff.getText().toString().trim());
+
+                if(mStaffName.isEmpty() || mStaffPassword.isEmpty()){
+                    Toast.makeText(ManageStaff.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    db_data.updateStaff(mCashierNumber,mStaffName,mStaffPassword,mStaffPosition);
+                    etSearchStaff.getText();
+                    alertDialog.dismiss();
+                    Toast.makeText(ManageStaff.this, "Updated!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     private void allButtonOnclickListener() {
@@ -49,82 +114,24 @@ public class ManageStaff extends AppCompatActivity {
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Enable all edittext
-                et_Name.setEnabled(true);
-                et_Password.setEnabled(true);
-                spinner_Position.setEnabled(true);
-
-                //Set button SAVE & CANCEL visible while UPDATE invisible
-                btn_save.setVisibility(View.VISIBLE);
-                btn_cancel.setVisibility(View.VISIBLE);
-                btn_update.setVisibility(View.GONE);
-
                 //Disable Spinner when editting
-                etSearchStaff.setText("");
-                etSearchStaff.setEnabled(false);
-
-            }
-        });
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Disable all edittext
-                et_Name.setEnabled(false);
-                et_Password.setEnabled(false);
-                spinner_Position.setEnabled(false);
-
-                //Set button SAVE & CANCEL invisible while UPDATE visible
-                btn_save.setVisibility(View.GONE);
-                btn_cancel.setVisibility(View.GONE);
-                btn_update.setVisibility(View.VISIBLE);
-
-                //Enable Spinner when editting
-                etSearchStaff.setEnabled(true);
-                spinner_Position.setEnabled(true);
-
-                // TODO: 6/2/2017 FUNCTION FOR SAVE BELOW
-
-            }
-        });
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Disable all edittext
-                et_Name.setEnabled(false);
-                et_Password.setEnabled(false);
-                spinner_Position.setEnabled(false);
-
-                //Set button SAVE & CANCEL invisible while UPDATE visible
-                btn_save.setVisibility(View.GONE);
-                btn_cancel.setVisibility(View.GONE);
-                btn_update.setVisibility(View.VISIBLE);
-
-                //Enable Spinner when editting
-                etSearchStaff.setEnabled(true);
-                spinner_Position.setEnabled(true);
-
-                // TODO: 6/2/2017 FUNCTION FOR SAVE BELOW
+                alertDialog.show();
             }
         });
     }
 
-    private void init() {
-        btn_update = (Button) findViewById(R.id.btnUpdate);
-        btn_save = (Button) findViewById(R.id.btnSave);
-        btn_cancel = (Button) findViewById(R.id.btnCancel);
-        etSearchStaff = (EditText) findViewById(R.id.etSearchNumber);
-        et_Name = (EditText) findViewById(R.id.etName);
-        et_Password = (EditText) findViewById(R.id.etPass);
-        spinner_Position = (Spinner) findViewById(R.id.spinnerUpdPos);
-    }
+
 
     //MENU
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.admin_priveleges_main_menu,menu);
+
+        MenuItem importCSV = menu.findItem(R.id.menu_import_product);
+        MenuItem addProduct = menu.findItem(R.id.menu_add_product);
+        importCSV.setVisible(false);
+        addProduct.setVisible(false);
 
         if(menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
@@ -150,6 +157,8 @@ public class ManageStaff extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 
     private TextWatcher myTextWatcher = new TextWatcher() {
         @Override
@@ -178,7 +187,7 @@ public class ManageStaff extends AppCompatActivity {
     };
 
     private void printCashierDetails(String mStaffCode) {
-        String query = "SELECT * FROM "+ TABLE_CASHIER + " WHERE " + COLUMN_CASHIER_NUMBER + "=" + mStaffCode;
+        String query = "SELECT * FROM "+ TABLE_CASHIER + " WHERE " + COLUMN_CASHIER_NUMBER + " = " + mStaffCode;
         Cursor cursor = db_data.queryDataRead(query);
 
         String mStaffName = "", mStaffPass = "", mStaffPos = "";

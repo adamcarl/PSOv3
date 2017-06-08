@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etProductDes"
-                android:hint="Product Description"/>
+                android:hint="Description"/>
 
             <android.support.v7.widget.AppCompatEditText
                 app:layout_flexBasisPercent="@fraction/fraction48percent"
@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etProductPrice"
-                android:hint="Product price"/>
+                android:hint="Price"/>
 
         </com.google.android.flexbox.FlexboxLayout>
 

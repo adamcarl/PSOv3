@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        //db_data.addAdmin("1","1");
-        //For ActivityLogin
+//        db_data.addAdmin("1","1");
+//        For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

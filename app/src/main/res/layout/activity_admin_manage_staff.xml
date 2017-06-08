@@ -81,54 +81,17 @@
                 android:id="@+id/spinnerUpdPos"
                 android:entries="@array/cashstaffpos"/>
 
-            <LinearLayout
+            <android.support.v7.widget.AppCompatButton
+                android:layout_marginTop="20dp"
+                android:id="@+id/btnUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnUpdate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:textStyle="bold"
-                    android:text="UPDATE"
-                    android:textColor="@color/myColorWhite"
-                    android:shadowColor="@color/myColorActionBar"
-                    android:background="@drawable/custom_button_login"/>
-
-                <android.support.v7.widget.AppCompatButton
-                    android:layout_weight=".5"
-                    android:visibility="gone"
-                    android:id="@+id/btnSave"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:textStyle="bold"
-                    android:text="SAVE"
-                    android:textColor="@color/myColorWhite"
-                    android:shadowColor="@color/myColorActionBar"
-                    android:background="@drawable/custom_button_login"/>
-
-                <android.support.v7.widget.AppCompatButton
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight=".5"
-                    android:visibility="gone"
-                    android:id="@+id/btnCancel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:textStyle="bold"
-                    android:text="CANCEL"
-                    android:textColor="@color/myColorWhite"
-                    android:shadowColor="@color/myColorActionBar"
-                    android:background="@drawable/custom_button_login"/>
-            </LinearLayout>
-
-
+                android:elevation="2dp"
+                android:textStyle="bold"
+                android:text="UPDATE"
+                android:textColor="@color/myColorWhite"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_button_login"/>
 
         </LinearLayout>
 
