@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import static com.example.sydney.psov3.Constants.*;
 
 /**
@@ -26,7 +28,7 @@ public class ManageStaff extends AppCompatActivity {
     private EditText etSearchStaff,et_Name, et_Password;
     private Spinner spinner_Position;
 
-    DB_Data db_data = new DB_Data(this);
+    DB_Data db_data;
 
 
     @Override
@@ -34,6 +36,7 @@ public class ManageStaff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_manage_staff);
 
+        db_data = new DB_Data(this);
         init();
         allButtonOnclickListener();
 
@@ -59,7 +62,6 @@ public class ManageStaff extends AppCompatActivity {
                 //Disable Spinner when editting
                 etSearchStaff.setText("");
                 etSearchStaff.setEnabled(false);
-                spinner_Position.setEnabled(false);
 
             }
         });
@@ -176,7 +178,7 @@ public class ManageStaff extends AppCompatActivity {
     };
 
     private void printCashierDetails(String mStaffCode) {
-        String query = "SELECT * FROM "+ TABLE_CASHIER + "WHERE " + COLUMN_CASHIER_NUMBER + "=" + mStaffCode;
+        String query = "SELECT * FROM "+ TABLE_CASHIER + " WHERE " + COLUMN_CASHIER_NUMBER + "=" + mStaffCode;
         Cursor cursor = db_data.queryDataRead(query);
 
         String mStaffName = "", mStaffPass = "", mStaffPos = "";
@@ -189,8 +191,19 @@ public class ManageStaff extends AppCompatActivity {
         }
 
         et_Name.setText(mStaffName);
-            int mStaffPosConverted = Integer.parseInt(mStaffPos);//STRING POSITION CONVERTED TO INT
-        spinner_Position.setSelection(mStaffPosConverted);
         et_Password.setText(mStaffPass);
+
+        if(mStaffPos.equals("Manager")){
+            spinner_Position.setSelection(0);
+        }
+        if(mStaffPos.equals("Supervisor")){
+            spinner_Position.setSelection(1);
+        }
+        if(mStaffPos.equals("Cashier")){
+            spinner_Position.setSelection(2);
+        }
+
+        Toast.makeText(this, spinner_Position.getSelectedItemPosition(), Toast.LENGTH_SHORT).show();
+
     }
 }

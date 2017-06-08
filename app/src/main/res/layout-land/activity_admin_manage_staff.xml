@@ -63,7 +63,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="2dp"
-                    android:text="Name Placeholder"
+                    android:hint="Name of employee"
+                    android:textColorHint="@color/myColorActionBar"
                     android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_edittext_login" />
@@ -79,7 +80,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="2dp"
-                    android:text="Placeholder"
+                    android:hint="Password"
+                    android:textColorHint="@color/myColorActionBar"
                     android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_edittext_login"/>
