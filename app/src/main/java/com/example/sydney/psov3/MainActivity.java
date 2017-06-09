@@ -64,7 +64,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-//        db_data.addAdmin("1","1");
+        try {
+//            db_data.addAdmin("1", "1");
+        }catch(Exception ex){
+
+        }
 //        For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,8 +158,9 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         //Database
         db_data = new DB_Data(this);
-        
-        //For LogIn
+
+
+           //For LogIn
         btn_login=(Button)findViewById(R.id.btnLogin);
         et_usernum=(EditText)findViewById(R.id.etUsernum);
         et_pass=(EditText)findViewById(R.id.etPassword);

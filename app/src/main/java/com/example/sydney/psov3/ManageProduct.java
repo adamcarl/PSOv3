@@ -59,10 +59,15 @@ public class ManageProduct extends AppCompatActivity {
             case R.id.menu_logout:
                 Intent intent = new Intent(ManageProduct.this, MainActivity.class);
                 startActivity(intent);
+
             case R.id.menu_add_product:
                 alertDialog.show();
                 //Todo Function Here for saving Transaction
                 return true;
+
+            case R.id.menu_import_product:
+                //Todo IMPORT CSV!
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -94,7 +99,7 @@ public class ManageProduct extends AppCompatActivity {
                 }
                 else{
                     db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
-                    Toast.makeText(ManageProduct.this, "Success! Must implement method for adding!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageProduct.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 }
 

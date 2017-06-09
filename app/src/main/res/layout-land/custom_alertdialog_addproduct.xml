@@ -20,6 +20,7 @@
             app:justifyContent="space_around">
 
             <android.support.v7.widget.AppCompatEditText
+                android:inputType="text"
                 app:layout_flexBasisPercent="@fraction/fraction98percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
@@ -31,12 +32,12 @@
                 android:hint="Product Name"/>
 
             <android.support.v7.widget.AppCompatEditText
+                android:inputType="number"
                 app:layout_flexBasisPercent="@fraction/fraction48percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
                 android:elevation="2dp"
                 android:layout_marginTop="10dp"
-
                 android:background="@drawable/custom_edittext_dialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,6 +45,7 @@
                 android:hint="Product id"/>
 
             <android.support.v7.widget.AppCompatEditText
+                android:inputType="text"
                 app:layout_flexBasisPercent="@fraction/fraction48percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
@@ -56,6 +58,7 @@
                 android:hint="Description"/>
 
             <android.support.v7.widget.AppCompatEditText
+                android:inputType="number"
                 app:layout_flexBasisPercent="@fraction/fraction48percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"
@@ -68,6 +71,7 @@
                 android:hint="Product quantity"/>
 
             <android.support.v7.widget.AppCompatEditText
+                android:inputType="number"
                 app:layout_flexBasisPercent="@fraction/fraction48percent"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textColorHint="@color/myColorDialogBG"

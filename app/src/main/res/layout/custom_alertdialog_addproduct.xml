@@ -10,6 +10,7 @@
         android:padding="16dp">
 
         <android.support.v7.widget.AppCompatEditText
+            android:inputType="text"
             android:id="@+id/etProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,6 +21,7 @@
             android:textColorHint="@color/myColorDialogBG" />
 
         <android.support.v7.widget.AppCompatEditText
+            android:inputType="number"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:elevation="2dp"
@@ -31,6 +33,7 @@
             android:hint="Product id"/>
 
         <android.support.v7.widget.AppCompatEditText
+            android:inputType="text"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:elevation="2dp"
@@ -42,6 +45,7 @@
             android:hint="Product Description"/>
 
         <android.support.v7.widget.AppCompatEditText
+            android:inputType="number"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:elevation="2dp"
@@ -53,6 +57,7 @@
             android:hint="Product quantity"/>
 
         <android.support.v7.widget.AppCompatEditText
+            android:inputType="number"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:elevation="2dp"

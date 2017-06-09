@@ -42,6 +42,7 @@
                     app:layout_flexBasisPercent="@fraction/fraction48percent"/>
 
                 <android.support.v7.widget.AppCompatEditText
+                    android:inputType="number"
                     app:layout_flexBasisPercent="@fraction/fraction48percent"
                     android:maxLines="1"
                     android:id="@+id/etSearchNumber"
@@ -55,6 +56,7 @@
                     android:background="@drawable/custom_edittext_login"/>
 
                 <android.support.v7.widget.AppCompatEditText
+                    android:inputType="text"
                     app:layout_flexBasisPercent="@fraction/fraction49percent"
                     android:enabled="false"
                     android:maxLines="1"
