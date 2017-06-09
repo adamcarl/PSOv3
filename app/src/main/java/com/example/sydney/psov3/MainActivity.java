@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         userText = savedInstanceState.getCharSequence(ori);
-        or= Integer.parseInt(userText.toString());
+        or= Integer.parseInt(userText != null ? userText.toString() : null);
         if(or==0){
             layout_signup.setVisibility(View.GONE);
             flexNiLogin.setVisibility(View.VISIBLE);
@@ -64,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
         getSupportActionBar().hide();
-        //db_data.addAdmin("1","1");
+        try {
+            db_data.addAdmin("1", "1");
+        }catch (Exception ex){}
         //For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override

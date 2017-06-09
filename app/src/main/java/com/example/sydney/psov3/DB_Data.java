@@ -5,17 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.ListView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
 import static com.example.sydney.psov3.Constants.*;
 
-public class DB_Data extends SQLiteOpenHelper {
+    class DB_Data extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
@@ -23,12 +19,11 @@ public class DB_Data extends SQLiteOpenHelper {
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
 
-    public DB_Data(Context ctx){
+    DB_Data(Context ctx){
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
     public void onCreate(SQLiteDatabase arg0) {
-        // TODO Auto-generated method stub
         arg0.execSQL("CREATE TABLE "+TABLE_NAME_ADMIN+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +USERNAME_ADMIN+" TEXT NOT NULL UNIQUE, "
@@ -70,11 +65,12 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("CREATE TABLE "+ TABLE_NAME_TRANSACTION+ "("
                 + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + TRANSACTION_TYPE + " TEXT NOT NULL);");
-
+        arg0.execSQL("CREATE TABLE "+ LOG_TABLE_NAME + "("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + LOG_FIELD + " TEXT NOT NULL);");
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-        // TODO Auto-generated method stub
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_ADMIN);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_CASHIER);
@@ -87,10 +83,14 @@ public class DB_Data extends SQLiteOpenHelper {
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_XREPORT);
         onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME_TRANSACTION);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+LOG_TABLE_NAME);
+        onCreate(arg0);
     }
-    private static String[] FROM_ADMIN = {USERNAME_ADMIN,PASSWORD_ADMIN};
 
-    public int adminLogin(String usernum,String Pass) {
+    private static String[] FROM_ADMIN = {USERNAME_ADMIN,PASSWORD_ADMIN};
+    int adminLogin(String usernum, String Pass) {
         String WHERE_ADMIN = "Username = ? and Password = ?";
         String[] WHERE_ARGS_ADMIN = new String[]{usernum,Pass};
         try {
@@ -106,27 +106,9 @@ public class DB_Data extends SQLiteOpenHelper {
         }
         return 0;
     }
-    public void addCashier(String Name,String UserNum, String Pass, String Pos){
-        cv.clear();
-        cv.put(NAME_CASHIER, Name);
-        cv.put(NUMBER_CASHIER, UserNum);
-        cv.put(POSITION_CASHIER, Pos);
-        cv.put(PASSWORD_CASHIER, Pass);
-        dbw.insertOrThrow(TABLE_NAME_CASHIER, null, cv);
-        
-    }
-    public void addProduct(String ProdId,String ProdName,String ProdDesc, String ProdPrice, String ProdQuan){
-        cv.clear();
-        cv.put(ID_PRODUCT, ProdId);
-        cv.put(NAME_PRODUCT, ProdName);
-        cv.put(DESC_PRODUCT, ProdDesc);
-        cv.put(PRICE_PRODUCT, ProdPrice);
-        cv.put(QUAN_PRODUCT, ProdQuan);
-        dbw.insertOrThrow(TABLE_NAME_PRODUCT, null, cv);
-        
-    }
+
     private static String[] FROM_CASH = {PASSWORD_CASHIER};
-    public int cashierLogin(String cname, String cpass) {
+    int cashierLogin(String cname, String cpass) {
         String WHERE_CASH = "Cashiernum LIKE ? and Password = ?";
         String[] WHERE_ARGS_CASH = new String[]{cname.toLowerCase().trim(),cpass};
         try {
@@ -141,14 +123,34 @@ public class DB_Data extends SQLiteOpenHelper {
         }
         return 0;
     }
-    public void addAdmin(String mName,String mPass){
+
+    void addCashier(String Name,String UserNum, String Pass, String Pos){
+        cv.clear();
+        cv.put(NAME_CASHIER, Name);
+        cv.put(NUMBER_CASHIER, UserNum);
+        cv.put(POSITION_CASHIER, Pos);
+        cv.put(PASSWORD_CASHIER, Pass);
+        dbw.insertOrThrow(TABLE_NAME_CASHIER, null, cv);
+    }
+
+    void addProduct(String ProdId,String ProdName,String ProdDesc, String ProdPrice, String ProdQuan){
+        cv.clear();
+        cv.put(ID_PRODUCT, ProdId);
+        cv.put(NAME_PRODUCT, ProdName);
+        cv.put(DESC_PRODUCT, ProdDesc);
+        cv.put(PRICE_PRODUCT, ProdPrice);
+        cv.put(QUAN_PRODUCT, ProdQuan);
+        dbw.insertOrThrow(TABLE_NAME_PRODUCT, null, cv);
+    }
+
+    void addAdmin(String mName,String mPass){
         cv.clear();
         cv.put(USERNAME_ADMIN, mName);
         cv.put(PASSWORD_ADMIN, mPass);
         dbw.insertOrThrow(TABLE_NAME_ADMIN, null, cv);
-        
     }
-    public  void addInvoice( String inCash, String inDisc, String inCustomer, String inDate, String inTime){
+
+    void addInvoice( String inCash, String inDisc, String inCustomer, String inDate, String inTime){
         cv.clear();
         cv.put(CASHIER_INVOICE,inCash);
         cv.put(CUSTOMER_DISCOUNT_INVOICE,inDisc);
@@ -156,30 +158,31 @@ public class DB_Data extends SQLiteOpenHelper {
         cv.put(DATE_INVOICE,inDate);
         cv.put(TIME_INVOICE,inTime);
         dbw.insertOrThrow(TABLE_NAME_INVOICE, null, cv);
-        
     }
-    public  void addItem(String itemIn, String itemProd, String itemQuan){
+
+    void addItem(String itemIn, String itemProd, String itemQuan){
         cv.clear();
         cv.put(INVOICE_NUM_ITEM,itemIn);
         cv.put(PRODUCT_ID_ITEM,itemProd);
         cv.put(PRODUCT_QUANTITY_ITEM,itemQuan);
         dbw.insertOrThrow(TABLE_NAME_ITEM, null, cv);
-        
     }
 
-    public void addTransaction(String transactionType){
+    void addTransaction(String transactionType){
         cv.clear();
         cv.put(TRANSACTION_TYPE,transactionType);
         dbw.insertOrThrow(TABLE_NAME_TRANSACTION, null, cv);
     }
-    public void addLog(String log){
+
+    void addLog(String log){
         cv.clear();
         cv.put(LOG_FIELD,log);
     }
-    public List<String> getAllLabels(){
+
+    List<String> getAllLabels(){
         String[] all = {NUMBER_CASHIER};
         Cursor cursor = dbr.query(TABLE_NAME_CASHIER,all,null,null,null,null,null);
-        ArrayList<String> cashnum = new ArrayList<String>();
+        ArrayList<String> cashnum = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
                 cashnum.add(cursor.getString(0));
@@ -187,55 +190,24 @@ public class DB_Data extends SQLiteOpenHelper {
             while (cursor.moveToNext());
         }
         cursor.close();
-        
         return cashnum;
     }
-    private static String[] ALL = {NUMBER_CASHIER,NAME_CASHIER,POSITION_CASHIER,PASSWORD_CASHIER};
-    public String[] selectStaff(String cnum) {
-        String WHERE_CASH = "Cashiernum = ?";
+
+    private static String[] ALL = {NUMBER_CASHIER,NAME_CASHIER,POSITION_CASHIER};
+    String[] searchStaff(String cnum) {
+        String WHERE_CASH = NUMBER_CASHIER+" = ?";
         String[] WHERE_ARGS_CASH = new String[]{cnum};
         String[] res_staff= new String[4];
         Cursor cursor = dbr.query(TABLE_NAME_CASHIER,ALL,WHERE_CASH,WHERE_ARGS_CASH,null,null,null);
         cursor.moveToFirst();
         res_staff[0]=cursor.getString(1);
         res_staff[1]=cursor.getString(2);
-        res_staff[2]=cursor.getString(4);
-        res_staff[3]=cursor.getString(3);
+        res_staff[2]=cursor.getString(3);
         cursor.close();
-        
         return res_staff;
     }
-    public void updateStaff(String Name,String UserNum, String Pass, String Pos){
-        cv.clear();
-        String WHERE_CASH = "Cashiernum = ?";
-        String[] WHERE_ARGS_CASH = new String[]{UserNum};
-        cv.put(NAME_CASHIER, Name);
-        cv.put(POSITION_CASHIER, Pos);
-        cv.put(PASSWORD_CASHIER, Pass);
-        dbw.update(TABLE_NAME_CASHIER, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        
-    }
-    public void updateProd(String P_id,String P_name,String P_desc, String P_price, String P_quan){
-        cv.clear();
-        String WHERE_CASH = "ProdId = ?";
-        String[] WHERE_ARGS_CASH = new String[]{P_id};
-        cv.put(ID_PRODUCT, P_id);
-        cv.put(NAME_PRODUCT, P_name);
-        cv.put(DESC_PRODUCT, P_desc);
-        cv.put(PRICE_PRODUCT, P_price);
-        cv.put(QUAN_PRODUCT, P_quan);
-        dbw.update(TABLE_NAME_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
-    }
-    public void updateAdmin(String A_name,String A_pass){
-        cv.clear();
-        String WHERE = "ID = ?";
-        String[] WHERE_ARGS = new String[]{"1"};
-        cv.put(USERNAME_ADMIN,A_name);
-        cv.put(PASSWORD_ADMIN,A_pass);
-        dbw.update(TABLE_NAME_ADMIN, cv, WHERE,WHERE_ARGS);
-    }
-    //For Invoice
-    public String[] searchProduct(String id){
+
+    String[] searchProduct(String id){
         String[] mALL = {ID_PRODUCT,NAME_PRODUCT,DESC_PRODUCT,PRICE_PRODUCT,QUAN_PRODUCT,VATABLE};
         String mWHERE = ID_PRODUCT+" = ?";
         String[] mWHERE_ARGS = new String[]{id};
@@ -250,5 +222,35 @@ public class DB_Data extends SQLiteOpenHelper {
         itemResult[5]=cursor.getString(6);
         cursor.close();
         return itemResult;
+    }
+
+    void updateAdmin(String A_name,String A_pass){
+        cv.clear();
+        String WHERE = "ID = ?";
+        String[] WHERE_ARGS = new String[]{"1"};
+        cv.put(USERNAME_ADMIN,A_name);
+        cv.put(PASSWORD_ADMIN,A_pass);
+        dbw.update(TABLE_NAME_ADMIN, cv, WHERE,WHERE_ARGS);
+    }
+
+    void updateStaff(String Name,String UserNum, String Pass, String Pos){
+        cv.clear();
+        String WHERE_CASH = "Cashiernum = ?";
+        String[] WHERE_ARGS_CASH = new String[]{UserNum};
+        cv.put(NAME_CASHIER, Name);
+        cv.put(POSITION_CASHIER, Pos);
+        cv.put(PASSWORD_CASHIER, Pass);
+        dbw.update(TABLE_NAME_CASHIER, cv, WHERE_CASH,WHERE_ARGS_CASH);
+    }
+
+    void updateProd(String P_id,String P_name,String P_desc, String P_price, String P_quan){
+        cv.clear();
+        String WHERE_CASH = ID_PRODUCT+" = ?";
+        String[] WHERE_ARGS_CASH = new String[]{P_id};
+        cv.put(NAME_PRODUCT, P_name);
+        cv.put(DESC_PRODUCT, P_desc);
+        cv.put(PRICE_PRODUCT, P_price);
+        cv.put(QUAN_PRODUCT, P_quan);
+        dbw.update(TABLE_NAME_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
     }
 }
