@@ -1,6 +1,5 @@
 package com.example.sydney.psov3;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
@@ -29,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -66,6 +64,7 @@ public class ManageProduct extends AppCompatActivity {
 
         //ALL ONCLICKLISTENERS
         allOnClickListeners();
+        listGo();
     }
 
     private void allOnClickListeners() {
@@ -90,7 +89,6 @@ public class ManageProduct extends AppCompatActivity {
                 return false;
             }
         });
-        listGo();
 
 
     }

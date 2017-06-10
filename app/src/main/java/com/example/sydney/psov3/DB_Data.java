@@ -35,7 +35,8 @@ public class DB_Data extends SQLiteOpenHelper {
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
-        arg0.execSQL("CREATE TABLE "+ TABLE_XREPORT + "("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+        arg0.execSQL("CREATE TABLE "+ TABLE_XREPORT + "("
+                                                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                                                 + COLUMN_XREPORT_REPORTNUMBER +" INTEGER NOT NULL,"
                                                 + COLUMN_XREPORT_DATE + " INTEGER NOT NULL,"
                                                 + COLUMN_XREPORT_TIME + " INTEGER NOT NULL,"
@@ -225,5 +226,12 @@ public class DB_Data extends SQLiteOpenHelper {
     public Cursor queryDataRead(String query) {
         SQLiteDatabase database = this.getReadableDatabase();
         return database.rawQuery(query,null);
+    }
+
+    String[] ALL_DATA_TRANSACTION = {" * "};
+
+    public Cursor getData() {
+        Cursor cursor = dbr.query(TABLE_TRANSACTION, ALL_DATA_TRANSACTION, null, null, null, null, null);
+        return cursor;
     }
 }

@@ -178,8 +178,8 @@ public class AdminActivity extends AppCompatActivity{
         int id = item.getItemId();
         switch (id){
             case R.id.menu_logout:
+                this.finish();
                 Intent intent = new Intent(AdminActivity.this, MainActivity.class);
-
                 startActivity(intent);
 
 
