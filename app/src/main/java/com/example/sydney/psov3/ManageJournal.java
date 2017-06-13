@@ -23,7 +23,7 @@ import static com.example.sydney.psov3.Constants.*;
 
 public class ManageJournal extends AppCompatActivity {
 
-    private TransactionAdapter adapter;
+//    private TransactionAdapter adapter;
 //    private List<Transactions> transactionsList;
 
     DB_Data db_data;
@@ -36,11 +36,11 @@ public class ManageJournal extends AppCompatActivity {
 
         db_data = new DB_Data(this);
 
-        List<Transactions> transactions = fill_with_data();
+        List<Transactions> transactionsList = fill_with_data();
 //        cursor = db_data.getData();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        TransactionAdapter transAdapter = new TransactionAdapter(getApplication(),transactions);
+        TransactionAdapter transAdapter = new TransactionAdapter(getApplication(),transactionsList);
 
 //        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

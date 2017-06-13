@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -40,10 +43,9 @@ public class ManageProduct extends AppCompatActivity {
     AlertDialog alertDialog = null;
     DB_Data db_data;
 
-    ListView lv_admin_prod;
-    ArrayList<Product> productArrayList;
-    AdapterProd adapterProd = null;
+    ProductAdapter productAdapter = null;
     SearchView search_prod;
+    List<Product> productsList;
 
     public static final int requestcode = 1;
     @Override
@@ -52,11 +54,15 @@ public class ManageProduct extends AppCompatActivity {
         setContentView(R.layout.activity_admin_manage_product);
         db_data = new DB_Data(this);
 
-        lv_admin_prod = (ListView) findViewById(R.id.listviewProduct);
-        productArrayList = new ArrayList<>();
-        adapterProd = new AdapterProd(this, R.layout.single_row, productArrayList);
-        lv_admin_prod.setAdapter(adapterProd);
         search_prod = (SearchView) findViewById(R.id.searchviewSearch);
+
+        //INITIALIZE DATA SET
+        productsList = listGo();
+        productAdapter = new ProductAdapter(getApplication(),productsList);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));//RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
         //CREATE DIALOG
         createMyDialog();
@@ -64,17 +70,19 @@ public class ManageProduct extends AppCompatActivity {
 
         //ALL ONCLICKLISTENERS
         allOnClickListeners();
-        listGo();
+
+
+
     }
 
     private void allOnClickListeners() {
         //LISTVIEW LISTENER
-        lv_admin_prod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(ManageProduct.this, "Clicked!", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        lv_admin_prod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Toast.makeText(ManageProduct.this, "Clicked!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         //SEARCHVIEW LISTENER
         search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -85,7 +93,7 @@ public class ManageProduct extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                listGo();
+                searchProd();
                 return false;
             }
         });
@@ -104,8 +112,10 @@ public class ManageProduct extends AppCompatActivity {
         }
     }
 
-    public void listGo(){
-        productArrayList.clear();
+    public List<Product> searchProd(){
+        productsList = new ArrayList<>();
+
+        productsList.clear();
         String arg = search_prod.getQuery().toString().trim().toLowerCase();
         String aarg = "%" + arg + "%";
         String[] ALL = {
@@ -115,11 +125,11 @@ public class ManageProduct extends AppCompatActivity {
                 COLUMN_PRODUCT_PRICE,
                 COLUMN_PRODUCT_QUANTITY};
         String WHERE =
-                    COLUMN_PRODUCT_ID + " LIKE ? OR "
-                + COLUMN_PRODUCT_NAME + " LIKE ? OR "
-                + COLUMN_PRODUCT_DESCRIPTION + " LIKE ? OR "
-                + COLUMN_PRODUCT_PRICE + " LIKE ? OR "
-                + COLUMN_PRODUCT_QUANTITY + " LIKE ?";
+                COLUMN_PRODUCT_ID + " LIKE ? OR "
+                        + COLUMN_PRODUCT_NAME + " LIKE ? OR "
+                        + COLUMN_PRODUCT_DESCRIPTION + " LIKE ? OR "
+                        + COLUMN_PRODUCT_PRICE + " LIKE ? OR "
+                        + COLUMN_PRODUCT_QUANTITY + " LIKE ?";
         String[] WHERE_ARG = {aarg, aarg, aarg, aarg, aarg};
         SQLiteDatabase db = db_data.getReadableDatabase();
         Cursor cursor = db.query(TABLE_PRODUCT, ALL, WHERE, WHERE_ARG, null, null, null);
@@ -130,10 +140,47 @@ public class ManageProduct extends AppCompatActivity {
             double pprice = cursor.getDouble(3);
             int pdquan = cursor.getInt(4);
 
-            productArrayList.add(new Product(pid,pname,pdesc,pprice,pdquan));
+            productsList.add(new Product(pid,pname,pdesc,pprice,pdquan));
         }
-        adapterProd.notifyDataSetChanged();
+        productAdapter.notifyDataSetChanged();
         cursor.close();
+
+        return productsList;
+    }
+
+    public List<Product> listGo(){
+        productsList = new ArrayList<>();
+
+        productsList.clear();
+        String arg = search_prod.getQuery().toString().trim().toLowerCase();
+        String aarg = "%" + arg + "%";
+        String[] ALL = {
+                COLUMN_PRODUCT_ID,
+                COLUMN_PRODUCT_NAME,
+                COLUMN_PRODUCT_DESCRIPTION,
+                COLUMN_PRODUCT_PRICE,
+                COLUMN_PRODUCT_QUANTITY};
+//        String WHERE =
+//                    COLUMN_PRODUCT_ID + " LIKE ? OR "
+//                + COLUMN_PRODUCT_NAME + " LIKE ? OR "
+//                + COLUMN_PRODUCT_DESCRIPTION + " LIKE ? OR "
+//                + COLUMN_PRODUCT_PRICE + " LIKE ? OR "
+//                + COLUMN_PRODUCT_QUANTITY + " LIKE ?";
+//        String[] WHERE_ARG = {aarg, aarg, aarg, aarg, aarg};
+        SQLiteDatabase db = db_data.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
+        while (cursor.moveToNext()){
+            String pid = cursor.getInt(0) + "";
+            String pname = cursor.getString(1);
+            String pdesc = cursor.getString(2);
+            double pprice = cursor.getDouble(3);
+            int pdquan = cursor.getInt(4);
+
+            productsList.add(new Product(pid,pname,pdesc,pprice,pdquan));
+        }
+        cursor.close();
+
+        return productsList;
     }
 
 
@@ -161,7 +208,6 @@ public class ManageProduct extends AppCompatActivity {
                 return true;
 
             case R.id.menu_import_product:
-                //Todo IMPORT CSV!
                 //IMPORTING PRODUCT
                 importProduct();
 
