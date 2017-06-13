@@ -92,7 +92,7 @@ public class ManageStaff extends AppCompatActivity {
                     Toast.makeText(ManageStaff.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    db_data.updateStaff(mCashierNumber,mStaffName,mStaffPassword,mStaffPosition);
+                    db_data.updateStaff(mCashierNumber+"",mStaffName,mStaffPassword,mStaffPosition);
                     etSearchStaff.getText();
                     alertDialog.dismiss();
                     Toast.makeText(ManageStaff.this, "Updated!", Toast.LENGTH_SHORT).show();

@@ -19,7 +19,7 @@ import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 import java.util.ArrayList;
 
-public class SerialPrinter {
+class SerialPrinter {
     private boolean mOpened = false;
     private Handler mExternHandler;
     private static SerialPrinter mSerialPrinter = null;
@@ -28,14 +28,14 @@ public class SerialPrinter {
     private SerialPrinter() {
     }
 
-    public static SerialPrinter GetSerialPrinter() {
+    static SerialPrinter GetSerialPrinter() {
         if(mSerialPrinter == null) {
             mSerialPrinter = new SerialPrinter();
         }
         return mSerialPrinter;
     }
 
-    public void OpenPrinter(SerialParam param, Handler handle) throws Exception {
+    void OpenPrinter(SerialParam param, Handler handle) throws Exception {
         if(this.mOpened) {
             throw new Exception("PRINTER OPENED");
         } else {
@@ -58,7 +58,7 @@ public class SerialPrinter {
         this.mOpened = false;
     }
 
-    public static String UnicodeToGBK(String s) {
+    private static String UnicodeToGBK(String s) {
         try {
             String e = null;
             e = new String(s.getBytes("GBK"), "ISO-8859-1");
@@ -83,7 +83,7 @@ public class SerialPrinter {
 //
 //
 //    }
-    public void printString(ArrayList<String> text) {
+    void printString(ArrayList<String> text) {
         for(int x =0;x<text.size();x++) {
             String gbk = UnicodeToGBK(text.get(x));
             int[] data = new int[gbk.length()];
@@ -108,7 +108,7 @@ public class SerialPrinter {
         }
     }
 
-    public void walkPaper(int dot) throws Exception {
+    void walkPaper(int dot) throws Exception {
         if(dot >= 0 && dot <= 255) {
             byte[] cmd = new byte[]{(byte)10, (byte)27, (byte)74, (byte)dot};
             this.mSerialPortOperaion.WriteData(cmd);
@@ -143,7 +143,7 @@ public class SerialPrinter {
         this.mSerialPortOperaion.WriteData(27,33,0);
     }
 
-    public void sydneyDotMatrix7by7()
+    void sydneyDotMatrix7by7()
     {
         this.mSerialPortOperaion.WriteData(27,33,1);
     }
@@ -180,7 +180,7 @@ public class SerialPrinter {
             throw new Exception("Invalid Parameter");
         }
     }
-    public void sendLineFeed() {
+    void sendLineFeed() {
         this.mSerialPortOperaion.WriteData(new int[]{10});
     }
 
@@ -220,7 +220,7 @@ public class SerialPrinter {
             try {
                 Thread.sleep(100L);
             } catch (InterruptedException var16) {
-
+                var16.printStackTrace();
             }
         }
         this.mSerialPortOperaion.WriteData(start1);

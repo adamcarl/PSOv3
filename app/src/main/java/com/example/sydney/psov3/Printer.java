@@ -35,27 +35,6 @@ public class Printer extends AppCompatActivity {
     public void print(View view) {
         try {
             mSerialPrinter.sydneyDotMatrix7by7();
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//
-//            mSerialPrinter.printString("\n");
-//
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//
-//            mSerialPrinter.printString("\n");
-//
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//            mSerialPrinter.printString("\n");
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//            mSerialPrinter.printString("\n");
-//
-//
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//            mSerialPrinter.printString("\n");
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//            mSerialPrinter.printString("\n");
-//
-//            mSerialPrinter.printString("ABZTRAK INC CONVENIENCE STORE");
-//            mSerialPrinter.printString("\n");
             mSerialPrinter.walkPaper(50);
             mSerialPrinter.sendLineFeed();
         }
