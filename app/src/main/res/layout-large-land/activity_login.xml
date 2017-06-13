@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/myColorBackgroundOrange"
-    android:gravity="center_vertical"
-    android:id="@+id/llAdminStaff">
+    android:animateLayoutChanges="true"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp">
 
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/flex"
+        android:id="@+id/forecast"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:alignItems="center"
@@ -26,78 +27,84 @@
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                app:srcCompat="@drawable/ic_person_black_48px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_lock_black_48px"
                 android:tint="@color/myColorIconLock"/>
 
             <android.support.v7.widget.AppCompatEditText
-                android:inputType="number"
                 android:maxLines="1"
-                android:layout_marginTop="20dp"
-                android:id="@+id/etSearchNumber"
+                android:layout_marginTop="5dp"
+                android:id="@+id/etUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:hint="Enter User Number"
+                android:elevation="4dp"
+                android:hint="User Number"
                 android:textColor="@color/myColorWhite"
                 android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login" />
+                android:background="@drawable/custom_edittext_login"/>
 
             <android.support.v7.widget.AppCompatEditText
-                android:inputType="text"
-                android:enabled="false"
                 android:maxLines="1"
                 android:layout_marginTop="10dp"
-                android:id="@+id/etName"
+                android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:hint="Name of employee"
-                android:textColorHint="@color/myColorActionBar"
-                android:textColor="@color/myColorWhite"
-                android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:enabled="false"
-                android:maxLines="1"
-                android:inputType="textPassword"
-                android:layout_marginTop="10dp"
-                android:id="@+id/etPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="2dp"
+                android:elevation="4dp"
                 android:hint="Password"
-                android:textColorHint="@color/myColorActionBar"
                 android:textColor="@color/myColorWhite"
+                android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_edittext_login"/>
 
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:layout_marginTop="10dp"
+            <android.support.v7.widget.AppCompatCheckBox
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/spinnerAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinnerUpdPos"
-                android:entries="@array/cashstaffpos"/>
+                android:text="Admin"
+                android:buttonTint="@color/myColorLoginEditText"
+                android:textColor="@color/myColorIconLock"/>
+
 
             <android.support.v7.widget.AppCompatButton
-                android:layout_marginTop="20dp"
-                android:id="@+id/btnUpdate"
+                android:layout_marginTop="5dp"
+                android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:textStyle="bold"
-                android:text="UPDATE"
+                android:elevation="4dp"
+                android:text="LOGIN"
                 android:textColor="@color/myColorWhite"
                 android:shadowColor="@color/myColorActionBar"
                 android:background="@drawable/custom_button_login"/>
 
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_marginTop="15dp"
+                android:id="@+id/txtSignup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? Sign up."
+                android:textColor="@color/myColorIconLock"
+                android:gravity="center_horizontal"/>
+
         </LinearLayout>
-
-
     </com.google.android.flexbox.FlexboxLayout>
+    <LinearLayout
+        android:id="@+id/ll_signup"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="4dip">
 
+        <fragment
+            android:id="@+id/fragment_signup"
+            android:name="com.example.sydney.psov3.MainActivity$FragmentSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>

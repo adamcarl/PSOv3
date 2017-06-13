@@ -35,14 +35,16 @@
                 app:justifyContent="space_around">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/ic_person_black_48px"
                     android:tint="@color/myColorIconLock"
-                    app:layout_flexBasisPercent="@fraction/fraction30percent"/>
+                    app:layout_flexBasisPercent="@fraction/fraction100percent"/>
 
                 <android.support.v7.widget.AppCompatEditText
-                    app:layout_flexBasisPercent="@fraction/fraction60percent"
+                    android:inputType="number"
+                    android:layout_marginTop="50dp"
+                    app:layout_flexBasisPercent="@fraction/fraction80percent"
                     android:maxLines="1"
                     android:id="@+id/etSearchNumber"
                     android:layout_width="match_parent"
@@ -55,88 +57,59 @@
                     android:background="@drawable/custom_edittext_login"/>
 
                 <android.support.v7.widget.AppCompatEditText
-                    app:layout_flexBasisPercent="@fraction/fraction100percent"
+                    android:inputType="text"
+                    app:layout_flexBasisPercent="@fraction/fraction80percent"
                     android:enabled="false"
                     android:maxLines="1"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="20dp"
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="2dp"
-                    android:text="Name Placeholder"
+                    android:hint="Name of employee"
+                    android:textColorHint="@color/myColorActionBar"
                     android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_edittext_login" />
 
                 <android.support.v7.widget.AppCompatEditText
-                    app:layout_flexBasisPercent="@fraction/fraction100percent"
+                    app:layout_flexBasisPercent="@fraction/fraction80percent"
                     android:enabled="false"
                     android:maxLines="1"
                     android:inputType="textPassword"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="20dp"
                     android:id="@+id/etPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="2dp"
-                    android:text="Placeholder"
+                    android:hint="Password"
+                    android:textColorHint="@color/myColorActionBar"
                     android:textColor="@color/myColorWhite"
                     android:shadowColor="@color/myColorActionBar"
                     android:background="@drawable/custom_edittext_login"/>
 
 
                 <android.support.v7.widget.AppCompatSpinner
-                    app:layout_flexBasisPercent="@fraction/fraction100percent"
-                    android:layout_marginTop="8dp"
+                    app:layout_flexBasisPercent="@fraction/fraction80percent"
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinnerUpdPos"/>
+                    android:id="@+id/spinnerUpdPos"
+                    android:entries="@array/cashstaffpos"/>
 
-                <LinearLayout
+                <android.support.v7.widget.AppCompatButton
+                    app:layout_flexBasisPercent="@fraction/fraction80percent"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/btnUpdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal">
+                    android:elevation="2dp"
+                    android:textStyle="bold"
+                    android:text="UPDATE"
+                    android:textColor="@color/myColorWhite"
+                    android:shadowColor="@color/myColorActionBar"
+                    android:background="@drawable/custom_button_login"/>
 
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnUpdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:elevation="2dp"
-                        android:textStyle="bold"
-                        android:text="UPDATE"
-                        android:textColor="@color/myColorWhite"
-                        android:shadowColor="@color/myColorActionBar"
-                        android:background="@drawable/custom_button_login"/>
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:layout_weight=".5"
-                        android:visibility="gone"
-                        android:id="@+id/btnSave"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:elevation="2dp"
-                        android:textStyle="bold"
-                        android:text="SAVE"
-                        android:textColor="@color/myColorWhite"
-                        android:shadowColor="@color/myColorActionBar"
-                        android:background="@drawable/custom_button_login"/>
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight=".5"
-                        android:visibility="gone"
-                        android:id="@+id/btnCancel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:elevation="2dp"
-                        android:textStyle="bold"
-                        android:text="CANCEL"
-                        android:textColor="@color/myColorWhite"
-                        android:shadowColor="@color/myColorActionBar"
-                        android:background="@drawable/custom_button_login"/>
-                </LinearLayout>
             </com.google.android.flexbox.FlexboxLayout>
 
         </LinearLayout>

@@ -161,6 +161,12 @@ public class AdminActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.admin_priveleges_main_menu,menu);
+
+        MenuItem importCSV = menu.findItem(R.id.menu_import_product);
+        MenuItem addProduct = menu.findItem(R.id.menu_add_product);
+        importCSV.setVisible(false);
+        addProduct.setVisible(false);
+
         if(menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);

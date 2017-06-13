@@ -10,18 +10,16 @@
         android:padding="16dp">
 
         <android.support.v7.widget.AppCompatEditText
-            android:inputType="text"
-            android:id="@+id/etProductName"
+            android:id="@+id/etUpdateName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
-            android:hint="Product Name"
+            android:hint="Name"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:inputType="number"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:elevation="2dp"
@@ -29,61 +27,32 @@
             android:background="@drawable/custom_edittext_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etProductId"
-            android:hint="Product id"/>
+            android:id="@+id/etUpdatePassword"
+            android:hint="Password"/>
 
-        <android.support.v7.widget.AppCompatEditText
-            android:inputType="text"
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
+        <android.support.v7.widget.AppCompatSpinner
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etProductDes"
-            android:hint="Product Description"/>
-
-        <android.support.v7.widget.AppCompatEditText
-            android:inputType="number"
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/etProductQuantity"
-            android:hint="Product quantity"/>
-
-        <android.support.v7.widget.AppCompatEditText
-            android:inputType="number"
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/etProductPrice"
-            android:hint="Product price"/>
+            android:id="@+id/spinnerUpdPos"
+            android:entries="@array/cashstaffpos"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp">
 
             <android.support.v7.widget.AppCompatButton
                 android:elevation="2dp"
                 android:textColor="@color/myColorBackgroundWhite"
                 android:textStyle="bold"
                 android:layout_weight=".5"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/custom_button_dialog"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnSaveAddProduct"
+                android:id="@+id/btnSaveUpdateStaff"
                 android:text="SAVE"/>
 
             <android.support.v7.widget.AppCompatButton
@@ -92,11 +61,10 @@
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
                 android:layout_weight=".5"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/custom_button_dialog"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnCancelAddProduct"
+                android:id="@+id/btnCancelUpdateStaff"
                 android:text="CANCEL"/>
 
         </LinearLayout>

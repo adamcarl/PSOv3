@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         userText = savedInstanceState.getCharSequence(ori);
-        or= Integer.parseInt(userText != null ? userText.toString() : null);
+        or= Integer.parseInt(userText.toString());
         if(or==0){
             layout_signup.setVisibility(View.GONE);
             flexNiLogin.setVisibility(View.VISIBLE);
@@ -66,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         try {
             db_data.addAdmin("1", "1");
-        }catch (Exception ex){}
-        //For ActivityLogin
+        }catch(Exception ex){
+
+        }
+//        For ActivityLogin
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,11 +140,12 @@ public class MainActivity extends AppCompatActivity {
                 String mpass = et_regPass.getText().toString().trim();
                 String mpos = spn_regPosition.getSelectedItem().toString();
                 try {
-                    db_data.addCashier(mname,mnum,mpass,mpos);
                     et_regName.setText("");
                     et_regUsernum.setText("");
                     et_regPass.setText("");
                     spn_regPosition.setSelection(0);
+
+                    db_data.addCashier(mname,mnum,mpass,mpos);
                     Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
@@ -155,8 +158,9 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         //Database
         db_data = new DB_Data(this);
-        
-        //For LogIn
+
+
+           //For LogIn
         btn_login=(Button)findViewById(R.id.btnLogin);
         et_usernum=(EditText)findViewById(R.id.etUsernum);
         et_pass=(EditText)findViewById(R.id.etPassword);

@@ -1,25 +1,35 @@
 package com.example.sydney.psov3;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.sydney.psov3.adapter.AdapterProd;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -31,6 +41,12 @@ public class ManageProduct extends AppCompatActivity {
     AlertDialog.Builder builder = null;
     AlertDialog alertDialog = null;
     DB_Data db_data;
+
+    ListView lv_admin_prod;
+    ArrayList<Product> productArrayList;
+    AdapterProd adapterProd = null;
+    SearchView search_prod;
+
     public static final int requestcode = 1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,10 +54,91 @@ public class ManageProduct extends AppCompatActivity {
         setContentView(R.layout.activity_admin_manage_product);
         db_data = new DB_Data(this);
 
+        lv_admin_prod = (ListView) findViewById(R.id.listviewProduct);
+        productArrayList = new ArrayList<>();
+        adapterProd = new AdapterProd(this, R.layout.single_row, productArrayList);
+        lv_admin_prod.setAdapter(adapterProd);
+        search_prod = (SearchView) findViewById(R.id.searchviewSearch);
+
         //CREATE DIALOG
         createMyDialog();
         alertDialog = builder.create();
+
+        //ALL ONCLICKLISTENERS
+        allOnClickListeners();
     }
+
+    private void allOnClickListeners() {
+        //LISTVIEW LISTENER
+        lv_admin_prod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(ManageProduct.this, "Clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //SEARCHVIEW LISTENER
+        search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                listGo();
+                return false;
+            }
+        });
+        listGo();
+
+
+    }
+
+    private void importProduct() {
+        Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        fileIntent.setType("gagt/sdf");
+        try {
+            startActivityForResult(fileIntent, requestcode);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    public void listGo(){
+        productArrayList.clear();
+        String arg = search_prod.getQuery().toString().trim().toLowerCase();
+        String aarg = "%" + arg + "%";
+        String[] ALL = {
+                COLUMN_PRODUCT_ID,
+                COLUMN_PRODUCT_NAME,
+                COLUMN_PRODUCT_DESCRIPTION,
+                COLUMN_PRODUCT_PRICE,
+                COLUMN_PRODUCT_QUANTITY};
+        String WHERE =
+                    COLUMN_PRODUCT_ID + " LIKE ? OR "
+                + COLUMN_PRODUCT_NAME + " LIKE ? OR "
+                + COLUMN_PRODUCT_DESCRIPTION + " LIKE ? OR "
+                + COLUMN_PRODUCT_PRICE + " LIKE ? OR "
+                + COLUMN_PRODUCT_QUANTITY + " LIKE ?";
+        String[] WHERE_ARG = {aarg, aarg, aarg, aarg, aarg};
+        SQLiteDatabase db = db_data.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_PRODUCT, ALL, WHERE, WHERE_ARG, null, null, null);
+        while (cursor.moveToNext()){
+            String pid = cursor.getInt(0) + "";
+            String pname = cursor.getString(1);
+            String pdesc = cursor.getString(2);
+            double pprice = cursor.getDouble(3);
+            int pdquan = cursor.getInt(4);
+
+            productArrayList.add(new Product(pid,pname,pdesc,pprice,pdquan));
+        }
+        adapterProd.notifyDataSetChanged();
+        cursor.close();
+    }
+
+
     //MENU//MENU//MENU//MENU//MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,10 +156,17 @@ public class ManageProduct extends AppCompatActivity {
             case R.id.menu_logout:
                 Intent intent = new Intent(ManageProduct.this, MainActivity.class);
                 startActivity(intent);
+
             case R.id.menu_add_product:
                 alertDialog.show();
                 //Todo Function Here for saving Transaction
                 return true;
+
+            case R.id.menu_import_product:
+                //Todo IMPORT CSV!
+                //IMPORTING PRODUCT
+                importProduct();
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -94,7 +198,7 @@ public class ManageProduct extends AppCompatActivity {
                 }
                 else{
                     db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
-                    Toast.makeText(ManageProduct.this, "Success! Must implement method for adding!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageProduct.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 }
 
@@ -120,7 +224,7 @@ public class ManageProduct extends AppCompatActivity {
             case requestcode:
                 String filepath = data.getData().getPath();
                 SQLiteDatabase db = db_data.getWritableDatabase();
-                String tableName = TABLE_NAME_PRODUCT;
+                String tableName = TABLE_PRODUCT;
                 db.execSQL("delete from " + tableName);
                 try {
                     if (resultCode == RESULT_OK) {
@@ -138,11 +242,11 @@ public class ManageProduct extends AppCompatActivity {
                                 String pDesc = str[2];
                                 String pPrice = str[3];
                                 String pQuan = str[4];
-                                contentValues.put(ID_PRODUCT, pId);
-                                contentValues.put(NAME_PRODUCT, pName);
-                                contentValues.put(DESC_PRODUCT, pDesc);
-                                contentValues.put(PRICE_PRODUCT, pPrice);
-                                contentValues.put(QUAN_PRODUCT, pQuan);
+                                contentValues.put(COLUMN_PRODUCT_ID, pId);
+                                contentValues.put(COLUMN_PRODUCT_NAME, pName);
+                                contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
+                                contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
+                                contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
                                 db.insert(tableName, null, contentValues);
                                 Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             }
@@ -172,5 +276,6 @@ public class ManageProduct extends AppCompatActivity {
                     // db.endTransaction();
                 }
         }
+        listGo();
     }
 }

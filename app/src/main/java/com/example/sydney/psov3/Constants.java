@@ -3,50 +3,49 @@ package com.example.sydney.psov3;
 import android.provider.BaseColumns;
 
 /**
- * Created by Poging Adam on 4/25/2017.
+ * Created by sydney on 4/25/2017.
  */
 
-interface Constants extends BaseColumns {
-    String TABLE_NAME_ADMIN = "tbl_admin"; //Table name = tbl_admin
-    String USERNAME_ADMIN = "Username"; //Field name = Firstname
-    String PASSWORD_ADMIN = "Password"; //Field name = Password
+public interface Constants extends BaseColumns {
+    String TABLE_ADMIN = "tbl_admin"; //Table name = tbl_admin
+    String COLUMN_ADMIN_USERNAME = "Username"; //Field name = Firstname
+    String COLUMN_ADMIN_PASSWORD = "Password"; //Field name = Password
 
-    String TABLE_NAME_CASHIER = "tbl_cashier"; //Table name = tbl_cashier
-    String NUMBER_CASHIER = "Cashiernum"; //Field name = Cashiernum
-    String NAME_CASHIER = "Name"; //Field name = Name
-    String POSITION_CASHIER = "Position"; //Field name = Position
-    String PASSWORD_CASHIER = "Password"; //Field name = Password
+    String TABLE_CASHIER = "tbl_cashier"; //Table name = tbl_cashier
+    String COLUMN_CASHIER_NUMBER = "Cashiernum"; //Field name = Cashiernum
+    String COLUMN_CASHIER_NAME = "Name"; //Field name = Name
+    String COLUMN_CASHIER_POSITION = "Position"; //Field name = Position
+    String COLUMN_CASHIER_PASSWORD = "Password"; //Field name = Password
 
-    String TABLE_NAME_PRODUCT = "tbl_product";
-    String ID_PRODUCT = "ProdId";
-    String NAME_PRODUCT = "ProdName";
-    String DESC_PRODUCT = "ProdDesc";
-    String PRICE_PRODUCT = "ProdPrice";
-    String QUAN_PRODUCT = "ProdQuan";
-    String VATABLE = "Vatable";
+    String TABLE_PRODUCT = "tbl_product";
+    String COLUMN_PRODUCT_ID = "ProdId";
+    String COLUMN_PRODUCT_NAME = "ProdName";
+    String COLUMN_PRODUCT_DESCRIPTION = "ProdDesc";
+    String COLUMN_PRODUCT_PRICE = "ProdPrice";
+    String COLUMN_PRODUCT_QUANTITY = "ProdQuan";
+    String COLUMN_PRODUCT_VATABLE = "Vatable";
 
-    String TABLE_NAME_INVOICE = "tbl_invoice";
-    String CASHIER_INVOICE = "InCash";
-    String CUSTOMER_DISCOUNT_INVOICE = "InDisc";
-    String CUSTOMER_CASH_INVOICE = "InCustomer";
-    String DATE_INVOICE = "InDate";
-    String TIME_INVOICE = "InTime";
+    String TABLE_INVOICE = "tbl_invoice";
+    String COLUMN_INVOICE_CASHIER = "InCash";
+    String COLUMN_INVOICE_DISCOUNT = "InDisc";
+    String COLUMN_INVOICE_CUSTOMER = "InCustomer";
+    String COLUMN_INVOICE_DATE = "InDate";
+    String COLUMN_INVOICE_TIME = "InTime";
 
-    String TABLE_NAME_ITEM = "tbl_item";
-    String INVOICE_NUM_ITEM = "ItemIn";
-    String PRODUCT_ID_ITEM = "ItemProd";
-    String PRODUCT_QUANTITY_ITEM = "ItemQuan";
-    String STATUS_ITEM = "ItemStatus";
+    String TABLE_ITEM = "tbl_item";
+    String COLUMN_ITEM_INVOICE = "ItemIn";
+    String COLUMN_ITEM_PRODUCT = "ItemProd";
+    String COLUMN_ITEM_QUANTITY = "ItemQuan";
+    String COLUMN_ITEM_STATUS = "ItemStatus";
 
-    String TABLE_NAME_XREPORT = "tbl_xreport";
-    String XREPORT_TRANSACTION_NUMBER = "xreportNumber";
-    String XREPORT_DATE= "xreportDate";
-    String XREPORT_TIME= "xreportTime";
-    String XREPORT_CASHIER = "xreportCashier";
+    String TABLE_XREPORT = "tbl_xreport";
+    String COLUMN_XREPORT_REPORTNUMBER = "xreportNumber";
+    String COLUMN_XREPORT_DATE = "xreportDate";
+    String COLUMN_XREPORT_TIME = "xreportTime";
+    String COLUMN_XREPORT_CASHIER = "xreportCashier";
 
-    String TABLE_NAME_TRANSACTION = "tbl_trans";
-    String TRANSACTION_TYPE = "TransType";
+    String TABLE_TRANSACTION = "tbl_trans";
+    String COLUMN_TRANSACTION_TYPE = "TransType";
 
-    String LOG_TABLE_NAME = "tbl_log";
-    String LOG_FIELD = "logField";
+    String TABLE_TEMPORARY = "tbl_temp";
 }
