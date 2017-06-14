@@ -14,6 +14,8 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +50,7 @@ public class ManageProduct extends AppCompatActivity {
     SearchView search_prod;
     Spinner spinner;
     String colWhere;
+    EditText etSearch;
     List<Product> productsList;
     int spinnerSelected;
 
@@ -60,10 +63,12 @@ public class ManageProduct extends AppCompatActivity {
 
         spinner = (Spinner) findViewById(R.id.spinnerProductSearch);
         spinner.setSelection(0); //initially Product ID
+        etSearch = (EditText) findViewById(R.id.etSearchProduct);
+        etSearch.addTextChangedListener(myTextWatcher);
         search_prod = (SearchView) findViewById(R.id.searchviewSearch);
 
         //INITIALIZE DATA SET
-        productsList = listGo();
+        productsList = printProduct();
         productAdapter = new ProductAdapter(getApplication(),productsList);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -93,14 +98,7 @@ public class ManageProduct extends AppCompatActivity {
         //SEARCHVIEW LISTENER
         search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                spinnerSelected = spinner.getSelectedItemPosition();
-
-                if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && search_prod.equals("")){
-                    listGo();
-                }
-                return false;
-            }
+            public boolean onQueryTextSubmit(String s) {return false;}
 
             @Override
             public boolean onQueryTextChange(String query) {
@@ -118,21 +116,118 @@ public class ManageProduct extends AppCompatActivity {
                      colWhere = COLUMN_PRODUCT_DESCRIPTION;
                     searchProd();
                 }
-                else if(spinnerSelected == 4){
+                else if(spinnerSelected == 3){
                      colWhere = COLUMN_PRODUCT_PRICE;
                     searchProd();
                 }
-                else if(spinnerSelected == 3){
+                else if(spinnerSelected == 4){
                      colWhere = COLUMN_PRODUCT_QUANTITY;
                     searchProd();
                 }
                 else{
                     listGo();
                 }
+
+                productAdapter.notifyDataSetChanged();
+
                 return false;
             }
         });
 
+
+    }
+
+    private TextWatcher myTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            spinnerSelected = spinner.getSelectedItemPosition();
+
+            productsList.clear();
+            String searchItem = etSearch.getText().toString().trim().toLowerCase();
+
+            if(!searchItem.equals("") && spinnerSelected == 0){
+                colWhere = COLUMN_PRODUCT_ID;
+                printProduct();
+            }
+            else if (!searchItem.equals("") && spinnerSelected == 1){
+                colWhere = COLUMN_PRODUCT_NAME;
+                printProduct();
+            }
+            else if (!searchItem.equals("") && spinnerSelected == 2){
+                colWhere = COLUMN_PRODUCT_DESCRIPTION;
+                printProduct();
+            }
+            else if (!searchItem.equals("") && spinnerSelected == 3){
+                colWhere = COLUMN_PRODUCT_PRICE;
+                printProduct();
+            }
+            else if (!searchItem.equals("") && spinnerSelected == 4){
+                colWhere = COLUMN_PRODUCT_QUANTITY;
+                printProduct();
+            }
+            else{
+                productsList = printProduct();
+                productAdapter = new ProductAdapter(getApplication(),productsList);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));//RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+                recyclerView.setAdapter(productAdapter);
+            }
+
+            productAdapter.notifyDataSetChanged();
+        }
+    };
+
+    private List<Product> printProduct() {
+        String edittextSearch = etSearch.getText().toString();
+        if(!edittextSearch.isEmpty() && spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 ){
+            productsList.clear();
+            db_data.getReadableDatabase();
+            Cursor c = db_data.searchProductBaKamo(edittextSearch,colWhere);
+            while (c.moveToNext()) {
+                String pid = c.getInt(1) + "";
+                String pname = c.getString(2);
+                String pdesc = c.getString(3);
+                double pprice = c.getDouble(4);
+                int pdquan = c.getInt(5);
+
+                productsList.add(new Product(pid, pname, pdesc, pprice, pdquan));
+            }
+            c.close();
+
+            return productsList;
+        } else {
+            productsList = new ArrayList<>();
+            productsList.clear();
+            String[] ALL = {
+                    COLUMN_PRODUCT_ID,
+                    COLUMN_PRODUCT_NAME,
+                    COLUMN_PRODUCT_DESCRIPTION,
+                    COLUMN_PRODUCT_PRICE,
+                    COLUMN_PRODUCT_QUANTITY};
+            SQLiteDatabase db = db_data.getReadableDatabase();
+            Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
+            while (cursor.moveToNext()){
+                String pid = cursor.getInt(0) + "";
+                String pname = cursor.getString(1);
+                String pdesc = cursor.getString(2);
+                double pprice = cursor.getDouble(3);
+                int pdquan = cursor.getInt(4);
+
+                productsList.add(new Product(pid,pname,pdesc,pprice,pdquan));
+            }
+            cursor.close();
+            return productsList;
+        }
 
     }
 
@@ -147,13 +242,13 @@ public class ManageProduct extends AppCompatActivity {
         }
     }
 
-    private List<Product> searchProd(){
+    private List<Product> searchProduct() {
         productsList.clear();
-        String searchItem = search_prod.getQuery().toString().trim().toLowerCase();
+        String searchItem = etSearch.getText().toString().trim();
         if(searchItem.equals("")){
             listGo();
         }
-        else if(!searchItem.equals("")) {
+        else if(!searchItem.equals("") ) {
             db_data.getReadableDatabase();
             Cursor c = db_data.searchProductBaKamo(searchItem,colWhere);
 
@@ -166,9 +261,38 @@ public class ManageProduct extends AppCompatActivity {
 
                 productsList.add(new Product(pid, pname, pdesc, pprice, pdquan));
             }
-            productAdapter.notifyDataSetChanged();
             c.close();
         }
+        productAdapter.notifyDataSetChanged();
+
+        return productsList;
+    }
+
+    private List<Product> searchProd(){
+        productsList.clear();
+        String searchItem = search_prod.getQuery().toString().trim().toLowerCase();
+        if(searchItem.equals("")){
+            listGo();
+        }
+        else if(!searchItem.equals("") && spinnerSelected == 0) {
+            db_data.getReadableDatabase();
+            Cursor c = db_data.searchProductBaKamo(searchItem,colWhere);
+
+            while (c.moveToNext()) {
+                String pid = c.getInt(1) + "";
+                String pname = c.getString(2);
+                String pdesc = c.getString(3);
+                double pprice = c.getDouble(4);
+                int pdquan = c.getInt(5);
+
+                productsList.add(new Product(pid, pname, pdesc, pprice, pdquan));
+            }
+            c.close();
+        } else {
+            listGo();
+        }
+        productAdapter.notifyDataSetChanged();
+
         return productsList;
     }
 
@@ -186,16 +310,15 @@ public class ManageProduct extends AppCompatActivity {
         SQLiteDatabase db = db_data.getReadableDatabase();
         Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
         while (cursor.moveToNext()){
-            String pid = cursor.getInt(0) + "";
-            String pname = cursor.getString(1);
-            String pdesc = cursor.getString(2);
-            double pprice = cursor.getDouble(3);
-            int pdquan = cursor.getInt(4);
+            String pid = cursor.getInt(1) + "";
+            String pname = cursor.getString(2);
+            String pdesc = cursor.getString(3);
+            double pprice = cursor.getDouble(4);
+            int pdquan = cursor.getInt(5);
 
             productsList.add(new Product(pid,pname,pdesc,pprice,pdquan));
         }
         cursor.close();
-
         return productsList;
     }
 
@@ -230,6 +353,7 @@ public class ManageProduct extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void createMyDialog(){
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();

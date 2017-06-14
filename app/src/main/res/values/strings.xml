@@ -18,7 +18,7 @@
         <item>ID</item>
         <item>NAME</item>
         <item>DESCRIPTION</item>
-        <item>QUANTITY</item>
         <item>PRICE</item>
+        <item>QUANTITY</item>
     </string-array>
 </resources>
