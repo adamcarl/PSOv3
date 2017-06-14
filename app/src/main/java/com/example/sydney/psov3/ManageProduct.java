@@ -50,6 +50,7 @@ public class ManageProduct extends AppCompatActivity {
     String colWhere;
     List<Product> productsList;
     int spinnerSelected;
+    RecyclerView recyclerView;
 
     public static final int requestcode = 1;
     @Override
@@ -65,7 +66,7 @@ public class ManageProduct extends AppCompatActivity {
         //INITIALIZE DATA SET
         productsList = listGo();
         productAdapter = new ProductAdapter(getApplication(),productsList);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -91,13 +92,54 @@ public class ManageProduct extends AppCompatActivity {
 //        });
 
         //SEARCHVIEW LISTENER
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinnerSelected = spinner.getSelectedItemPosition();
+                if(spinnerSelected == 0){
+                    colWhere = COLUMN_PRODUCT_ID;
+                    searchProd();
+                }
+                else if(spinnerSelected == 1){
+                    colWhere = COLUMN_PRODUCT_NAME;
+                    searchProd();
+                }
+                else if(spinnerSelected == 2){
+                    colWhere = COLUMN_PRODUCT_DESCRIPTION;
+                    searchProd();
+                }
+                else if(spinnerSelected == 4){
+                    colWhere = COLUMN_PRODUCT_PRICE;
+                    searchProd();
+                }
+                else if(spinnerSelected == 3){
+                    colWhere = COLUMN_PRODUCT_QUANTITY;
+                    searchProd();
+                }
+                if(search_prod.getQuery().toString().trim().toLowerCase().equals("")){
+                    productsList = listGo();
+                    productAdapter = new ProductAdapter(getApplication(),productsList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));
+                    recyclerView.setAdapter(productAdapter);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 spinnerSelected = spinner.getSelectedItemPosition();
 
-                if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && search_prod.equals("")){
-                    listGo();
+                if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && search_prod.getQuery().toString().trim().toLowerCase().equals("")){
+                    productsList = listGo();
+                    productAdapter = new ProductAdapter(getApplication(),productsList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));
+                    recyclerView.setAdapter(productAdapter);
                 }
                 return false;
             }
@@ -105,7 +147,6 @@ public class ManageProduct extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String query) {
                 spinnerSelected = spinner.getSelectedItemPosition();
-
                 if(spinnerSelected == 0){
                     colWhere = COLUMN_PRODUCT_ID;
                     searchProd();
@@ -126,8 +167,12 @@ public class ManageProduct extends AppCompatActivity {
                      colWhere = COLUMN_PRODUCT_QUANTITY;
                     searchProd();
                 }
-                else{
-                    listGo();
+                if(search_prod.getQuery().toString().trim().toLowerCase().equals("")){
+                    productsList = listGo();
+                    productAdapter = new ProductAdapter(getApplication(),productsList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));
+                    recyclerView.setAdapter(productAdapter);
+
                 }
                 return false;
             }
@@ -176,7 +221,6 @@ public class ManageProduct extends AppCompatActivity {
     public List<Product> listGo(){
         productsList = new ArrayList<>();
         productsList.clear();
-        String arg = search_prod.getQuery().toString().trim().toLowerCase();
         String[] ALL = {
                 COLUMN_PRODUCT_ID,
                 COLUMN_PRODUCT_NAME,
