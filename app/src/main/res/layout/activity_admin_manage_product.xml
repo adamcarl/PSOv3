@@ -25,7 +25,15 @@
             android:gravity="center"
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinnerProductSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/productField">
+            </android.support.v7.widget.AppCompatSpinner>
+
             <android.support.v7.widget.SearchView
+                android:layout_marginTop="15dp"
                 android:elevation="2dp"
                 android:orientation="horizontal"
                 android:background="@color/myColorLoginEditText"

@@ -13,4 +13,12 @@
         <item>Supervisor</item>
         <item>Cashier</item>
     </string-array>
+
+    <string-array name="productField">
+        <item>ID</item>
+        <item>NAME</item>
+        <item>DESCRIPTION</item>
+        <item>QUANTITY</item>
+        <item>PRICE</item>
+    </string-array>
 </resources>
