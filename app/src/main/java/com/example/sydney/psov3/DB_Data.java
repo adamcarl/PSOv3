@@ -272,4 +272,37 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_PRODUCT_QUANTITY, P_quan);
         dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
     }
+//OLD SEARCH FOR PRODUCTS!!!!
+//    public Cursor searchViewProduct(String searchItem) {
+//        String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
+//        Cursor cursor = null;
+//
+//        if(searchItem != null && searchItem.length() > 0 ){
+//            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE "
+//                    + COLUMN_PRODUCT_ID + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_NAME + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_DESCRIPTION + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_PRICE + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_QUANTITY + " LIKE '%" + searchItem +"%'";
+//            cursor = dbr.rawQuery(sql,null);
+//            return cursor;
+//        }
+//
+//        cursor = dbr.query(TABLE_PRODUCT,columns,null,null,null,null,null,null);
+//        return cursor;
+//    }
+
+    public Cursor searchProductBaKamo(String searchItem, String WHERE) {
+        String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
+        Cursor cursor = null;
+        if(searchItem != null && searchItem.length() > 0 ){
+            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
+            cursor = dbr.rawQuery(sql,null);
+            return cursor;
+        }
+        else {
+            cursor = dbr.query(TABLE_PRODUCT, columns, null, null, null, null, null, null);
+            return cursor;
+        }
+    }
 }

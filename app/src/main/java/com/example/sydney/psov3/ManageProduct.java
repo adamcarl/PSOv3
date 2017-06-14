@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.sydney.psov3.adapter.AdapterProd;
@@ -45,7 +46,10 @@ public class ManageProduct extends AppCompatActivity {
 
     ProductAdapter productAdapter = null;
     SearchView search_prod;
-    ArrayList<Product> productsList;
+    Spinner spinner;
+    String colWhere;
+    List<Product> productsList;
+    int spinnerSelected;
 
     public static final int requestcode = 1;
     @Override
@@ -54,25 +58,30 @@ public class ManageProduct extends AppCompatActivity {
         setContentView(R.layout.activity_admin_manage_product);
         db_data = new DB_Data(this);
 
+        spinner = (Spinner) findViewById(R.id.spinnerProductSearch);
+        spinner.setSelection(0); //initially Product ID
         search_prod = (SearchView) findViewById(R.id.searchviewSearch);
 
         //INITIALIZE DATA SET
+        productsList = listGo();
         productAdapter = new ProductAdapter(getApplication(),productsList);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
         //CREATE DIALOG
         createMyDialog();
         alertDialog = builder.create();
 
         //ALL ONCLICKLISTENERS
-        allOnClickListeners();
+        allOnListeners();
 
-        listGo();
+
+
     }
 
-    private void allOnClickListeners() {
+    private void allOnListeners() {
         //LISTVIEW LISTENER
 //        lv_admin_prod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -85,15 +94,45 @@ public class ManageProduct extends AppCompatActivity {
         search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                listGo();
+                spinnerSelected = spinner.getSelectedItemPosition();
+
+                if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && search_prod.equals("")){
+                    listGo();
+                }
                 return false;
             }
+
             @Override
-            public boolean onQueryTextChange(String s) {
-                listGo();
+            public boolean onQueryTextChange(String query) {
+                spinnerSelected = spinner.getSelectedItemPosition();
+
+                if(spinnerSelected == 0){
+                    colWhere = COLUMN_PRODUCT_ID;
+                    searchProd();
+                }
+                else if(spinnerSelected == 1){
+                     colWhere = COLUMN_PRODUCT_NAME;
+                    searchProd();
+                }
+                else if(spinnerSelected == 2){
+                     colWhere = COLUMN_PRODUCT_DESCRIPTION;
+                    searchProd();
+                }
+                else if(spinnerSelected == 4){
+                     colWhere = COLUMN_PRODUCT_PRICE;
+                    searchProd();
+                }
+                else if(spinnerSelected == 3){
+                     colWhere = COLUMN_PRODUCT_QUANTITY;
+                    searchProd();
+                }
+                else{
+                    listGo();
+                }
                 return false;
             }
         });
+
 
     }
 
@@ -108,25 +147,44 @@ public class ManageProduct extends AppCompatActivity {
         }
     }
 
-    public void listGo(){
+    private List<Product> searchProd(){
+        productsList.clear();
+        String searchItem = search_prod.getQuery().toString().trim().toLowerCase();
+        if(searchItem.equals("")){
+            listGo();
+        }
+        else if(!searchItem.equals("")) {
+            db_data.getReadableDatabase();
+            Cursor c = db_data.searchProductBaKamo(searchItem,colWhere);
+
+            while (c.moveToNext()) {
+                String pid = c.getInt(1) + "";
+                String pname = c.getString(2);
+                String pdesc = c.getString(3);
+                double pprice = c.getDouble(4);
+                int pdquan = c.getInt(5);
+
+                productsList.add(new Product(pid, pname, pdesc, pprice, pdquan));
+            }
+            productAdapter.notifyDataSetChanged();
+            c.close();
+        }
+        return productsList;
+    }
+
+
+    public List<Product> listGo(){
+        productsList = new ArrayList<>();
         productsList.clear();
         String arg = search_prod.getQuery().toString().trim().toLowerCase();
-        String aarg = "%" + arg + "%";
         String[] ALL = {
                 COLUMN_PRODUCT_ID,
                 COLUMN_PRODUCT_NAME,
                 COLUMN_PRODUCT_DESCRIPTION,
                 COLUMN_PRODUCT_PRICE,
                 COLUMN_PRODUCT_QUANTITY};
-        String WHERE =
-                    COLUMN_PRODUCT_ID + " LIKE ? OR "
-                + COLUMN_PRODUCT_NAME + " LIKE ? OR "
-                + COLUMN_PRODUCT_DESCRIPTION + " LIKE ? OR "
-                + COLUMN_PRODUCT_PRICE + " LIKE ? OR "
-                + COLUMN_PRODUCT_QUANTITY + " LIKE ?";
-        String[] WHERE_ARG = {aarg, aarg, aarg, aarg, aarg};
         SQLiteDatabase db = db_data.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_PRODUCT, ALL, WHERE, WHERE_ARG, null, null, null);
+        Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
         while (cursor.moveToNext()){
             String pid = cursor.getInt(0) + "";
             String pname = cursor.getString(1);
@@ -136,9 +194,9 @@ public class ManageProduct extends AppCompatActivity {
 
             productsList.add(new Product(pid,pname,pdesc,pprice,pdquan));
         }
-        productAdapter.notifyDataSetChanged();
         cursor.close();
 
+        return productsList;
     }
 
     //MENU//MENU//MENU//MENU//MENU
@@ -197,12 +255,12 @@ public class ManageProduct extends AppCompatActivity {
                 if(mProductName.isEmpty() || mProductId.isEmpty() || mProductDes.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
                     Toast.makeText(ManageProduct.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    db_data.addProduct(mProductId, mProductName, mProductDes, mProductPrice, mProductQuantity);
+                else{
+                    db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
                     Toast.makeText(ManageProduct.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
-                    listGo();
                 }
+
             }
         });
 
@@ -249,8 +307,8 @@ public class ManageProduct extends AppCompatActivity {
                                 contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
                                 contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
                                 db.insert(tableName, null, contentValues);
-                                Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             }
+                            Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
                         } catch (IOException e) {
