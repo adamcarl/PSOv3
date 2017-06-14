@@ -38,6 +38,7 @@
             android:name=".ManageProfile"
             android:label="My Profile"
             android:parentActivityName=".AdminActivity" />
+        <activity android:name=".temp"></activity>
     </application>
 
 </manifest>
