@@ -40,15 +40,18 @@
 
 
     <LinearLayout
-        android:background="@color/myColorBackgroundWhite"
+        android:background="@color/myColorBGforRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ListView
-            android:id="@+id/listviewProduct"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:scrollbars="vertical">
+
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
 

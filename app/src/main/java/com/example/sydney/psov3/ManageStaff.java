@@ -83,9 +83,7 @@ public class ManageStaff extends AppCompatActivity {
                 String mStaffPassword = staffPassword.getText().toString();
                 String mStaffPosition = Integer.toString(staffPosition.getSelectedItemPosition());
 
-                et_Name.setText(mStaffName);
-                et_Password.setText(mStaffPassword);
-                spinner_Position.setSelection(Integer.parseInt(mStaffPosition));
+
                 int mCashierNumber = Integer.parseInt(etSearchStaff.getText().toString().trim());
 
                 if(mStaffName.isEmpty() || mStaffPassword.isEmpty()){
@@ -95,6 +93,11 @@ public class ManageStaff extends AppCompatActivity {
                     db_data.updateStaff(mCashierNumber+"",mStaffName,mStaffPassword,mStaffPosition);
                     etSearchStaff.getText();
                     alertDialog.dismiss();
+
+                    et_Name.setText(mStaffName);
+                    et_Password.setText(mStaffPassword);
+                    spinner_Position.setSelection(Integer.parseInt(mStaffPosition));
+
                     Toast.makeText(ManageStaff.this, "Updated!", Toast.LENGTH_SHORT).show();
                 }
 
