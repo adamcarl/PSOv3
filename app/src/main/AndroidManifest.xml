@@ -20,7 +20,7 @@
         </activity>
         <activity
             android:name=".AdminActivity"
-            android:label="Admin Priveleges"></activity>
+            android:label="Admin Priveleges" />
         <activity android:name=".Cashier" />
         <activity
             android:name=".ManageStaff"
@@ -29,7 +29,7 @@
         <activity
             android:name=".ManageProduct"
             android:label="Manage Product"
-            android:parentActivityName=".AdminActivity"></activity>
+            android:parentActivityName=".AdminActivity" />
         <activity
             android:name=".ManageJournal"
             android:label="Manage Journal"
@@ -38,7 +38,6 @@
             android:name=".ManageProfile"
             android:label="My Profile"
             android:parentActivityName=".AdminActivity" />
-        <activity android:name=".AdminProfile"></activity>
     </application>
 
 </manifest>

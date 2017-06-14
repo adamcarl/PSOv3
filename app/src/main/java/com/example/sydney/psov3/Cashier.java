@@ -128,33 +128,20 @@ public class Cashier extends AppCompatActivity {
 
 //        lv_order.setAdapter(adapterOrder);
         //Tab 1
-
         TabHost.TabSpec spec = tab_host.newTabSpec("Invoice");
-
         spec.setContent(R.id.tab1);
-
         spec.setIndicator("Invoice");
-
         tab_host.addTab(spec);
 
         //Tab 2
-
         spec = tab_host.newTabSpec("Payment");
-
         spec.setContent(R.id.tab2);
-
         spec.setIndicator("Payment");
-
         tab_host.addTab(spec);
-
         //Tab 3
-
         spec = tab_host.newTabSpec("Shift");
-
         spec.setContent(R.id.tab3);
-
         spec.setIndicator("Shift");
-
         tab_host.addTab(spec);
 
         Calendar c = Calendar.getInstance();
@@ -305,16 +292,12 @@ public class Cashier extends AppCompatActivity {
             }
         });
         //tab_host.setOnTabChangedListener(new AnimatedTabHostListener(this,tab_host));
-
-
         //Mark's onClickListeners for Button reports
         btnReportX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
-
     }
     public void priceClick(View view){
         txt_cash.requestFocus();
@@ -460,7 +443,6 @@ public class Cashier extends AppCompatActivity {
 
             String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" finished a transaction.";
             db_data.addLog(log);
-
         }
             cancelna();
     }
@@ -474,7 +456,6 @@ public class Cashier extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_cancel:
-
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy",Locale.CHINESE);
                 dateformatted = dateformat.format(c.getTime());

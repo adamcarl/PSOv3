@@ -16,21 +16,20 @@ import java.util.List;
  * Created by PROGRAMMER2 on 6/9/2017.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
+class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
 
     private Context mContext;
     private List<Product> productList = Collections.emptyList();
 
-    public ProductAdapter(Context mContext, List<Product> productList){
+    ProductAdapter(Context mContext, List<Product> productList){
         this.mContext = mContext;
         this.productList = productList;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView prodId,prodName,prodDes,prodPrice,prodQuantity;
-        public CardView cv;
-
-        public MyViewHolder(View view){
+    class MyViewHolder extends RecyclerView.ViewHolder{
+        TextView prodId,prodName,prodDes,prodPrice,prodQuantity;
+        CardView cv;
+        MyViewHolder(View view){
             super(view);
             cv = (CardView) view.findViewById(R.id.card_view);
             prodId = (TextView) view.findViewById(R.id.txtProdId);
