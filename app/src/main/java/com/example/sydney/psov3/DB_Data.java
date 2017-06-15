@@ -48,8 +48,7 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_INVOICE_CASHIER+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_DATE+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_TIME+" DATETIME);");
+                +COLUMN_INVOICE_DATETIME+" STRING NOT NULL);");
         arg0.execSQL("CREATE TABLE " +TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
@@ -61,9 +60,9 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_XREPORT_TRANSACTION_NUMBER + "INTEGER NOT NULL"
                 + COLUMN_XREPORT_REPORTNUMBER+" INTEGER NOT NULL, "
-                + COLUMN_XREPORT_DATE + " INTEGER NOT NULL, "
-                + COLUMN_XREPORT_TIME + " INTEGER NOT NULL, "
+                + COLUMN_XREPORT_DATETIME + " INTEGER NOT NULL, "
                 + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -153,14 +152,13 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inCash, String inDisc, String inCustomer, String inDate, String inTime){
+    void addInvoice(String inTrans, String inCash, String inDisc, String inCustomer, String inDateTime){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION,inTrans);
         cv.put(COLUMN_INVOICE_CASHIER,inCash);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
         cv.put(COLUMN_INVOICE_CUSTOMER, inCustomer);
-        cv.put(COLUMN_INVOICE_DATE,inDate);
-        cv.put(COLUMN_INVOICE_TIME,inTime);
+        cv.put(COLUMN_INVOICE_DATETIME,inDateTime);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 

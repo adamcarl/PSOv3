@@ -409,7 +409,7 @@ public class Cashier extends AppCompatActivity {
             String bcd=cursor1.getString(0);
             int a1 = Integer.parseInt(bcd)+1;
             String bcd1 = a1+"";
-            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateformatted, currentTime);
+//            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateformatted, currentTime);
             cursor1.close();
             Cursor cursor =   dbReader.query(TABLE_INVOICE, itemID, null, null, null, null, null);
             cursor.moveToLast();

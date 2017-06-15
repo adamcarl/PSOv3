@@ -30,8 +30,7 @@ public interface Constants extends BaseColumns {
     String COLUMN_INVOICE_CASHIER = "InCash";
     String COLUMN_INVOICE_DISCOUNT = "InDisc";
     String COLUMN_INVOICE_CUSTOMER = "InCustomer";
-    String COLUMN_INVOICE_DATE = "InDate";
-    String COLUMN_INVOICE_TIME = "InTime";
+    String COLUMN_INVOICE_DATETIME = "InDateTime";
 
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
@@ -40,9 +39,9 @@ public interface Constants extends BaseColumns {
     String COLUMN_ITEM_STATUS = "ItemStatus";
 
     String TABLE_XREPORT = "tbl_xreport";
+    String COLUMN_XREPORT_TRANSACTION_NUMBER = "xreportTransNum";
     String COLUMN_XREPORT_REPORTNUMBER = "xreportNumber";
-    String COLUMN_XREPORT_DATE = "xreportDate";
-    String COLUMN_XREPORT_TIME = "xreportTime";
+    String COLUMN_XREPORT_DATETIME = "xreportDateTime";
     String COLUMN_XREPORT_CASHIER = "xreportCashier";
 
     String TABLE_TRANSACTION = "tbl_trans";
