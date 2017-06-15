@@ -83,6 +83,7 @@ public class Cashier extends AppCompatActivity {
     String dateformatted;
     String[] forLog;
     String transType;
+    Date currentDateTime;
 
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
@@ -397,7 +398,7 @@ public class Cashier extends AppCompatActivity {
         transType = "invoice";
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
-        dateformatted = dateformat.format(c.getTime());
+        currentDateTime = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
@@ -468,8 +469,8 @@ public class Cashier extends AppCompatActivity {
                 dateformatted = dateformat.format(c.getTime());
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
                 currentTime = sdf.format(new Date());
-                String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" cancelled a transaction.";
-                db_data.addLog(log);
+//                String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" cancelled a transaction.";
+//                db_data.addLog(log);
                 cancelna();
                 return true;
             case R.id.action_vieworder:
@@ -518,15 +519,13 @@ public class Cashier extends AppCompatActivity {
     public void cashierLogOut(View view){
         cancelna();
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy hh:mm a",Locale.SIMPLIFIED_CHINESE);
         dateformatted = dateformat.format(c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-        currentTime = sdf.format(new Date());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
 //        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged out.";
 //        db_data.addLog(log);
         finish();
-        sleep(2000);
+        sleep(10000);
     }
     private void sleep(int ms) {
         try {
