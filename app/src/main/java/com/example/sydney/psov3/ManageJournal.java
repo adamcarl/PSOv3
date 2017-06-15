@@ -2,6 +2,7 @@ package com.example.sydney.psov3;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -52,29 +53,38 @@ public class ManageJournal extends AppCompatActivity {
 
     private List<Transactions> fill_with_data() {
         List<Transactions> transactions = new ArrayList<>();
+        String[] ALL = {
+                COLUMN_PRODUCT_ID,
+                COLUMN_PRODUCT_NAME,
+                COLUMN_PRODUCT_DESCRIPTION,
+                COLUMN_PRODUCT_PRICE,
+                COLUMN_PRODUCT_QUANTITY};
+        SQLiteDatabase db = db_data.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
+        while (cursor.moveToNext()){
+            String pid = cursor.getInt(0) + "";
+            String pname = cursor.getString(1);
+            String pdesc = cursor.getString(2);
+            double pprice = cursor.getDouble(3);
+            int pdquan = cursor.getInt(4);
 
-//        transactions.clear();
-        transactions.add(new Transactions(1,"VOID","6-10-2017 11:01AM"));
-        transactions.add(new Transactions(2,"INVOICE","6-10-2017 11:10AM"));
-        transactions.add(new Transactions(3,"CANCEL","6-10-2017 1:30PM"));
-        transactions.add(new Transactions(4,"VOID","6-10-2017 11:01AM"));
-        transactions.add(new Transactions(5,"INVOICE","6-10-2017 11:10AM"));
-        transactions.add(new Transactions(6,"CANCEL","6-10-2017 1:30PM"));
-        transactions.add(new Transactions(7,"VOID","6-10-2017 11:01AM"));
-        transactions.add(new Transactions(8,"INVOICE","6-10-2017 11:10AM"));
-        transactions.add(new Transactions(10,"CANCEL","6-10-2017 1:30PM"));
-        transactions.add(new Transactions(11,"VOID","6-10-2017 11:01AM"));
-        transactions.add(new Transactions(12,"INVOICE","6-10-2017 11:10AM"));
-        transactions.add(new Transactions(13,"CANCEL","6-10-2017 1:30PM"));
+            transactions.add(new Transactions());
+        }
+        cursor.close();
 
-//        while (cursor.moveToNext()){
-//            int mNum = cursor.getInt(0);
-//            String mType = cursor.getString(1);
-//            String mDate = cursor.getString(2);
-//
-//            transactions.add(new Transactions(1,"VOID","6-10-2017 11:01AM"));
-//
-//        }
+//        transactions.add(new Transactions(1,"VOID","6-10-2017 11:01AM"));
+//        transactions.add(new Transactions(2,"INVOICE","6-10-2017 11:10AM"));
+//        transactions.add(new Transactions(3,"CANCEL","6-10-2017 1:30PM"));
+//        transactions.add(new Transactions(4,"VOID","6-10-2017 11:01AM"));
+//        transactions.add(new Transactions(5,"INVOICE","6-10-2017 11:10AM"));
+//        transactions.add(new Transactions(6,"CANCEL","6-10-2017 1:30PM"));
+//        transactions.add(new Transactions(7,"VOID","6-10-2017 11:01AM"));
+//        transactions.add(new Transactions(8,"INVOICE","6-10-2017 11:10AM"));
+//        transactions.add(new Transactions(10,"CANCEL","6-10-2017 1:30PM"));
+//        transactions.add(new Transactions(11,"VOID","6-10-2017 11:01AM"));
+//        transactions.add(new Transactions(12,"INVOICE","6-10-2017 11:10AM"));
+//        transactions.add(new Transactions(13,"CANCEL","6-10-2017 1:30PM"));
+
         return  transactions;
     }
 
