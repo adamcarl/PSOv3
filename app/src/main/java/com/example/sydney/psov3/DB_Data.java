@@ -44,7 +44,10 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_VATABLE+" INTEGER );");
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_INVOICE_TRANSACTION+"INTEGER NOT NULL ,"
+                +COLUMN_INVOICE_CASHIER+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
+                +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DATE+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_TIME+" DATETIME);");
         arg0.execSQL("CREATE TABLE " +TABLE_ITEM+" ("
@@ -150,8 +153,9 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice( String inCash, String inDisc, String inCustomer, String inDate, String inTime){
+    void addInvoice(String inTrans, String inCash, String inDisc, String inCustomer, String inDate, String inTime){
         cv.clear();
+        cv.put(COLUMN_INVOICE_TRANSACTION,inTrans);
         cv.put(COLUMN_INVOICE_CASHIER,inCash);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
         cv.put(COLUMN_INVOICE_CUSTOMER, inCustomer);
@@ -292,7 +296,7 @@ import static com.example.sydney.psov3.Constants.*;
 //        return cursor;
 //    }
 
-    public Cursor searchProductBaKamo(String searchItem, String WHERE) {
+        Cursor searchProductBaKamo(String searchItem, String WHERE) {
         String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
         Cursor cursor = null;
         if(searchItem != null && searchItem.length() > 0 ){

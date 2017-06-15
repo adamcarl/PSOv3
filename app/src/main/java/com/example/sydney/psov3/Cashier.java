@@ -121,6 +121,7 @@ public class Cashier extends AppCompatActivity {
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
+        btn_print = (Button)findViewById(R.id.btn_printBaKamo);
 
         //Mark's Initialization
         Button btnReportX = (Button) findViewById(R.id.btn_cashier_x_report);
@@ -145,14 +146,14 @@ public class Cashier extends AppCompatActivity {
         tab_host.addTab(spec);
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy",Locale.CHINESE);
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
         dateformatted = dateformat.format(c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a",Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
-        forLog = db_data.searchStaff(userNum+"");
-        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged in.";
-        db_data.addLog(log);
+        //forLog = db_data.searchStaff(userNum+"");
+        //String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged in.";
+        //db_data.addLog(log);
         items = new ArrayList<>();
         items.add("Quantity");
         items.add("Name");
@@ -395,15 +396,21 @@ public class Cashier extends AppCompatActivity {
 //        bill.main();
         transType = "invoice";
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy", Locale.CHINESE);
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
         dateformatted = dateformat.format(c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a",Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
         try {
             String[] itemID = new String[]{_ID};
-            db_data.addInvoice(userNum+"", rDisc, customerCash, dateformatted, currentTime);
+            Cursor cursor1 =   dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            String bcd=cursor1.getString(0);
+            int a1 = Integer.parseInt(bcd)+1;
+            String bcd1 = a1+"";
+            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateformatted, currentTime);
+            cursor1.close();
             Cursor cursor =   dbReader.query(TABLE_INVOICE, itemID, null, null, null, null, null);
             cursor.moveToLast();
             String abc=cursor.getString(0);
@@ -415,7 +422,7 @@ public class Cashier extends AppCompatActivity {
                 db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
             }
                 products.add("--------------------------------------");
-                products.add("Invoice Number " + temp2 + "");
+                products.add("Invoice Number " + abc + "");
                 products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
                 products.add("Vatable" + "" + "\t\t" + vattable2);
                 products.add("Vat" + "" + "\t\t " + vat2);
@@ -441,8 +448,8 @@ public class Cashier extends AppCompatActivity {
                 itemNameList.clear();
                 itemCodeList.clear();
 
-            String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" finished a transaction.";
-            db_data.addLog(log);
+//            db_data.addLog(log);
+//            String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" finished a transaction.";
         }
             cancelna();
     }
@@ -457,9 +464,9 @@ public class Cashier extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_cancel:
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy",Locale.CHINESE);
+                SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
                 dateformatted = dateformat.format(c.getTime());
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a",Locale.CHINESE);
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
                 currentTime = sdf.format(new Date());
                 String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" cancelled a transaction.";
                 db_data.addLog(log);
@@ -511,13 +518,13 @@ public class Cashier extends AppCompatActivity {
     public void cashierLogOut(View view){
         cancelna();
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy",Locale.CHINESE);
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
         dateformatted = dateformat.format(c.getTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a",Locale.CHINESE);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
-        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged out.";
-        db_data.addLog(log);
+//        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged out.";
+//        db_data.addLog(log);
         finish();
         sleep(2000);
     }

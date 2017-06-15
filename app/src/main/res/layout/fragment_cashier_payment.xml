@@ -238,6 +238,7 @@
 
     <Button
         android:layout_width="match_parent"
+        android:id="@+id/btn_printBaKamo"
         android:layout_height="wrap_content"
         android:text="Complete Transaction"
         android:onClick="print"/>

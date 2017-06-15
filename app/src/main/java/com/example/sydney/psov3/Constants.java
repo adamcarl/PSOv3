@@ -26,6 +26,7 @@ public interface Constants extends BaseColumns {
     String COLUMN_PRODUCT_VATABLE = "Vatable";
 
     String TABLE_INVOICE = "tbl_invoice";
+    String COLUMN_INVOICE_TRANSACTION = "InTrans";
     String COLUMN_INVOICE_CASHIER = "InCash";
     String COLUMN_INVOICE_DISCOUNT = "InDisc";
     String COLUMN_INVOICE_CUSTOMER = "InCustomer";
