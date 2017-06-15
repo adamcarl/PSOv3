@@ -33,8 +33,8 @@ public class temp extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a",Locale.CHINESE);
         currentTime = sdf.format(new Date());
         try {
-            db_data.addInvoice("1", "1", "1000", dateformatted, currentTime);
-            db_data.addItem("1", "1", "50");
+//            db_data.addInvoice("1", "1", "1000", dateformatted, currentTime);
+//            db_data.addItem("1", "1", "50");
         }catch (Exception e){
             e.printStackTrace();
         }
