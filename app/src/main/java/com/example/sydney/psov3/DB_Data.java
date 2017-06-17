@@ -44,8 +44,8 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_VATABLE+" INTEGER );");
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_INVOICE_TRANSACTION+"INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_CASHIER+" INTEGER NOT NULL, "
+                + COLUMN_INVOICE_TRANSACTION_NUMBER +"INTEGER NOT NULL ,"
+                + COLUMN_INVOICE_CASHIER_NUMBER +" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DATETIME+" STRING NOT NULL);");
@@ -60,7 +60,7 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_XREPORT_TRANSACTION_NUMBER + "INTEGER NOT NULL"
+                + COLUMN_XREPORT_TRANSACTION_NUMBER + "INTEGER NOT NULL, "
                 + COLUMN_XREPORT_REPORTNUMBER+" INTEGER NOT NULL, "
                 + COLUMN_XREPORT_DATETIME + " INTEGER NOT NULL, "
                 + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
@@ -154,8 +154,8 @@ import static com.example.sydney.psov3.Constants.*;
 
     void addInvoice(String inTrans, String inCash, String inDisc, String inCustomer, String inDateTime){
         cv.clear();
-        cv.put(COLUMN_INVOICE_TRANSACTION,inTrans);
-        cv.put(COLUMN_INVOICE_CASHIER,inCash);
+        cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
+        cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCash);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
         cv.put(COLUMN_INVOICE_CUSTOMER, inCustomer);
         cv.put(COLUMN_INVOICE_DATETIME,inDateTime);
@@ -245,11 +245,10 @@ import static com.example.sydney.psov3.Constants.*;
         SQLiteDatabase database = this.getReadableDatabase();
         return database.rawQuery(query,null);
         }
-    void updateAdmin(String A_name,String A_pass){
+    void updateAdmin(String A_pass){
         cv.clear();
-        String WHERE = "ID = ?";
+        String WHERE = _ID + " = ?";
         String[] WHERE_ARGS = new String[]{"1"};
-        cv.put(COLUMN_ADMIN_USERNAME,A_name);
         cv.put(COLUMN_ADMIN_PASSWORD,A_pass);
         dbw.update(TABLE_ADMIN, cv, WHERE,WHERE_ARGS);
     }

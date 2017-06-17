@@ -91,7 +91,7 @@
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:elevation="2dp"
-            android:text="My Profile"
+            android:text="Profile"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
             android:shadowColor="@color/myColorActionBar"

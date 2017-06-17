@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/myColorBackgroundOrange"
+    android:gravity="center_vertical">
+
+    <com.google.android.flexbox.FlexboxLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/flex"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:alignItems="center"
+        app:flexWrap="wrap"
+        app:flexDirection="row"
+        app:justifyContent="space_around">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_flexBasisPercent="@fraction/fraction80percent">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:srcCompat="@drawable/ic_person_black_48px"
+                android:tint="@color/myColorIconLock"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:inputType="text"
+                android:enabled="false"
+                android:maxLines="1"
+                android:layout_marginTop="10dp"
+                android:id="@+id/etAdminName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:hint="Name of Admin"
+                android:textColorHint="@color/myColorActionBar"
+                android:textColor="@color/myColorWhite"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_edittext_login" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:enabled="false"
+                android:maxLines="1"
+                android:inputType="textPassword"
+                android:layout_marginTop="10dp"
+                android:id="@+id/etAdminPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:hint="Password"
+                android:textColorHint="@color/myColorActionBar"
+                android:textColor="@color/myColorWhite"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_edittext_login"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_marginTop="20dp"
+                android:id="@+id/btnAdminUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:textStyle="bold"
+                android:text="UPDATE"
+                android:textColor="@color/myColorWhite"
+                android:shadowColor="@color/myColorActionBar"
+                android:background="@drawable/custom_button_login"/>
+
+        </LinearLayout>
+
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</LinearLayout>

@@ -38,6 +38,7 @@ import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -393,14 +394,17 @@ public class Cashier extends AppCompatActivity {
             ex.printStackTrace();
         }
     }
-    public void print(View view) {
+    public void print(View view) throws ParseException {
 //        bill.main();
         transType = "invoice";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
-        currentDateTime = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-        currentTime = sdf.format(new Date());
+//        Calendar c = Calendar.getInstance();
+        Date currDate = new Date();
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+        String dateToStr = dateTimeFormat.format(currDate);
+        Date strToDate = dateTimeFormat.parse(dateToStr);
+//        currentDateTime = new Date();
+//        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+//        currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
         try {
@@ -410,7 +414,8 @@ public class Cashier extends AppCompatActivity {
             String bcd=cursor1.getString(0);
             int a1 = Integer.parseInt(bcd)+1;
             String bcd1 = a1+"";
-//            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateformatted, currentTime);
+            String dateToString = strToDate.toString();
+            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateToString);
             cursor1.close();
             Cursor cursor =   dbReader.query(TABLE_INVOICE, itemID, null, null, null, null, null);
             cursor.moveToLast();
