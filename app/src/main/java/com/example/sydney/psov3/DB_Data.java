@@ -44,8 +44,8 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_VATABLE+" INTEGER );");
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_INVOICE_TRANSACTION_NUMBER +"INTEGER NOT NULL ,"
-                + COLUMN_INVOICE_CASHIER_NUMBER +" INTEGER NOT NULL, "
+                +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
+                +COLUMN_INVOICE_CASHIER_NUMBER +" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DATETIME+" STRING NOT NULL);");
@@ -65,7 +65,7 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_XREPORT_DATETIME + " INTEGER NOT NULL, "
                 + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
-                + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "

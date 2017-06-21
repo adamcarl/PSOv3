@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +37,10 @@ import android.widget.Toast;
 import com.example.sydney.psov3.adapter.AdapterOrder;
 import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
+import com.jolimark.JmPrinter;
+import com.jolimark.UsbPrinter;
 
+import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,7 +57,8 @@ import static com.example.sydney.psov3.Constants.*;
 public class Cashier extends AppCompatActivity {
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
-    int temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar,userNum;
+    int temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
+    String userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
     Cursor cursor;
@@ -86,6 +91,16 @@ public class Cashier extends AppCompatActivity {
     String transType;
     Date currentDateTime;
 
+
+    //JOLLIMARK VARIABLES
+//    private UsbPrinter marksPrinter = new UsbPrinter();
+
+
+    //JMPRINTER VARIABLES
+    private JmPrinter mPrinter;
+    private UsbPrinter marksPrinter = new UsbPrinter();
+//    private
+
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
@@ -94,17 +109,31 @@ public class Cashier extends AppCompatActivity {
         //bill.main();
         cv = new ContentValues();
         try {
-            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-            HdxUtil.SetPrinterPower(1);
-        }
-        catch (Exception e) {
+            //RUN CODE IF JOLLICARL IS PRESENT
+            try {
+//                mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
+//                HdxUtil.SetPrinterPower(1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            //RUN CODE IF JOLLIMARK IS PRESENT
+            try {
+                marksPrinter.Open(); //open the printer
+            } catch (Exception e) {
+
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
 
+        mPrinter = new JmPrinter();           //Create a 78M printer object
+
         Intent intent = getIntent();
-        userNum = intent.getExtras().getInt("CashNum");
+        userNum = intent.getExtras().getString("Cashnum");
 
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
@@ -301,6 +330,7 @@ public class Cashier extends AppCompatActivity {
             public void onClick(View view) {
             }
         });
+
     }
     public void priceClick(View view){
         txt_cash.requestFocus();
@@ -394,6 +424,8 @@ public class Cashier extends AppCompatActivity {
             ex.printStackTrace();
         }
     }
+
+    //BUTTON PRINT
     public void print(View view) throws ParseException {
 //        bill.main();
         transType = "invoice";
@@ -408,16 +440,17 @@ public class Cashier extends AppCompatActivity {
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
         try {
-            String[] itemID = new String[]{_ID};
+            String[] itemID = new String[]{_ID,COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 =   dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
-            String bcd=cursor1.getString(0);
-            int a1 = Integer.parseInt(bcd)+1;
-            String bcd1 = a1+"";
+            int bcd=cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            int a1 = bcd+1;
             String dateToString = strToDate.toString();
-            db_data.addInvoice(bcd1,userNum+"", rDisc, customerCash, dateToString);
+            db_data.addInvoice(a1+"",userNum+"", rDisc, customerCash, dateToString);
             cursor1.close();
-            Cursor cursor =   dbReader.query(TABLE_INVOICE, itemID, null, null, null, null, null);
+
+            String[] SELECT_QUERY = new String[]{_ID};
+            Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
@@ -441,10 +474,26 @@ public class Cashier extends AppCompatActivity {
                     String change = due.toString().replace("-", "");
                     products.add("Change" + " \t\t" + change + "");
                 }
-                mSerialPrinter.sydneyDotMatrix7by7();
-                mSerialPrinter.printString(products);
-                mSerialPrinter.walkPaper(50);
-                mSerialPrinter.sendLineFeed();
+
+
+                //CHECK IF PRINTERS ARE OPEN
+                boolean ret = marksPrinter.Open();
+
+                if(ret) {
+//                    mSerialPrinter.sydneyDotMatrix7by7();
+//                    mSerialPrinter.printString(products);
+//                    mSerialPrinter.walkPaper(50);
+//                    mSerialPrinter.sendLineFeed();
+                    //JOLLICARL PRINTER
+
+
+                }
+                else {
+                    printFunction(products);
+                    //JOLLIMARK PRINTER
+                    products.clear();
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -459,6 +508,31 @@ public class Cashier extends AppCompatActivity {
         }
             cancelna();
     }
+
+    private void printFunction(ArrayList<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for(String s : list){
+            sb.append(s);
+            sb.append("\t");
+            sb.append("\n");
+        }
+        String convertedArray = sb.toString();
+
+        byte[] SData;
+        try {
+            SData = convertedArray.getBytes("UTF-8");
+            boolean retnVale = mPrinter.PrintText(SData);
+            if(!retnVale){
+                Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
+            }
+//            Log.e("Mark'sLog : ", "Occured in printing(printer) ArrayList" );
+        } catch (UnsupportedEncodingException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater = getMenuInflater();

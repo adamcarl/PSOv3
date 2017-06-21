@@ -23,6 +23,8 @@
         android:layout_width="wrap_content"
         android:focusable="false"
         android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
@@ -88,8 +90,8 @@
                             android:padding="4dip">
 
                             <fragment
-                                android:id="@+id/frag_invoice"
                                 android:name="com.example.sydney.psov3.Cashier$FirstFragment"
+                                android:id="@+id/frag_invoice"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1" />
@@ -111,8 +113,8 @@
                             android:padding="4dip">
 
                             <fragment
-                                android:id="@+id/fragment_payment"
                                 android:name="com.example.sydney.psov3.Cashier$SecondFragment"
+                                android:id="@+id/fragment_payment"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1" />
@@ -135,8 +137,8 @@
                         android:padding="4dip">
 
                         <fragment
-                            android:id="@+id/fragment_shift"
                             android:name="com.example.sydney.psov3.Cashier$ThirdFragment"
+                            android:id="@+id/fragment_shift"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1" />

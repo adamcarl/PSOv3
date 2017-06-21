@@ -71,6 +71,14 @@
         </RadioGroup>
     </LinearLayout>
 
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/btn_printBaKamo"
+        android:layout_height="wrap_content"
+        android:text="Complete Transaction"
+        android:onClick="print"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -124,6 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Tax:"
+                android:gravity="start"
                 android:textAlignment="textStart"
                 android:textSize="30sp" />
 
@@ -133,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0.00"
+                android:gravity="end"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -236,10 +246,5 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Complete Transaction"
-        android:id="@+id/btn_printBaKamo"
-        android:onClick="print"/>
+
 </LinearLayout>
