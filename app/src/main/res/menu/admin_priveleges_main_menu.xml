@@ -16,4 +16,10 @@
         android:orderInCategory="1"
         android:title="@string/add_product"
         app:showAsAction="never" />
+
+    <item android:id="@+id/productSearch"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 </menu>

@@ -22,5 +22,18 @@
     <color name="myColorStatusBar">#da2214</color>
     <color name="myColorButtonPressed">#ff6f0f</color>
 
+    //FOR CASHIER INTERFACE
+    <color name="myColorEditTextCash">#bcbcbc</color>
+    <color name="myColorHeading">#cecece</color>
+    <color name="myColorBackgroundCashier">#e1e1e1</color>
+    <color name="myColorCardViewCashier">#eef0f1</color>
+    <color name="myColorTotal">#ffa8a8</color>
+    <color name="myColorFont">#bfbfbf</color>
+    <color name="myColorButtonPaymentMode">#95b6cc</color>
+    <color name="myColorButtonPaymentModePressed">#6a91ab</color>
+
+
+
+
 
 </resources>

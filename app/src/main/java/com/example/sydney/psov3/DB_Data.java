@@ -293,7 +293,7 @@ import static com.example.sydney.psov3.Constants.*;
 //        return cursor;
 //    }
 
-        Cursor searchProductBaKamo(String searchItem, String WHERE) {
+    Cursor searchProductBaKamo(String searchItem, String WHERE) {
         String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
         Cursor cursor = null;
         if(searchItem != null && searchItem.length() > 0 ){
@@ -303,6 +303,20 @@ import static com.example.sydney.psov3.Constants.*;
         }
         else {
             cursor = dbr.query(TABLE_PRODUCT, columns, null, null, null, null, null, null);
+            return cursor;
+        }
+    }
+
+    Cursor searchTransactions(String searchItem, String WHERE) {
+        String[] columns = {COLUMN_INVOICE_TRANSACTION_NUMBER,COLUMN_INVOICE_DATETIME};
+        Cursor cursor = null;
+        if(searchItem != null && searchItem.length() > 0 ){
+            String sql = "SELECT * FROM "+ TABLE_INVOICE + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
+            cursor = dbr.rawQuery(sql,null);
+            return cursor;
+        }
+        else {
+            cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
             return cursor;
         }
     }

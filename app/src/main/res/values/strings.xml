@@ -21,4 +21,9 @@
         <item>PRICE</item>
         <item>QUANTITY</item>
     </string-array>
+
+    <string-array name="journalField">
+        <item>TRANSACTION NUMBER</item>
+        <item>DATE AND TIME</item>
+    </string-array>
 </resources>

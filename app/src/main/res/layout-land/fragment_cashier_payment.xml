@@ -1,250 +1,348 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.flexbox.FlexboxLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:alignItems="center"
+    app:flexWrap="wrap"
+    app:flexDirection="row"
+    app:justifyContent="space_around"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:id="@+id/ll_tender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <Button
-                android:id="@+id/button8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enter Credit Card Number" />
-
-            <Button
-                android:id="@+id/button7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enter Gift Card Number" />
-
-            <Button
-                android:id="@+id/button9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Other Tender Types" />
-
-
-        </LinearLayout>
-
-        <RadioGroup
-            android:id="@+id/rg_discount"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <RadioButton
-                android:id="@+id/rb_ndisc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="No discount" />
-
-            <RadioButton
-                android:id="@+id/rb_rpdisc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Senior/PWD" />
-
-            <RadioButton
-                android:id="@+id/rb_ddisc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Diplomat" />
-        </RadioGroup>
-    </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:id="@+id/btn_printBaKamo"
-        android:layout_height="wrap_content"
-        android:text="Complete Transaction"
-        android:onClick="print"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        app:layout_flexBasisPercent="@fraction/fraction49percent">
 
-        <LinearLayout
+
+        <android.support.v7.widget.CardView
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/myColorCardViewCashier"
+            app:cardCornerRadius="4dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView22"
+            <EditText
+                android:background="@drawable/custom_edittext_dialog"
+                android:padding="20dp"
+                android:textSize="30sp"
+                android:gravity="right"
+                android:id="@+id/txt_cash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:textStyle="bold"
+                android:hint="Php 0.00"
+                android:textColorHint="@color/myColorEditTextDialogDisable"
+                android:inputType="numberDecimal"/>
+        </android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Vatable:"
-                android:textSize="30sp" />
-
-            <TextView
-                android:id="@+id/lbl_subtotal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textAlignment="textEnd"
-                android:textSize="30sp" />
-        </LinearLayout>
-
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/myColorCardViewCashier"
+            app:cardCornerRadius="4dp"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView24"
+            <!--<TextView-->
+            <!--android:textColor="@color/myColorWhite"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Payment Mode"-->
+            <!--android:textSize="30sp"-->
+            <!--android:padding="20dp"-->
+            <!--android:background="@color/myColorHeading"/>-->
+
+
+            <LinearLayout
+                android:padding="15dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Tax:"
-                android:gravity="start"
-                android:textAlignment="textStart"
-                android:textSize="30sp" />
 
-            <TextView
-                android:id="@+id/lbl_tax"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:gravity="end"
-                android:textAlignment="textEnd"
-                android:textSize="30sp" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/ll_tender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Discount:"
-                android:textAlignment="textStart"
-                android:textSize="30sp" />
+                        <Button
+                            android:textColor="@color/myColorWhite"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:id="@+id/button8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:text="Credit Card"
+                            android:layout_weight=".3"/>
 
-            <TextView
-                android:id="@+id/lbl_discount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textAlignment="textEnd"
-                android:textSize="30sp" />
-        </LinearLayout>
+                        <Button
+                            android:textColor="@color/myColorWhite"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:id="@+id/button7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:text="Gift Card"
+                            android:layout_weight=".3"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                        <Button
+                            android:textColor="@color/myColorWhite"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:id="@+id/button9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:text="Other"
+                            android:layout_weight=".3"/>
 
-            <TextView
-                android:id="@+id/textView25"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Total:"
-                android:textAlignment="textStart"
-                android:textSize="30sp" />
+                    </LinearLayout>
 
-            <TextView
-                android:id="@+id/lbl_total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textAlignment="textEnd"
-                android:textSize="30sp" />
-        </LinearLayout>
+                    <RadioGroup
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/rg_discount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="595dp"
-            android:layout_height="3dp"
-            android:layout_margin="10dp"
-            android:background="#000000"
-            android:orientation="horizontal"
-            android:padding="16dp">
+                        <RadioButton
+                            android:id="@+id/rb_ndisc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="No discount" />
 
-        </LinearLayout>
+                        <RadioButton
+                            android:id="@+id/rb_rpdisc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Senior/PWD" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                        <RadioButton
+                            android:id="@+id/rb_ddisc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Diplomat" />
+                    </RadioGroup>
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/lbl_dc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Due:"
-                android:textAlignment="textStart"
-                android:textSize="30sp" />
-
-            <TextView
-                android:id="@+id/lbl_due"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0.00"
-                android:textAlignment="textEnd"
-                android:textSize="30sp" />
-        </LinearLayout>
+                <Button
+                    android:layout_marginTop="20dp"
+                    android:elevation="4dp"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/myColorWhite"
+                    android:background="@drawable/custom_button_login"
+                    android:layout_width="match_parent"
+                    android:id="@+id/btn_printBaKamo"
+                    android:layout_height="wrap_content"
+                    android:text="Complete Transaction"
+                    android:onClick="print"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 
 
-</LinearLayout>
+
+
+
+
+
+
+
+    <android.support.v7.widget.CardView
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/myColorCardViewCashier"
+        app:cardCornerRadius="4dp"
+        app:layout_flexBasisPercent="@fraction/fraction50percent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textColor="@color/myColorFont"
+                    android:layout_gravity="end"
+                    android:textAlignment="viewEnd"
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Vatable :"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/lbl_subtotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="0.00"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+
+                <TextView
+                    android:textColor="@color/myColorFont"
+                    android:layout_gravity="end"
+                    android:textAlignment="viewEnd"
+                    android:id="@+id/textView15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Tax :"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_marginRight="10dp"
+
+                    android:id="@+id/lbl_tax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="0.00"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:textColor="@color/myColorFont"
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="2"
+                    android:text="Discount :"
+                    android:textAlignment="viewEnd"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/lbl_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="0.00"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textColor="@color/myColorFont"
+                    android:layout_gravity="end"
+                    android:textAlignment="viewEnd"
+                    android:id="@+id/textView17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Total :"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/lbl_total"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="0.00"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="10dp"
+                android:background="@color/myColorDialogBG"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+            </View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:textColor="@color/myColorHeading"
+                    android:layout_gravity="end"
+                    android:textAlignment="viewEnd"
+                    android:id="@+id/lbl_dc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Due :"
+                    android:textSize="30sp"/>
+
+                <TextView
+                    android:id="@+id/lbl_due"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="0.00"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorEditTextDialogDisable"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</com.google.android.flexbox.FlexboxLayout>

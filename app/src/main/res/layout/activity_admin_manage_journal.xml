@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/myColorBGforRecyclerView">
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinnerTransactionSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/journalField">
+    </android.support.v7.widget.AppCompatSpinner>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        app:spanCount="3">
 
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

@@ -443,10 +443,9 @@ public class Cashier extends AppCompatActivity {
             String[] itemID = new String[]{_ID,COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 =   dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
-            int bcd=cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            int a1 = bcd+1;
+            int bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             String dateToString = strToDate.toString();
-            db_data.addInvoice(a1+"",userNum+"", rDisc, customerCash, dateToString);
+            db_data.addInvoice(bcd+1+"",userNum+"", rDisc, customerCash, dateToString);
             cursor1.close();
 
             String[] SELECT_QUERY = new String[]{_ID};
@@ -489,6 +488,7 @@ public class Cashier extends AppCompatActivity {
 
                 }
                 else {
+                    unLockCashBox();
                     printFunction(products);
                     //JOLLIMARK PRINTER
                     products.clear();
@@ -666,5 +666,15 @@ public class Cashier extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
         }
+    }
+
+    //Open Cash box
+    public static boolean unLockCashBox() {
+
+        boolean retnVale = false;
+        UsbPrinter tmpUsbDev = new UsbPrinter();
+        retnVale = tmpUsbDev.UnLockOfCashBox();
+
+        return retnVale;
     }
 }
