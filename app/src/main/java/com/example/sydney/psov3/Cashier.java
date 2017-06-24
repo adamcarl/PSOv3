@@ -177,7 +177,7 @@ public class Cashier extends AppCompatActivity {
         tab_host.addTab(spec);
 
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
@@ -190,11 +190,11 @@ public class Cashier extends AppCompatActivity {
         items.add("Name");
         items.add("Price");
         items.add("Total Price");
-        products.add("     ABZTRAK INC CONVENIENCE STORE");
+        products.add("              ABZTRAK INC CONVENIENCE STORE");
         products.add("2nd Floor, #670,");
         products.add("Sgt. Bumatay St, Mandaluyong");
         products.add("NCR, Philippines");
-        products.add("             Cash Invoice");
+        products.add("             CASH INVOICE");
         products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
         products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
@@ -459,19 +459,21 @@ public class Cashier extends AppCompatActivity {
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
             }
-                products.add("--------------------------------------");
-                products.add("Invoice Number " + abc + "");
-                products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
-                products.add("Vatable" + "" + "\t\t" + vattable2);
-                products.add("Vat" + "" + "\t\t " + vat2);
-                products.add("Total" + " \t\t" + subTotal + "");
-                products.add("Cash\t\t" + txt_cash.getText().toString() + "");
+            products.add("--------------------------------------");
+            products.add("Invoice Number " + abc + "");
+            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
+            products.add("Vatable" + "" + "\t\t" + vattable2);
+            products.add("Vat" + "" + "\t\t " + vat2);
+            products.add("Total" + " \t\t" + subTotal + "");
+
                 if (due>0 || due==0) {
                     products.add("Due" + " \t\t" + due + "");
+                    products.add("");
                 }
                 else {
                     String change = due.toString().replace("-", "");
                     products.add("Change" + " \t\t" + change + "");
+                    products.add("\n");
                 }
 
 
@@ -488,9 +490,9 @@ public class Cashier extends AppCompatActivity {
 
                 }
                 else {
+                    //JOLLIMARK PRINTER
                     unLockCashBox();
                     printFunction(products);
-                    //JOLLIMARK PRINTER
                     products.clear();
                 }
 
