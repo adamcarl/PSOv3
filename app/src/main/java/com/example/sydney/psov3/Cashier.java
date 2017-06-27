@@ -13,16 +13,19 @@ import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sydney.psov3.adapter.AdapterOrder;
-import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
@@ -50,21 +52,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import hdx.HdxUtil;
-
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
-    int temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
+    private int temp2 = 1,quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
     String userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due;
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
-    ArrayList<String> items;
+//    ArrayList<String> items;
+    private List<InvoiceItem> invoiceItemList;
+    private RecyclerView recyclerView;
+    private InvoiceAdapter invoiceAdapter;
+
     EditText txt_search,txt_cash;
     String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
     ArrayList<Integer>itemQuantityList = new ArrayList<>();
@@ -77,7 +81,7 @@ public class Cashier extends AppCompatActivity {
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
     TabHost tab_host;
-    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
+    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount,tv_cell;
     Button btn_print;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
@@ -103,6 +107,7 @@ public class Cashier extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
+
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
         bill = new Bill();
@@ -153,6 +158,7 @@ public class Cashier extends AppCompatActivity {
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
+//        tv_cell = (TextView)findViewById(R.id.tv_cell);
 
         //Mark's Initialization
         Button btnReportX = (Button) findViewById(R.id.btn_cashier_x_report);
@@ -185,11 +191,11 @@ public class Cashier extends AppCompatActivity {
         //forLog = db_data.searchStaff(userNum+"");
         //String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged in.";
         //db_data.addLog(log);
-        items = new ArrayList<>();
-        items.add("Quantity");
-        items.add("Name");
-        items.add("Price");
-        items.add("Total Price");
+        invoiceItemList = new ArrayList<>();
+//        items.add("Quantity");
+//        items.add("Name");
+//        items.add("Price");
+//        items.add("Total Price");
         products.add("              ABZTRAK INC CONVENIENCE STORE");
         products.add("2nd Floor, #670,");
         products.add("Sgt. Bumatay St, Mandaluyong");
@@ -198,8 +204,8 @@ public class Cashier extends AppCompatActivity {
         products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
         products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
-        GridView grid = (GridView) findViewById(R.id.grd_sell);
-        grid.setAdapter(new ArrayAdapter<>(this, R.layout.single_cell, items));
+//        final GridView grid = (GridView) findViewById(R.id.grd_sell);
+//        grid.setAdapter(new ArrayAdapter<>(this, R.layout.invoice_item_card, items));
         txt_cash.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -261,6 +267,13 @@ public class Cashier extends AppCompatActivity {
 //                ll_admin_product_edit.setVisibility(View.VISIBLE);
 //            }
 //        });
+//       grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//           @Override
+//           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//               String str = grid.getItemAtPosition(i).toString();
+//               System.out.print(str);
+//           }
+//       });
         rg_discount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -332,10 +345,43 @@ public class Cashier extends AppCompatActivity {
         });
 
     }
+
+    private List<InvoiceItem> fill_with_data() {
+        invoiceItemList = new ArrayList<>();
+        invoiceItemList.clear();
+
+        SQLiteDatabase db = db_data.getReadableDatabase();
+        String SELECT_QUERY = "SELECT " + COLUMN_PRODUCT_DESCRIPTION + "," + COLUMN_PRODUCT_PRICE + "," + COLUMN_PRODUCT_VATABLE +
+                " FROM " + TABLE_PRODUCT + " WHERE " + code + "=" + COLUMN_PRODUCT_ID;
+
+        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+        while (cursor.moveToNext()){
+            String invoiceItemDescription = cursor.getString(3);
+            int invoiceItemPrice = cursor.getInt(4);
+            String invoiceItemVattable = cursor.getString(6);
+
+            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,invoiceItemVattable,dialogVar));
+        }
+        cursor.close();
+
+        return invoiceItemList;
+    }
+
     public void priceClick(View view){
         txt_cash.requestFocus();
     }
+
     public void search(View view) {
+        //FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
+        invoiceItemList = fill_with_data(); //Populating invoice_item views
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_item);
+        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(invoiceAdapter);
+        //END FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
+
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
@@ -374,10 +420,7 @@ public class Cashier extends AppCompatActivity {
                                     itempricetotalCol2 = itempricetotalCol2.replace("$","");
                                     ArrayList<Double> total = new ArrayList<>();
                                     total.add(itempricetotalCol);
-                                    items.add("" + dialogVar + "");
-                                    items.add("" + itemnameCol + "");
-                                    items.add("" + itempriceCol + "");
-                                    items.add("" + itempricetotalCol + "");
+                                    invoiceItemList = fill_with_data();
                                     cursor.close();
                                     layout.invalidate();
                                     layout.requestLayout();
@@ -486,7 +529,6 @@ public class Cashier extends AppCompatActivity {
 //                    mSerialPrinter.sendLineFeed();
                     //JOLLICARL PRINTER
 
-
                 }
                 else {
                     //JOLLIMARK PRINTER
@@ -551,6 +593,8 @@ public class Cashier extends AppCompatActivity {
                 currentTime = sdf.format(new Date());
 //                String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" cancelled a transaction.";
 //                db_data.addLog(log);
+                transType ="cancel";
+                db_data.addTransaction(transType);
                 cancelna();
                 return true;
             case R.id.action_vieworder:
@@ -565,11 +609,11 @@ public class Cashier extends AppCompatActivity {
     public void cancelna(){
         txt_cash.setText(""+"0.00"+"");
         txt_search.setText("");
-        items.clear();
-        items.add("Quantity");
-        items.add("Name");
-        items.add("Price");
-        items.add("Total Price");
+//        items.clear();
+//        items.add("Quantity");
+//        items.add("Name");
+//        items.add("Price");
+//        items.add("Total Price");
         txt_search.requestFocus();
         lbl_due.setText(""+"0.00"+"");
         lbl_total.setText(""+"0.00"+"");
@@ -593,8 +637,7 @@ public class Cashier extends AppCompatActivity {
         subTotal=0.00;
         subTotal2="";
 
-        transType ="cancel";
-        db_data.addTransaction(transType);
+
     }
     public void cashierLogOut(View view){
         cancelna();
@@ -606,6 +649,9 @@ public class Cashier extends AppCompatActivity {
 //        db_data.addLog(log);
         finish();
         sleep(10000);
+    }
+    public void itemClick(View view){
+
     }
     private void sleep(int ms) {
         try {
