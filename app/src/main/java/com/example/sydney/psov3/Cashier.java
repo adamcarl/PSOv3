@@ -476,7 +476,6 @@ public class Cashier extends AppCompatActivity {
                     products.add("\n");
                 }
 
-
                 //CHECK IF PRINTERS ARE OPEN
                 boolean ret = marksPrinter.Open();
 

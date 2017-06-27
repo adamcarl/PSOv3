@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -132,7 +131,7 @@ public class ManageJournal extends AppCompatActivity {
         transactionList.clear();
 
         SQLiteDatabase db = db_data.getReadableDatabase();
-        String SELECT_QUERY = "SELECT " + COLUMN_INVOICE_TRANSACTION_NUMBER + "," + COLUMN_INVOICE_DATETIME +
+        String SELECT_QUERY = "SELECT " + TABLE_INVOICE +"."+ COLUMN_INVOICE_TRANSACTION_NUMBER + "," +TABLE_INVOICE+"."+COLUMN_INVOICE_DATETIME +
                               " FROM " + TABLE_INVOICE +
                               " INNER JOIN " + TABLE_TRANSACTION + " ON " + TABLE_TRANSACTION + "." + _ID + "=" + TABLE_INVOICE + "." + COLUMN_INVOICE_TRANSACTION_NUMBER;
 
