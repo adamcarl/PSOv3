@@ -78,7 +78,7 @@ import static com.example.sydney.psov3.Constants.*;
                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                +COLUMN_LOG_STRING+" TEXT NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_CANCEL+ " ("
-               +_ID+" INTEGER PRIMART KEY AUTOINCREMENT, "
+               +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                +COLUMN_CANCEL_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
                 +COLUMN_CANCEL_DATETIME+" STRING NOT NULL, "
                 +COLUMN_CANCEL_CASHIER+" INTEGER NOT NULL, "
@@ -171,16 +171,19 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCash);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
-        cv.put(COLUMN_INVOICE_CUSTOMER, inCustomer);
+        cv.put(COLUMN_INVOICE_CUSTOMER,inCustomer);
         cv.put(COLUMN_INVOICE_DATETIME,inDateTime);
+        cv.put(COLUMN_INVOICE_XREPORT,0);
+        cv.put(COLUMN_INVOICE_ZREPORT,0);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus){
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
         cv.put(COLUMN_ITEM_QUANTITY,itemQuan);
+        cv.put(COLUMN_ITEM_STATUS,itemStatus);
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
