@@ -27,7 +27,7 @@ dependencies {
 
     compile files('src/main/assets/libs/HdxUtil.jar')
     compile files('src/main/assets/libs/serial.jar')
-    compile files('C:\\Users\\PROGRAMMER2\\AndroidStudioProjects\\PSOv3\\app\\libs\\JmPrinter_78M.jar')
+    compile files('libs/JmPrinter_78M.jar')
 
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

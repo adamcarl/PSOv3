@@ -159,15 +159,15 @@ public class Cashier extends AppCompatActivity {
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
 
 
-        //RECYCLERVIEW
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_item);
-
-        invoiceItemList = fill_with_data(); //Populating invoice_item views
+        //RECYCLERVIEW INITIALIZATION
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_invoice);
+        invoiceItemList = fill_with_data();
         invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(invoiceAdapter);
+
 
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
 //        tv_cell = (TextView)findViewById(R.id.tv_cell);
@@ -368,9 +368,9 @@ public class Cashier extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(SELECT_QUERY,null);
         while (cursor.moveToNext()){
-            String invoiceItemDescription = cursor.getString(3);
-            int invoiceItemPrice = cursor.getInt(4);
-            String invoiceItemVattable = cursor.getString(6);
+            String invoiceItemDescription = cursor.getString(0);
+            int invoiceItemPrice = cursor.getInt(1);
+            String invoiceItemVattable = cursor.getString(2);
 
             invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,invoiceItemVattable,dialogVar));
         }
@@ -383,9 +383,14 @@ public class Cashier extends AppCompatActivity {
         txt_cash.requestFocus();
     }
 
+    //BUTTON SEARCH ONCLICK
     public void search(View view) {
         //FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
+        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
 
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(invoiceAdapter);
 
 
         //END FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
@@ -460,7 +465,10 @@ public class Cashier extends AppCompatActivity {
                                     due2 = NumberFormat.getCurrencyInstance().format((subTotal/1));
                                     due2 = due2.replace("$","");
                                     lbl_due.setText("" + due2 + "");
+
+                                    invoiceItemList = fill_with_data(); //Populating invoice_item views
                                 }
+                            invoiceAdapter.notifyDataSetChanged(); //REFRESH RECYCLERVIEW
                         }catch (Exception ex){
                             ex.printStackTrace();
                             lbl_due.setText(subTotal2);
@@ -527,7 +535,6 @@ public class Cashier extends AppCompatActivity {
                     products.add("\n");
                 }
 
-
                 //CHECK IF PRINTERS ARE OPEN
                 boolean ret = marksPrinter.Open();
 
@@ -554,9 +561,6 @@ public class Cashier extends AppCompatActivity {
                 itemPriceList.clear();
                 itemNameList.clear();
                 itemCodeList.clear();
-
-//            db_data.addLog(log);
-//            String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" finished a transaction.";
         }
             cancelna();
     }
@@ -577,7 +581,6 @@ public class Cashier extends AppCompatActivity {
             if(!retnVale){
                 Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
             }
-//            Log.e("Mark'sLog : ", "Occured in printing(printer) ArrayList" );
         } catch (UnsupportedEncodingException e) {
 
             e.printStackTrace();
@@ -657,7 +660,7 @@ public class Cashier extends AppCompatActivity {
 //        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged out.";
 //        db_data.addLog(log);
         finish();
-        sleep(10000);
+        sleep(1000);
     }
     public void itemClick(View view){
 
