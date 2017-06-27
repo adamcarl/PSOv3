@@ -157,6 +157,18 @@ public class Cashier extends AppCompatActivity {
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
         orderArrayList = new ArrayList<>();
         adapterOrder = new AdapterOrder(this, R.layout.single_order, orderArrayList);
+
+
+        //RECYCLERVIEW
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_item);
+
+        invoiceItemList = fill_with_data(); //Populating invoice_item views
+        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(invoiceAdapter);
+
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
 //        tv_cell = (TextView)findViewById(R.id.tv_cell);
 
@@ -191,7 +203,7 @@ public class Cashier extends AppCompatActivity {
         //forLog = db_data.searchStaff(userNum+"");
         //String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged in.";
         //db_data.addLog(log);
-        invoiceItemList = new ArrayList<>();
+//        invoiceItemList = new ArrayList<>();
 //        items.add("Quantity");
 //        items.add("Name");
 //        items.add("Price");
@@ -373,13 +385,9 @@ public class Cashier extends AppCompatActivity {
 
     public void search(View view) {
         //FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
-        invoiceItemList = fill_with_data(); //Populating invoice_item views
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_item);
-        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(invoiceAdapter);
+
+
         //END FILLING RECYCLERVIEW WITH DATA AFTER SEARCHING AND INPUTTING THE QUANTITY
 
         try {
@@ -420,7 +428,7 @@ public class Cashier extends AppCompatActivity {
                                     itempricetotalCol2 = itempricetotalCol2.replace("$","");
                                     ArrayList<Double> total = new ArrayList<>();
                                     total.add(itempricetotalCol);
-                                    invoiceItemList = fill_with_data();
+//                                    invoiceItemList = fill_with_data();
                                     cursor.close();
                                     layout.invalidate();
                                     layout.requestLayout();
