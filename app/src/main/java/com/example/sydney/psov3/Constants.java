@@ -31,6 +31,8 @@ public interface Constants extends BaseColumns {
     String COLUMN_INVOICE_DISCOUNT = "InDisc";
     String COLUMN_INVOICE_CUSTOMER = "InCustomer";
     String COLUMN_INVOICE_DATETIME = "InDateTime";
+    String COLUMN_INVOICE_XREPORT = "InXreport";
+    String COLUMN_INVOICE_ZREPORT = "InZreport";
 
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
@@ -40,13 +42,24 @@ public interface Constants extends BaseColumns {
 
     String TABLE_XREPORT = "tbl_xreport";
     String COLUMN_XREPORT_TRANSACTION_NUMBER = "xreportTransNum";
-    String COLUMN_XREPORT_REPORTNUMBER = "xreportNumber";
     String COLUMN_XREPORT_DATETIME = "xreportDateTime";
     String COLUMN_XREPORT_CASHIER = "xreportCashier";
+
+    String TABLE_ZREPORT = "tbl_zreport";
+    String COLUMN_ZREPORT_TRANSACTION_NUMBER = "zreportTransNum";
+    String COLUMN_ZREPORT_DATETIME = "zreportDateTime";
+    String COLUMN_ZREPORT_CASHIER = "zreportCashier";
 
     String TABLE_TRANSACTION = "tbl_trans";
     String COLUMN_TRANSACTION_TYPE = "TransType";
 
     String TABLE_LOG = "tbl_log";
     String COLUMN_LOG_STRING= "LogString";
+
+    String TABLE_CANCEL = "tbl_cancel";
+    String COLUMN_CANCEL_TRANSACTION_NUMBER = "CancelTransNum";
+    String COLUMN_CANCEL_DATETIME = "CancelDateTime";
+    String COLUMN_CANCEL_CASHIER = "CancelCashier";
+    String COLUMN_CANCEL_XREPORT = "CancelXreport";
+    String COLUMN_CANCEL_ZREPORT = "CancelZreport";
 }

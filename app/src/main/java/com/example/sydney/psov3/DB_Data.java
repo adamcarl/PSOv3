@@ -48,28 +48,42 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_INVOICE_CASHIER_NUMBER +" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_DATETIME+" STRING NOT NULL);");
-        arg0.execSQL("CREATE TABLE " +TABLE_ITEM+" ("
+                +COLUMN_INVOICE_DATETIME+" STRING NOT NULL, "
+                +COLUMN_INVOICE_XREPORT+" INTEGER NOT NULL, "
+                +COLUMN_INVOICE_ZREPORT+" INTEGER NOT NULL );");
+        arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" INTEGER NOT NULL, "
-                +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL );");
+                +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
+                +COLUMN_ITEM_STATUS+" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_XREPORT_TRANSACTION_NUMBER + "INTEGER NOT NULL, "
-                + COLUMN_XREPORT_REPORTNUMBER+" INTEGER NOT NULL, "
-                + COLUMN_XREPORT_DATETIME + " INTEGER NOT NULL, "
-                + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
+               +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+               +COLUMN_XREPORT_DATETIME+" STRING NOT NULL, "
+               +COLUMN_XREPORT_CASHIER+" INTEGER NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
+                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_ZREPORT_DATETIME+" INTEGER NOT NULL, "
+                +COLUMN_ZREPORT_CASHIER+" INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
-                + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL);");
-        arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
-                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+               +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+               +COLUMN_TRANSACTION_TYPE+" TEXT NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_LOG+" ("
+               +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+               +COLUMN_LOG_STRING+" TEXT NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_CANCEL+ " ("
+               +_ID+" INTEGER PRIMART KEY AUTOINCREMENT, "
+               +COLUMN_CANCEL_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_CANCEL_DATETIME+" STRING NOT NULL, "
+                +COLUMN_CANCEL_CASHIER+" INTEGER NOT NULL, "
+                +COLUMN_CANCEL_XREPORT+" INTEGER NOT NULL, "
+                +COLUMN_CANCEL_ZREPORT+" INTEGER NOT NULL);");
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -214,7 +228,7 @@ import static com.example.sydney.psov3.Constants.*;
         try {
             int i;
             Cursor cursor;
-            cursor = database.rawQuery("SELECT * FROM " + TABLE_CASHIER + " where " + COLUMN_CASHIER_NUMBER + "=?", selectionArgs );
+            cursor = database.rawQuery("SELECT * FROM "+TABLE_CASHIER+" where "+COLUMN_CASHIER_NUMBER+"=?", selectionArgs );
             cursor.moveToFirst();
             i = cursor.getCount();
             cursor.close();
@@ -247,7 +261,7 @@ import static com.example.sydney.psov3.Constants.*;
         }
     void updateAdmin(String A_pass){
         cv.clear();
-        String WHERE = _ID + " = ?";
+        String WHERE = _ID+" = ?";
         String[] WHERE_ARGS = new String[]{"1"};
         cv.put(COLUMN_ADMIN_PASSWORD,A_pass);
         dbw.update(TABLE_ADMIN, cv, WHERE,WHERE_ARGS);
@@ -279,12 +293,12 @@ import static com.example.sydney.psov3.Constants.*;
 //        Cursor cursor = null;
 //
 //        if(searchItem != null && searchItem.length() > 0 ){
-//            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE "
-//                    + COLUMN_PRODUCT_ID + " LIKE '%" + searchItem + "%' OR "
-//                    + COLUMN_PRODUCT_NAME + " LIKE '%" + searchItem + "%' OR "
-//                    + COLUMN_PRODUCT_DESCRIPTION + " LIKE '%" + searchItem + "%' OR "
-//                    + COLUMN_PRODUCT_PRICE + " LIKE '%" + searchItem + "%' OR "
-//                    + COLUMN_PRODUCT_QUANTITY + " LIKE '%" + searchItem +"%'";
+//            String sql = "SELECT * FROM "+ TABLE_PRODUCT+" WHERE "
+//                   +COLUMN_PRODUCT_ID+" LIKE '%"+searchItem+"%' OR "
+//                   +COLUMN_PRODUCT_NAME+" LIKE '%"+searchItem+"%' OR "
+//                   +COLUMN_PRODUCT_DESCRIPTION+" LIKE '%"+searchItem+"%' OR "
+//                   +COLUMN_PRODUCT_PRICE+" LIKE '%"+searchItem+"%' OR "
+//                   +COLUMN_PRODUCT_QUANTITY+" LIKE '%"+searchItem +"%'";
 //            cursor = dbr.rawQuery(sql,null);
 //            return cursor;
 //        }
@@ -297,7 +311,7 @@ import static com.example.sydney.psov3.Constants.*;
         String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
         Cursor cursor = null;
         if(searchItem != null && searchItem.length() > 0 ){
-            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
+            String sql = "SELECT * FROM "+ TABLE_PRODUCT+" WHERE "+WHERE+" LIKE '%"+searchItem+"%'";
             cursor = dbr.rawQuery(sql,null);
             return cursor;
         }
@@ -311,7 +325,7 @@ import static com.example.sydney.psov3.Constants.*;
         String[] columns = {COLUMN_INVOICE_TRANSACTION_NUMBER,COLUMN_INVOICE_DATETIME};
         Cursor cursor = null;
         if(searchItem != null && searchItem.length() > 0 ){
-            String sql = "SELECT * FROM "+ TABLE_INVOICE + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
+            String sql = "SELECT * FROM "+ TABLE_INVOICE+" WHERE "+WHERE+" LIKE '%"+searchItem+"%'";
             cursor = dbr.rawQuery(sql,null);
             return cursor;
         }
