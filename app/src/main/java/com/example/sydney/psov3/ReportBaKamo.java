@@ -23,7 +23,7 @@ class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> products = new ArrayList<>();
 
-    void main(String col,String userNum){
+    void main(String userNum){
 
         SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
         try {

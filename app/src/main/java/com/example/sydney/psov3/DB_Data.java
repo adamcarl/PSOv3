@@ -298,7 +298,7 @@ import static com.example.sydney.psov3.Constants.*;
             cv.put(COLUMN_TRANSACTION_ZREPORT,"1");
         }
         else {
-            WHERE_CASH = _ID + " = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
+            WHERE_CASH = _ID +" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
             mWHERE_ARGS = new String[]{Integer.toString(id),name};
             cv.put(COLUMN_TRANSACTION_XREPORT,"1");
         }

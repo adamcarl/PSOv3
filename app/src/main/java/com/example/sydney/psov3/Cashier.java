@@ -167,7 +167,6 @@ public class Cashier extends AppCompatActivity {
 //        tv_cell = (TextView)findViewById(R.id.tv_cell);
 
         //Mark's Initialization
-        Button btnReportX = (Button) findViewById(R.id.btn_cashier_x_report);
 
 
 //        lv_order.setAdapter(adapterOrder);
@@ -337,11 +336,6 @@ public class Cashier extends AppCompatActivity {
         });
         //tab_host.setOnTabChangedListener(new AnimatedTabHostListener(this,tab_host));
         //Mark's onClickListeners for Button reports
-        btnReportX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
 
     }
 
@@ -695,11 +689,11 @@ public class Cashier extends AppCompatActivity {
     }
     public void zreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("Z","no");
+        reportBaKamo.main("no");
     }
     public void xreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("X",userNum);
+        reportBaKamo.main(userNum);
     }
     private void sleep(int ms) {
         try {
