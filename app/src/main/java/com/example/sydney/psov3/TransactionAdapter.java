@@ -52,7 +52,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 //        holder.transNumber.setText(transactions.getTransId());
 //        holder.transType.setText(transactions.getTransactionType());
         holder.transNumber.setText(Integer.toString(transactionList.get(position).getTransId()));
-//        holder.transType.setText(transactionList.get(position).getTransactionType());
+        holder.transType.setText(transactionList.get(position).getTransType());
         holder.transDateTime.setText(transactionList.get(position).getTransDateTime());
     }
 

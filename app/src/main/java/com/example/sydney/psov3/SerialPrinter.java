@@ -181,7 +181,7 @@ class SerialPrinter {
         }
     }
     void sendLineFeed() {
-        this.mSerialPortOperaion.WriteData(new int[]{10});
+        this.mSerialPortOperaion.WriteData(new int[]{5});
     }
 
     public void PrintBmp(int startx, Bitmap bitmap) {
