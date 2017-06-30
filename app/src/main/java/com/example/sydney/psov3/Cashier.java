@@ -176,14 +176,7 @@ public class Cashier extends AppCompatActivity {
 //        items.add("Name");
 //        items.add("Price");
 //        items.add("Total Price");
-        products.add("              ABZTRAK INC CONVENIENCE STORE");
-        products.add("2nd Floor, #670,");
-        products.add("Sgt. Bumatay St, Mandaluyong");
-        products.add("NCR, Philippines");
-        products.add("             CASH INVOICE");
-        products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
-        products.add("--------------------------------------");
-        products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
+
 //        final GridView grid = (GridView) findViewById(R.id.grd_sell);
 //        grid.setAdapter(new ArrayAdapter<>(this, R.layout.invoice_item_card, items));
         txt_cash.addTextChangedListener(new TextWatcher() {
@@ -503,6 +496,14 @@ public class Cashier extends AppCompatActivity {
 
     //BUTTON PRINT
     public void print(View view) throws ParseException {
+        products.add("ABZTRAK INC CONVENIENCE STORE");
+        products.add("2nd Floor, #670,");
+        products.add("Sgt. Bumatay St, Mandaluyong");
+        products.add("NCR, Philippines");
+        products.add("             CASH INVOICE");
+        products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
+        products.add("--------------------------------------");
+        products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
         transType = "invoice";
 
         Date currDate = new Date();
@@ -512,23 +513,30 @@ public class Cashier extends AppCompatActivity {
 
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
+        int bcd;
         try {
+            String dateToString = strToDate.toString();
+            db_data.addTransaction(transType,dateToString,userNum,0,0);
             String[] itemID = new String[]{_ID,COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
-            int bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            String dateToString = strToDate.toString();
-            db_data.addInvoice(bcd+"",userNum+"", rDisc, customerCash, dateToString);
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
+            db_data.addInvoice(bcd+"", rDisc, customerCash);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
+            String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
+            Double[] itemPrice12345 = itemPriceList.toArray(new Double[itemPriceList.size()]);
             cursor.close();
-            db_data.addTransaction(transType,dateToString);
+            itemCode123.clear();
+            itemQuan123.clear();
+            itemNameList.clear();
+            itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc+"",itemCode12345[a],itemQuan12345[a]);
             }
