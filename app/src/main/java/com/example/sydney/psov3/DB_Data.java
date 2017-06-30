@@ -3,6 +3,7 @@ package com.example.sydney.psov3;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
@@ -66,10 +67,17 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL);");
+                + COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL, "
+                + COLUMN_TRANSACTION_DATETIME + " TEXT NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
+                + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
+                + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
+                + COLUMN_TEMP_ID + " TEXT NOT NULL);");
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -88,6 +96,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_TRANSACTION);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_LOG);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TEMP_INVOICING);
         onCreate(arg0);
     }
 
@@ -170,9 +180,10 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
-    void addTransaction(String transactionType){
+    void addTransaction(String transactionType,String transactionDateTime){
         cv.clear();
         cv.put(COLUMN_TRANSACTION_TYPE,transactionType);
+        cv.put(COLUMN_TRANSACTION_DATETIME,transactionDateTime);
         dbw.insertOrThrow(TABLE_TRANSACTION, null, cv);
     }
 
@@ -223,7 +234,7 @@ import static com.example.sydney.psov3.Constants.*;
             e.printStackTrace();
         }
         return 0;
-        }
+    }
 
     String[] searchProduct(String id){
         String[] mALL = {COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME,COLUMN_PRODUCT_DESCRIPTION,COLUMN_PRODUCT_PRICE,COLUMN_PRODUCT_QUANTITY,COLUMN_PRODUCT_VATABLE};
@@ -320,4 +331,47 @@ import static com.example.sydney.psov3.Constants.*;
             return cursor;
         }
     }
+
+    public void insertTempInvoice(InvoiceItem invoiceItem){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_TEMP_DESCRIPTION, invoiceItem.getInvoiceProductDescription());
+        values.put(COLUMN_TEMP_PRICE, invoiceItem.getInvoiceProductPrice());
+        values.put(COLUMN_TEMP_QUANTITY, invoiceItem.getInvoiceProductQuantity());
+        values.put(COLUMN_TEMP_ID, invoiceItem.getInvoiceProductID());
+
+        database.insert(TABLE_TEMP_INVOICING, null, values);
+//        database.close();
+    }
+
+    public void deleteItemInvoice(String itemDes){
+        try {
+            this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_DESCRIPTION +"='" + itemDes + "'");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public int searchDuplicateInvoice(String itemID) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String[] selectionArgs = new String[]{itemID};
+        try {
+            int i;
+            Cursor cursor;
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "=?",selectionArgs);
+            cursor.moveToFirst();
+            i = cursor.getCount();
+            cursor.close();
+            return i;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+     public void updateInvoiceItem(String code, int newQuantity){
+            this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
+                    + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
+     }
 }
