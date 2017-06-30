@@ -371,7 +371,7 @@ public class Cashier extends AppCompatActivity {
             invoiceItemQuantity = cursor.getInt(3);
             invoiceItemID = cursor.getString(4);
 
-            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,invoiceItemVattable,dialogVar));
+            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID));
         }
         cursor.close();
 
@@ -520,25 +520,30 @@ public class Cashier extends AppCompatActivity {
 //        currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
+        int bcd;
         try {
             String dateToString = strToDate.toString();
             db_data.addTransaction(transType,dateToString,userNum,0,0);
             String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
-            int bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            String dateToString = strToDate.toString();
-            db_data.addInvoice(bcd+1+"",userNum+"", rDisc, customerCash, dateToString);
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
+            db_data.addInvoice(bcd+"",rDisc,customerCash);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
             String abc=cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
+            String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
+            Double[] itemPrice12345 = itemPriceList.toArray(new Double[itemPriceList.size()]);
             cursor.close();
-            db_data.addTransaction(transType);
+            itemCode123.clear();
+            itemQuan123.clear();
+            itemNameList.clear();
+            itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
@@ -560,8 +565,8 @@ public class Cashier extends AppCompatActivity {
                 products.add("\n");
             }
 
-                //CHECK IF PRINTERS ARE OPEN
-                boolean ret = marksPrinter.Open();
+            //CHECK IF PRINTERS ARE OPEN
+            boolean ret = marksPrinter.Open();
 
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
@@ -813,7 +818,6 @@ public class Cashier extends AppCompatActivity {
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
 
         //Mark's Initialization
-        btnReportX = (Button) findViewById(R.id.btn_cashier_x_report);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_invoice);
 
         btn_cashier_delete = (ImageButton) findViewById(R.id.btn_cashier_delete);
