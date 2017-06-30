@@ -46,32 +46,36 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_CASHIER_NUMBER +" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_DATETIME+" STRING NOT NULL);");
-        arg0.execSQL("CREATE TABLE " +TABLE_ITEM+" ("
+                +COLUMN_INVOICE_PRINT+" TEXT );");
+        arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" INTEGER NOT NULL, "
-                +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL );");
+                +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
+                +COLUMN_ITEM_STATUS+" INTEGER NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_XREPORT_TRANSACTION_NUMBER + "INTEGER NOT NULL, "
-                + COLUMN_XREPORT_REPORTNUMBER+" INTEGER NOT NULL, "
-                + COLUMN_XREPORT_DATETIME + " INTEGER NOT NULL, "
-                + COLUMN_XREPORT_CASHIER + " INTEGER NOT NULL);");
+               +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+        arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
+                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
-                + _ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL, "
-                + COLUMN_TRANSACTION_DATETIME + " TEXT NOT NULL);");
+                +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_TRANSACTION_TYPE+" TEXT NOT NULL, "
+                +COLUMN_TRANSACTION_DATETIME+" TEXT NOT NULL, "
+                +COLUMN_TRANSACTION_CASHIER+" TEXT NOT NULL, "
+                +COLUMN_TRANSACTION_XREPORT+" INTEGER NOT NULL, "
+                +COLUMN_TRANSACTION_ZREPORT+" INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
@@ -162,28 +166,30 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inCash, String inDisc, String inCustomer, String inDateTime){
+    void addInvoice(String inTrans, String inDisc, String inCustomer){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
-        cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCash);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
-        cv.put(COLUMN_INVOICE_CUSTOMER, inCustomer);
-        cv.put(COLUMN_INVOICE_DATETIME,inDateTime);
+        cv.put(COLUMN_INVOICE_CUSTOMER,inCustomer);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus){
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
         cv.put(COLUMN_ITEM_QUANTITY,itemQuan);
+        cv.put(COLUMN_ITEM_STATUS,itemStatus);
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
-    void addTransaction(String transactionType,String transactionDateTime){
+    void addTransaction(String transactionType, String transactionDatetime, String transactionCashier, int transactionXreport, int transactionZreport){
         cv.clear();
         cv.put(COLUMN_TRANSACTION_TYPE,transactionType);
-        cv.put(COLUMN_TRANSACTION_DATETIME,transactionDateTime);
+        cv.put(COLUMN_TRANSACTION_DATETIME,transactionDatetime);
+        cv.put(COLUMN_TRANSACTION_CASHIER,transactionCashier);
+        cv.put(COLUMN_TRANSACTION_XREPORT,transactionXreport);
+        cv.put(COLUMN_TRANSACTION_ZREPORT,transactionZreport);
         dbw.insertOrThrow(TABLE_TRANSACTION, null, cv);
     }
 
@@ -225,7 +231,7 @@ import static com.example.sydney.psov3.Constants.*;
         try {
             int i;
             Cursor cursor;
-            cursor = database.rawQuery("SELECT * FROM " + TABLE_CASHIER + " where " + COLUMN_CASHIER_NUMBER + "=?", selectionArgs );
+            cursor = database.rawQuery("SELECT * FROM "+TABLE_CASHIER+" where "+COLUMN_CASHIER_NUMBER+"=?", selectionArgs );
             cursor.moveToFirst();
             i = cursor.getCount();
             cursor.close();
@@ -258,7 +264,7 @@ import static com.example.sydney.psov3.Constants.*;
         }
     void updateAdmin(String A_pass){
         cv.clear();
-        String WHERE = _ID + " = ?";
+        String WHERE = _ID+" = ?";
         String[] WHERE_ARGS = new String[]{"1"};
         cv.put(COLUMN_ADMIN_PASSWORD,A_pass);
         dbw.update(TABLE_ADMIN, cv, WHERE,WHERE_ARGS);
@@ -284,6 +290,31 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_PRODUCT_QUANTITY, P_quan);
         dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
     }
+
+    void updateInvoice(String id, String print){
+        cv.clear();
+        String WHERE_CASH = _ID + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{id};
+        cv.put(COLUMN_INVOICE_PRINT, print);
+        dbw.update(TABLE_INVOICE, cv, WHERE_CASH,WHERE_ARGS_CASH);
+    }
+
+    void updateTransactions(int id,String name){
+        cv.clear();
+        String WHERE_CASH;
+        String[] mWHERE_ARGS;
+        if(name.equals("no")){
+            WHERE_CASH = _ID + " = ?";
+            mWHERE_ARGS = new String[]{Integer.toString(id)};
+            cv.put(COLUMN_TRANSACTION_ZREPORT,"1");
+        }
+        else {
+            WHERE_CASH = _ID +" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
+            mWHERE_ARGS = new String[]{Integer.toString(id),name};
+            cv.put(COLUMN_TRANSACTION_XREPORT,"1");
+        }
+        dbw.update(TABLE_TRANSACTION,cv,WHERE_CASH,mWHERE_ARGS);
+    }
 //OLD SEARCH FOR PRODUCTS!!!!
 //    public Cursor searchViewProduct(String searchItem) {
 //        String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
@@ -306,32 +337,59 @@ import static com.example.sydney.psov3.Constants.*;
 
     Cursor searchProductBaKamo(String searchItem, String WHERE) {
         String[] columns = {_ID,COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY};
-        Cursor cursor = null;
         if(searchItem != null && searchItem.length() > 0 ){
-            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
-            cursor = dbr.rawQuery(sql,null);
-            return cursor;
+            String sql = "SELECT * FROM "+ TABLE_PRODUCT+" WHERE "+WHERE+" LIKE '%"+searchItem+"%'";
+            return dbr.rawQuery(sql,null);
         }
         else {
-            cursor = dbr.query(TABLE_PRODUCT, columns, null, null, null, null, null, null);
-            return cursor;
+            return dbr.query(TABLE_PRODUCT, columns, null, null, null, null, null, null);
         }
     }
 
     Cursor searchTransactions(String searchItem, String WHERE) {
-        String[] columns = {COLUMN_INVOICE_TRANSACTION_NUMBER,COLUMN_INVOICE_DATETIME};
-        Cursor cursor = null;
+        String[] columns = {_ID,COLUMN_TRANSACTION_TYPE,COLUMN_TRANSACTION_DATETIME};
         if(searchItem != null && searchItem.length() > 0 ){
-            String sql = "SELECT * FROM "+ TABLE_INVOICE + " WHERE " + WHERE + " LIKE '%" + searchItem + "%'";
-            cursor = dbr.rawQuery(sql,null);
-            return cursor;
+            String sql = "SELECT * FROM "+ TABLE_TRANSACTION+" WHERE "+WHERE+" LIKE '%"+searchItem+"%'";
+            return dbr.rawQuery(sql,null);
         }
         else {
-            cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
-            return cursor;
+            return dbr.query(TABLE_TRANSACTION, columns, null, null, null, null, null, null);
         }
     }
 
+    Cursor searchInvoiceTransactions(String name){
+        String[] columns = {_ID,COLUMN_TRANSACTION_TYPE};
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        if(name.equals("no")){
+            mWHERE = COLUMN_TRANSACTION_TYPE+" = ? AND "+COLUMN_TRANSACTION_ZREPORT+" = ?";
+            mWHERE_ARGS = new String[]{"invoice","0"};
+        }else{
+            mWHERE = COLUMN_TRANSACTION_TYPE+" = ? AND "+COLUMN_TRANSACTION_XREPORT+" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
+            mWHERE_ARGS = new String[]{"invoice","0",name};
+        }
+
+        return dbr.query(TABLE_TRANSACTION, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+    }
+
+    Cursor searchInvoice(int id){
+        String[] columns = {COLUMN_INVOICE_PRINT};
+        String mWHERE = COLUMN_INVOICE_TRANSACTION_NUMBER+" = ?";
+        String[] mWHERE_ARGS = new String[]{Integer.toString(id)};
+        return dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+    }
+
+    int searchCancel(){
+        String[] columns = {_ID};
+        String mWHERE = COLUMN_TRANSACTION_TYPE+" = ?";
+        String[] mWHERE_ARGS = new String[]{"cancel"};
+        Cursor curse = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        int i = curse.getCount();
+        curse.close();
+        return i;
+    }
+
+    //MARK'S FUNCTION
     public void insertTempInvoice(InvoiceItem invoiceItem){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -370,8 +428,8 @@ import static com.example.sydney.psov3.Constants.*;
         return 0;
     }
 
-     public void updateInvoiceItem(String code, int newQuantity){
-            this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
-                    + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
-     }
+    public void updateInvoiceItem(String code, int newQuantity){
+        this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
+                + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
+    }
 }

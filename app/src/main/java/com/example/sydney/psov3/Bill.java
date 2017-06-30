@@ -19,7 +19,7 @@ import com.hdx.lib.serial.SerialPortOperaion;
 
 import hdx.HdxUtil;
 
-public class Bill {
+class Bill {
 
     public void main() {
         SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();

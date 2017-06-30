@@ -6,12 +6,12 @@ package com.example.sydney.psov3;
 
 public class Transactions {
     private int transId;
+    private String transType;
     private String transDateTime;
 
     public Transactions() {
+
     }
-
-
 
     public int getTransId() {
         return transId;
@@ -19,6 +19,14 @@ public class Transactions {
 
     public void setTransId(int transId) {
         this.transId = transId;
+    }
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public void setTransType(String transType) {
+        this.transType = transType;
     }
 
     public String getTransDateTime() {
@@ -29,9 +37,9 @@ public class Transactions {
         this.transDateTime = transDateTime;
     }
 
-
-    public Transactions(int transId , String transDateTime) {
+    public Transactions(int transId , String transType, String transDateTime) {
         this.transId = transId;
+        this.transType = transType;
         this.transDateTime = transDateTime;
     }
 }

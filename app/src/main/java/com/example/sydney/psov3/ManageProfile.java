@@ -14,15 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import static android.provider.BaseColumns._ID;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_DATETIME;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_TRANSACTION_NUMBER;
 import static com.example.sydney.psov3.Constants.TABLE_ADMIN;
-import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
-import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
+
 
 /**
  * Created by PROGRAMMER2 on 6/3/2017.

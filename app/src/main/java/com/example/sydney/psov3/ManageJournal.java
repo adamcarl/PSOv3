@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -53,7 +52,6 @@ public class ManageJournal extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinnerTransactionSearch);
         spinner.setSelection(0); //initially Product ID
 
-
         allOnClickLiteners();
         transactionList = fill_with_data();
 //        cursor = db_data.getData();
@@ -64,7 +62,6 @@ public class ManageJournal extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(transAdapter);
-
 
 //        prepareTransactions();
     }
@@ -87,11 +84,11 @@ public class ManageJournal extends AppCompatActivity {
 
     private void processSelectedSpinner() {
         if(spinnerSelected == 0){
-            colWhere = COLUMN_INVOICE_TRANSACTION_NUMBER;
+            colWhere = _ID;
             searchTransactions();
         }
         else if(spinnerSelected == 1){
-            colWhere = COLUMN_INVOICE_DATETIME;
+            colWhere = COLUMN_TRANSACTION_DATETIME;
             searchTransactions();
         }
         if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
@@ -115,11 +112,11 @@ public class ManageJournal extends AppCompatActivity {
             Cursor c = db_data.searchTransactions(searchItem,colWhere);
 
             while (c.moveToNext()) {
-                int tid = c.getInt(1);
-                String tdateTime = c.getString(5);
+                int tid = c.getInt(0);
+                String ttype = c.getString(1);
+                String tdateTime = c.getString(2);
 
-
-                transactionList.add(new Transactions(tid,tdateTime));
+                transactionList.add(new Transactions(tid,ttype,tdateTime));
             }
             transAdapter.notifyDataSetChanged();
             c.close();
@@ -132,16 +129,15 @@ public class ManageJournal extends AppCompatActivity {
         transactionList.clear();
 
         SQLiteDatabase db = db_data.getReadableDatabase();
-        String SELECT_QUERY = "SELECT " + COLUMN_INVOICE_TRANSACTION_NUMBER + "," + COLUMN_INVOICE_DATETIME +
-                              " FROM " + TABLE_INVOICE +
-                              " INNER JOIN " + TABLE_TRANSACTION + " ON " + TABLE_TRANSACTION + "." + _ID + "=" + TABLE_INVOICE + "." + COLUMN_INVOICE_TRANSACTION_NUMBER;
 
-        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+        String QueryBaKamo  = "SELECT * FROM "+TABLE_TRANSACTION;
+        Cursor cursor = db.rawQuery(QueryBaKamo,null);
         while (cursor.moveToNext()){
-            int invoiceNum = cursor.getInt(0);
-            String invoiceDateTime = cursor.getString(1);
+            int transNum = cursor.getInt(0);
+            String transType = cursor.getString(1);
+            String DateTime = cursor.getString(2);
 
-            transactionList.add(new Transactions(invoiceNum,invoiceDateTime));
+            transactionList.add(new Transactions(transNum,transType,DateTime));
         }
         cursor.close();
 

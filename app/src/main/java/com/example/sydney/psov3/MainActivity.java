@@ -100,12 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     int result=db_data.cashierLogin(muser,mpass);
                     if(result > 0){
-                        et_usernum.setText("");
-                        et_pass.setText("");
                         Intent myIntent = new Intent(getApplicationContext(),Cashier.class);
-
                         //PASS INDEX
                         myIntent.putExtra("CashNum",muser);
+                        et_usernum.setText("");
+                        et_pass.setText("");
                         Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                         startActivity(myIntent);
                     }
