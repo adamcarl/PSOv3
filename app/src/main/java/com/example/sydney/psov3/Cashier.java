@@ -115,7 +115,7 @@ public class Cashier extends AppCompatActivity {
 
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
-    private UsbPrinter marksPrinter = new UsbPrinter();
+//    private UsbPrinter marksPrinter = new UsbPrinter();
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
@@ -137,7 +137,7 @@ public class Cashier extends AppCompatActivity {
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
 
-        mPrinter = new JmPrinter();           //Create a 78M printer object
+//        mPrinter = new JmPrinter();           //Create a 78M printer object
 
         Intent intent = getIntent();
         userNum = intent.getExtras().getString("CashNum");
@@ -575,7 +575,7 @@ public class Cashier extends AppCompatActivity {
             }
 
             //CHECK IF PRINTERS ARE OPEN
-            boolean ret = marksPrinter.Open();
+//            boolean ret = marksPrinter.Open();
 
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
@@ -584,20 +584,20 @@ public class Cashier extends AppCompatActivity {
             }
             db_data.updateInvoice(abc,printBaHanapMo);
 
-                if(ret) {
-//                    mSerialPrinter.sydneyDotMatrix7by7();
-//                    mSerialPrinter.printString(products);
-//                    mSerialPrinter.walkPaper(50);
-//                    mSerialPrinter.sendLineFeed();
-                    //JOLLICARL PRINTER
-
-                }
-                else {
-                    //JOLLIMARK PRINTER
-                    unLockCashBox();
-                    printFunction(products);
-                    products.clear();
-                }
+//                if(ret) {
+////                    mSerialPrinter.sydneyDotMatrix7by7();
+////                    mSerialPrinter.printString(products);
+////                    mSerialPrinter.walkPaper(50);
+////                    mSerialPrinter.sendLineFeed();
+//                    //JOLLICARL PRINTER
+//
+//                }
+//                else {
+//                    //JOLLIMARK PRINTER
+//                    unLockCashBox();
+//                    printFunction(products);
+//                    products.clear();
+//                }
             t2Rows.clear();
             products.clear();
 
@@ -651,10 +651,6 @@ public class Cashier extends AppCompatActivity {
 //                dateformatted = dateformat.format(c.getTime());
 //                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 //                currentTime = sdf.format(new Date());
-
-
-
-
 
                 Date currDate = new Date();
                 final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
@@ -845,7 +841,7 @@ public class Cashier extends AppCompatActivity {
             }
             //RUN CODE IF JOLLIMARK IS PRESENT
             try {
-                marksPrinter.Open(); //open the printer
+//                marksPrinter.Open(); //open the printer
             } catch (Exception e) {
 
             }
