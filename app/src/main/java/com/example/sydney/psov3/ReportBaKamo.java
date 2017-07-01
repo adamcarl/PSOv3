@@ -1,8 +1,5 @@
 package com.example.sydney.psov3;
 
-import android.accessibilityservice.GestureDescription;
-import android.app.Application;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
@@ -10,7 +7,10 @@ import android.os.Message;
 import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import hdx.HdxUtil;
 
@@ -23,8 +23,12 @@ class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> products = new ArrayList<>();
 
-    void main(String userNum){
-
+    void main(String x, String userNum){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        String dateformatted = dateformat.format(calendar.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        String currentTime = sdf.format(new Date());
         SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
         try {
             mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
@@ -33,7 +37,18 @@ class ReportBaKamo {
         catch (Exception e) {
             e.printStackTrace();
         }
-            Cursor cursor = db_data.searchInvoiceTransactions(userNum);
+        products.add("     ABZTRAK INC.");
+        products.add("   CONVENIENCE STORE");
+        products.add("  Vat Reg TIN:XXXXXXXXXXXX");
+        products.add("   MIN:XXXXXXXXXXXXXXXXX");
+        products.add("      2nd Floor, #670,");
+        products.add("Sgt. Bumatay St, Mandaluyong");
+        products.add("    NCR, Philippines");
+        products.add("   Serial No. XXXXXXXX");
+        products.add("X\t"+ dateformatted +"\t"+currentTime);
+        products.add("CLK:"+userNum+"\t"+"");
+        products.add("X\tDAY SALES   ");
+            Cursor cursor = db_data.searchInvoiceTransactions(x);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 Cursor curseInvoice = db_data.searchInvoice(cursor.getInt(0));
@@ -48,7 +63,7 @@ class ReportBaKamo {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                db_data.updateTransactions(cursor.getInt(0),userNum);
+                db_data.updateTransactions(cursor.getInt(0),x);
 
                 curseInvoice.close();
                 cursor.moveToNext();

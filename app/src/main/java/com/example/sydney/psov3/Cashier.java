@@ -471,10 +471,19 @@ public class Cashier extends AppCompatActivity {
     //BUTTON PRINT
     public void print(View view) throws ParseException {
 //        bill.main();
-        products.add("ABZTRAK INC CONVENIENCE STORE");
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        dateformatted = dateformat.format(c.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        currentTime = sdf.format(new Date());
+        products.add("ABZTRAK INC.");
+        products.add("CONVENIENCE STORE");
+        products.add("Vat Reg TIN:XXXXXXXXXXXX");
+        products.add("MIN:XXXXXXXXXXXXXXXXX");
         products.add("2nd Floor, #670,");
         products.add("Sgt. Bumatay St, Mandaluyong");
         products.add("NCR, Philippines");
+        products.add("Serial No. XXXXXXXX");
         products.add("             CASH INVOICE");
         products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
@@ -689,11 +698,11 @@ public class Cashier extends AppCompatActivity {
     }
     public void zreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("no");
+        reportBaKamo.main("no", userNum);
     }
     public void xreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main(userNum);
+        reportBaKamo.main(userNum, userNum);
     }
     private void sleep(int ms) {
         try {

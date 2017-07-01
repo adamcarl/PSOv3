@@ -27,8 +27,6 @@ public class AdminActivity extends AppCompatActivity{
     //For Database
 
 
-
-
     //For Admin Privilege
 
     Button btn_adminManStaff,btn_adminManProd,btn_adminManJournal,btn_dummyA, btn_adminManProfile;
