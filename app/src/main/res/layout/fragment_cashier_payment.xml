@@ -12,10 +12,31 @@
     android:padding="6dp">
 
     <android.support.v7.widget.CardView
+        app:cardBackgroundColor="@color/myColorCardViewCashier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_flexBasisPercent="@fraction/fraction100percent">
+        <EditText
+            android:textColor="@color/myColorEditTextDialogDisable"
+            android:background="@drawable/custom_edittext_dialog"
+            android:id="@+id/txt_cash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:hint="Php 0.00"
+            android:inputType="numberDecimal"
+            android:padding="10dp"
+            android:textColorHint="@color/myColorEditTextDialogDisable"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_flexBasisPercent="@fraction/fraction100percent"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:id="@+id/nigger">
 
         <!--<TextView-->
         <!--android:textColor="@color/myColorWhite"-->
@@ -32,20 +53,10 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="15dp">
-
-            <EditText
-                android:id="@+id/txt_cash"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_edittext_cash"
-                android:gravity="right"
-                android:hint="Php 0.00"
-                android:inputType="numberDecimal"
-                android:padding="5dp"
-                android:textColorHint="@color/myColorEditTextDialogDisable"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:id="@+id/ll_tender"
@@ -60,6 +71,8 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/custom_button_payment_mode"
                         android:id="@+id/button8"
                         android:layout_width="wrap_content"
                         android:layout_height="80dp"
@@ -67,6 +80,8 @@
                         android:text="Credit Card" />
 
                     <Button
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/custom_button_payment_mode"
                         android:id="@+id/button7"
                         android:layout_width="wrap_content"
                         android:layout_height="80dp"
@@ -74,6 +89,8 @@
                         android:text="Gift Card" />
 
                     <Button
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/custom_button_payment_mode"
                         android:id="@+id/button9"
                         android:layout_width="wrap_content"
                         android:layout_height="80dp"
@@ -88,7 +105,7 @@
                     android:id="@+id/rg_discount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:orientation="horizontal"
                     android:padding="3dp">
 
@@ -117,10 +134,11 @@
             </LinearLayout>
 
             <Button
+                android:enabled="false"
                 android:id="@+id/btn_printBaKamo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/custom_button_login"
                 android:elevation="4dp"
                 android:onClick="print"
@@ -139,8 +157,8 @@
 
 
     <android.support.v7.widget.CardView
-        android:layout_marginTop="5dp"
         android:elevation="2dp"
+        android:id="@+id/ofay"
         app:layout_flexBasisPercent="@fraction/fraction100percent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

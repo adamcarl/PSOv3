@@ -1,9 +1,13 @@
 package com.example.sydney.psov3;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,12 +55,12 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position){
         final InvoiceItem invoiceItem = invoiceList.get(position);
-        holder.itemView.setBackgroundColor(invoiceItem.isSelected() ? Color.DKGRAY : Color.GRAY);
+        holder.cv.setCardBackgroundColor(invoiceItem.isSelected() ? ContextCompat.getColor(mContext,R.color.myColorIconLock): ContextCompat.getColor(mContext,R.color.myColorCardViewCashier));
         holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 invoiceItem.setSelected(!invoiceItem.isSelected());
-                holder.itemView.setBackgroundColor(invoiceItem.isSelected() ? Color.CYAN : Color.WHITE);
+                holder.cv.setCardBackgroundColor(invoiceItem.isSelected() ? ContextCompat.getColor(mContext,R.color.myColorIconLock): ContextCompat.getColor(mContext,R.color.myColorCardViewCashier));
             }
         });
 

@@ -83,8 +83,6 @@ public class ManageProduct extends AppCompatActivity {
         //ALL ONCLICKLISTENERS
         allOnListeners();
 
-
-
     }
 
     private void allOnListeners() {
@@ -388,6 +386,14 @@ public class ManageProduct extends AppCompatActivity {
                                 contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
                                 db.insert(tableName, null, contentValues);
                             }
+                            //INITIALIZE DATA SET
+                            productsList = listGo();
+                            productAdapter = new ProductAdapter(getApplication(),productsList);
+                            recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                            recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                            recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
+
                             Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
