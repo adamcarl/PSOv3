@@ -1,6 +1,9 @@
 package com.example.sydney.psov3;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +33,7 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
         CardView cv;
         MyViewHolder(View view){
             super(view);
-            cv = (CardView) view.findViewById(R.id.card_view);
+            cv = (CardView) view.findViewById(R.id.cv_item);
             invoiceProductName = (TextView) view.findViewById(R.id.txtInvoiceProductName);
             invoiceProductPrice = (TextView) view.findViewById(R.id.txInvoiceProductPrice);
             invoiceProductVattable = (TextView) view.findViewById(R.id.txtInvoiceProductVattable);
@@ -47,11 +50,18 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position){
-//        Transactions transactions = transactionList.get(position);
-//        holder.transNumber.setText(transactions.getTransId());
-//        holder.transType.setText(transactions.getTransactionType());
+        final InvoiceItem invoiceItem = invoiceList.get(position);
+        holder.itemView.setBackgroundColor(invoiceItem.isSelected() ? Color.DKGRAY : Color.GRAY);
+        holder.cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                invoiceItem.setSelected(!invoiceItem.isSelected());
+                holder.itemView.setBackgroundColor(invoiceItem.isSelected() ? Color.CYAN : Color.WHITE);
+            }
+        });
+
         holder.invoiceProductName.setText(invoiceList.get(position).getInvoiceProductDescription());
-        holder.invoiceProductPrice.setText(Integer.toString(invoiceList.get(position).getInvoiceProductPrice()));
+        holder.invoiceProductPrice.setText(Double.toString(invoiceList.get(position).getInvoiceProductPrice()));
         holder.invoiceProductVattable.setText(invoiceList.get(position).getInvoiceProductVattable());
         holder.invoiceProductQuantity.setText(Integer.toString(invoiceList.get(position).getInvoiceProductQuantity()));
     }

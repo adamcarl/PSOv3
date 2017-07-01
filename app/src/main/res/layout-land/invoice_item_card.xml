@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-    android:id="@+id/recycler_view_item"
+    android:id="@+id/cv_item"
+    android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -19,12 +20,13 @@
             android:text="Milo 20g"
             android:textSize="16dp" />
 
-        <ImageButton
+        <CheckBox
+            android:id="@+id/chk_delete"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:padding="10dp"
-            android:src="@drawable/ic_cash" />
+            android:padding="10dp"/>
 
         <TextView
             android:id="@+id/txtInvoiceProductQuantity"

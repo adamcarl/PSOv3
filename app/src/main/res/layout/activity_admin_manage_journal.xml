@@ -7,6 +7,7 @@
     android:background="@color/myColorBGforRecyclerView">
 
     <android.support.v7.widget.AppCompatSpinner
+        android:layout_marginTop="10dp"
         android:id="@+id/spinnerTransactionSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,6 +15,8 @@
     </android.support.v7.widget.AppCompatSpinner>
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

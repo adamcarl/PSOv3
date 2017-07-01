@@ -24,6 +24,7 @@
 
     //FOR CASHIER INTERFACE
     <color name="myColorEditTextCash">#bcbcbc</color>
+    <color name="myColorButtonDelete">#a6a6a6</color>
     <color name="myColorHeading">#cecece</color>
     <color name="myColorBackgroundCashier">#e1e1e1</color>
     <color name="myColorCardViewCashier">#eef0f1</color>

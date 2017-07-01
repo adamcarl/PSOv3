@@ -52,4 +52,11 @@ public interface Constants extends BaseColumns {
 
     String TABLE_LOG = "tbl_log";
     String COLUMN_LOG_STRING= "LogString";
+
+    String TABLE_TEMP_INVOICING = "tbl_temp";
+    String COLUMN_TEMP_DESCRIPTION = "temp_description";
+    String COLUMN_TEMP_PRICE = "temp_price";
+    String COLUMN_TEMP_QUANTITY = "temp_quantity";
+    String COLUMN_TEMP_ID = "temp_id";
+
 }

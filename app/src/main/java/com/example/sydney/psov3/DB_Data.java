@@ -3,6 +3,7 @@ package com.example.sydney.psov3;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
@@ -71,9 +72,17 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_TRANSACTION_CASHIER+" TEXT NOT NULL, "
                 +COLUMN_TRANSACTION_XREPORT+" INTEGER NOT NULL, "
                 +COLUMN_TRANSACTION_ZREPORT+" INTEGER NOT NULL);");
-        arg0.execSQL("CREATE TABLE "+ TABLE_LOG+" ("
-               +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-               +COLUMN_LOG_STRING+" TEXT NOT NULL);");}
+        arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+
+        arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
+                + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
+                + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
+                + COLUMN_TEMP_ID + " TEXT NOT NULL);");
+    }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_ADMIN);
@@ -91,6 +100,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_TRANSACTION);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_LOG);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TEMP_INVOICING);
         onCreate(arg0);
     }
 
@@ -229,7 +240,7 @@ import static com.example.sydney.psov3.Constants.*;
             e.printStackTrace();
         }
         return 0;
-        }
+    }
 
     String[] searchProduct(String id){
         String[] mALL = {COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME,COLUMN_PRODUCT_DESCRIPTION,COLUMN_PRODUCT_PRICE,COLUMN_PRODUCT_QUANTITY,COLUMN_PRODUCT_VATABLE};
@@ -310,12 +321,12 @@ import static com.example.sydney.psov3.Constants.*;
 //        Cursor cursor = null;
 //
 //        if(searchItem != null && searchItem.length() > 0 ){
-//            String sql = "SELECT * FROM "+ TABLE_PRODUCT+" WHERE "
-//                   +COLUMN_PRODUCT_ID+" LIKE '%"+searchItem+"%' OR "
-//                   +COLUMN_PRODUCT_NAME+" LIKE '%"+searchItem+"%' OR "
-//                   +COLUMN_PRODUCT_DESCRIPTION+" LIKE '%"+searchItem+"%' OR "
-//                   +COLUMN_PRODUCT_PRICE+" LIKE '%"+searchItem+"%' OR "
-//                   +COLUMN_PRODUCT_QUANTITY+" LIKE '%"+searchItem +"%'";
+//            String sql = "SELECT * FROM "+ TABLE_PRODUCT + " WHERE "
+//                    + COLUMN_PRODUCT_ID + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_NAME + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_DESCRIPTION + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_PRICE + " LIKE '%" + searchItem + "%' OR "
+//                    + COLUMN_PRODUCT_QUANTITY + " LIKE '%" + searchItem +"%'";
 //            cursor = dbr.rawQuery(sql,null);
 //            return cursor;
 //        }
@@ -376,5 +387,49 @@ import static com.example.sydney.psov3.Constants.*;
         int i = curse.getCount();
         curse.close();
         return i;
+    }
+
+    //MARK'S FUNCTION
+    public void insertTempInvoice(InvoiceItem invoiceItem){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_TEMP_DESCRIPTION, invoiceItem.getInvoiceProductDescription());
+        values.put(COLUMN_TEMP_PRICE, invoiceItem.getInvoiceProductPrice());
+        values.put(COLUMN_TEMP_QUANTITY, invoiceItem.getInvoiceProductQuantity());
+        values.put(COLUMN_TEMP_ID, invoiceItem.getInvoiceProductID());
+
+        database.insert(TABLE_TEMP_INVOICING, null, values);
+//        database.close();
+    }
+
+    public void deleteItemInvoice(String itemDes){
+        try {
+            this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_DESCRIPTION +"='" + itemDes + "'");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public int searchDuplicateInvoice(String itemID) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String[] selectionArgs = new String[]{itemID};
+        try {
+            int i;
+            Cursor cursor;
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "=?",selectionArgs);
+            cursor.moveToFirst();
+            i = cursor.getCount();
+            cursor.close();
+            return i;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void updateInvoiceItem(String code, int newQuantity){
+        this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
+                + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
 }
