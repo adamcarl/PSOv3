@@ -32,6 +32,8 @@
     <color name="myColorFont">#bfbfbf</color>
     <color name="myColorButtonPaymentMode">#95b6cc</color>
     <color name="myColorButtonPaymentModePressed">#6a91ab</color>
+    <color name="myColorDisableCashierButton">#f1ca8e</color>
+
 
 
 

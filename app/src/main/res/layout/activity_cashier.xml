@@ -18,41 +18,10 @@
         android:theme="@style/AppTheme"
         android:id="@+id/toolbar"
         />
-    <LinearLayout
-        android:id="@+id/ll_ec"
-        android:layout_width="wrap_content"
-        android:focusable="false"
-        android:orientation="horizontal"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_alignParentStart="true">
-
-        <EditText
-            android:id="@+id/txt_cash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="true"
-            android:hint="Enter Cash"
-            android:inputType="numberDecimal" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#d35400"
-            android:onClick="priceClick"
-            android:text="Cash"
-            android:textColor="#ffffff" />
-    </LinearLayout>
     <TabHost
         android:layout_width="match_parent"
         android:id="@+id/tabHost"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ll_ec">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,6 +39,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:background="@color/myColorBackgroundCashier"
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

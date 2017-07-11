@@ -17,6 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <EditText
+                android:textColorHint="@color/myColorEditTextDialogDisable"
+                android:textColor="@color/myColorEditTextDialogDisable"
                 android:background="@drawable/custom_edittext_dialog"
                 android:id="@+id/txt_cashier_search"
                 android:layout_width="wrap_content"

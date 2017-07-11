@@ -213,18 +213,19 @@ public class Cashier extends AppCompatActivity {
                     formatted = NumberFormat.getCurrencyInstance().format((due/1));
                     formatted = formatted.replace("$","");
                     try{
-                        if (due>0 || due==0) {
+//                        double convertedCash = Double.parseDouble(txt_cash.getText().toString());
+                        if (due > 0) {
+                            btn_print.setEnabled(false);
                             lbl_dc.setText(""+"Due"+"");
                             lbl_due.setText(formatted);
-                            btn_print.setVisibility(View.GONE);
                         }
-                        else {
+                        else if(due < 0){
+                            btn_print.setEnabled(true);
+                            btn_print.setText(""+"Print Receipt"+"");
                             lbl_dc.setText(""+"Change"+"");
                             formatted = NumberFormat.getCurrencyInstance().format((due / 1));
                             formatted = formatted.replaceAll("[$-]", "P");
                             lbl_due.setText(formatted);
-                            btn_print.setText(""+"Print Receipt"+"");
-                            btn_print.setVisibility(View.VISIBLE);
                         }
                     }
                     catch (Exception e){
@@ -564,13 +565,13 @@ public class Cashier extends AppCompatActivity {
             products.add("Vat" + "" + "\t\t " + vat2);
             products.add("Total" + " \t\t" + subTotal + "");
 
-            if (due>0 || due==0) {
+            if (due > 0) {
                 products.add("Due" + " \t\t" + due + "");
                 products.add("");
             }
             else {
                 String change = due.toString().replace("-", "");
-                products.add("Change" + " \t\t" + change + "");
+                products.add("Change" + "\t\t" + change + "");
                 products.add("\n");
             }
 
@@ -619,6 +620,7 @@ public class Cashier extends AppCompatActivity {
             sb.append(s);
             sb.append("\t");
             sb.append("\n");
+            sb.insert(sb.length(),"\t");
         }
         String convertedArray = sb.toString();
 
@@ -626,6 +628,9 @@ public class Cashier extends AppCompatActivity {
         try {
             SData = convertedArray.getBytes("UTF-8");
             boolean retnVale = mPrinter.PrintText(SData);
+            db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
+            refreshRecyclerView();
+
             if(!retnVale){
                 Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
             }

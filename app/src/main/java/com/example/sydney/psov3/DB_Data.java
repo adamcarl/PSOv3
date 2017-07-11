@@ -411,6 +411,14 @@ import static com.example.sydney.psov3.Constants.*;
         }
     }
 
+    public void deleteAllTempItemInvoice(){
+        try {
+            this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public int searchDuplicateInvoice(String itemID) {
         SQLiteDatabase database = this.getReadableDatabase();
         String[] selectionArgs = new String[]{itemID};
