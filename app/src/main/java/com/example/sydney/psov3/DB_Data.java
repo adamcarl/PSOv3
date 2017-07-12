@@ -453,7 +453,7 @@ import static com.example.sydney.psov3.Constants.*;
         }
 
 
-    public void updateInvoiceItem(String code, int newQuantity){
+
     void updateInvoiceItem(String code, int newQuantity){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
                 + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
