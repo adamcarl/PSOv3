@@ -1,17 +1,24 @@
 package com.example.sydney.psov3;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 
 import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import hdx.HdxUtil;
+
+import static android.provider.BaseColumns._ID;
+import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
+import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
 
 
 /**
@@ -21,8 +28,9 @@ import hdx.HdxUtil;
 class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> products = new ArrayList<>();
+    SQLiteDatabase dbReader;
 
-    void main(String x, String userNum){
+    void main(String x, String date, int transNum){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         String dateformatted = dateformat.format(calendar.getTime());
@@ -43,8 +51,9 @@ class ReportBaKamo {
         else {
             report = "X";
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("NOVA RESTAURANT & SERVICE INC.");
+            // Pad with zeros and a width of 6 chars.
+            String trans = String.format("%1$06d", transNum);
+
         products.add("NOVA RESTAURANT & SERVICE INC.");
         products.add("MILKY WAY");
         products.add("VAT REG TIN:000-482-511-001");
@@ -58,150 +67,152 @@ class ReportBaKamo {
         if(x.equals("no")) {
             products.add("END-OF-DAY REPORT");
             products.add("=======================================");
-            products.add("BIZDATE : " + dateformatted + " " + currentTime);
+            products.add("BIZDATE : "+date);
             products.add("BRANCH : HEAD OFFICE");
-            products.add("SHIFT : ALL\t\tTRANS#XXXXXX\n");
+
+            products.add("SHIFT : ALL\t\tTRANS#"+trans+"\n");
         }else {
             products.add("CASHIER REPORT");
             products.add("=======================================");
             products.add("BIZDATE : " + dateformatted + " " + currentTime);
-            products.add("CASHIER : "+userNum);
-            products.add("SHIFT : 1\t\tTRANS#XXXXXX\n");
+            products.add("CASHIER : "+x);
+            products.add("SHIFT : 1\t\tTRANS#"+transNum+"\n");
         }
-        products.add("GROSS SALES\t\tX,XXX.XX");
-
-        products.add(" SALES DISCOUNT\t\t-XX.XX");
-        products.add("----------------------------------------");
-        products.add("NET SALES\t\tX,XXX.XX\n");
-
-        products.add("TAX CODE\tSALES\tTAX");
-        products.add("----------------------------------------");
-        products.add("[n] N-Sal\tX.XX\tX.XX");
-        products.add("[v] V-Sal\tX,XXX.XX\tXXX.XX");
-        products.add("[x] E-Sal\tXXX.XX\tX.XX");
-        products.add("[z] Z-Sal\tX.XX\tX.XX\n");
-
-        if(x.equals("no")){
-            products.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
-            products.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
-
-            products.add("Z Count\t\tXXXXX\n");
-
-            products.add("Trans #\t\tXXXXXX - XXXXXX");
-            products.add("\t\t\tX\n");
-
-            products.add("OR #\t\tXXXXXX - XXXXXX");
-            products.add("\t\t\tX\n");
-        }
-        products.add("CASH SALES\t\tXXX.XX");
-        products.add("----------------------------------------");
-        products.add("CASH IN DRAWER\t\tXXX.XX");
-
-        products.add("CASH COUNT\t\tXXX.XX");
-        products.add("----------------------------------------");
-        products.add("CASH SHORT/OVER\t\tX.XX\n");
-
-        products.add("TRANSACTION\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("NORMAL SALES\t\tX,XXX.XX\n");
-
-        products.add("TENDER\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("TOTAL CASH\tX\tXXX.XX");
-        products.add("  CC BDO\tX\tX,XXX.XX");
-        products.add("  CC BPI\tX\tX,XXX.XX");
-        products.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
-
-        products.add("DISCOUNT\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("SCD 20%\tX\t-XX.XX");
-        products.add("Tax - Exempt\tX\t-XX.XX");
-        products.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
-
-        products.add("ITEM SALES\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("MILO ACTIV-GO 22GMS.");
-        products.add("BEV-001\t\tX,XXX.XX");
-        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-        products.add("QUAKER OAT CEREAL DRINK 29g");
-        products.add("BEV-002\t\tXX.XX");
-        products.add("xX.XXXX\td-X.XX\tXX.XX");
-        products.add("TAPSILOG");
-        products.add("FOOD-004\t\tXXX.XX");
-        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
-        products.add("----------------------------------------");
-        products.add("TOTAL QTY\t\tXXX.XXXX");
-        products.add("GROSS SALES\t\tX,XXX.XX");
-        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-        products.add("NET SALES\t\tX,XXX.XX\n");
-
-        products.add("DEPARTMENT SALES\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("NO DEPARTMENT");
-        products.add("\t\t\tXX.XX");
-        products.add("xX.XXXX\td-X.XX\tXX.XX");
-        products.add("NO DEPARTMENT");
-        products.add("\t\t\tXXX.XX");
-        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
-        products.add("NO DEPARTMENT");
-        products.add("\t\t\tX,XXX.XX");
-        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-        products.add("----------------------------------------");
-        products.add("TOTAL QTY\t\tXXX.XXXX");
-        products.add("GROSS SALES\t\tX,XXX.XX");
-        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-        products.add("NET SALES\t\tX,XXX.XX\n");
-
-        products.add("GROUP SALES\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("NO GROUP");
-        products.add("\t\t\tXX.XX");
-        products.add("xX.XXXX\td-X.XX\tXX.XX");
-        products.add("NO GROUP");
-        products.add("\t\t\tXXX.XX");
-        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
-        products.add("NO GROUP");
-        products.add("\t\t\tX,XXX.XX");
-        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-        products.add("----------------------------------------");
-        products.add("TOTAL QTY\t\tXXX.XXXX");
-        products.add("GROSS SALES\t\tX,XXX.XX");
-        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-        products.add("NET SALES\t\tX,XXX.XX\n");
-
-        products.add("BRAND SALES\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("NO BRAND");
-        products.add("\t\t\tXX.XX");
-        products.add("xX.XXXX\td-X.XX\tXX.XX");
-        products.add("NO BRAND");
-        products.add("\t\t\tXXX.XX");
-        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
-        products.add("NO BRAND");
-        products.add("\t\t\tX,XXX.XX");
-        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-        products.add("----------------------------------------");
-        products.add("TOTAL QTY\t\tXXX.XXXX");
-        products.add("GROSS SALES\t\tX,XXX.XX");
-        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-        products.add("NET SALES\t\tX,XXX.XX\n");
-
-        products.add("CATEGORY SALES\t\tAMOUNT");
-        products.add("----------------------------------------");
-        products.add("NO CATEGORY");
-        products.add("\t\t\tXX.XX");
-        products.add("xX.XXXX\td-X.XX\tXX.XX");
-        products.add("NO CATEGORY");
-        products.add("\t\t\tXXX.XX");
-        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
-        products.add("NO CATEGORY");
-        products.add("\t\t\tX,XXX.XX");
-        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-        products.add("----------------------------------------");
-        products.add("TOTAL QTY\t\tXXX.XXXX");
-        products.add("GROSS SALES\t\tX,XXX.XX");
-        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-        products.add("NET SALES\t\tX,XXX.XX\n");
+        String gross = db_data.getGrossSales(x);
+        products.add("GROSS SALES\t\t"+gross);
+//
+//        products.add(" SALES DISCOUNT\t\t-XX.XX");
+//        products.add("----------------------------------------");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
+//
+//        products.add("TAX CODE\tSALES\tTAX");
+//        products.add("----------------------------------------");
+//        products.add("[n] N-Sal\tX.XX\tX.XX");
+//        products.add("[v] V-Sal\tX,XXX.XX\tXXX.XX");
+//        products.add("[x] E-Sal\tXXX.XX\tX.XX");
+//        products.add("[z] Z-Sal\tX.XX\tX.XX\n");
+//
+//        if(x.equals("no")){
+//            products.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
+//            products.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
+//
+//            products.add("Z Count\t\tXXXXX\n");
+//
+//            products.add("Trans #\t\tXXXXXX - XXXXXX");
+//            products.add("\t\t\tX\n");
+//
+//            products.add("OR #\t\tXXXXXX - XXXXXX");
+//            products.add("\t\t\tX\n");
+//        }
+//        products.add("CASH SALES\t\tXXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("CASH IN DRAWER\t\tXXX.XX");
+//
+//        products.add("CASH COUNT\t\tXXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("CASH SHORT/OVER\t\tX.XX\n");
+//
+//        products.add("TRANSACTION\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("NORMAL SALES\t\tX,XXX.XX\n");
+//
+//        products.add("TENDER\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL CASH\tX\tXXX.XX");
+//        products.add("  CC BDO\tX\tX,XXX.XX");
+//        products.add("  CC BPI\tX\tX,XXX.XX");
+//        products.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
+//
+//        products.add("DISCOUNT\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("SCD 20%\tX\t-XX.XX");
+//        products.add("Tax - Exempt\tX\t-XX.XX");
+//        products.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
+//
+//        products.add("ITEM SALES\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("MILO ACTIV-GO 22GMS.");
+//        products.add("BEV-001\t\tX,XXX.XX");
+//        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+//        products.add("QUAKER OAT CEREAL DRINK 29g");
+//        products.add("BEV-002\t\tXX.XX");
+//        products.add("xX.XXXX\td-X.XX\tXX.XX");
+//        products.add("TAPSILOG");
+//        products.add("FOOD-004\t\tXXX.XX");
+//        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL QTY\t\tXXX.XXXX");
+//        products.add("GROSS SALES\t\tX,XXX.XX");
+//        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
+//
+//        products.add("DEPARTMENT SALES\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("NO DEPARTMENT");
+//        products.add("\t\t\tXX.XX");
+//        products.add("xX.XXXX\td-X.XX\tXX.XX");
+//        products.add("NO DEPARTMENT");
+//        products.add("\t\t\tXXX.XX");
+//        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+//        products.add("NO DEPARTMENT");
+//        products.add("\t\t\tX,XXX.XX");
+//        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL QTY\t\tXXX.XXXX");
+//        products.add("GROSS SALES\t\tX,XXX.XX");
+//        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
+//
+//        products.add("GROUP SALES\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("NO GROUP");
+//        products.add("\t\t\tXX.XX");
+//        products.add("xX.XXXX\td-X.XX\tXX.XX");
+//        products.add("NO GROUP");
+//        products.add("\t\t\tXXX.XX");
+//        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+//        products.add("NO GROUP");
+//        products.add("\t\t\tX,XXX.XX");
+//        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL QTY\t\tXXX.XXXX");
+//        products.add("GROSS SALES\t\tX,XXX.XX");
+//        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
+//
+//        products.add("BRAND SALES\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("NO BRAND");
+//        products.add("\t\t\tXX.XX");
+//        products.add("xX.XXXX\td-X.XX\tXX.XX");
+//        products.add("NO BRAND");
+//        products.add("\t\t\tXXX.XX");
+//        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+//        products.add("NO BRAND");
+//        products.add("\t\t\tX,XXX.XX");
+//        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL QTY\t\tXXX.XXXX");
+//        products.add("GROSS SALES\t\tX,XXX.XX");
+//        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
+//
+//        products.add("CATEGORY SALES\t\tAMOUNT");
+//        products.add("----------------------------------------");
+//        products.add("NO CATEGORY");
+//        products.add("\t\t\tXX.XX");
+//        products.add("xX.XXXX\td-X.XX\tXX.XX");
+//        products.add("NO CATEGORY");
+//        products.add("\t\t\tXXX.XX");
+//        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+//        products.add("NO CATEGORY");
+//        products.add("\t\t\tX,XXX.XX");
+//        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+//        products.add("----------------------------------------");
+//        products.add("TOTAL QTY\t\tXXX.XXXX");
+//        products.add("GROSS SALES\t\tX,XXX.XX");
+//        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+//        products.add("NET SALES\t\tX,XXX.XX\n");
 
         try{
             mSerialPrinter.sydneyDotMatrix7by7();

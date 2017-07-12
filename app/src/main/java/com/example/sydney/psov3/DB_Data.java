@@ -435,8 +435,29 @@ import static com.example.sydney.psov3.Constants.*;
         return 0;
     }
 
-    void updateInvoiceItem(String code, int newQuantity){
-        this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
-                + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
+    void updateInvoiceItem(String code, int newQuantity) {
+        this.getWritableDatabase().execSQL("UPDATE " + TABLE_TEMP_INVOICING + " SET "
+                + COLUMN_TEMP_QUANTITY + "='" + newQuantity + "' WHERE " + COLUMN_TEMP_ID + "='" + code + "'");
+    }
+    String getGrossSales(String x){
+        String gross;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_CUSTOMER+")"};
+        if(x.equals("no")){
+//            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+//            mWHERE_ARGS = new String[]{"0"};
+        }
+        else {
+            mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+//            mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE_ARGS = new String[]{x};
+        }
+//        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
+        cursor.moveToFirst();
+        gross = cursor.getString(0);
+        cursor.close();
+        return  gross;
     }
 }
