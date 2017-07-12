@@ -202,7 +202,7 @@ public class ManageProduct extends AppCompatActivity {
 
     private List<Product> searchProd(){
         productsList.clear();
-        String searchItem = searchView.getQuery().toString().trim().toLowerCase();
+        String searchItem = searchView.getQuery().toString();
         if(searchItem.equals("")){
             listGo();
         }
@@ -297,7 +297,6 @@ public class ManageProduct extends AppCompatActivity {
 
             case R.id.menu_add_product:
                 alertDialog.show();
-                //Todo Function Here for saving Transaction
                 return true;
 
             case R.id.menu_import_product:
@@ -329,16 +328,21 @@ public class ManageProduct extends AppCompatActivity {
                 String mProductDes = productDes.getText().toString();
                 String mProductQuantity = productQuantity.getText().toString();
                 String mProductId = productId.getText().toString();
+                int result = db_data.searchDuplicateProduct(mProductId);
 
                 if(mProductName.isEmpty() || mProductId.isEmpty() || mProductDes.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()){
                     Toast.makeText(ManageProduct.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
-                    Toast.makeText(ManageProduct.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
-                    alertDialog.dismiss();
+                    if(result > 0){
+                        productId.setText("");
+                        Toast.makeText(ManageProduct.this, "Duplicate PRODUCT ID!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        db_data.addProduct(mProductId,mProductName,mProductDes,mProductPrice,mProductQuantity);
+                        Toast.makeText(ManageProduct.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
+                    }
                 }
-
             }
         });
 

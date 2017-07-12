@@ -436,6 +436,24 @@ import static com.example.sydney.psov3.Constants.*;
         return 0;
     }
 
+    public int searchDuplicateProduct(String itemID) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String[] selectionArgs = new String[]{itemID};
+        try {
+            int i;
+            Cursor cursor;
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + COLUMN_PRODUCT_ID + "=?",selectionArgs);
+            cursor.moveToFirst();
+            i = cursor.getCount();
+            cursor.close();
+            return i;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
     public void updateInvoiceItem(String code, int newQuantity){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
                 + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
