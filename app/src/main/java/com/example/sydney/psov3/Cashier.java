@@ -21,19 +21,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -47,8 +42,6 @@ import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
-
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
@@ -77,7 +70,6 @@ public class Cashier extends AppCompatActivity {
 //    ArrayList<String> items;
     private List<InvoiceItem> invoiceItemList;
     private RecyclerView recyclerView;
-    private InvoiceAdapter invoiceAdapter;
 
     EditText txt_search,txt_cash;
     String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
@@ -91,7 +83,7 @@ public class Cashier extends AppCompatActivity {
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
     TabHost tab_host;
-    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount,tv_cell;
+    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
     Button btn_print,btn_cashier_confirmDelete;
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
@@ -465,6 +457,7 @@ public class Cashier extends AppCompatActivity {
                                             Cursor cursor = db.rawQuery(SELECT_QUERY,null);
                                             cursor.moveToFirst();
                                             String retrievedQuantity = cursor.getString(3);
+                                            cursor.close();
                                             int convertedQuantity = Integer.parseInt(retrievedQuantity);
 
                                             db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
@@ -586,10 +579,10 @@ public class Cashier extends AppCompatActivity {
             db_data.updateInvoice(abc,printBaHanapMo);
 
 //                if(ret) {
-////                    mSerialPrinter.sydneyDotMatrix7by7();
-////                    mSerialPrinter.printString(products);
-////                    mSerialPrinter.walkPaper(50);
-////                    mSerialPrinter.sendLineFeed();
+                    mSerialPrinter.sydneyDotMatrix7by7();
+                    mSerialPrinter.printString(products);
+                    mSerialPrinter.walkPaper(50);
+                    mSerialPrinter.sendLineFeed();
 //                    //JOLLICARL PRINTER
 //
 //                }
@@ -727,9 +720,6 @@ public class Cashier extends AppCompatActivity {
         finish();
         sleep(1000);
     }
-    public void itemClick(View view){
-
-    }
     public void zreport(View view){
         reportBaKamo.setDb_data(db_data);
         reportBaKamo.main("no", userNum);
@@ -838,8 +828,8 @@ public class Cashier extends AppCompatActivity {
         try {
             //RUN CODE IF JOLLICARL IS PRESENT
             try {
-//                mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-//                HdxUtil.SetPrinterPower(1);
+                mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
+                HdxUtil.SetPrinterPower(1);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -858,7 +848,7 @@ public class Cashier extends AppCompatActivity {
     private void refreshRecyclerView() {
         //REFRESHING THE RECYCLER
         invoiceItemList = fill_with_data();
-        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
+        InvoiceAdapter invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
         mLayoutManager = new GridLayoutManager(Cashier.this,2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

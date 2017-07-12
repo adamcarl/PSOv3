@@ -1,6 +1,5 @@
 package com.example.sydney.psov3;
 
-import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
 
@@ -44,105 +43,165 @@ class ReportBaKamo {
         else {
             report = "X";
         }
-
-        products.add("     ABZTRAK INC.");
-        products.add("   CONVENIENCE STORE");
-        products.add("  Vat Reg TIN:XXXXXXXXXXXX");
-        products.add("   MIN:XXXXXXXXXXXXXXXXX");
-        products.add("      2nd Floor, #670,");
-        products.add("Sgt. Bumatay St, Mandaluyong");
-        products.add("    NCR, Philippines");
-        products.add("   Serial No. XXXXXXXX");
-        products.add(report +"\t"+ dateformatted +"\t"+currentTime);
-        products.add("CLK:"+userNum+"\t"+"");
-        products.add("------------------------------");
-        products.add(report +"\tDAY SALES");
-        products.add("------------------------------");
-        products.add(report +"\tFIX");
-        products.add("\t\t\tXXXXXXX\n");
-        products.add("GROSS\tX");
-        products.add("\t\t\tXXX.XX");
-        products.add("NET\tNo\tX");
-        products.add("\t\t\tXXX.XX");
-        products.add("------------------------------");
-        products.add("RF\tNo\tX");
-        products.add("\t\tXXX.XX");
-        products.add("CANCEL\tNo\tX");
-        products.add("\t\t\tXXX.XX");
-        products.add("------------------------------");
-        products.add("V-SALES\t\tXXX.XX");
-        products.add("V-12%\t\tXXX.XX");
-        products.add("EXEMPT-SALES\t\tXXX.XX");
-        products.add("ZERO-RATED\t\tXXX.XX");
-        if(x.equals("no")){
-            products.add("------------------------------");
-            products.add("NEW GT XXXXXXXXXXXXXX.XX");
-            products.add("OLD GT XXXXXXXXXXXXXX.XX");
-            products.add("Reset Count:\t\tX");
-            products.add("CONSECUTIVE No.");
-            products.add("\t\tXXXXXX - XXXXXX");
-            products.add("\t\t\tXXXXXX");
-            products.add("RECEIPT No.");
-            products.add("\t\tXXXXXX - XXXXXX");
-            products.add("\t\t\tXXXXXX");
+        StringBuilder sb = new StringBuilder();
+        sb.append("NOVA RESTAURANT & SERVICE INC.");
+        products.add("NOVA RESTAURANT & SERVICE INC.");
+        products.add("MILKY WAY");
+        products.add("VAT REG TIN:000-482-511-001");
+        products.add("MIN:15040610033393902");
+        products.add("PLANT 25 LOPEZ DRIVE");
+        products.add("POBLACION, MAKATI CITY");
+        products.add("SERIAL NO. ASDFG1234567890");
+        products.add("PTU No. FP121234-123-1234567-12345\n");
+        products.add("=======================================");
+        products.add(report+"-READ");
+        if(x.equals("no")) {
+            products.add("END-OF-DAY REPORT");
+            products.add("=======================================");
+            products.add("BIZDATE : " + dateformatted + " " + currentTime);
+            products.add("BRANCH : HEAD OFFICE");
+            products.add("SHIFT : ALL\t\tTRANS#XXXXXX\n");
+        }else {
+            products.add("CASHIER REPORT");
+            products.add("=======================================");
+            products.add("BIZDATE : " + dateformatted + " " + currentTime);
+            products.add("CASHIER : "+userNum);
+            products.add("SHIFT : 1\t\tTRANS#XXXXXX\n");
         }
+        products.add("GROSS SALES\t\tX,XXX.XX");
 
-        products.add("------------------------------");
-        products.add(report +"\tTRANS");
-        products.add("\t\t\tXXXXXXX\n");
-        products.add("CASH\tNo\tX");
+        products.add(" SALES DISCOUNT\t\t-XX.XX");
+        products.add("----------------------------------------");
+        products.add("NET SALES\t\tX,XXX.XX\n");
+
+        products.add("TAX CODE\tSALES\tTAX");
+        products.add("----------------------------------------");
+        products.add("[n] N-Sal\tX.XX\tX.XX");
+        products.add("[v] V-Sal\tX,XXX.XX\tXXX.XX");
+        products.add("[x] E-Sal\tXXX.XX\tX.XX");
+        products.add("[z] Z-Sal\tX.XX\tX.XX\n");
+
+        if(x.equals("no")){
+            products.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
+            products.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
+
+            products.add("Z Count\t\tXXXXX\n");
+
+            products.add("Trans #\t\tXXXXXX - XXXXXX");
+            products.add("\t\t\tX\n");
+
+            products.add("OR #\t\tXXXXXX - XXXXXX");
+            products.add("\t\t\tX\n");
+        }
+        products.add("CASH SALES\t\tXXX.XX");
+        products.add("----------------------------------------");
+        products.add("CASH IN DRAWER\t\tXXX.XX");
+
+        products.add("CASH COUNT\t\tXXX.XX");
+        products.add("----------------------------------------");
+        products.add("CASH SHORT/OVER\t\tX.XX\n");
+
+        products.add("TRANSACTION\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("NORMAL SALES\t\tX,XXX.XX\n");
+
+        products.add("TENDER\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("TOTAL CASH\tX\tXXX.XX");
+        products.add("  CC BDO\tX\tX,XXX.XX");
+        products.add("  CC BPI\tX\tX,XXX.XX");
+        products.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
+
+        products.add("DISCOUNT\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("SCD 20%\tX\t-XX.XX");
+        products.add("Tax - Exempt\tX\t-XX.XX");
+        products.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
+
+        products.add("ITEM SALES\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("MILO ACTIV-GO 22GMS.");
+        products.add("BEV-001\t\tX,XXX.XX");
+        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+        products.add("QUAKER OAT CEREAL DRINK 29g");
+        products.add("BEV-002\t\tXX.XX");
+        products.add("xX.XXXX\td-X.XX\tXX.XX");
+        products.add("TAPSILOG");
+        products.add("FOOD-004\t\tXXX.XX");
+        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+        products.add("----------------------------------------");
+        products.add("TOTAL QTY\t\tXXX.XXXX");
+        products.add("GROSS SALES\t\tX,XXX.XX");
+        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+        products.add("NET SALES\t\tX,XXX.XX\n");
+
+        products.add("DEPARTMENT SALES\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("NO DEPARTMENT");
+        products.add("\t\t\tXX.XX");
+        products.add("xX.XXXX\td-X.XX\tXX.XX");
+        products.add("NO DEPARTMENT");
         products.add("\t\t\tXXX.XX");
-        products.add("PWD\tNo\tX");
-        products.add("\t\t\tX.XX");
-        products.add("SCD\tNo\tX");
-        products.add("\t\t\tX.XX");
-        products.add("Less Vat\tNo\tX");
-        products.add("\t\t\tX.XX");
-        products.add("------------------------------");
-        products.add(report +"\tPLU");
-        products.add("\t\t\tXXXXXXX\n");
-        products.add("AMRICAN LOAF350G\tX");
+        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+        products.add("NO DEPARTMENT");
+        products.add("\t\t\tX,XXX.XX");
+        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+        products.add("----------------------------------------");
+        products.add("TOTAL QTY\t\tXXX.XXXX");
+        products.add("GROSS SALES\t\tX,XXX.XX");
+        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+        products.add("NET SALES\t\tX,XXX.XX\n");
+
+        products.add("GROUP SALES\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("NO GROUP");
         products.add("\t\t\tXX.XX");
-        products.add("CHEEZY PAN DE SA\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("AMRICAN LOAF350G\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("CHEEZY PAN DE SA\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("AMRICAN LOAF350G\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("CHEEZY PAN DE SA\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("AMRICAN LOAF350G\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("CHEEZY PAN DE SA\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("------------------------------");
-        products.add("TL\t\t\tX");
-        products.add("\t\t\tX\n");
-        products.add("\t\t\tXX.XX");
-        products.add("------------------------------");
-        products.add(report +"\tCASHIER");
-        products.add("\t\t\tXXXXXXX\n");
-        products.add("CLK"+userNum+"\t.........X");
-        products.add("GROSS\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("NET\tNo\tX");
-        products.add("\t\t\tXX.XX");
-        products.add("CAID\t\tXX.XX");
-        products.add("------------------------------");
-        products.add(report +"\tHOURLY");
-        products.add("\t\t\tXXXXXXX\n");
-        products.add("XX:XX->XX:XX");
-        products.add("\t\tCT\tX");
-        products.add("GROSS\t\tXXX.XX");
-        products.add("NET\tNo\tX\n");
-        products.add("------------------------------");
-        products.add("TL\tCT\tX");
-        products.add("GROSS\tXXX.XX");
-        products.add("\t\t\tXX.XX");
-        products.add("NET\tNo\tX\n");
+        products.add("xX.XXXX\td-X.XX\tXX.XX");
+        products.add("NO GROUP");
         products.add("\t\t\tXXX.XX");
+        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+        products.add("NO GROUP");
+        products.add("\t\t\tX,XXX.XX");
+        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+        products.add("----------------------------------------");
+        products.add("TOTAL QTY\t\tXXX.XXXX");
+        products.add("GROSS SALES\t\tX,XXX.XX");
+        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+        products.add("NET SALES\t\tX,XXX.XX\n");
+
+        products.add("BRAND SALES\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("NO BRAND");
+        products.add("\t\t\tXX.XX");
+        products.add("xX.XXXX\td-X.XX\tXX.XX");
+        products.add("NO BRAND");
+        products.add("\t\t\tXXX.XX");
+        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+        products.add("NO BRAND");
+        products.add("\t\t\tX,XXX.XX");
+        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+        products.add("----------------------------------------");
+        products.add("TOTAL QTY\t\tXXX.XXXX");
+        products.add("GROSS SALES\t\tX,XXX.XX");
+        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+        products.add("NET SALES\t\tX,XXX.XX\n");
+
+        products.add("CATEGORY SALES\t\tAMOUNT");
+        products.add("----------------------------------------");
+        products.add("NO CATEGORY");
+        products.add("\t\t\tXX.XX");
+        products.add("xX.XXXX\td-X.XX\tXX.XX");
+        products.add("NO CATEGORY");
+        products.add("\t\t\tXXX.XX");
+        products.add("xX.XXXX\td-XX.XX\tXXX.XX");
+        products.add("NO CATEGORY");
+        products.add("\t\t\tX,XXX.XX");
+        products.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
+        products.add("----------------------------------------");
+        products.add("TOTAL QTY\t\tXXX.XXXX");
+        products.add("GROSS SALES\t\tX,XXX.XX");
+        products.add("TOTAL DEDUCTIONS\t\t-XX.XX");
+        products.add("NET SALES\t\tX,XXX.XX\n");
 
         try{
             mSerialPrinter.sydneyDotMatrix7by7();

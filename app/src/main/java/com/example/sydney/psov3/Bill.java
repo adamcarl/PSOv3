@@ -71,7 +71,7 @@ class Bill {
 //                Arrays.asList("Gaming keyboard", "550.00", "6", "3300.00"),
 //                Arrays.asList("DDR3 4GB RAM", "143.00", "7", "1001.00")
 //        );
-//        String summary = ""
+//     String summary = ""
 //                + "GROSS\n"
 //                + "DISCOUNT(5%)\n"
 //                + "RETURN\n"

@@ -1,12 +1,11 @@
 package com.example.sydney.psov3;
-
 import android.provider.BaseColumns;
 
 /**
  * Created by sydney on 4/25/2017.
  */
 
-public interface Constants extends BaseColumns {
+interface Constants extends BaseColumns {
     String TABLE_ADMIN = "tbl_admin"; //Table name = tbl_admin
     String COLUMN_ADMIN_USERNAME = "Username"; //Field name = Firstname
     String COLUMN_ADMIN_PASSWORD = "Password"; //Field name = Password

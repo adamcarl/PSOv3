@@ -61,7 +61,7 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-               +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+                +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
@@ -75,7 +75,6 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LOG_STRING + " TEXT NOT NULL);");
-
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
@@ -390,7 +389,7 @@ import static com.example.sydney.psov3.Constants.*;
     }
 
     //MARK'S FUNCTION
-    public void insertTempInvoice(InvoiceItem invoiceItem){
+    void insertTempInvoice(InvoiceItem invoiceItem){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -403,7 +402,7 @@ import static com.example.sydney.psov3.Constants.*;
 //        database.close();
     }
 
-    public void deleteItemInvoice(String itemDes){
+    void deleteItemInvoice(String itemDes){
         try {
             this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_DESCRIPTION +"='" + itemDes + "'");
         }catch (SQLException e){
@@ -411,7 +410,7 @@ import static com.example.sydney.psov3.Constants.*;
         }
     }
 
-    public void deleteAllTempItemInvoice(){
+    void deleteAllTempItemInvoice(){
         try {
             this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING);
         }catch (SQLException e){
@@ -419,7 +418,7 @@ import static com.example.sydney.psov3.Constants.*;
         }
     }
 
-    public int searchDuplicateInvoice(String itemID) {
+    int searchDuplicateInvoice(String itemID) {
         SQLiteDatabase database = this.getReadableDatabase();
         String[] selectionArgs = new String[]{itemID};
         try {
@@ -436,7 +435,7 @@ import static com.example.sydney.psov3.Constants.*;
         return 0;
     }
 
-    public void updateInvoiceItem(String code, int newQuantity){
+    void updateInvoiceItem(String code, int newQuantity){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
                 + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
