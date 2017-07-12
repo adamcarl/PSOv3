@@ -112,7 +112,7 @@ public class Cashier extends AppCompatActivity {
     //JOLLIMARK VARIABLES
 //    private UsbPrinter marksPrinter = new UsbPrinter();
 
-//tp61ousc
+
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
@@ -476,36 +476,37 @@ public class Cashier extends AppCompatActivity {
                                 due2 = due2.replace("$", "");
                                 lbl_due.setText("" + due2 + "");
 
-                                //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
-                                //INSERT TEMP INVOICE ITEMS INTO TABLE
-                                try {
-                                    String convertedCode = Integer.toString(code).trim();
-                                    int result = db_data.searchDuplicateInvoice(convertedCode);
-                                    if(result > 0){
-                                        SQLiteDatabase db = db_data.getReadableDatabase();
-                                        String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
-                                        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
-                                        cursor.moveToFirst();
-                                        String retrievedQuantity = cursor.getString(3);
-                                        int convertedQuantity = Integer.parseInt(retrievedQuantity);
+                                    //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
+                                    //INSERT TEMP INVOICE ITEMS INTO TABLE
+                                    try {
+                                        String convertedCode = Integer.toString(code).trim();
+                                        int result = db_data.searchDuplicateInvoice(convertedCode);
+                                        if(result > 0){
+                                            SQLiteDatabase db = db_data.getReadableDatabase();
+                                            String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
+                                            Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+                                            cursor.moveToFirst();
+                                            String retrievedQuantity = cursor.getString(3);
+                                            cursor.close();
+                                            int convertedQuantity = Integer.parseInt(retrievedQuantity);
 
-                                        db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
-                                        Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else if(result == 0){
-                                        InvoiceItem invoiceItem = new InvoiceItem();
-                                        invoiceItem.setInvoiceProductDescription(itemnameCol);
-                                        invoiceItem.setInvoiceProductPrice(itempriceCol);
-                                        invoiceItem.setInvoiceProductQuantity(dialogVar);
-                                        invoiceItem.setInvoiceProductID(convertedCode);
+                                            db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
+                                            Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else if(result == 0){
+                                            InvoiceItem invoiceItem = new InvoiceItem();
+                                            invoiceItem.setInvoiceProductDescription(itemnameCol);
+                                            invoiceItem.setInvoiceProductPrice(itempriceCol);
+                                            invoiceItem.setInvoiceProductQuantity(dialogVar);
+                                            invoiceItem.setInvoiceProductID(convertedCode);
 
-                                        db_data.insertTempInvoice(invoiceItem);
+                                            db_data.insertTempInvoice(invoiceItem);
+                                        }
+                                    } catch (SQLiteException e){
+                                        e.printStackTrace();
                                     }
-                                } catch (SQLiteException e){
-                                    e.printStackTrace();
+                                    refreshRecyclerView();
                                 }
-                                refreshRecyclerView();
-                            }
                         }catch (Exception ex){
                             ex.printStackTrace();
                             lbl_due.setText(subTotal2);
@@ -526,10 +527,19 @@ public class Cashier extends AppCompatActivity {
     //BUTTON PRINT
     public void print(View view) throws ParseException {
 //        bill.main();
-        products.add("ABZTRAK INC CONVENIENCE STORE");
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        dateformatted = dateformat.format(c.getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        currentTime = sdf.format(new Date());
+        products.add("ABZTRAK INC.");
+        products.add("CONVENIENCE STORE");
+        products.add("Vat Reg TIN:XXXXXXXXXXXX");
+        products.add("MIN:XXXXXXXXXXXXXXXXX");
         products.add("2nd Floor, #670,");
         products.add("Sgt. Bumatay St, Mandaluyong");
         products.add("NCR, Philippines");
+        products.add("Serial No. XXXXXXXX");
         products.add("             CASH INVOICE");
         products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
@@ -634,6 +644,7 @@ public class Cashier extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         for(String s : list){
             sb.append(s);
+            sb.append("\t");
             sb.append("\n");
             sb.insert(sb.length(),"\t");
         }
@@ -671,10 +682,6 @@ public class Cashier extends AppCompatActivity {
 //                dateformatted = dateformat.format(c.getTime());
 //                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 //                currentTime = sdf.format(new Date());
-
-
-
-
 
                 Date currDate = new Date();
                 final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
@@ -746,16 +753,13 @@ public class Cashier extends AppCompatActivity {
         finish();
         sleep(1000);
     }
-    public void itemClick(View view){
-
-    }
     public void zreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("no");
+        reportBaKamo.main("no", userNum);
     }
     public void xreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main(userNum);
+        reportBaKamo.main(userNum, userNum);
     }
     private void sleep(int ms) {
         try {
@@ -877,7 +881,7 @@ public class Cashier extends AppCompatActivity {
     private void refreshRecyclerView() {
         //REFRESHING THE RECYCLER
         invoiceItemList = fill_with_data();
-        invoiceAdapter = new InvoiceAdapter(getApplication(),invoiceItemList);
+        InvoiceAdapter invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
         mLayoutManager = new GridLayoutManager(Cashier.this,2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
