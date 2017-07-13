@@ -758,12 +758,52 @@ public class Cashier extends AppCompatActivity {
         sleep(1000);
     }
     public void zreport(View view){
-        reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("no", userNum);
+        try{
+            transType = "zreport";
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+            String dateToStr = dateTimeFormat.format(currDate);
+            Date strToDate = dateTimeFormat.parse(dateToStr);
+            int bcd;
+            String dateToString = strToDate.toString();
+            db_data.addTransaction(transType,dateToString,userNum,0,0);
+            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            cursor1.close();
+
+            reportBaKamo.setDb_data(db_data);
+        reportBaKamo.main("no",dateToString,bcd);
+        }
+        catch(Exception e){
+        e.printStackTrace();
+        }
     }
     public void xreport(View view){
         reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main(userNum, userNum);
+        try{
+            transType = "xreport";
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+            String dateToStr = dateTimeFormat.format(currDate);
+            Date strToDate = dateTimeFormat.parse(dateToStr);
+            int bcd;
+            String dateToString = strToDate.toString();
+            db_data.addTransaction(transType,dateToString,userNum,0,0);
+            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            cursor1.close();
+
+            reportBaKamo.setDb_data(db_data);
+
+            reportBaKamo.main(userNum,dateToString,bcd);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     private void sleep(int ms) {
         try {

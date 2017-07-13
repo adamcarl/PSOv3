@@ -28,6 +28,11 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_TRANSACTION_NUMBER = "InTrans";
     String COLUMN_INVOICE_DISCOUNT = "InDisc";
     String COLUMN_INVOICE_CUSTOMER = "InCustomer";
+    String COLUMN_INVOICE_ZREPORT = "InZreport";
+    String COLUMN_INVOICE_VATTABLE = "InVattable";
+    String COLUMN_INVOICE_VATTED = "InVatted";
+    String COLUMN_INVOICE_VAT_STATUS = "InVatStatus";
+    String COLUMN_INVOICE_CASHIER_NUMBER = "InCashierNum";
     String COLUMN_INVOICE_PRINT = "InPrint";
 
     String TABLE_ITEM = "tbl_item";
