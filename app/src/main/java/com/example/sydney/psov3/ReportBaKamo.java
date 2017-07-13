@@ -1,24 +1,11 @@
 package com.example.sydney.psov3;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
-import android.os.Message;
 
-import com.hdx.lib.serial.SerialParam;
-import com.hdx.lib.serial.SerialPortOperaion;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import hdx.HdxUtil;
-
-import static android.provider.BaseColumns._ID;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
-import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
 
 
 /**
@@ -91,32 +78,44 @@ class ReportBaKamo {
         toBePrinted.add("TAX CODE\tSALES\tTAX");
         toBePrinted.add("-----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-        String vsale =  db_data.getSales(x,"v");
-        String vtax =  db_data.getTax(x,"v");
+        String vsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String vtax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
-        String xsale =  db_data.getSales(x,"v");
-        String xtax =  db_data.getTax(x,"v");
+        String xsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String xtax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
-        String zsale =  db_data.getSales(x,"v");
-        String ztax =  db_data.getTax(x,"v");
+        String zsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String ztax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
-//        if(x.equals("no")){
-//            toBePrinted.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
-//            toBePrinted.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
-//
-//            toBePrinted.add("Z Count\t\tXXXXX\n");
-//
-//            toBePrinted.add("Trans #\t\tXXXXXX - XXXXXX");
-//            toBePrinted.add("\t\t\tX\n");
-//
-//            toBePrinted.add("OR #\t\tXXXXXX - XXXXXX");
-//            toBePrinted.add("\t\t\tX\n");
-//        }
-//        toBePrinted.add("CASH SALES\t\tXXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
-//
+        if(x.equals("no")){
+            toBePrinted.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
+            toBePrinted.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
+
+            int z = db_data.pleaseGiveMeTheZCount();
+            String zf = String.format("%$05d", z);
+            toBePrinted.add("Z Count\t\t"+zf+"\n");
+
+            int transArray[] = new int[1];
+            transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
+            String t1 = String.format("%$06d", transArray[0]);
+            String t2 = String.format("%$06d", transArray[1]);
+            toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
+            int t3 = transArray[1] - transArray[0];
+            toBePrinted.add("\t\t\t"+t3+"\n");
+
+            int or[];
+            or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
+            String or1 = String.format("%$06d", or[0]);
+            String or2 = String.format("%$06d", or[1]);
+            toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
+            int or3 = or[1] - or[0];
+            toBePrinted.add("\t\t\t"+or3+"\n");
+        }
+        toBePrinted.add("CASH SALES\t\t"+net);
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
+
 //        toBePrinted.add("CASH COUNT\t\tXXX.XX");
 //        toBePrinted.add("-----------------------------------------------");
 //        toBePrinted.add("CASH SHORT/OVER\t\tX.XX\n");

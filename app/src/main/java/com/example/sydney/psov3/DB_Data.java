@@ -477,7 +477,7 @@ import static com.example.sydney.psov3.Constants.*;
             cursor.close();
             return  discount;
         }
-        String getSales(String x,String status){
+        String pleaseGetTheSalesForMe(String x, String status){
             String sales;
             String mWHERE;
             String[] mWHERE_ARGS;
@@ -498,7 +498,7 @@ import static com.example.sydney.psov3.Constants.*;
             return sales;
         }
 
-        String getTax(String x,String status){
+        String pleaseGetTheTaxForMe(String x, String status){
             String tax;
             String mWHERE;
             String[] mWHERE_ARGS;
@@ -517,5 +517,40 @@ import static com.example.sydney.psov3.Constants.*;
             tax = cursor.getString(0);
             cursor.close();
             return tax;
+        }
+    int pleaseGiveMeTheZCount(){
+        int z;
+        String[] columns = {"COUNT("+COLUMN_INVOICE_VATTED+")"};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,null,null,null,null,null,null);
+        cursor.moveToFirst();
+        z = cursor.getInt(0);
+        cursor.close();
+        return z;
+    }
+    int[] pleaseGiveMeTheFirstAndLastOfTheTransactions(){
+        int[] t = new int[1];
+        String[] columns = {_ID};
+        String mWHERE = COLUMN_TRANSACTION_ZREPORT+" = ?";
+        String[] mWHERE_ARGS = new String[]{"0"};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        cursor.moveToFirst();
+        t[0] = cursor.getInt(0);
+        cursor.moveToLast();
+        t[1] = cursor.getInt(0);
+        cursor.close();
+        return t;
+    }
+        int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
+            int[] t = new int[1];
+            String[] columns = {_ID};
+            String mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            String[] mWHERE_ARGS = new String[]{"0"};
+            Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+            cursor.moveToFirst();
+            t[0] = cursor.getInt(0);
+            cursor.moveToLast();
+            t[1] = cursor.getInt(0);
+            cursor.close();
+            return t;
         }
 }
