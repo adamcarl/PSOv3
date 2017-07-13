@@ -370,6 +370,10 @@ public class Cashier extends AppCompatActivity {
                 }
             }
         });
+
+        if(products != null && txt_cash != null){
+
+        }
     }
 
     private List<InvoiceItem> fill_with_data() {
@@ -541,9 +545,9 @@ public class Cashier extends AppCompatActivity {
         products.add("NCR, Philippines");
         products.add("Serial No. XXXXXXXX");
         products.add("             CASH INVOICE");
-        products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
+        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
-        products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
+        products.add("Name \t\t"+"Quantity \t\t"+"Price");
         transType = "invoice";
 //        Calendar c = Calendar.getInstance();
         Date currDate = new Date();
@@ -581,7 +585,7 @@ public class Cashier extends AppCompatActivity {
             itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0);
-                products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
+                products.add(itemName12345[a] + " \t\t" + itemQuan12345[a] + " \t\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]));
             }
             products.add("--------------------------------------");
             products.add("Invoice Number " + abc + "");
@@ -591,12 +595,12 @@ public class Cashier extends AppCompatActivity {
             products.add("Total" + " \t\t" + subTotal + "");
 
             if (due > 0) {
-                products.add("Due" + " \t\t" + due + "");
+                products.add("Due" + " \t" + due + "");
                 products.add("");
             }
             else {
                 String change = due.toString().replace("-", "");
-                products.add("Change" + "\t\t" + change + "");
+                products.add("Change" + "\t" + change + "");
                 products.add("\n");
             }
 
@@ -644,9 +648,9 @@ public class Cashier extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         for(String s : list){
             sb.append(s);
-            sb.append("\t");
+//            sb.append("\t");
             sb.append("\n");
-            sb.insert(sb.length(),"\t");
+//            sb.insert(sb.length(),"\t");
         }
         String convertedArray = sb.toString();
 
