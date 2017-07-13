@@ -408,7 +408,7 @@ public class Cashier extends AppCompatActivity {
     }
 
     //BUTTON SEARCH ONCLICK
-    public void search(View view) {
+    public void searchProduct() {
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
