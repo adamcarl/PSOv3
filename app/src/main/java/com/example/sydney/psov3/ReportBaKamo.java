@@ -69,7 +69,6 @@ class ReportBaKamo {
             products.add("=======================================");
             products.add("BIZDATE : "+date);
             products.add("BRANCH : HEAD OFFICE");
-
             products.add("SHIFT : ALL\t\tTRANS#"+trans+"\n");
         }else {
             products.add("CASHIER REPORT");
