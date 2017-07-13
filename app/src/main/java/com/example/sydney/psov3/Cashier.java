@@ -48,8 +48,6 @@ import com.hdx.lib.serial.SerialPortOperaion;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
 
-import org.w3c.dom.Text;
-
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -91,7 +89,7 @@ public class Cashier extends AppCompatActivity {
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
     TabHost tab_host;
-    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount,tv_cell;
+    TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
     Button btn_print,btn_cashier_confirmDelete;
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
@@ -116,6 +114,7 @@ public class Cashier extends AppCompatActivity {
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
+
     private String customerCash;
     private double dCustomerCash,change;
 
@@ -186,8 +185,6 @@ public class Cashier extends AppCompatActivity {
 
 //        final GridView grid = (GridView) findViewById(R.id.grd_sell);
 //        grid.setAdapter(new ArrayAdapter<>(this, R.layout.invoice_item_card, items));
-
-
         txt_cash.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -407,11 +404,11 @@ public class Cashier extends AppCompatActivity {
     }
 
     public void priceClick(View view){
-//        txt_cash.requestFocus();
+        txt_cash.requestFocus();
     }
 
-
-    public void searchProduct() {
+    //BUTTON SEARCH ONCLICK
+    public void search(View view) {
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
@@ -432,54 +429,54 @@ public class Cashier extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         try {
-                            if (dialogText.getText().toString().equals("")){
-                                Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                dialogVar = Integer.parseInt(dialogText.getText().toString());
-                                itemQuan123.add(dialogText.getText().toString().trim());
-                                itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
-                                itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
-                                itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
-                                itemQuantityList.add(dialogVar);
-                                itemPriceList.add(itempriceCol);
-                                itemNameList.add(itemnameCol);
-                                itemCodeList.add(itemcodeCol);
-                                itempricetotalCol = dialogVar * itempriceCol;
-                                itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
-                                itempricetotalCol2 = itempricetotalCol2.replace("$","");
-                                ArrayList<Double> total = new ArrayList<>();
-                                total.add(itempricetotalCol);
-                                layout.invalidate();
-                                layout.requestLayout();
-                                for (int x = 0; x < total.size(); x++) {
-                                    subTotal = subTotal + total.get(x);
-                                    quantityCount++;
+                                if (dialogText.getText().toString().equals("")){
+                                    Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
                                 }
-                                vattable = subTotal / 1.12;
-                                vat = vattable * 0.12;
-                                vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-                                vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-                                subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                vat2 = vat2.replace("$", "");
-                                vattable2 = vattable2.replace("$", "");
-                                subTotal2 = subTotal2.replace("$", "");
-                                //products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
-                                lbl_sub.setText("" + vattable2 + "");
-                                lbl_tax.setText("" + vat2 + "");
-                                lbl_total.setText("" + subTotal2 + "");
-                                ArrayList<String> temp = new ArrayList<>();
-                                temp.add(itemnameCol);//example I don't know the order you need
-                                temp.add(itempriceCol + "");//example I don't know the order you need
-                                temp.add(dialogVar + "");//example I don't know the order you need
-                                temp.add(itempricetotalCol2);//example I don't know the order you ne
-                                t2Rows.add(temp);
+                                else {
+                                    dialogVar = Integer.parseInt(dialogText.getText().toString());
+                                    itemQuan123.add(dialogText.getText().toString());
+                                    itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
+                                    itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
+                                    itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+                                    itemQuantityList.add(dialogVar);
+                                    itemPriceList.add(itempriceCol);
+                                    itemNameList.add(itemnameCol);
+                                    itemCodeList.add(itemcodeCol);
+                                    itempricetotalCol = dialogVar * itempriceCol;
+                                    itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
+                                    itempricetotalCol2 = itempricetotalCol2.replace("$","");
+                                    ArrayList<Double> total = new ArrayList<>();
+                                    total.add(itempricetotalCol);
+                                    layout.invalidate();
+                                    layout.requestLayout();
+                                    for (int x = 0; x < total.size(); x++) {
+                                        subTotal = subTotal + total.get(x);
+                                        quantityCount++;
+                                    }
+                                    vattable = subTotal / 1.12;
+                                    vat = vattable * 0.12;
+                                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
+                                    vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
+                                    subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                                    vat2 = vat2.replace("$", "");
+                                    vattable2 = vattable2.replace("$", "");
+                                    subTotal2 = subTotal2.replace("$", "");
+                                    //products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
+                                    lbl_sub.setText("" + vattable2 + "");
+                                    lbl_tax.setText("" + vat2 + "");
+                                    lbl_total.setText("" + subTotal2 + "");
+                                    ArrayList<String> temp = new ArrayList<>();
+                                    temp.add(itemnameCol);//example I don't know the order you need
+                                    temp.add(itempriceCol + "");//example I don't know the order you need
+                                    temp.add(dialogVar + "");//example I don't know the order you need
+                                    temp.add(itempricetotalCol2);//example I don't know the order you ne
+                                    t2Rows.add(temp);
 
-                                totalPrice = subTotal;
-                                due = totalPrice;
-                                due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                due2 = due2.replace("$", "");
-                                lbl_due.setText("" + due2 + "");
+                                    totalPrice = subTotal;
+                                    due = totalPrice;
+                                    due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                                    due2 = due2.replace("$", "");
+                                    lbl_due.setText("" + due2 + "");
 
                                     //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
                                     //INSERT TEMP INVOICE ITEMS INTO TABLE
@@ -587,7 +584,7 @@ public class Cashier extends AppCompatActivity {
             itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0);
-                products.add(itemName12345[a] + " \t\t" + itemQuan12345[a] + " \t\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]));
+                products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
             }
             products.add("--------------------------------------");
             products.add("Invoice Number " + abc + "");
@@ -775,7 +772,13 @@ public class Cashier extends AppCompatActivity {
             cursor1.close();
 
             reportBaKamo.setDb_data(db_data);
-        reportBaKamo.main("no",dateToString,bcd);
+            reportBaKamo.main("no",dateToString,bcd);
+            ArrayList<String> paPrintNaman = new ArrayList<>();
+            paPrintNaman = reportBaKamo.getToBePrinted();
+            paPrintNaman.add("yownOH");
+            unLockCashBox();
+            printFunction(paPrintNaman);
+            paPrintNaman.clear();
         }
         catch(Exception e){
         e.printStackTrace();

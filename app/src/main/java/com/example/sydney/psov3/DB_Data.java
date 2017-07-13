@@ -466,19 +466,112 @@ import static com.example.sydney.psov3.Constants.*;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_CUSTOMER+")"};
         if(x.equals("no")){
-//            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
-//            mWHERE_ARGS = new String[]{"0"};
+            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
         }
         else {
-            mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-//            mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-            mWHERE_ARGS = new String[]{x};
+            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE_ARGS = new String[]{"0",x};
         }
-//        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
         gross = cursor.getString(0);
         cursor.close();
         return  gross;
     }
+    String getDiscountSales(String x){
+        String discount;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_DISCOUNT+")"};
+        if(x.equals("no")){
+            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        }
+        else {
+            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+                mWHERE_ARGS = new String[]{"0",x};
+            }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            discount = cursor.getString(0);
+            cursor.close();
+            return  discount;
+        }
+        String pleaseGetTheSalesForMe(String x, String status){
+            String sales;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
+            if(x.equals("no")){
+                mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+            mWHERE_ARGS = new String[]{"0",status};
+            }
+            else {
+                mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE_ARGS = new String[]{"0",x,status};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            sales = cursor.getString(0);
+            cursor.close();
+            return sales;
+        }
+
+        String pleaseGetTheTaxForMe(String x, String status){
+            String tax;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
+            if(x.equals("no")){
+                mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE_ARGS = new String[]{"0",status};
+            }
+            else {
+                mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+                mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE_ARGS = new String[]{"0",x,status};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            tax = cursor.getString(0);
+            cursor.close();
+            return tax;
+        }
+    int pleaseGiveMeTheZCount(){
+        int z;
+        String[] columns = {"COUNT("+COLUMN_INVOICE_VATTED+")"};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,null,null,null,null,null,null);
+        cursor.moveToFirst();
+        z = cursor.getInt(0);
+        cursor.close();
+        return z;
+    }
+    int[] pleaseGiveMeTheFirstAndLastOfTheTransactions(){
+        int[] t = new int[1];
+        String[] columns = {_ID};
+        String mWHERE = COLUMN_TRANSACTION_ZREPORT+" = ?";
+        String[] mWHERE_ARGS = new String[]{"0"};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        cursor.moveToFirst();
+        t[0] = cursor.getInt(0);
+        cursor.moveToLast();
+        t[1] = cursor.getInt(0);
+        cursor.close();
+        return t;
+    }
+        int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
+            int[] t = new int[1];
+            String[] columns = {_ID};
+            String mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            String[] mWHERE_ARGS = new String[]{"0"};
+            Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+            cursor.moveToFirst();
+            t[0] = cursor.getInt(0);
+            cursor.moveToLast();
+            t[1] = cursor.getInt(0);
+            cursor.close();
+            return t;
+        }
 }
