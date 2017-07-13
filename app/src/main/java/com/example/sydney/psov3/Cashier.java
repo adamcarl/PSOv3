@@ -70,7 +70,7 @@ public class Cashier extends AppCompatActivity {
     private int quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
     String userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
-    Double due;
+    Double due,payment;
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
@@ -203,9 +203,8 @@ public class Cashier extends AppCompatActivity {
 
                     double parsed = Double.parseDouble(cleanString);
                     formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
-                    formatted = formatted.replace('$','P');
                     current = formatted;
-                    txt_cash.setText(formatted);
+                    txt_cash.setText(formatted.replace("$","P"));
                     txt_cash.setSelection(formatted.length());
 
                     txt_cash.addTextChangedListener(this);
@@ -221,11 +220,13 @@ public class Cashier extends AppCompatActivity {
                             lbl_dc.setText(""+"Due"+"");
                             lbl_due.setText(formatted);
                         }
-                        else if(due < 0){
+                        else if(due <= 0){
+                            double change = d - totalPrice;
                             btn_print.setEnabled(true);
                             btn_print.setText(""+"Print Receipt"+"");
                             lbl_dc.setText(""+"Change"+"");
-                            formatted = NumberFormat.getCurrencyInstance().format((due / 1));
+                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
+                            payment = Double.parseDouble(formatted.replaceAll("[$-]", ""));
                             formatted = formatted.replaceAll("[$-]", "P");
                             lbl_due.setText(formatted);
                         }
@@ -371,9 +372,7 @@ public class Cashier extends AppCompatActivity {
             }
         });
 
-        if(products != null && txt_cash != null){
 
-        }
     }
 
     private List<InvoiceItem> fill_with_data() {
@@ -406,7 +405,7 @@ public class Cashier extends AppCompatActivity {
     }
 
     public void priceClick(View view){
-        txt_cash.requestFocus();
+//        txt_cash.requestFocus();
     }
 
 
@@ -569,6 +568,7 @@ public class Cashier extends AppCompatActivity {
             bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
+
             db_data.addInvoice(bcd+"",rDisc,customerCash);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
@@ -591,16 +591,15 @@ public class Cashier extends AppCompatActivity {
             products.add("Invoice Number " + abc + "");
             products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
             products.add("Vatable" + "" + "\t\t" + vattable2);
-            products.add("Vat" + "" + "\t\t " + vat2);
-            products.add("Total" + " \t\t" + subTotal + "");
+            products.add("Vat" + "" + "\t\t" + vat2);
+            products.add("Total" + "\t\t" + subTotal + "");
 
             if (due > 0) {
                 products.add("Due" + " \t" + due + "");
                 products.add("");
             }
             else {
-                String change = due.toString().replace("-", "");
-                products.add("Change" + "\t" + change + "");
+                products.add("Change" + "\t" + due + "");
                 products.add("\n");
             }
 
@@ -614,6 +613,8 @@ public class Cashier extends AppCompatActivity {
             }
             db_data.updateInvoice(abc,printBaHanapMo);
 
+
+            double doubleCustomerCash = Double.parseDouble(customerCash);
                 if(ret) {
 //                    mSerialPrinter.sydneyDotMatrix7by7();
 //                    mSerialPrinter.printString(products);
@@ -622,7 +623,7 @@ public class Cashier extends AppCompatActivity {
                     //JOLLICARL PRINTER
 
                 }
-                else {
+                else if( invoiceItemList != null & doubleCustomerCash >= due ) {
                     //JOLLIMARK PRINTER
                     unLockCashBox();
                     printFunction(products);
@@ -930,5 +931,6 @@ public class Cashier extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(invoiceAdapter);
+        invoiceAdapter.notifyDataSetChanged();
     }
 }

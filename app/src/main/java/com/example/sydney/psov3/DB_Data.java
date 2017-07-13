@@ -48,7 +48,9 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
                 +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
                 +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_PRINT+" TEXT );");
+                +COLUMN_INVOICE_PRINT+" TEXT, "
+                +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT, "
+                +COLUMN_INVOICE_ZREPORT_STATUS + " TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
