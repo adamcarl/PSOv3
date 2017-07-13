@@ -116,6 +116,8 @@ public class Cashier extends AppCompatActivity {
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
+    private String customerCash;
+    private double dCustomerCash,change;
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
@@ -208,9 +210,9 @@ public class Cashier extends AppCompatActivity {
                     txt_cash.setSelection(formatted.length());
 
                     txt_cash.addTextChangedListener(this);
-                    String deym = txt_cash.getText().toString().replace(",", "");
-                    double d = Double.parseDouble(deym.replace("P",""));
-                    due = totalPrice - d;
+                    customerCash = txt_cash.getText().toString().replace(",", "");
+                    dCustomerCash = Double.parseDouble(customerCash.replace("P",""));
+                    due = totalPrice - dCustomerCash;
                     formatted = NumberFormat.getCurrencyInstance().format((due/1));
                     formatted = formatted.replace("$","");
                     try{
@@ -221,7 +223,7 @@ public class Cashier extends AppCompatActivity {
                             lbl_due.setText(formatted);
                         }
                         else if(due <= 0){
-                            double change = d - totalPrice;
+                            change = dCustomerCash - totalPrice;
                             btn_print.setEnabled(true);
                             btn_print.setText(""+"Print Receipt"+"");
                             lbl_dc.setText(""+"Change"+"");
@@ -594,14 +596,12 @@ public class Cashier extends AppCompatActivity {
             products.add("Vat" + "" + "\t\t" + vat2);
             products.add("Total" + "\t\t" + subTotal + "");
 
-            if (due > 0) {
-                products.add("Due" + " \t" + due + "");
-                products.add("");
-            }
-            else {
-                products.add("Change" + "\t" + due + "");
-                products.add("\n");
-            }
+            //customerCash = txt_cash.getText().toString().replace(",", "");
+//            double change = dCustomerCash - totalPrice;
+
+            products.add("\t\t\t\tCash" + "\t\t\t\t" + change + "");
+            products.add("\t\t\t\tChange" + "\t\t\t" + due + "");
+            products.add("\n");
 
             //CHECK IF PRINTERS ARE OPEN
             boolean ret = marksPrinter.Open();
