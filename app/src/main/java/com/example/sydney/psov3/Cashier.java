@@ -162,6 +162,7 @@ public class Cashier extends AppCompatActivity {
         spec.setContent(R.id.tab2);
         spec.setIndicator("Payment");
         tab_host.addTab(spec);
+
         //Tab 3
         spec = tab_host.newTabSpec("Shift");
         spec.setContent(R.id.tab3);
@@ -219,7 +220,7 @@ public class Cashier extends AppCompatActivity {
                             lbl_dc.setText(""+"Due"+"");
                             lbl_due.setText(formatted);
                         }
-                        else if(due <= 0){
+                        else if( due <= 0){
                             change = dCustomerCash - totalPrice;
                             btn_print.setEnabled(true);
                             btn_print.setText(""+"Print Receipt"+"");
@@ -259,6 +260,7 @@ public class Cashier extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if(rb_spdisc.isChecked()){
+                    //SENIOR DISCOUNT
                     discType = 1;
                     discount = subTotal * 0.20;
                     vat = 0.0;
@@ -282,6 +284,7 @@ public class Cashier extends AppCompatActivity {
                     lbl_due.setText(totalPrice2);
                 }
                 else if(rb_ddisc.isChecked()){
+                    //DIPLOMAT DISCOUNT
                     discType=2;
                     vattable = subTotal / 1.12;
                     vat = vattable * 0.0;
@@ -300,6 +303,7 @@ public class Cashier extends AppCompatActivity {
                     lbl_due.setText(totalPrice2);
                 }
                 else{
+                    //NO DISCOUNT
                     vattable = subTotal / 1.12;
                     vat = vattable * 0.12;
                     vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
@@ -567,8 +571,10 @@ public class Cashier extends AppCompatActivity {
             bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
-
-            db_data.addInvoice(bcd+"",rDisc,customerCash);
+            //MARK : I UPDATED THIS PART FOR addInvoice discounted and so on---
+            String customerDiscount = lbl_discount.getText().toString().trim();
+            //--END
+//            db_data.addInvoice(bcd+"",rDisc,customerCash,customerDiscount,VATTEDEXEMP,);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();

@@ -67,13 +67,12 @@ class ReportBaKamo {
         String gross = db_data.getGrossSales(x);
         toBePrinted.add("GROSS SALES\t\t"+gross);
         String discount = db_data.getDiscountSales(x);
-
         toBePrinted.add(" SALES DISCOUNT\t\t-"+discount);
         toBePrinted.add("-----------------------------------------------");
-        double net_gross = Double.parseDouble(gross);
-        double net_discount = Double.parseDouble(discount);
-        double net = net_gross-net_discount;
-        toBePrinted.add("NET SALES\t\t"+net+"\n");
+        Double net_gross = Double.parseDouble(gross);
+        Double net_discount = Double.parseDouble(discount);
+        Double net = net_gross-net_discount;
+        toBePrinted.add("NET SALES\t\t"+ net +"\n");
 
         toBePrinted.add("TAX CODE\tSALES\tTAX");
         toBePrinted.add("-----------------------------------------------");
@@ -113,8 +112,8 @@ class ReportBaKamo {
             toBePrinted.add("\t\t\t"+or3+"\n");
         }
         toBePrinted.add("CASH SALES\t\t"+net);
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
 
 //        toBePrinted.add("CASH COUNT\t\tXXX.XX");
 //        toBePrinted.add("-----------------------------------------------");

@@ -167,11 +167,16 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, String inCustomer){
+    void addInvoice(String inTrans, String inDisc, String inCustomer, String inSeniorDiscount, String inExempt,String inZeroRated, String inCCBDO, String inCCBPI){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
         cv.put(COLUMN_INVOICE_CUSTOMER,inCustomer);
+        cv.put(COLUMN_INVOICE_SENIOR_DISCOUNT, inSeniorDiscount);
+        cv.put(COLUMN_INVOICE_VAT_EXEMPT, inExempt);
+        cv.put(COLUMN_INVOICE_ZERORATED, inZeroRated);
+        cv.put(COLUMN_INVOICE_CC_BDO, inCCBDO);
+        cv.put(COLUMN_INVOICE_CC_BPI, inCCBPI);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
@@ -466,14 +471,14 @@ import static com.example.sydney.psov3.Constants.*;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_CUSTOMER+")"};
         if(x.equals("no")){
-            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
             mWHERE_ARGS = new String[]{"0"};
         }
         else {
-            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
             mWHERE_ARGS = new String[]{"0",x};
         }
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
         gross = cursor.getString(0);
         cursor.close();
@@ -485,14 +490,14 @@ import static com.example.sydney.psov3.Constants.*;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_DISCOUNT+")"};
         if(x.equals("no")){
-            mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS +" = ?";
             mWHERE_ARGS = new String[]{"0"};
         }
         else {
-            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
                 mWHERE_ARGS = new String[]{"0",x};
             }
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, null, null, null, null, null, null);
             cursor.moveToFirst();
             discount = cursor.getString(0);
             cursor.close();
@@ -504,12 +509,12 @@ import static com.example.sydney.psov3.Constants.*;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
             if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
             mWHERE_ARGS = new String[]{"0",status};
             }
             else {
                 mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-            mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                 mWHERE_ARGS = new String[]{"0",x,status};
             }
             Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
@@ -525,12 +530,12 @@ import static com.example.sydney.psov3.Constants.*;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
             if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                 mWHERE_ARGS = new String[]{"0",status};
             }
             else {
                 mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-                mWHERE = COLUMN_INVOICE_XREPORT+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                 mWHERE_ARGS = new String[]{"0",x,status};
             }
             Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
@@ -564,7 +569,7 @@ import static com.example.sydney.psov3.Constants.*;
         int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
             int[] t = new int[1];
             String[] columns = {_ID};
-            String mWHERE = COLUMN_INVOICE_ZREPORT+" = ?";
+            String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
             String[] mWHERE_ARGS = new String[]{"0"};
             Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
             cursor.moveToFirst();
