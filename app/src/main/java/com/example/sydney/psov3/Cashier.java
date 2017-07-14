@@ -100,17 +100,14 @@ public class Cashier extends AppCompatActivity {
     private GridLayoutManager mLayoutManager;
     ReportBaKamo reportBaKamo;
 
-
     //JOLLIMARK VARIABLES
 //    private UsbPrinter marksPrinter = new UsbPrinter();
-
 
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
-
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -740,7 +737,6 @@ public class Cashier extends AppCompatActivity {
             reportBaKamo.main("no",dateToString,bcd);
             ArrayList<String> paPrintNaman = new ArrayList<>();
             paPrintNaman = reportBaKamo.getToBePrinted();
-            paPrintNaman.add("yownOH");
             unLockCashBox();
             printFunction(paPrintNaman);
             paPrintNaman.clear();

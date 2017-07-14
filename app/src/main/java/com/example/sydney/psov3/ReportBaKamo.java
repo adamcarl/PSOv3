@@ -112,28 +112,28 @@ class ReportBaKamo {
             int or3 = or[1] - or[0];
             toBePrinted.add("\t\t\t"+or3+"\n");
         }
-        toBePrinted.add("CASH SALES\t\t"+net);
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
 
+//        toBePrinted.add("CASH SALES\t\t"+net);
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
 //        toBePrinted.add("CASH COUNT\t\tXXX.XX");
 //        toBePrinted.add("-----------------------------------------------");
 //        toBePrinted.add("CASH SHORT/OVER\t\tX.XX\n");
 //
 //        toBePrinted.add("TRANSACTION\t\tAMOUNT");
 //        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
+//        toBePrinted.add("NORMAL SALES\t\t"+gross+"\n");
 //
 //        toBePrinted.add("TENDER\t\tAMOUNT");
 //        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("TOTAL CASH\tX\tXXX.XX");
-//        toBePrinted.add("  CC BDO\tX\tX,XXX.XX");
-//        toBePrinted.add("  CC BPI\tX\tX,XXX.XX");
+//        toBePrinted.add("TOTAL CASH\t\t"+gross+"");
+//        toBePrinted.add("  CC BDO\t\tX,XXX.XX");
+//        toBePrinted.add("  CC BPI\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
-//
-//        toBePrinted.add("DISCOUNT\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("SCD 20%\tX\t-XX.XX");
+
+        toBePrinted.add("DISCOUNT\t\tAMOUNT");
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("SCD 20%\tX\t-XX.XX");
 //        toBePrinted.add("Tax - Exempt\tX\t-XX.XX");
 //        toBePrinted.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
 //
