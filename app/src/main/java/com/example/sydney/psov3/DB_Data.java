@@ -46,11 +46,19 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_PRINT+" TEXT, "
-                +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT, "
-                +COLUMN_INVOICE_ZREPORT_STATUS + " TEXT);");
+                +COLUMN_INVOICE_DISCOUNT+" INTEGER,"
+                +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL,"
+                +COLUMN_INVOICE_PRINT+" TEXT,"
+                +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
+                +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
+                +COLUMN_INVOICE_XREPORT_STATUS +" TEXT,"
+                +COLUMN_INVOICE_VATTABLE+ " FLOAT,"
+                +COLUMN_INVOICE_VATTED+ " FLOAT,"
+                +COLUMN_INVOICE_VAT_STATUS+ " TEXT,"
+                +COLUMN_INVOICE_SENIOR_DISCOUNT+ " FLOAT,"
+                +COLUMN_INVOICE_VAT_EXEMPT+ " FLOAT, "
+                +COLUMN_INVOICE_ZERORATED+ " FLOAT");
+
         arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
@@ -63,10 +71,15 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+                +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_XREPORT_CASHSALES + " FLOAT,"
+                +COLUMN_XREPORT_CASHCOUNT + " FLOAT,"
+                +COLUMN_XREPORT_CASHSHORTOVER + " FLOAT);");
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_ZREPORT_CASHSALES+" FLOAT, "
+                +COLUMN_ZREPORT_CASHCOUNT+" FLOAT);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_TRANSACTION_TYPE+" TEXT NOT NULL, "
@@ -83,6 +96,7 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
                 + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
                 + COLUMN_TEMP_ID + " TEXT NOT NULL);");
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -167,7 +181,7 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, String inCustomer, String inSeniorDiscount, String inExempt,String inZeroRated, String inCCBDO, String inCCBPI){
+    void addInvoice(String inTrans, String inDisc, String inCustomer, String inSeniorDiscount, String inExempt,String inZeroRated){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
@@ -175,8 +189,6 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_INVOICE_SENIOR_DISCOUNT, inSeniorDiscount);
         cv.put(COLUMN_INVOICE_VAT_EXEMPT, inExempt);
         cv.put(COLUMN_INVOICE_ZERORATED, inZeroRated);
-        cv.put(COLUMN_INVOICE_CC_BDO, inCCBDO);
-        cv.put(COLUMN_INVOICE_CC_BPI, inCCBPI);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
@@ -524,26 +536,26 @@ import static com.example.sydney.psov3.Constants.*;
             return sales;
         }
 
-        String pleaseGetTheTaxForMe(String x, String status){
-            String tax;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
-            if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",status};
-            }
-            else {
-                mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",x,status};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            tax = cursor.getString(0);
-            cursor.close();
-            return tax;
+    String pleaseGetTheTaxForMe(String x, String status){
+        String tax;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
+        if(x.equals("no")){
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+            mWHERE_ARGS = new String[]{"0",status};
         }
+        else {
+            mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+            mWHERE_ARGS = new String[]{"0",x,status};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        tax = cursor.getString(0);
+        cursor.close();
+        return tax;
+    }
     int pleaseGiveMeTheZCount(){
         int z;
         String[] columns = {"COUNT("+COLUMN_INVOICE_VATTED+")"};
@@ -566,17 +578,48 @@ import static com.example.sydney.psov3.Constants.*;
         cursor.close();
         return t;
     }
-        int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
-            int[] t = new int[1];
-            String[] columns = {_ID};
-            String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
-            String[] mWHERE_ARGS = new String[]{"0"};
-            Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
-            cursor.moveToFirst();
-            t[0] = cursor.getInt(0);
-            cursor.moveToLast();
-            t[1] = cursor.getInt(0);
-            cursor.close();
-            return t;
+
+    int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
+        int[] t = new int[1];
+        String[] columns = {_ID};
+        String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
+        String[] mWHERE_ARGS = new String[]{"0"};
+        Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        cursor.moveToFirst();
+        t[0] = cursor.getInt(0);
+        cursor.moveToLast();
+        t[1] = cursor.getInt(0);
+        cursor.close();
+        return t;
+    }
+
+    float getCashSales(String cashierNum){
+        float tax;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_CUSTOMER+")"};
+        if(cashierNum.equals("no")){ //ZREPORT
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
         }
+        else { //XREPORT
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE_ARGS = new String[]{"0",cashierNum};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        tax = cursor.getFloat(0);
+        cursor.close();
+        return tax;
+    }
+
+    void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){
+        cv.clear();
+        cv.put(COLUMN_XREPORT_TRANSACTION_NUMBER, transNum);
+        cv.put(COLUMN_XREPORT_CASHSALES, cashSales);
+        cv.put(COLUMN_XREPORT_CASHCOUNT, cashCount);
+        cv.put(COLUMN_XREPORT_CASHSHORTOVER, cashShortOver);
+        dbw.insertOrThrow(TABLE_XREPORT, null, cv);
+    }
+
 }

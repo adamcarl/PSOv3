@@ -21,19 +21,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -43,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sydney.psov3.adapter.AdapterOrder;
-import com.hdx.lib.serial.SerialParam;
 import com.hdx.lib.serial.SerialPortOperaion;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
@@ -57,8 +51,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import hdx.HdxUtil;
 
 import static com.example.sydney.psov3.Constants.*;
 
@@ -117,6 +109,14 @@ public class Cashier extends AppCompatActivity {
 
     private String customerCash;
     private double dCustomerCash,change;
+
+    private AlertDialog.Builder builder = null;
+    private AlertDialog alertDialogXreport = null;
+    private AlertDialog alertDialogZreport = null;
+    private boolean xreportButtonStatus = false;
+    private boolean zreportButtonStatus = false;
+
+    int transNumber;
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
@@ -375,7 +375,77 @@ public class Cashier extends AppCompatActivity {
             }
         });
 
+        //CREATE DIALOG
+        createMyDialog();
+        alertDialogXreport = builder.create();
 
+    }
+
+    private void createMyDialog() {
+        builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        final EditText xReportTotalCashDrawer,zReportTotalCashDrawer;
+        final Button btnXsubmit,btnXcancel,btnZsubmit,btnZcancel;
+
+        final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
+        builder.setView(alertLayoutXreport);
+        xReportTotalCashDrawer = (EditText) alertLayoutXreport.findViewById(R.id.etXreportTotalCashDrawer);
+        btnXsubmit = (Button) alertLayoutXreport.findViewById(R.id.btnXsubmit);
+        btnXcancel = (Button) alertLayoutXreport.findViewById(R.id.btnXCancel);
+
+        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+        cursor1.moveToLast();
+        transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+        cursor1.close();
+
+
+
+        btnXsubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String convertedTransNum = Integer.toString(transNumber);
+                float cashSale = db_data.getCashSales(userNum);
+                float enteredCashDrawer = Float.parseFloat(xReportTotalCashDrawer.getText().toString().trim());
+                float cashShortOver = enteredCashDrawer - cashSale;
+                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+
+
+                //FOR SAVING REPORT
+                reportBaKamo.setDb_data(db_data);
+                try{
+                    transType = "xreport";
+                    Date currDate = new Date();
+                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                    String dateToStr = dateTimeFormat.format(currDate);
+                    Date strToDate = dateTimeFormat.parse(dateToStr);
+                    int bcd;
+                    String dateToString = strToDate.toString();
+                    db_data.addTransaction(transType,dateToString,userNum,0,0);
+                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                    cursor1.moveToLast();
+                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                    cursor1.close();
+
+                    reportBaKamo.setDb_data(db_data);
+
+                    reportBaKamo.main(userNum,dateToString,bcd);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        btnXcancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogXreport.dismiss();
+            }
+        });
     }
 
     private List<InvoiceItem> fill_with_data() {
@@ -561,20 +631,20 @@ public class Cashier extends AppCompatActivity {
 //        currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
-        int bcd;
         try {
             String dateToString = strToDate.toString();
             db_data.addTransaction(transType,dateToString,userNum,0,0);
             String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
             //MARK : I UPDATED THIS PART FOR addInvoice discounted and so on---
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
-//            db_data.addInvoice(bcd+"",rDisc,customerCash,customerDiscount,VATTEDEXEMP,);
+            //// TODO: 7/15/2017
+//            db_data.addInvoice(transNumber+"",rDisc,customerCash,customerDiscount,);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -791,29 +861,7 @@ public class Cashier extends AppCompatActivity {
         }
     }
     public void xreport(View view){
-        reportBaKamo.setDb_data(db_data);
-        try{
-            transType = "xreport";
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-            String dateToStr = dateTimeFormat.format(currDate);
-            Date strToDate = dateTimeFormat.parse(dateToStr);
-            int bcd;
-            String dateToString = strToDate.toString();
-            db_data.addTransaction(transType,dateToString,userNum,0,0);
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-            cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            cursor1.close();
-
-            reportBaKamo.setDb_data(db_data);
-
-            reportBaKamo.main(userNum,dateToString,bcd);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        alertDialogXreport.show();
     }
     private void sleep(int ms) {
         try {

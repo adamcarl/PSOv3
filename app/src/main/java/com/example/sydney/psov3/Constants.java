@@ -38,8 +38,6 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_SENIOR_DISCOUNT = "InSeniorDiscount";
     String COLUMN_INVOICE_VAT_EXEMPT = "InExemptDiscount";
     String COLUMN_INVOICE_ZERORATED = "InExemptDiscount";
-    String COLUMN_INVOICE_CC_BDO = "InCCBDO";
-    String COLUMN_INVOICE_CC_BPI = "InCCBPI";
 
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
@@ -50,9 +48,14 @@ interface Constants extends BaseColumns {
 
     String TABLE_XREPORT = "tbl_xreport";
     String COLUMN_XREPORT_TRANSACTION_NUMBER = "xreportTransNum";
+    String COLUMN_XREPORT_CASHSALES = "xreportCashsales";
+    String COLUMN_XREPORT_CASHCOUNT = "xreportCashcount";
+    String COLUMN_XREPORT_CASHSHORTOVER = "xreportCashShort";
 
     String TABLE_ZREPORT = "tbl_zreport";
     String COLUMN_ZREPORT_TRANSACTION_NUMBER = "zreportTransNum";
+    String COLUMN_ZREPORT_CASHSALES = "zreportCashsales";
+    String COLUMN_ZREPORT_CASHCOUNT = "zreportCashcount";
 
     String TABLE_TRANSACTION = "tbl_trans";
     String COLUMN_TRANSACTION_TYPE = "TransType";
