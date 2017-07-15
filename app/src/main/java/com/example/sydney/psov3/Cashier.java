@@ -762,14 +762,14 @@ public class Cashier extends AppCompatActivity {
             int bcd;
             String dateToString = strToDate.toString();
             db_data.addTransaction(transType,dateToString,userNum,0,0);
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-            cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            cursor1.close();
+//            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+//            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+//            cursor1.moveToLast();
+//            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+//            cursor1.close();
 
             reportBaKamo.setDb_data(db_data);
-            reportBaKamo.main("no",dateToString,bcd);
+//            reportBaKamo.main("no",dateToString,bcd);
             ArrayList<String> paPrintNaman = new ArrayList<>();
             paPrintNaman = reportBaKamo.getToBePrinted();
             unLockCashBox();
