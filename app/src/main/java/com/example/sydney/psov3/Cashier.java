@@ -63,13 +63,14 @@ public class Cashier extends AppCompatActivity {
     private int quantityCount = 0,itemcodeCol,discType=0,code,dialogVar;
     String userNum;
     double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
-    Double due;
+    Double due,payment;
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
 //    ArrayList<String> items;
     private List<InvoiceItem> invoiceItemList;
     private RecyclerView recyclerView;
+    private InvoiceAdapter invoiceAdapter;
 
     EditText txt_search,txt_cash;
     String itemnameCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
@@ -107,8 +108,10 @@ public class Cashier extends AppCompatActivity {
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
 
-    static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
+    private String customerCash;
+    private double dCustomerCash,change;
 
+    static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
@@ -150,6 +153,7 @@ public class Cashier extends AppCompatActivity {
         spec.setContent(R.id.tab2);
         spec.setIndicator("Payment");
         tab_host.addTab(spec);
+
         //Tab 3
         spec = tab_host.newTabSpec("Shift");
         spec.setContent(R.id.tab3);
@@ -190,15 +194,14 @@ public class Cashier extends AppCompatActivity {
 
                     double parsed = Double.parseDouble(cleanString);
                     formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
-                    formatted = formatted.replace('$','P');
                     current = formatted;
-                    txt_cash.setText(formatted);
+                    txt_cash.setText(formatted.replace("$","P"));
                     txt_cash.setSelection(formatted.length());
 
                     txt_cash.addTextChangedListener(this);
-                    String deym = txt_cash.getText().toString().replace(",", "");
-                    double d = Double.parseDouble(deym.replace("P",""));
-                    due = totalPrice - d;
+                    customerCash = txt_cash.getText().toString().replace(",", "");
+                    dCustomerCash = Double.parseDouble(customerCash.replace("P",""));
+                    due = totalPrice - dCustomerCash;
                     formatted = NumberFormat.getCurrencyInstance().format((due/1));
                     formatted = formatted.replace("$","");
                     try{
@@ -208,11 +211,13 @@ public class Cashier extends AppCompatActivity {
                             lbl_dc.setText(""+"Due"+"");
                             lbl_due.setText(formatted);
                         }
-                        else if(due < 0){
+                        else if( due <= 0){
+                            change = dCustomerCash - totalPrice;
                             btn_print.setEnabled(true);
                             btn_print.setText(""+"Print Receipt"+"");
                             lbl_dc.setText(""+"Change"+"");
-                            formatted = NumberFormat.getCurrencyInstance().format((due / 1));
+                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
+                            payment = Double.parseDouble(formatted.replaceAll("[$-]", ""));
                             formatted = formatted.replaceAll("[$-]", "P");
                             lbl_due.setText(formatted);
                         }
@@ -246,6 +251,7 @@ public class Cashier extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if(rb_spdisc.isChecked()){
+                    //SENIOR DISCOUNT
                     discType = 1;
                     discount = subTotal * 0.20;
                     vat = 0.0;
@@ -269,6 +275,7 @@ public class Cashier extends AppCompatActivity {
                     lbl_due.setText(totalPrice2);
                 }
                 else if(rb_ddisc.isChecked()){
+                    //DIPLOMAT DISCOUNT
                     discType=2;
                     vattable = subTotal / 1.12;
                     vat = vattable * 0.0;
@@ -287,6 +294,7 @@ public class Cashier extends AppCompatActivity {
                     lbl_due.setText(totalPrice2);
                 }
                 else{
+                    //NO DISCOUNT
                     vattable = subTotal / 1.12;
                     vat = vattable * 0.12;
                     vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
@@ -337,6 +345,28 @@ public class Cashier extends AppCompatActivity {
                 }
             }
         });
+
+        txt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                int mCode = txt_search.getText().length();
+                if(mCode >= 8){
+                    searchProduct();
+                }
+            }
+        });
+
+
     }
 
     private List<InvoiceItem> fill_with_data() {
@@ -373,7 +403,7 @@ public class Cashier extends AppCompatActivity {
     }
 
     //BUTTON SEARCH ONCLICK
-    public void search(View view) {
+    public void searchProduct() {
         try {
             code = Integer.parseInt(txt_search.getText().toString());
             final String[] itemcode = {Integer.toString(code)};
@@ -482,7 +512,9 @@ public class Cashier extends AppCompatActivity {
                 });
                 Dialog dialog = builder.create();
                 dialog.show();
-            } else Toast.makeText(this, "Product cant be found", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Product cant be found", Toast.LENGTH_LONG).show();
+            }
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -506,9 +538,9 @@ public class Cashier extends AppCompatActivity {
         products.add("NCR, Philippines");
         products.add("Serial No. XXXXXXXX");
         products.add("             CASH INVOICE");
-        products.add("Date: \t "+dateformatted+" \t "+currentTime+"");
+        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime+"");
         products.add("--------------------------------------");
-        products.add("Name"+"\t"+"Quantity"+"\t"+"Price");
+        products.add("Name \t\t"+"Quantity \t\t"+"Price");
         transType = "invoice";
 //        Calendar c = Calendar.getInstance();
         Date currDate = new Date();
@@ -530,7 +562,10 @@ public class Cashier extends AppCompatActivity {
             bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
-            db_data.addInvoice(bcd+"",rDisc,customerCash);
+            //MARK : I UPDATED THIS PART FOR addInvoice discounted and so on---
+            String customerDiscount = lbl_discount.getText().toString().trim();
+            //--END
+//            db_data.addInvoice(bcd+"",rDisc,customerCash,customerDiscount,VATTEDEXEMP,);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -552,18 +587,15 @@ public class Cashier extends AppCompatActivity {
             products.add("Invoice Number " + abc + "");
             products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
             products.add("Vatable" + "" + "\t\t" + vattable2);
-            products.add("Vat" + "" + "\t\t " + vat2);
-            products.add("Total" + " \t\t" + subTotal + "");
+            products.add("Vat" + "" + "\t\t" + vat2);
+            products.add("Total" + "\t\t" + subTotal + "");
 
-            if (due > 0) {
-                products.add("Due" + " \t\t" + due + "");
-                products.add("");
-            }
-            else {
-                String change = due.toString().replace("-", "");
-                products.add("Change" + "\t\t" + change + "");
-                products.add("\n");
-            }
+            //customerCash = txt_cash.getText().toString().replace(",", "");
+//            double change = dCustomerCash - totalPrice;
+
+            products.add("\t\t\t\tCash" + "\t\t\t\t" + change + "");
+            products.add("\t\t\t\tChange" + "\t\t\t" + due + "");
+            products.add("\n");
 
             //CHECK IF PRINTERS ARE OPEN
             boolean ret = marksPrinter.Open();
@@ -575,20 +607,23 @@ public class Cashier extends AppCompatActivity {
             }
             db_data.updateInvoice(abc,printBaHanapMo);
 
-//                if(ret) {
+
+            double doubleCustomerCash = Double.parseDouble(customerCash);
+                if(ret) {
 //                    mSerialPrinter.sydneyDotMatrix7by7();
 //                    mSerialPrinter.printString(products);
 //                    mSerialPrinter.walkPaper(50);
 //                    mSerialPrinter.sendLineFeed();
-//                    //JOLLICARL PRINTER
-//
-//                }
-//                else {
-//                    //JOLLIMARK PRINTER
+                    //JOLLICARL PRINTER
+
+                }
+                else if( invoiceItemList != null & doubleCustomerCash >= due ) {
+                    //JOLLIMARK PRINTER
                     unLockCashBox();
                     printFunction(products);
+                    btn_print.setEnabled(false);
                     products.clear();
-//                }
+                }
             t2Rows.clear();
             products.clear();
 
@@ -608,9 +643,9 @@ public class Cashier extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         for(String s : list){
             sb.append(s);
-            sb.append("\t");
+//            sb.append("\t");
             sb.append("\n");
-            sb.insert(sb.length(),"\t");
+//            sb.insert(sb.length(),"\t");
         }
         String convertedArray = sb.toString();
 
@@ -869,13 +904,13 @@ public class Cashier extends AppCompatActivity {
     private void printerDetection() {
         try {
             //RUN CODE IF JOLLICARL IS PRESENT
-//            try {
+            try {
 //                mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
 //                HdxUtil.SetPrinterPower(1);
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
             //RUN CODE IF JOLLIMARK IS PRESENT
             try {
                 marksPrinter.Open(); //open the printer
@@ -895,5 +930,6 @@ public class Cashier extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(invoiceAdapter);
+        invoiceAdapter.notifyDataSetChanged();
     }
 }
