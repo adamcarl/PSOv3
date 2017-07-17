@@ -13,55 +13,43 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/cv"
-            app:cardElevation="2dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:cardElevation="2dp">
+
             <EditText
-                android:textColorHint="@color/myColorEditTextDialogDisable"
-                android:textColor="@color/myColorEditTextDialogDisable"
-                android:background="@drawable/custom_edittext_dialog"
                 android:id="@+id/txt_cashier_search"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="@drawable/custom_edittext_dialog"
                 android:ems="10"
                 android:hint="Product Id"
-                android:inputType="number" />
+                android:inputType="number"
+                android:textColor="@color/myColorEditTextDialogDisable"
+                android:textColorHint="@color/myColorEditTextDialogDisable" />
         </android.support.v7.widget.CardView>
 
 
-        <Button
-            android:layout_centerInParent="true"
-
-            android:id="@+id/btn_cashier_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/cv"
-            android:background="@drawable/custom_button_dialog"
-            android:onClick="search"
-            android:text="Search"
-            android:textColor="@color/myColorWhite"
-            android:textStyle="bold" />
-
         <ImageButton
-            android:layout_marginRight="10dp"
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
             android:id="@+id/btn_cashier_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="10dp"
             android:tint="@color/myColorButtonDelete"
             app:srcCompat="@drawable/ic_delete_black_36px" />
+
         <Button
             android:id="@+id/btn_cashier_confirmDelete"
-            android:visibility="gone"
-            android:textStyle="bold"
-            android:text="Confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_marginRight="10dp"
+            android:text="Confirm"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

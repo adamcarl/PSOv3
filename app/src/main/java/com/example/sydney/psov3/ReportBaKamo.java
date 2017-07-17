@@ -20,31 +20,9 @@ class ReportBaKamo {
     void main(String x, String date, int transNum){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
-        String dateFormatted = dateformat.format(calendar.getTime());
+        String dateformatted = dateformat.format(calendar.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         String currentTime = sdf.format(new Date());
-
-        String gross = db_data.getGrossSales(x);
-        String discount = db_data.getDiscountSales(x);
-//        String vSale =  db_data.pleaseGetTheSalesForMe(x,"v");
-//        String vTax =  db_data.pleaseGetTheTaxForMe(x,"v");
-//        String xSale =  db_data.pleaseGetTheSalesForMe(x,"v");
-//        String xTax =  db_data.pleaseGetTheTaxForMe(x,"v");
-//        String zSale =  db_data.pleaseGetTheSalesForMe(x,"v");
-//        String zTax =  db_data.pleaseGetTheTaxForMe(x,"v");
-//        int z = db_data.pleaseGiveMeTheZCount();
-//        int[] transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
-//        int[] or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-
-//        String[] strings = {gross,discount,vSale,vTax,xSale,xTax,zSale,zTax};
-
-        if(gross == null){
-            gross = "0.0";
-        }
-        if(discount == null){
-            discount = "0.0";
-        }
-
 //        SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
 //        try {
 //            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
@@ -82,13 +60,13 @@ class ReportBaKamo {
         }else {
             toBePrinted.add("CASHIER REPORT");
             toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : " + dateFormatted + " " + currentTime);
+            toBePrinted.add("BIZDATE : " + dateformatted + " " + currentTime);
             toBePrinted.add("CASHIER : "+x);
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
-
+        String gross = db_data.getGrossSales(x);
         toBePrinted.add("GROSS SALES\t\t"+gross);
-
+        String discount = db_data.getDiscountSales(x);
         toBePrinted.add(" SALES DISCOUNT\t\t-"+discount);
         toBePrinted.add("-----------------------------------------------");
         Double net_gross = Double.parseDouble(gross);
@@ -99,51 +77,62 @@ class ReportBaKamo {
         toBePrinted.add("TAX CODE\tSALES\tTAX");
         toBePrinted.add("-----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-//        toBePrinted.add("[v] V-Sal\t"+vSale+"\t"+vTax);
-//        toBePrinted.add("[x] E-Sal\t"+xSale+"\t"+xTax);
-//        toBePrinted.add("[z] Z-Rat\t"+zSale+"\t"+zTax+"\n");
+        String vsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String vtax =  db_data.pleaseGetTheTaxForMe(x,"v");
+        toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
+        String xsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String xtax =  db_data.pleaseGetTheTaxForMe(x,"v");
+        toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
+        String zsale =  db_data.pleaseGetTheSalesForMe(x,"v");
+        String ztax =  db_data.pleaseGetTheTaxForMe(x,"v");
+        toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
             toBePrinted.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
             toBePrinted.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
 
-//            String zf = String.format("%$05d", z);
-//            toBePrinted.add("Z Count\t\t"+zf+"\n");
+            int z = db_data.pleaseGiveMeTheZCount();
+            String zf = String.format("%$05d", z);
+            toBePrinted.add("Z Count\t\t"+zf+"\n");
 
-//            String t1 = String.format("%$06d", transArray[0]);
-//            String t2 = String.format("%$06d", transArray[1]);
-//            toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
-//            int t3 = transArray[1] - transArray[0];
-//            toBePrinted.add("\t\t\t"+t3+"\n");
+            int transArray[] = new int[1];
+            transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
+            String t1 = String.format("%$06d", transArray[0]);
+            String t2 = String.format("%$06d", transArray[1]);
+            toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
+            int t3 = transArray[1] - transArray[0];
+            toBePrinted.add("\t\t\t"+t3+"\n");
 
-//            String or1 = String.format("%$06d", or[0]);
-//            String or2 = String.format("%$06d", or[1]);
-//            toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
-//            int or3 = or[1] - or[0];
-//            toBePrinted.add("\t\t\t"+or3+"\n");
+            int or[];
+            or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
+            String or1 = String.format("%$06d", or[0]);
+            String or2 = String.format("%$06d", or[1]);
+            toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
+            int or3 = or[1] - or[0];
+            toBePrinted.add("\t\t\t"+or3+"\n");
         }
-
         toBePrinted.add("CASH SALES\t\t"+net);
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\t"+net);
-        toBePrinted.add("CASH COUNT\t\tXXX.XX");
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("CASH SHORT/OVER\t\tX.XX\n");
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
 
+//        toBePrinted.add("CASH COUNT\t\tXXX.XX");
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("CASH SHORT/OVER\t\tX.XX\n");
+//
 //        toBePrinted.add("TRANSACTION\t\tAMOUNT");
 //        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("NORMAL SALES\t\t"+gross+"\n");
-
-        toBePrinted.add("TENDER\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("TOTAL CASH\t\t"+gross+"");
-        toBePrinted.add("  CC BDO\t\tX,XXX.XX");
-        toBePrinted.add("  CC BPI\t\tX,XXX.XX");
-        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
-
-        toBePrinted.add("DISCOUNT\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("SCD 20%\tX\t-XX.XX");
+//        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
+//
+//        toBePrinted.add("TENDER\t\tAMOUNT");
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("TOTAL CASH\tX\tXXX.XX");
+//        toBePrinted.add("  CC BDO\tX\tX,XXX.XX");
+//        toBePrinted.add("  CC BPI\tX\tX,XXX.XX");
+//        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
+//
+//        toBePrinted.add("DISCOUNT\t\tAMOUNT");
+//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("SCD 20%\tX\t-XX.XX");
 //        toBePrinted.add("Tax - Exempt\tX\t-XX.XX");
 //        toBePrinted.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
 //

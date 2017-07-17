@@ -21,14 +21,19 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -101,8 +106,10 @@ public class Cashier extends AppCompatActivity {
     private GridLayoutManager mLayoutManager;
     ReportBaKamo reportBaKamo;
 
+
     //JOLLIMARK VARIABLES
 //    private UsbPrinter marksPrinter = new UsbPrinter();
+
 
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
@@ -112,6 +119,8 @@ public class Cashier extends AppCompatActivity {
     private double dCustomerCash,change;
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         db_data = new DB_Data(this);
@@ -762,16 +771,17 @@ public class Cashier extends AppCompatActivity {
             int bcd;
             String dateToString = strToDate.toString();
             db_data.addTransaction(transType,dateToString,userNum,0,0);
-//            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-//            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-//            cursor1.moveToLast();
-//            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-//            cursor1.close();
+            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            cursor1.close();
 
             reportBaKamo.setDb_data(db_data);
-//            reportBaKamo.main("no",dateToString,bcd);
+            reportBaKamo.main("no",dateToString,bcd);
             ArrayList<String> paPrintNaman = new ArrayList<>();
             paPrintNaman = reportBaKamo.getToBePrinted();
+            paPrintNaman.add("yownOH");
             unLockCashBox();
             printFunction(paPrintNaman);
             paPrintNaman.clear();
