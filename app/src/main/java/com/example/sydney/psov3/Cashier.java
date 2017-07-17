@@ -574,7 +574,7 @@ public class Cashier extends AppCompatActivity {
             //MARK : I UPDATED THIS PART FOR addInvoice discounted and so on---
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
-//            db_data.addInvoice(bcd+"",rDisc,customerCash,customerDiscount,VATTEDEXEMP,);
+            db_data.addInvoice(bcd+"",rDisc,customerCash,customerDiscount,);
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -847,7 +847,7 @@ public class Cashier extends AppCompatActivity {
 ////        String groupBy = "id, date";
 ////        String having = null;
 ////        String orderBy = null;
-////        db.query(table, column    s, selection, arguments, groupBy, having, orderBy);
+////        db.query(table, columns, selection, arguments, groupBy, having, orderBy);
 //        Cursor curse = db.query(TABLE_NAME_ORDER, ALL, null, null, NUMBER_ORDER, null, ASC);
 //        while (curse.moveToNext()) {
 //            String oname = curse.getString(0);

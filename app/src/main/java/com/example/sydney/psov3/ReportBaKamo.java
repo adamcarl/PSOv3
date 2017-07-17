@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -16,8 +18,13 @@ class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> toBePrinted = new ArrayList<>();
     SQLiteDatabase dbReader;
+    String gross, discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ogt, ngt, trans;
+    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
+    int z, t3, totalQty=0;
+    int[] or = new int[1], transArray = new int[1];
+    List<String[]> items = new ArrayList<>();
 
-    void main(String x, String date, int transNum){
+    void main(String x, String date, int transNum, double moneyCount){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         String dateformatted = dateformat.format(calendar.getTime());
@@ -38,8 +45,35 @@ class ReportBaKamo {
         else {
             report = "X";
         }
-            // Pad with zeros and a width of 6 chars.
-            String trans = String.format("%1$06d", transNum);
+        gross = db_data.getGrossSales(x);
+        discount = db_data.getDiscountSales(x);
+        vsale = db_data.pleaseGetTheSalesForMe(x,"v");
+        vtax = db_data.pleaseGetTheTaxForMe(x,"v");
+        xsale = db_data.pleaseGetTheSalesForMe(x,"v");
+        xtax = db_data.pleaseGetTheTaxForMe(x,"v");
+        zsale = db_data.pleaseGetTheSalesForMe(x,"v");
+        ztax = db_data.pleaseGetTheTaxForMe(x,"v");
+        z = db_data.pleaseGiveMeTheZCount();
+        transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
+        or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
+        ogt = db_data.getMyOldGross();
+        items = db_data.getAllItems(x);
+
+        net_gross = Double.parseDouble(gross);
+        net_discount = Double.parseDouble(discount);
+        net = net_gross-net_discount;
+        or1 = String.format("%$06d", or[0]);
+        or2 = String.format("%$06d", or[1]);
+        t1 = String.format("%$06d", transArray[0]);
+        t2 = String.format("%$06d", transArray[1]);
+        t3 = transArray[1] - transArray[0];
+        zf = String.format("%$05d", z);
+        trans = String.format("%$06d", transNum);
+        dogt = Double.parseDouble(ogt);
+        dngt = dogt + net;
+        over = moneyCount - net;
+
+        // Pad with zeros and a width of 6 chars.
 
         toBePrinted.add("NOVA RESTAURANT & SERVICE INC.");
         toBePrinted.add("MILKY WAY");
@@ -64,94 +98,75 @@ class ReportBaKamo {
             toBePrinted.add("CASHIER : "+x);
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
-        String gross = db_data.getGrossSales(x);
         toBePrinted.add("GROSS SALES\t\t"+gross);
-        String discount = db_data.getDiscountSales(x);
         toBePrinted.add(" SALES DISCOUNT\t\t-"+discount);
         toBePrinted.add("-----------------------------------------------");
-        Double net_gross = Double.parseDouble(gross);
-        Double net_discount = Double.parseDouble(discount);
-        Double net = net_gross-net_discount;
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
 
         toBePrinted.add("TAX CODE\tSALES\tTAX");
         toBePrinted.add("-----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-        String vsale =  db_data.pleaseGetTheSalesForMe(x,"v");
-        String vtax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
-        String xsale =  db_data.pleaseGetTheSalesForMe(x,"v");
-        String xtax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
-        String zsale =  db_data.pleaseGetTheSalesForMe(x,"v");
-        String ztax =  db_data.pleaseGetTheTaxForMe(x,"v");
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
-            toBePrinted.add("OLD GT\tXXX-XXXXXXXXXXXX.XX");
-            toBePrinted.add("NEW GT\tXXX-XXXXXXXXXXXX.XX\n");
+            toBePrinted.add("OLD GT\tXXX-"+ogt);
+            toBePrinted.add("NEW GT\tXXX-"+dngt+"\n");
 
-            int z = db_data.pleaseGiveMeTheZCount();
-            String zf = String.format("%$05d", z);
             toBePrinted.add("Z Count\t\t"+zf+"\n");
 
-            int transArray[] = new int[1];
-            transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
-            String t1 = String.format("%$06d", transArray[0]);
-            String t2 = String.format("%$06d", transArray[1]);
-            toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
-            int t3 = transArray[1] - transArray[0];
+           toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
             toBePrinted.add("\t\t\t"+t3+"\n");
 
-            int or[];
-            or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-            String or1 = String.format("%$06d", or[0]);
-            String or2 = String.format("%$06d", or[1]);
             toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
-            int or3 = or[1] - or[0];
-            toBePrinted.add("\t\t\t"+or3+"\n");
         }
         toBePrinted.add("CASH SALES\t\t"+net);
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("CASH IN DRAWER\t\tXXX.XX");
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("CASH IN DRAWER\t\t"+net);
 
-//        toBePrinted.add("CASH COUNT\t\tXXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("CASH SHORT/OVER\t\tX.XX\n");
-//
-//        toBePrinted.add("TRANSACTION\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
-//
-//        toBePrinted.add("TENDER\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("TOTAL CASH\tX\tXXX.XX");
-//        toBePrinted.add("  CC BDO\tX\tX,XXX.XX");
-//        toBePrinted.add("  CC BPI\tX\tX,XXX.XX");
-//        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
-//
-//        toBePrinted.add("DISCOUNT\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("SCD 20%\tX\t-XX.XX");
-//        toBePrinted.add("Tax - Exempt\tX\t-XX.XX");
-//        toBePrinted.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
-//
-//        toBePrinted.add("ITEM SALES\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("MILO ACTIV-GO 22GMS.");
-//        toBePrinted.add("BEV-001\t\tX,XXX.XX");
-//        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("QUAKER OAT CEREAL DRINK 29g");
-//        toBePrinted.add("BEV-002\t\tXX.XX");
-//        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
-//        toBePrinted.add("TAPSILOG");
-//        toBePrinted.add("FOOD-004\t\tXXX.XX");
-//        toBePrinted.add("xX.XXXX\td-XX.XX\tXXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
-//        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
-//        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
-//        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
-//        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
+        toBePrinted.add("CASH COUNT\t\t"+moneyCount);
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
+
+        toBePrinted.add("TRANSACTION\t\tAMOUNT");
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
+
+        toBePrinted.add("TENDER\t\tAMOUNT");
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("TOTAL CASH\tX\tXXX.XX");
+        toBePrinted.add("  CC BDO\tX\tX,XXX.XX");
+        toBePrinted.add("  CC BPI\tX\tX,XXX.XX");
+        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
+
+        toBePrinted.add("DISCOUNT\t\tAMOUNT");
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("SCD 20%\tX\t-XX.XX");
+        toBePrinted.add("Tax - Exempt\tX\t-XX.XX");
+        toBePrinted.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
+
+        toBePrinted.add("ITEM SALES\t\tAMOUNT");
+        toBePrinted.add("-----------------------------------------------");
+        for(int i=0;i<items.size();i++){
+            String[] myString= new String[items.size()];
+            myString=items.get(i);
+            Double price = Double.parseDouble(myString[4]);
+            Double discount = Double.parseDouble(myString[3]);
+            Double net = price-discount;
+            toBePrinted.add(myString[0]);
+            toBePrinted.add(myString[1]+"\t\t"+myString[4]);
+            toBePrinted.add("x"+myString[2]+".0000"+"\td-"+myString[3]+"\t"+net);
+            totalQty = totalQty + Integer.parseInt(myString[2]);
+            totalGross = totalGross + Double.parseDouble(myString[4]);
+            totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
+    }
+    totalItemSales = totalGross - totalDeduction
+        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".XXXX");
+        toBePrinted.add("GROSS SALES\t\t"+totalGross);
+        toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
+        toBePrinted.add("NET SALES\t\t"+totalItemSales+"\n");
 //
 //        toBePrinted.add("DEPARTMENT SALES\t\tAMOUNT");
 //        toBePrinted.add("-----------------------------------------------");

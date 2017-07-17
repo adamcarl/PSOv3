@@ -40,13 +40,20 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_ZERORATED = "InExemptDiscount";
     String COLUMN_INVOICE_CC_BDO = "InCCBDO";
     String COLUMN_INVOICE_CC_BPI = "InCCBPI";
+    String COLUMN_INVOICE_TOTAL_DISCOUNT = "InAllDiscount";
 
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
+    String COLUMN_ITEM_NAME = "ItemName";
+    String COLUMN_ITEM_DESC = "ItemDesc";
+    String COLUMN_ITEM_PRICE = "ItemTotalPrice";
     String COLUMN_ITEM_PRODUCT = "ItemProd";
     String COLUMN_ITEM_QUANTITY = "ItemQuan";
     String COLUMN_ITEM_STATUS = "ItemStatus";
     String COLUMN_ITEM_DISCOUNT = "ItemDiscount";
+    String COLUMN_ITEM_ZREPORT = "ItemZ";
+    String COLUMN_ITEM_XREPORT = "ItemX";
+    String COLUMN_ITEM_CASHIER = "ItemCashier";
 
     String TABLE_XREPORT = "tbl_xreport";
     String COLUMN_XREPORT_TRANSACTION_NUMBER = "xreportTransNum";
@@ -69,5 +76,6 @@ interface Constants extends BaseColumns {
     String COLUMN_TEMP_PRICE = "temp_price";
     String COLUMN_TEMP_QUANTITY = "temp_quantity";
     String COLUMN_TEMP_ID = "temp_id";
+
 
 }

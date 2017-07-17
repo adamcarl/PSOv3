@@ -56,7 +56,9 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
-                +COLUMN_ITEM_STATUS+" INTEGER NOT NULL );");
+                +COLUMN_ITEM_STATUS+" INTEGER NOT NULL,"
+                +COLUMN_ITEM_XREPORT+" TEXT NOT NULL,"
+                +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
@@ -503,7 +505,7 @@ import static com.example.sydney.psov3.Constants.*;
             cursor.close();
             return  discount;
         }
-        String pleaseGetTheSalesForMe(String x, String status){
+    String pleaseGetTheSalesForMe(String x, String status){
             String sales;
             String mWHERE;
             String[] mWHERE_ARGS;
@@ -524,7 +526,7 @@ import static com.example.sydney.psov3.Constants.*;
             return sales;
         }
 
-        String pleaseGetTheTaxForMe(String x, String status){
+    String pleaseGetTheTaxForMe(String x, String status){
             String tax;
             String mWHERE;
             String[] mWHERE_ARGS;
@@ -546,8 +548,10 @@ import static com.example.sydney.psov3.Constants.*;
         }
     int pleaseGiveMeTheZCount(){
         int z;
-        String[] columns = {"COUNT("+COLUMN_INVOICE_VATTED+")"};
-        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,null,null,null,null,null,null);
+        String[] columns = {"COUNT(*)"};
+        String mWHERE = COLUMN_TRANSACTION_TYPE+" = ?";
+        String[] mWHERE_ARGS = new String[]{"zreport"};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
         cursor.moveToFirst();
         z = cursor.getInt(0);
         cursor.close();
@@ -566,7 +570,7 @@ import static com.example.sydney.psov3.Constants.*;
         cursor.close();
         return t;
     }
-        int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
+    int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
             int[] t = new int[1];
             String[] columns = {_ID};
             String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
@@ -579,7 +583,7 @@ import static com.example.sydney.psov3.Constants.*;
             cursor.close();
             return t;
         }
-        String pleaseGiveMeTheSumOfAll20PercentDiscountForXandZreport(String x, String status){
+    String pleaseGiveMeTheSumOfAll20PercentDiscountForXandZreport(String x, String status){
         String discount="";
                 String mWHERE;
                 String[] mWHERE_ARGS;
@@ -599,4 +603,40 @@ import static com.example.sydney.psov3.Constants.*;
                 cursor.close();
             return discount;
         }
+        //Grand Total is the sum of all accumulated NET SALES.
+    String getMyOldGross(){
+        String gross;
+        String[] columns = {COLUMN_TOTAL_GRAND};
+        Cursor cursor = dbr.query(TABLE_TOTAL, columns, null, null, null, null, null, null);
+        cursor.moveToFirst();
+        gross = cursor.getString(0);
+        cursor.close();
+        return gross;
+    }
+    List<String[]> getAllItems(String x){
+        List<List<String>> items = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {COLUMN_ITEM_NAME,COLUMN_ITEM_DESC,COLUMN_ITEM_QUANTITY,COLUMN_ITEM_DISCOUNT,COLUMN_ITEM_PRICE};
+        if(x.equals("no")) {
+            mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        }
+        else {
+            mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        }
+        Cursor cursor = dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        for (cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+            temp.add(cursor.getString(0));//example I don't know the order you need
+            temp.add(cursor.getString(1));//example I don't know the order you need
+            temp.add(cursor.getString(2));//example I don't know the order you need
+            temp.add(cursor.getString(3));//example I don't know the order you ne
+            temp.add(cursor.getString(4));//example I don't know the order you ne
+            items.add(temp);
+        }
+        cursor.close();
+        return items;
+    }
     }
