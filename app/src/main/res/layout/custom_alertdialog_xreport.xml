@@ -19,7 +19,7 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:inputType="text"
-            android:id="@+id/etXreportTotalCashDrawer"
+            android:id="@+id/etTotalCashDrawer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_edittext_dialog"
@@ -43,7 +43,7 @@
                 android:background="@drawable/custom_button_dialog"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnXsubmit"
+                android:id="@+id/btnCashDrawerSubmit"
                 android:text="SUBMIT"/>
 
             <android.support.v7.widget.AppCompatButton
@@ -56,7 +56,7 @@
                 android:background="@drawable/custom_button_dialog"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnXCancel"
+                android:id="@+id/btnCashDrawerCancel"
                 android:text="CANCEL"/>
 
         </LinearLayout>

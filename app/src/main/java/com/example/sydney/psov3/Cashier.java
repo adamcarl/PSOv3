@@ -82,7 +82,7 @@ public class Cashier extends AppCompatActivity {
     SQLiteDatabase dbWriter;
     TabHost tab_host;
     TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
-    Button btn_print,btn_cashier_confirmDelete;
+    Button btn_print,btn_cashier_confirmDelete,btnCreditCard;
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
@@ -113,8 +113,28 @@ public class Cashier extends AppCompatActivity {
     private AlertDialog.Builder builder = null;
     private AlertDialog alertDialogXreport = null;
     private AlertDialog alertDialogZreport = null;
+    private AlertDialog alertDialogCredit = null;
     private boolean xreportButtonStatus = false;
     private boolean zreportButtonStatus = false;
+
+    private double inCustomer;
+    private String inPrint = ""; //NULL FOR THE MEANTIME
+    private String inZreport = ""; //NULL FOR THE MEANTIME
+    private String inXreport = ""; //NULL FOR THE MEANTIME
+    private double inVattable;
+    private double inVatted;
+    private String inVatStatus = "";
+    private double inSeniorDiscount;
+    private double inVatExempt;
+    private double inZeroRated;
+    private double inCreditCardNum;
+    private double inCreditExpiration;
+
+    //FOR BUTTON CLICK LISTENER X & Z REPORT DIALOG
+    private String whatButton = "";
+    private String whatDialog = "";
+
+
 
     int transNumber;
 
@@ -262,9 +282,9 @@ public class Cashier extends AppCompatActivity {
                 if(rb_spdisc.isChecked()){
                     //SENIOR DISCOUNT
                     discType = 1;
-                    discount = subTotal * 0.20;
                     vat = 0.0;
                     vattable = subTotal / 1.12;
+                    discount = vattable * 0.20;
                     discounted = vattable - discount;
                     discount2 = NumberFormat.getCurrencyInstance().format((discount/1));
                     discount2 = discount2.replace("$","");
@@ -282,6 +302,14 @@ public class Cashier extends AppCompatActivity {
                     totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
                     totalPrice2 = totalPrice2.replace("$","");
                     lbl_due.setText(totalPrice2);
+
+                    //SUPPLIER FOR addInvoice(. . .)
+                    inVattable = 0;
+                    inVatted = 0;
+                    inVatStatus = "x";
+                    inSeniorDiscount = discount;
+                    inVatExempt = 0;
+                    inZeroRated = vattable;
                 }
                 else if(rb_ddisc.isChecked()){
                     //DIPLOMAT DISCOUNT
@@ -301,6 +329,14 @@ public class Cashier extends AppCompatActivity {
                     totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
                     totalPrice2 = totalPrice2.replace("$","");
                     lbl_due.setText(totalPrice2);
+
+                    //SUPPLIER FOR addInvoice(. . .)
+                    inVattable = 0;
+                    inVatted = 0;
+                    inVatStatus = "z";
+                    inSeniorDiscount = 0;
+                    inVatExempt = 0;
+                    inZeroRated = vattable;
                 }
                 else{
                     //NO DISCOUNT
@@ -318,6 +354,14 @@ public class Cashier extends AppCompatActivity {
                     totalPrice2 = totalPrice2.replace("$","");
                     lbl_due.setText(totalPrice2);
                     lbl_total.setText(""+totalPrice2+"");
+
+                    //SUPPLIER FOR addInvoice(. . .)
+                    inVattable = vattable;
+                    inVatted = vat;
+                    inVatStatus = "v";
+                    inSeniorDiscount = 0;
+                    inVatExempt = 0;
+                    inZeroRated = 0;
                 }
             }
         });
@@ -375,9 +419,7 @@ public class Cashier extends AppCompatActivity {
             }
         });
 
-        //CREATE DIALOG
-        createMyDialog();
-        alertDialogXreport = builder.create();
+
 
     }
 
@@ -385,14 +427,23 @@ public class Cashier extends AppCompatActivity {
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
 
-        final EditText xReportTotalCashDrawer,zReportTotalCashDrawer;
-        final Button btnXsubmit,btnXcancel,btnZsubmit,btnZcancel;
+        final EditText reportTotalCashDrawer,zReportTotalCashDrawer;
+        final Button btnSubmit,btnCancel,btnZsubmit,btnZcancel;
 
         final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
-        builder.setView(alertLayoutXreport);
-        xReportTotalCashDrawer = (EditText) alertLayoutXreport.findViewById(R.id.etXreportTotalCashDrawer);
-        btnXsubmit = (Button) alertLayoutXreport.findViewById(R.id.btnXsubmit);
-        btnXcancel = (Button) alertLayoutXreport.findViewById(R.id.btnXCancel);
+        final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_zreport,null);
+
+        if(whatButton == "xBtn"){
+            whatDialog = "x";
+            builder.setView(alertLayoutXreport);
+        }
+        else if(whatButton == "zBtn"){
+            whatDialog = "z";
+            builder.setView(alertLayoutZreport);
+        }
+        reportTotalCashDrawer = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawer);
+        btnSubmit = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmit);
+        btnCancel = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancel);
 
         String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
         Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
@@ -400,50 +451,81 @@ public class Cashier extends AppCompatActivity {
         transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
         cursor1.close();
 
-
-
-        btnXsubmit.setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String convertedTransNum = Integer.toString(transNumber);
                 float cashSale = db_data.getCashSales(userNum);
-                float enteredCashDrawer = Float.parseFloat(xReportTotalCashDrawer.getText().toString().trim());
+                float enteredCashDrawer = Float.parseFloat(reportTotalCashDrawer.getText().toString().trim());
                 float cashShortOver = enteredCashDrawer - cashSale;
                 db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
 
-
-                //FOR SAVING REPORT
-                reportBaKamo.setDb_data(db_data);
-                try{
-                    transType = "xreport";
-                    Date currDate = new Date();
-                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-                    String dateToStr = dateTimeFormat.format(currDate);
-                    Date strToDate = dateTimeFormat.parse(dateToStr);
-                    int bcd;
-                    String dateToString = strToDate.toString();
-                    db_data.addTransaction(transType,dateToString,userNum,0,0);
-                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-                    cursor1.moveToLast();
-                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-                    cursor1.close();
-
+                if(whatDialog == "x"){
+                    //FOR SAVING X REPORT
                     reportBaKamo.setDb_data(db_data);
+                    try{
+                        transType = "xreport";
+                        Date currDate = new Date();
+                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                        String dateToStr = dateTimeFormat.format(currDate);
+                        Date strToDate = dateTimeFormat.parse(dateToStr);
+                        int bcd;
+                        String dateToString = strToDate.toString();
+                        db_data.addTransaction(transType,dateToString,userNum,0,0);
+                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                        cursor1.moveToLast();
+                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                        cursor1.close();
 
-                    reportBaKamo.main(userNum,dateToString,bcd);
+                        reportBaKamo.setDb_data(db_data);
+
+                        reportBaKamo.main(userNum,dateToString,bcd);
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+
                 }
-                catch(Exception e){
-                    e.printStackTrace();
+                else if(whatDialog == "z"){
+                    //FOR SAVING Z REPORT
+                    try{
+                        transType = "zreport";
+                        Date currDate = new Date();
+                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                        String dateToStr = dateTimeFormat.format(currDate);
+                        Date strToDate = dateTimeFormat.parse(dateToStr);
+                        int bcd;
+                        String dateToString = strToDate.toString();
+                        db_data.addTransaction(transType,dateToString,userNum,0,0);
+                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                        cursor1.moveToLast();
+                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                        cursor1.close();
+
+                        reportBaKamo.setDb_data(db_data);
+                        reportBaKamo.main("no",dateToString,bcd);
+                        ArrayList<String> paPrintNaman = new ArrayList<>();
+                        paPrintNaman = reportBaKamo.getToBePrinted();
+                        paPrintNaman.add("yownOH");
+                        unLockCashBox();
+                        printFunction(paPrintNaman);
+                        paPrintNaman.clear();
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         });
 
 
-        btnXcancel.setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialogXreport.dismiss();
+                alertDialogZreport.dismiss();
             }
         });
     }
@@ -644,7 +726,7 @@ public class Cashier extends AppCompatActivity {
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
             //// TODO: 7/15/2017
-//            db_data.addInvoice(transNumber+"",rDisc,customerCash,customerDiscount,);
+            db_data.addInvoice(transNumber+"",rDisc,inCustomer,inPrint,userNum,inZreport,inXreport,inVattable,inVatted,inVatStatus,inSeniorDiscount,inVatExempt, inZeroRated, 0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -831,38 +913,28 @@ public class Cashier extends AppCompatActivity {
         finish();
         sleep(1000);
     }
-    public void zreport(View view){
-        try{
-            transType = "zreport";
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-            String dateToStr = dateTimeFormat.format(currDate);
-            Date strToDate = dateTimeFormat.parse(dateToStr);
-            int bcd;
-            String dateToString = strToDate.toString();
-            db_data.addTransaction(transType,dateToString,userNum,0,0);
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-            cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            cursor1.close();
 
-            reportBaKamo.setDb_data(db_data);
-            reportBaKamo.main("no",dateToString,bcd);
-            ArrayList<String> paPrintNaman = new ArrayList<>();
-            paPrintNaman = reportBaKamo.getToBePrinted();
-            paPrintNaman.add("yownOH");
-            unLockCashBox();
-            printFunction(paPrintNaman);
-            paPrintNaman.clear();
-        }
-        catch(Exception e){
-        e.printStackTrace();
-        }
-    }
     public void xreport(View view){
+        createMyDialog();
+        //CREATE DIALOG
+        alertDialogXreport = builder.create();
+        alertDialogZreport = builder.create();
+        alertDialogCredit = builder.create();
+
+        whatButton = "xBtn";
         alertDialogXreport.show();
     }
+    public void zreport(View view){
+        createMyDialog();
+        //CREATE DIALOG
+        alertDialogXreport = builder.create();
+        alertDialogZreport = builder.create();
+        alertDialogCredit = builder.create();
+
+        whatButton = "zBtn";
+        alertDialogZreport.show();
+    }
+
     private void sleep(int ms) {
         try {
             java.lang.Thread.sleep(ms);
@@ -882,6 +954,11 @@ public class Cashier extends AppCompatActivity {
             }
         }
     }
+
+
+
+
+
     //    public void listGo(){
 //        orderArrayList.clear();
 //        String min = "min("+NUMBER_ORDER+")";
@@ -957,6 +1034,8 @@ public class Cashier extends AppCompatActivity {
 
         btn_cashier_delete = (ImageButton) findViewById(R.id.btn_cashier_delete);
         btn_cashier_confirmDelete = (Button) findViewById(R.id.btn_cashier_confirmDelete);
+
+        btnCreditCard = (Button)findViewById(R.id.btnCredit);
     }
 
     private void printerDetection() {
