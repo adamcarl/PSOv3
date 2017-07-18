@@ -636,7 +636,7 @@ import static com.example.sydney.psov3.Constants.*;
         return tax;
     }
 
-    void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){
+    void addXreport(String transNum,double cashSales, double cashCount, double cashShortOver){
         cv.clear();
         cv.put(COLUMN_XREPORT_TRANSACTION_NUMBER, transNum);
         cv.put(COLUMN_XREPORT_CASHSALES, cashSales);

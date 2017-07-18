@@ -419,7 +419,11 @@ public class Cashier extends AppCompatActivity {
             }
         });
 
-
+        createMyDialog();
+        //CREATE DIALOG Z
+        alertDialogXreport = builder.create();
+        alertDialogZreport = builder.create();
+        alertDialogCredit = builder.create();
 
     }
 
@@ -427,23 +431,22 @@ public class Cashier extends AppCompatActivity {
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
 
-        final EditText reportTotalCashDrawer,zReportTotalCashDrawer;
-        final Button btnSubmit,btnCancel,btnZsubmit,btnZcancel;
+        final EditText reportTotalCashDrawerX,reportTotalCashDrawerZ;
+        final Button btnSubmitX,btnCancelX,btnSubmitZ,btnCancelZ;
 
         final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
         final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_zreport,null);
 
-        if(whatButton == "xBtn"){
-            whatDialog = "x";
-            builder.setView(alertLayoutXreport);
-        }
-        else if(whatButton == "zBtn"){
-            whatDialog = "z";
-            builder.setView(alertLayoutZreport);
-        }
-        reportTotalCashDrawer = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawer);
-        btnSubmit = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmit);
-        btnCancel = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancel);
+        builder.setView(alertLayoutXreport);
+        builder.setView(alertLayoutZreport);
+
+        reportTotalCashDrawerX = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerX);
+        btnSubmitX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitX);
+        btnCancelX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelX);
+
+        reportTotalCashDrawerZ = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerZ);
+        btnSubmitZ = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitZ);
+        btnCancelZ= (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelZ);
 
         String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
         Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
@@ -451,80 +454,93 @@ public class Cashier extends AppCompatActivity {
         transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
         cursor1.close();
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        btnSubmitX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String convertedTransNum = Integer.toString(transNumber);
-                float cashSale = db_data.getCashSales(userNum);
-                float enteredCashDrawer = Float.parseFloat(reportTotalCashDrawer.getText().toString().trim());
-                float cashShortOver = enteredCashDrawer - cashSale;
+                double cashSale = db_data.getCashSales(userNum);
+                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
+                double cashShortOver = enteredCashDrawer - cashSale;
                 db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
 
-                if(whatDialog == "x"){
-                    //FOR SAVING X REPORT
+                //FOR SAVING X REPORT
+                reportBaKamo.setDb_data(db_data);
+                try{
+                    transType = "xreport";
+                    Date currDate = new Date();
+                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                    String dateToStr = dateTimeFormat.format(currDate);
+                    Date strToDate = dateTimeFormat.parse(dateToStr);
+                    int bcd;
+                    String dateToString = strToDate.toString();
+                    db_data.addTransaction(transType,dateToString,userNum,0,0);
+                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                    cursor1.moveToLast();
+                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                    cursor1.close();
+
                     reportBaKamo.setDb_data(db_data);
-                    try{
-                        transType = "xreport";
-                        Date currDate = new Date();
-                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-                        String dateToStr = dateTimeFormat.format(currDate);
-                        Date strToDate = dateTimeFormat.parse(dateToStr);
-                        int bcd;
-                        String dateToString = strToDate.toString();
-                        db_data.addTransaction(transType,dateToString,userNum,0,0);
-                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-                        cursor1.moveToLast();
-                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-                        cursor1.close();
 
-                        reportBaKamo.setDb_data(db_data);
-
-                        reportBaKamo.main(userNum,dateToString,bcd);
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
-
+                    reportBaKamo.main(userNum,dateToString,bcd);
                 }
-                else if(whatDialog == "z"){
-                    //FOR SAVING Z REPORT
-                    try{
-                        transType = "zreport";
-                        Date currDate = new Date();
-                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-                        String dateToStr = dateTimeFormat.format(currDate);
-                        Date strToDate = dateTimeFormat.parse(dateToStr);
-                        int bcd;
-                        String dateToString = strToDate.toString();
-                        db_data.addTransaction(transType,dateToString,userNum,0,0);
-                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-                        cursor1.moveToLast();
-                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-                        cursor1.close();
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
-                        reportBaKamo.setDb_data(db_data);
-                        reportBaKamo.main("no",dateToString,bcd);
-                        ArrayList<String> paPrintNaman = new ArrayList<>();
-                        paPrintNaman = reportBaKamo.getToBePrinted();
-                        paPrintNaman.add("yownOH");
-                        unLockCashBox();
-                        printFunction(paPrintNaman);
-                        paPrintNaman.clear();
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
+        btnSubmitZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String convertedTransNum = Integer.toString(transNumber);
+                double cashSale = db_data.getCashSales(userNum);
+                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
+                double cashShortOver = enteredCashDrawer - cashSale;
+                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+
+                //FOR SAVING Z REPORT
+                try{
+                    transType = "zreport";
+                    Date currDate = new Date();
+                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                    String dateToStr = dateTimeFormat.format(currDate);
+                    Date strToDate = dateTimeFormat.parse(dateToStr);
+                    int bcd;
+                    String dateToString = strToDate.toString();
+                    db_data.addTransaction(transType,dateToString,userNum,0,0);
+                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                    cursor1.moveToLast();
+                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                    cursor1.close();
+
+                    reportBaKamo.setDb_data(db_data);
+                    reportBaKamo.main("no",dateToString,bcd);
+                    ArrayList<String> paPrintNaman = new ArrayList<>();
+                    paPrintNaman = reportBaKamo.getToBePrinted();
+                    paPrintNaman.add("yownOH");
+                    unLockCashBox();
+                    printFunction(paPrintNaman);
+                    paPrintNaman.clear();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
                 }
             }
         });
 
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        btnCancelX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialogXreport.dismiss();
+            }
+        });
+
+        btnCancelZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 alertDialogZreport.dismiss();
             }
         });
@@ -915,23 +931,9 @@ public class Cashier extends AppCompatActivity {
     }
 
     public void xreport(View view){
-        createMyDialog();
-        //CREATE DIALOG
-        alertDialogXreport = builder.create();
-        alertDialogZreport = builder.create();
-        alertDialogCredit = builder.create();
-
-        whatButton = "xBtn";
         alertDialogXreport.show();
     }
     public void zreport(View view){
-        createMyDialog();
-        //CREATE DIALOG
-        alertDialogXreport = builder.create();
-        alertDialogZreport = builder.create();
-        alertDialogCredit = builder.create();
-
-        whatButton = "zBtn";
         alertDialogZreport.show();
     }
 

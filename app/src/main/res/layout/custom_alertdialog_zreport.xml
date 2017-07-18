@@ -20,7 +20,7 @@
             android:textStyle="bold" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/etTotalCashDrawer"
+            android:id="@+id/etTotalCashDrawerZ"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_edittext_dialog"
@@ -37,7 +37,7 @@
             android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCashDrawerSubmit"
+                android:id="@+id/btnCashDrawerSubmitZ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -49,7 +49,7 @@
                 android:textStyle="bold" />
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCashDrawerCancel"
+                android:id="@+id/btnCashDrawerCancelZ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
