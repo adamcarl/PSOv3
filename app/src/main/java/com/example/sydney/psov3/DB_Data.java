@@ -613,7 +613,7 @@ import static com.example.sydney.psov3.Constants.*;
         cursor.close();
         return gross;
     }
-    List<String[]> getAllItems(String x){
+    List<List<String>> getAllItems(String x){
         List<List<String>> items = new ArrayList<>();
         ArrayList<String> temp = new ArrayList<>();
         String mWHERE;

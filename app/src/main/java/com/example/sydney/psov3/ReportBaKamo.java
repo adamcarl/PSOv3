@@ -22,7 +22,7 @@ class ReportBaKamo {
     Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
     int z, t3, totalQty=0;
     int[] or = new int[1], transArray = new int[1];
-    List<String[]> items = new ArrayList<>();
+    List<List<String>> items = new ArrayList<>();
 
     void main(String x, String date, int transNum, double moneyCount){
         Calendar calendar = Calendar.getInstance();
@@ -149,8 +149,8 @@ class ReportBaKamo {
         toBePrinted.add("ITEM SALES\t\tAMOUNT");
         toBePrinted.add("-----------------------------------------------");
         for(int i=0;i<items.size();i++){
-            String[] myString= new String[items.size()];
-            myString=items.get(i);
+            String[] myString;
+            myString=items.get(i).toArray(new String[items.size()]);
             Double price = Double.parseDouble(myString[4]);
             Double discount = Double.parseDouble(myString[3]);
             Double net = price-discount;
@@ -161,7 +161,7 @@ class ReportBaKamo {
             totalGross = totalGross + Double.parseDouble(myString[4]);
             totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
     }
-    totalItemSales = totalGross - totalDeduction
+    totalItemSales = totalGross - totalDeduction;
         toBePrinted.add("-----------------------------------------------");
         toBePrinted.add("TOTAL QTY\t\t"+totalQty+".XXXX");
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
