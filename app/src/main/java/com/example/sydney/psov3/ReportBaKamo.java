@@ -47,12 +47,12 @@ class ReportBaKamo {
         }
         gross = db_data.getGrossSales(x);
         discount = db_data.getDiscountSales(x);
-        vsale = db_data.pleaseGetTheSalesForMe(x,"v");
-        vtax = db_data.pleaseGetTheTaxForMe(x,"v");
-        xsale = db_data.pleaseGetTheSalesForMe(x,"v");
-        xtax = db_data.pleaseGetTheTaxForMe(x,"v");
-        zsale = db_data.pleaseGetTheSalesForMe(x,"v");
-        ztax = db_data.pleaseGetTheTaxForMe(x,"v");
+        vsale = db_data.pleaseGetTheSalesForMe(x,"0");
+        xsale = db_data.pleaseGetTheSalesForMe(x,"1");
+        zsale = db_data.pleaseGetTheSalesForMe(x,"2");
+        vtax = db_data.pleaseGetTheTaxForMe(x,"0");
+        xtax = db_data.pleaseGetTheTaxForMe(x,"1");
+        ztax = db_data.pleaseGetTheTaxForMe(x,"2");
         z = db_data.pleaseGiveMeTheZCount();
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
@@ -62,25 +62,24 @@ class ReportBaKamo {
         net_gross = Double.parseDouble(gross);
         net_discount = Double.parseDouble(discount);
         net = net_gross-net_discount;
-        or1 = String.format("%$06d", or[0]);
-        or2 = String.format("%$06d", or[1]);
-        t1 = String.format("%$06d", transArray[0]);
-        t2 = String.format("%$06d", transArray[1]);
+        or1 = String.format("%1$06d", or[0]);
+        or2 = String.format("%1$06d", or[1]);
+        t1 = String.format("%1$06d", transArray[0]);
+        t2 = String.format("%1$06d", transArray[1]);
         t3 = transArray[1] - transArray[0];
-        zf = String.format("%$05d", z);
-        trans = String.format("%$06d", transNum);
+        zf = String.format("%1$05d", z);
+        trans = String.format("%1$06d", transNum);
         dogt = Double.parseDouble(ogt);
         dngt = dogt + net;
         over = moneyCount - net;
 
         // Pad with zeros and a width of 6 chars.
 
-        toBePrinted.add("NOVA RESTAURANT & SERVICE INC.");
-        toBePrinted.add("MILKY WAY");
-        toBePrinted.add("VAT REG TIN:000-482-511-001");
-        toBePrinted.add("MIN:15040610033393902");
-        toBePrinted.add("PLANT 25 LOPEZ DRIVE");
-        toBePrinted.add("POBLACION, MAKATI CITY");
+        toBePrinted.add("ABZTRACK DEMO STORE");
+        toBePrinted.add("VAT REG TIN:000-111-111-001");
+        toBePrinted.add("MIN:12345678901234567");
+        toBePrinted.add("670 SGT BUMATAY STREET");
+        toBePrinted.add("PLAINVIEW, MANDALUYONG");
         toBePrinted.add("SERIAL NO. ASDFG1234567890");
         toBePrinted.add("PTU No. FP121234-123-1234567-12345\n");
         toBePrinted.add("==============================================");
@@ -100,19 +99,19 @@ class ReportBaKamo {
         }
         toBePrinted.add("GROSS SALES\t\t"+gross);
         toBePrinted.add(" SALES DISCOUNT\t\t-"+discount);
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
 
         toBePrinted.add("TAX CODE\tSALES\tTAX");
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
         toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
         toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
-            toBePrinted.add("OLD GT\tXXX-"+ogt);
-            toBePrinted.add("NEW GT\tXXX-"+dngt+"\n");
+            toBePrinted.add("OLD GT\t000-"+ogt);
+            toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
             toBePrinted.add("Z Count\t\t"+zf+"\n");
 
@@ -122,32 +121,32 @@ class ReportBaKamo {
             toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
         }
         toBePrinted.add("CASH SALES\t\t"+net);
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH IN DRAWER\t\t"+net);
 
         toBePrinted.add("CASH COUNT\t\t"+moneyCount);
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
 
         toBePrinted.add("TRANSACTION\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
 
         toBePrinted.add("TENDER\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("TOTAL CASH\tX\tXXX.XX");
-        toBePrinted.add("  CC BDO\tX\tX,XXX.XX");
-        toBePrinted.add("  CC BPI\tX\tX,XXX.XX");
-        toBePrinted.add("TOTAL CREDIT CA\t\tXX,XXX.XX\n");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("TOTAL CASH\t0\t0.00");
+        toBePrinted.add("  CC BDO\tX\t0.00");
+        toBePrinted.add("  CC BPI\tX\t0.00");
+        toBePrinted.add("TOTAL CREDIT CA\t\t0.00\n");
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("SCD 20%\tX\t-XX.XX");
-        toBePrinted.add("Tax - Exempt\tX\t-XX.XX");
-        toBePrinted.add("TOTAL DEDUCTION\tX\t-XXX.XX\n");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("SCD 20%\tX\t-0.00");
+        toBePrinted.add("Tax - Exempt\tX\t-0.00");
+        toBePrinted.add("TOTAL DEDUCTION\tX\t-0.00\n");
 
         toBePrinted.add("ITEM SALES\t\tAMOUNT");
-        toBePrinted.add("-----------------------------------------------");
+        toBePrinted.add("----------------------------------------------");
         for(int i=0;i<items.size();i++){
             String[] myString;
             myString=items.get(i).toArray(new String[items.size()]);
@@ -162,14 +161,14 @@ class ReportBaKamo {
             totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
     }
     totalItemSales = totalGross - totalDeduction;
-        toBePrinted.add("-----------------------------------------------");
-        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".XXXX");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
         toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
         toBePrinted.add("NET SALES\t\t"+totalItemSales+"\n");
 //
 //        toBePrinted.add("DEPARTMENT SALES\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("NO DEPARTMENT");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -179,14 +178,14 @@ class ReportBaKamo {
 //        toBePrinted.add("NO DEPARTMENT");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("GROUP SALES\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("NO GROUP");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -196,14 +195,14 @@ class ReportBaKamo {
 //        toBePrinted.add("NO GROUP");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("BRAND SALES\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("NO BRAND");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -213,14 +212,14 @@ class ReportBaKamo {
 //        toBePrinted.add("NO BRAND");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("CATEGORY SALES\t\tAMOUNT");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("NO CATEGORY");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -230,7 +229,7 @@ class ReportBaKamo {
 //        toBePrinted.add("NO CATEGORY");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("-----------------------------------------------");
+//        toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");

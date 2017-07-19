@@ -52,12 +52,9 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
                 +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
                 +COLUMN_INVOICE_XREPORT_STATUS +" TEXT,"
-                +COLUMN_INVOICE_VATTABLE+ " FLOAT,"
-                +COLUMN_INVOICE_VATTED+ " FLOAT,"
+                +COLUMN_INVOICE_VATTABLE+ " INTEGER,"
+                +COLUMN_INVOICE_VATTED+ " INTEGER,"
                 +COLUMN_INVOICE_VAT_STATUS+ " TEXT,"
-                +COLUMN_INVOICE_SENIOR_DISCOUNT+ " FLOAT,"
-                +COLUMN_INVOICE_VAT_EXEMPT+ " FLOAT, "
-                +COLUMN_INVOICE_ZERORATED+ " FLOAT,"
                 +COLUMN_INVOICE_CREDITSALE+ " FLOAT,"
                 +COLUMN_INVOICE_DATEANDTIME+ " TEXT,"
                 +COLUMN_INVOICE_CREDITCARDNUMBER+ " TEXT,"
@@ -67,11 +64,16 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
+                +COLUMN_ITEM_NAME+" TEXT NOT NULL, "
+                +COLUMN_ITEM_DESC+" TEXT NOT NULL, "
+                +COLUMN_ITEM_PRICE+" TEXT NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
+                +COLUMN_ITEM_DISCOUNT+" TEXT NOT NULL, "
                 +COLUMN_ITEM_STATUS+" INTEGER NOT NULL,"
                 +COLUMN_ITEM_XREPORT+" TEXT NOT NULL,"
-                +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL );");
+                +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL,"
+                +COLUMN_ITEM_CASHIER+" TEXT NOT NULL );");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
@@ -194,12 +196,18 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, double inCustomer,String inPrint,String inCashierNum, String inZreport, String inXreport, double inVattable, double inVatted,String inVatStatus, double inSeniorDiscount, double inExempt,double inZeroRated, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
+        void addGrandTotal(){
+            cv.clear();
+            cv.put(COLUMN_TOTAL_GRAND, 0.0);
+            dbw.insertOrThrow(TABLE_TOTAL, null, cv);
+        }
+
+
+        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, Double inVatted, String inVatStatus, Double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
         cv.put(COLUMN_INVOICE_NORMALSALE,inCustomer);
-
         cv.put(COLUMN_INVOICE_PRINT,inPrint);
         cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCashierNum);
         cv.put(COLUMN_INVOICE_ZREPORT_STATUS,inZreport);
@@ -207,9 +215,6 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_INVOICE_VATTABLE,inVattable);
         cv.put(COLUMN_INVOICE_VATTED,inVatted);
         cv.put(COLUMN_INVOICE_VAT_STATUS,inVatStatus);
-        cv.put(COLUMN_INVOICE_SENIOR_DISCOUNT, inSeniorDiscount);
-        cv.put(COLUMN_INVOICE_VAT_EXEMPT, inExempt);
-        cv.put(COLUMN_INVOICE_ZERORATED, inZeroRated);
         cv.put(COLUMN_INVOICE_CREDITSALE, inCreditSale);
         cv.put(COLUMN_INVOICE_DATEANDTIME, inDateAndTime);
         cv.put(COLUMN_INVOICE_CREDITCARDNUMBER, inCreditCardNum);
@@ -217,12 +222,19 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, Double itemPrice, String itemCashier){
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
         cv.put(COLUMN_ITEM_QUANTITY,itemQuan);
+        cv.put(COLUMN_ITEM_DISCOUNT,"10");
         cv.put(COLUMN_ITEM_STATUS,itemStatus);
+        cv.put(COLUMN_ITEM_NAME,itemName);
+        cv.put(COLUMN_ITEM_DESC,itemDesc);
+        cv.put(COLUMN_ITEM_PRICE,itemPrice);
+        cv.put(COLUMN_ITEM_CASHIER,itemCashier);
+        cv.put(COLUMN_ITEM_XREPORT,"0");
+        cv.put(COLUMN_ITEM_ZREPORT,"0");
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
@@ -506,7 +518,7 @@ import static com.example.sydney.psov3.Constants.*;
         String gross;
         String mWHERE;
         String[] mWHERE_ARGS;
-        String[] columns = {"SUM("+COLUMN_INVOICE_CUSTOMER+")"};
+        String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
         if(x.equals("no")){
             mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
             mWHERE_ARGS = new String[]{"0"};
@@ -547,11 +559,10 @@ import static com.example.sydney.psov3.Constants.*;
             String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
             if(x.equals("no")){
                 mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-            mWHERE_ARGS = new String[]{"0",status};
+                mWHERE_ARGS = new String[]{"0",status};
             }
             else {
-                mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                 mWHERE_ARGS = new String[]{"0",x,status};
             }
             Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
@@ -571,7 +582,6 @@ import static com.example.sydney.psov3.Constants.*;
                 mWHERE_ARGS = new String[]{"0",status};
             }
             else {
-                mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
                 mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                 mWHERE_ARGS = new String[]{"0",x,status};
             }
@@ -593,11 +603,11 @@ import static com.example.sydney.psov3.Constants.*;
         return z;
     }
     int[] pleaseGiveMeTheFirstAndLastOfTheTransactions(){
-        int[] t = new int[1];
+        int[] t = new int[2];
         String[] columns = {_ID};
         String mWHERE = COLUMN_TRANSACTION_ZREPORT+" = ?";
         String[] mWHERE_ARGS = new String[]{"0"};
-        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,null,null,null,null,null,null);
         cursor.moveToFirst();
         t[0] = cursor.getInt(0);
         cursor.moveToLast();
@@ -606,11 +616,11 @@ import static com.example.sydney.psov3.Constants.*;
         return t;
     }
     int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
-            int[] t = new int[1];
+            int[] t = new int[2];
             String[] columns = {_ID};
             String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
             String[] mWHERE_ARGS = new String[]{"0"};
-            Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+            Cursor cursor = dbr.query(TABLE_INVOICE,columns,null,null,null,null,null,null);
             cursor.moveToFirst();
             t[0] = cursor.getInt(0);
             cursor.moveToLast();
@@ -622,7 +632,7 @@ import static com.example.sydney.psov3.Constants.*;
         String discount="";
                 String mWHERE;
                 String[] mWHERE_ARGS;
-                String[] columns = {"SUM("+COLUMN_INVOICE_SENIOR_DISCOUNT+")"};
+                String[] columns = {"SUM("+COLUMN_ITEM_DISCOUNT+")"};
                 if(x.equals("no")){
                     mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                     mWHERE_ARGS = new String[]{"0",status};
@@ -641,10 +651,22 @@ import static com.example.sydney.psov3.Constants.*;
         //Grand Total is the sum of all accumulated NET SALES.
     String getMyOldGross(){
         String gross;
-        String[] columns = {COLUMN_TOTAL_GRAND};
+        String[] columns = {"SUM("+COLUMN_TOTAL_GRAND+")"};
         Cursor cursor = dbr.query(TABLE_TOTAL, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
-        gross = cursor.getString(0);
+        try {
+            gross = cursor.getString(0);
+            String sale = getGrossSales("no");
+
+            float s = Float.parseFloat(sale);
+            // TODO
+            cv.clear();
+            cv.put(COLUMN_TOTAL_GRAND,s);
+            dbw.insertOrThrow(TABLE_TOTAL, null, cv);
+        }
+        catch (Exception e){
+            gross = "0.0";
+        }
         cursor.close();
         return gross;
     }
@@ -673,17 +695,6 @@ import static com.example.sydney.psov3.Constants.*;
         }
         cursor.close();
         return items;
-    }
-    }
-        else { //XREPORT
-            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-            mWHERE_ARGS = new String[]{"0",cashierNum};
-        }
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-        cursor.moveToFirst();
-        tax = cursor.getFloat(0);
-        cursor.close();
-        return tax;
     }
 
     void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){

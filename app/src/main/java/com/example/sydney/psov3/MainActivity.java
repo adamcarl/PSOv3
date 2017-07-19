@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         try {
             db_data.addAdmin("admin", "admin");
+            db_data.addGrandTotal();
         }catch(Exception ex){
 
         }
