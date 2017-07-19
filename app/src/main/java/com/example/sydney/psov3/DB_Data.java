@@ -46,11 +46,24 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_DISCOUNT+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_CUSTOMER+" INTEGER NOT NULL, "
-                +COLUMN_INVOICE_PRINT+" TEXT, "
-                +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT, "
-                +COLUMN_INVOICE_ZREPORT_STATUS + " TEXT);");
+                +COLUMN_INVOICE_DISCOUNT+" INTEGER,"
+                +COLUMN_INVOICE_NORMALSALE +" INTEGER NOT NULL,"
+                +COLUMN_INVOICE_PRINT+" TEXT,"
+                +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
+                +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
+                +COLUMN_INVOICE_XREPORT_STATUS +" TEXT,"
+                +COLUMN_INVOICE_VATTABLE+ " FLOAT,"
+                +COLUMN_INVOICE_VATTED+ " FLOAT,"
+                +COLUMN_INVOICE_VAT_STATUS+ " TEXT,"
+                +COLUMN_INVOICE_SENIOR_DISCOUNT+ " FLOAT,"
+                +COLUMN_INVOICE_VAT_EXEMPT+ " FLOAT, "
+                +COLUMN_INVOICE_ZERORATED+ " FLOAT,"
+                +COLUMN_INVOICE_CREDITSALE+ " FLOAT,"
+                +COLUMN_INVOICE_DATEANDTIME+ " TEXT,"
+                +COLUMN_INVOICE_CREDITCARDNUMBER+ " TEXT,"
+                +COLUMN_INVOICE_CREDITDATEOFEXPIRATION+ " TEXT);");
+
+
         arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
@@ -65,10 +78,15 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+                +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_XREPORT_CASHSALES + " FLOAT,"
+                +COLUMN_XREPORT_CASHCOUNT + " FLOAT,"
+                +COLUMN_XREPORT_CASHSHORTOVER + " FLOAT);");
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL);");
+                +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
+                +COLUMN_ZREPORT_CASHSALES+" FLOAT, "
+                +COLUMN_ZREPORT_CASHCOUNT+" FLOAT);");
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_TRANSACTION_TYPE+" TEXT NOT NULL, "
@@ -85,6 +103,11 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
                 + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
                 + COLUMN_TEMP_ID + " TEXT NOT NULL);");
+
+        arg0.execSQL("CREATE TABLE "+ TABLE_TOTAL + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TOTAL_GRAND + " DOUBLE);");
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -105,6 +128,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_LOG);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TEMP_INVOICING);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TOTAL);
         onCreate(arg0);
     }
 
@@ -169,16 +194,26 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, String inCustomer, String inSeniorDiscount, String inExempt,String inZeroRated, String inCCBDO, String inCCBPI){
+    void addInvoice(String inTrans, String inDisc, double inCustomer,String inPrint,String inCashierNum, String inZreport, String inXreport, double inVattable, double inVatted,String inVatStatus, double inSeniorDiscount, double inExempt,double inZeroRated, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
-        cv.put(COLUMN_INVOICE_CUSTOMER,inCustomer);
+        cv.put(COLUMN_INVOICE_NORMALSALE,inCustomer);
+
+        cv.put(COLUMN_INVOICE_PRINT,inPrint);
+        cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCashierNum);
+        cv.put(COLUMN_INVOICE_ZREPORT_STATUS,inZreport);
+        cv.put(COLUMN_INVOICE_XREPORT_STATUS,inXreport);
+        cv.put(COLUMN_INVOICE_VATTABLE,inVattable);
+        cv.put(COLUMN_INVOICE_VATTED,inVatted);
+        cv.put(COLUMN_INVOICE_VAT_STATUS,inVatStatus);
         cv.put(COLUMN_INVOICE_SENIOR_DISCOUNT, inSeniorDiscount);
         cv.put(COLUMN_INVOICE_VAT_EXEMPT, inExempt);
         cv.put(COLUMN_INVOICE_ZERORATED, inZeroRated);
-        cv.put(COLUMN_INVOICE_CC_BDO, inCCBDO);
-        cv.put(COLUMN_INVOICE_CC_BPI, inCCBPI);
+        cv.put(COLUMN_INVOICE_CREDITSALE, inCreditSale);
+        cv.put(COLUMN_INVOICE_DATEANDTIME, inDateAndTime);
+        cv.put(COLUMN_INVOICE_CREDITCARDNUMBER, inCreditCardNum);
+        cv.put(COLUMN_INVOICE_CREDITDATEOFEXPIRATION,inCreditExp);
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
@@ -640,3 +675,24 @@ import static com.example.sydney.psov3.Constants.*;
         return items;
     }
     }
+        else { //XREPORT
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE_ARGS = new String[]{"0",cashierNum};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        tax = cursor.getFloat(0);
+        cursor.close();
+        return tax;
+    }
+
+    void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){
+        cv.clear();
+        cv.put(COLUMN_XREPORT_TRANSACTION_NUMBER, transNum);
+        cv.put(COLUMN_XREPORT_CASHSALES, cashSales);
+        cv.put(COLUMN_XREPORT_CASHCOUNT, cashCount);
+        cv.put(COLUMN_XREPORT_CASHSHORTOVER, cashShortOver);
+        dbw.insertOrThrow(TABLE_XREPORT, null, cv);
+    }
+
+}

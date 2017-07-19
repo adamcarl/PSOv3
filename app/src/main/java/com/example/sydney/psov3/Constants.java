@@ -26,21 +26,24 @@ interface Constants extends BaseColumns {
 
     String TABLE_INVOICE = "tbl_invoice";
     String COLUMN_INVOICE_TRANSACTION_NUMBER = "InTrans";
-    String COLUMN_INVOICE_DISCOUNT = "InDisc";
-    String COLUMN_INVOICE_CUSTOMER = "InCustomer"; //Value from cash of customer - PHYSICAL SASHING
-    String COLUMN_INVOICE_PRINT = "InPrint";
-    String COLUMN_INVOICE_CASHIER_NUMBER = "InCashierNum";
+    String COLUMN_INVOICE_DISCOUNT = "InDisc"; //DISCOUNT TYPE like ND,SENIOR/PWD/Diplomat
+    String COLUMN_INVOICE_NORMALSALE = "InCustomer"; //Value from cash of customer - PHYSICAL SASHING or TOTAL PRICE
+    String COLUMN_INVOICE_PRINT = "InPrint"; //ALL TEXT(JOURNAL) TO BE PRINTED
+    String COLUMN_INVOICE_CASHIER_NUMBER = "InCashierNum"; //CASHIER IDENTIFICATION
     String COLUMN_INVOICE_ZREPORT_STATUS = "InZreport";
     String COLUMN_INVOICE_XREPORT_STATUS = "InXreport";
-    String COLUMN_INVOICE_VATTABLE = "InVattable"; //TO BE SUMMED!
+    String COLUMN_INVOICE_VATTABLE = "InVattable"; //FROM VATTABLE IF CUSTOMER HAS NO DISCOUNT!
     String COLUMN_INVOICE_VATTED = "InVatted"; //TAX OF VATTABLED ITEMS
     String COLUMN_INVOICE_VAT_STATUS = "InVatStatus"; //ON/OFF
-    String COLUMN_INVOICE_SENIOR_DISCOUNT = "InSeniorDiscount";
-    String COLUMN_INVOICE_VAT_EXEMPT = "InExemptDiscount";
-    String COLUMN_INVOICE_ZERORATED = "InExemptDiscount";
-    String COLUMN_INVOICE_CC_BDO = "InCCBDO";
-    String COLUMN_INVOICE_CC_BPI = "InCCBPI";
-    String COLUMN_INVOICE_TOTAL_DISCOUNT = "InAllDiscount";
+    String COLUMN_INVOICE_SENIOR_DISCOUNT = "InSeniorDiscount"; //20% FROM RADIO BUTTON
+    String COLUMN_INVOICE_VAT_EXEMPT = "InExemptDiscount"; //VATTABLE GOES HERE IF BUYER IS TATANG
+    String COLUMN_INVOICE_ZERORATED = "InZeroRated";
+    String COLUMN_INVOICE_CREDITSALE = "InCreditSale";
+    String COLUMN_INVOICE_DATEANDTIME = "InDateTime";
+    String COLUMN_INVOICE_CREDITCARDNUMBER = "InCreditNumber";
+    String COLUMN_INVOICE_CREDITDATEOFEXPIRATION = "InCreditExpiration";
+
+
 
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
@@ -57,9 +60,14 @@ interface Constants extends BaseColumns {
 
     String TABLE_XREPORT = "tbl_xreport";
     String COLUMN_XREPORT_TRANSACTION_NUMBER = "xreportTransNum";
+    String COLUMN_XREPORT_CASHSALES = "xreportCashsales";
+    String COLUMN_XREPORT_CASHCOUNT = "xreportCashcount";
+    String COLUMN_XREPORT_CASHSHORTOVER = "xreportCashShort";
 
     String TABLE_ZREPORT = "tbl_zreport";
     String COLUMN_ZREPORT_TRANSACTION_NUMBER = "zreportTransNum";
+    String COLUMN_ZREPORT_CASHSALES = "zreportCashsales";
+    String COLUMN_ZREPORT_CASHCOUNT = "zreportCashcount";
 
     String TABLE_TRANSACTION = "tbl_trans";
     String COLUMN_TRANSACTION_TYPE = "TransType";
@@ -77,5 +85,7 @@ interface Constants extends BaseColumns {
     String COLUMN_TEMP_QUANTITY = "temp_quantity";
     String COLUMN_TEMP_ID = "temp_id";
 
+    String TABLE_TOTAL= "tbl_total";
+    String COLUMN_TOTAL_GRAND= "total_grand";
 
 }

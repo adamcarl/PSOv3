@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/myColorDialogBG">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="XREPORT"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:layout_marginBottom="10dp"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:inputType="text"
+            android:id="@+id/etTotalCashDrawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="Total Amount of Cash drawer"
+            android:textColor="@color/myColorEditTextDialogDisable"
+            android:textColorHint="@color/myColorDialogBG" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_dialog"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCashDrawerSubmit"
+                android:text="SUBMIT"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_dialog"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCashDrawerCancel"
+                android:text="CANCEL"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>

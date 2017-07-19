@@ -82,31 +82,31 @@
                             android:textColor="@color/myColorWhite"
                             android:layout_marginLeft="5dp"
                             android:background="@drawable/custom_button_payment_mode"
-                            android:id="@+id/button8"
+                            android:id="@+id/btnCredit"
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
                             android:text="Credit Card"
                             android:layout_weight=".3"/>
 
-                        <Button
-                            android:textColor="@color/myColorWhite"
-                            android:layout_marginLeft="5dp"
-                            android:background="@drawable/custom_button_payment_mode"
-                            android:id="@+id/button7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:text="Gift Card"
-                            android:layout_weight=".3"/>
+                        <!--<Button-->
+                            <!--android:textColor="@color/myColorWhite"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:background="@drawable/custom_button_payment_mode"-->
+                            <!--android:id="@+id/button7"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="80dp"-->
+                            <!--android:text="Gift Card"-->
+                            <!--android:layout_weight=".3"/>-->
 
-                        <Button
-                            android:textColor="@color/myColorWhite"
-                            android:layout_marginLeft="5dp"
-                            android:background="@drawable/custom_button_payment_mode"
-                            android:id="@+id/button9"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:text="Other"
-                            android:layout_weight=".3"/>
+                        <!--<Button-->
+                            <!--android:textColor="@color/myColorWhite"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:background="@drawable/custom_button_payment_mode"-->
+                            <!--android:id="@+id/button9"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="80dp"-->
+                            <!--android:text="Other"-->
+                            <!--android:layout_weight=".3"/>-->
 
 
                     </LinearLayout>

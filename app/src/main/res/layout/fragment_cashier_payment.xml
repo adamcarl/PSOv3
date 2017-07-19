@@ -73,29 +73,29 @@
                     <Button
                         android:layout_marginLeft="5dp"
                         android:background="@drawable/custom_button_payment_mode"
-                        android:id="@+id/button8"
+                        android:id="@+id/btnCredit"
                         android:layout_width="wrap_content"
                         android:layout_height="80dp"
                         android:layout_weight=".3"
                         android:text="Credit Card" />
 
-                    <Button
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/custom_button_payment_mode"
-                        android:id="@+id/button7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="80dp"
-                        android:layout_weight=".3"
-                        android:text="Gift Card" />
+                    <!--<Button-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:background="@drawable/custom_button_payment_mode"-->
+                        <!--android:id="@+id/button7"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="80dp"-->
+                        <!--android:layout_weight=".3"-->
+                        <!--android:text="Gift Card" />-->
 
-                    <Button
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/custom_button_payment_mode"
-                        android:id="@+id/button9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="80dp"
-                        android:layout_weight=".3"
-                        android:text="Other" />
+                    <!--<Button-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:background="@drawable/custom_button_payment_mode"-->
+                        <!--android:id="@+id/button9"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="80dp"-->
+                        <!--android:layout_weight=".3"-->
+                        <!--android:text="Other" />-->
 
 
                 </LinearLayout>
