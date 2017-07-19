@@ -578,12 +578,16 @@ import static com.example.sydney.psov3.Constants.*;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
             if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",status};
+                mWHERE = COLUMN_INVOICE_VAT_STATUS+" = ?";
+//                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+//                mWHERE_ARGS = new String[]{"0",status};
+                mWHERE_ARGS = new String[]{status};
             }
             else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",x,status};
+                mWHERE = COLUMN_INVOICE_VAT_STATUS+" = ?";
+//                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
+//                mWHERE_ARGS = new String[]{"0",x,status};
+                mWHERE_ARGS = new String[]{status};
             }
             Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
             cursor.moveToFirst();
@@ -670,12 +674,12 @@ import static com.example.sydney.psov3.Constants.*;
         cursor.close();
         return gross;
     }
-    List<List<String>> getAllItems(String x){
-        List<List<String>> items = new ArrayList<>();
-        ArrayList<String> temp = new ArrayList<>();
+    Cursor getAllItems(String x){
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {COLUMN_ITEM_NAME,COLUMN_ITEM_DESC,COLUMN_ITEM_QUANTITY,COLUMN_ITEM_DISCOUNT,COLUMN_ITEM_PRICE};
+        String groupBy = COLUMN_ITEM_NAME;
+
         if(x.equals("no")) {
             mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
             mWHERE_ARGS = new String[]{"0"};
@@ -684,17 +688,7 @@ import static com.example.sydney.psov3.Constants.*;
             mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
             mWHERE_ARGS = new String[]{"0"};
         }
-        Cursor cursor = dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-        for (cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
-            temp.add(cursor.getString(0));//example I don't know the order you need
-            temp.add(cursor.getString(1));//example I don't know the order you need
-            temp.add(cursor.getString(2));//example I don't know the order you need
-            temp.add(cursor.getString(3));//example I don't know the order you ne
-            temp.add(cursor.getString(4));//example I don't know the order you ne
-            items.add(temp);
-        }
-        cursor.close();
-        return items;
+         return dbr.query(TABLE_ITEM, columns, null, null, groupBy, null, null, null);
     }
 
     void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){
@@ -706,4 +700,20 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_XREPORT, null, cv);
     }
 
+String sales(String status){
+            String sql = "SELECT SUM("+COLUMN_INVOICE_VATTABLE+") FROM "+ TABLE_INVOICE+" WHERE "+COLUMN_INVOICE_VAT_STATUS+" LIKE "+status;
+            Cursor c = dbr.rawQuery(sql,null);
+        c.moveToFirst();
+        String sales = c.getString(0);
+        c.close();
+    return sales;
 }
+        String tax(String status){
+            String sql = "SELECT SUM("+COLUMN_INVOICE_VATTED+") FROM "+ TABLE_INVOICE+" WHERE "+COLUMN_INVOICE_VAT_STATUS+" LIKE "+status;
+            Cursor c = dbr.rawQuery(sql,null);
+            c.moveToFirst();
+            String tax = c.getString(0);
+            c.close();
+            return tax;
+        }
+    }
