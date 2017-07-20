@@ -40,8 +40,6 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_CREDITCARDNUMBER = "InCreditNumber";
     String COLUMN_INVOICE_CREDITDATEOFEXPIRATION = "InCreditExpiration";
 
-
-
     String TABLE_ITEM = "tbl_item";
     String COLUMN_ITEM_INVOICE = "ItemIn";
     String COLUMN_ITEM_NAME = "ItemName";

@@ -19,8 +19,9 @@ import static com.example.sydney.psov3.Constants.*;
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
+        private ContentValues cv1 = new ContentValues();
 
-    DB_Data(Context ctx){
+        DB_Data(Context ctx){
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
@@ -227,7 +228,7 @@ import static com.example.sydney.psov3.Constants.*;
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
         cv.put(COLUMN_ITEM_QUANTITY,itemQuan);
-        cv.put(COLUMN_ITEM_DISCOUNT,"10");
+        cv.put(COLUMN_ITEM_DISCOUNT,0);
         cv.put(COLUMN_ITEM_STATUS,itemStatus);
         cv.put(COLUMN_ITEM_NAME,itemName);
         cv.put(COLUMN_ITEM_DESC,itemDesc);

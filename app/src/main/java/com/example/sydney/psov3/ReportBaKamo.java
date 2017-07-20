@@ -3,6 +3,7 @@ package com.example.sydney.psov3;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +32,7 @@ class ReportBaKamo {
     SQLiteDatabase dbReader;
     String gross, discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ogt, ngt, trans;
     Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
-    int z, t3, totalQty=0;
+    int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
     List<List<String>> items = new ArrayList<>();
 
@@ -69,8 +70,10 @@ class ReportBaKamo {
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
         ogt = db_data.getMyOldGross();
 
+        Double exemptDiscount = Double.parseDouble(zsale);
+        Double exemptDiscount1 = exemptDiscount * .12;
         net_gross = Double.parseDouble(gross);
-        net_discount = Double.parseDouble(discount);
+        net_discount = Double.parseDouble(discount)+exemptDiscount1;
         net = net_gross-net_discount;
         or1 = String.format("%1$06d", or[0]);
         or2 = String.format("%1$06d", or[1]);
@@ -82,7 +85,6 @@ class ReportBaKamo {
         dogt = Double.parseDouble(ogt);
         dngt = dogt + net;
         over = moneyCount - net;
-
         // Pad with zeros and a width of 6 chars.
 
         toBePrinted.add("ABZTRACK DEMO STORE");
@@ -108,7 +110,7 @@ class ReportBaKamo {
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
         toBePrinted.add("GROSS SALES\t\t"+gross);
-        toBePrinted.add(" SALES DISCOUNT\t\t-"+discount);
+        toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
 
@@ -151,9 +153,11 @@ class ReportBaKamo {
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("SCD 20%\tX\t-0.00");
-        toBePrinted.add("Tax - Exempt\tX\t-0.00");
-        toBePrinted.add("TOTAL DEDUCTION\tX\t-0.00\n");
+        toBePrinted.add("SCD 20%\t\t-"+discount);
+        toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
+        toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n");
+
+
 
         toBePrinted.add("ITEM SALES\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
@@ -172,15 +176,17 @@ class ReportBaKamo {
             }
             Cursor c = db_data.getAllItems(x);
             c.moveToFirst();
-            while(c.moveToNext()){
-                toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME)));//example I don't know the order you need
-                toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_DESC)));//example I don't know the order you need
-                toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_QUANTITY)));//example I don't know the order you need
-                toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_DISCOUNT)));//example I don't know the order you ne
-                toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_PRICE)));//example I don't know the order you ne
-            }
-            c.close();
 
+        while(c.moveToNext()){
+            Double price = c.getDouble(c.getColumnIndex(COLUMN_ITEM_PRICE)) * c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
+            Double total = price - c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
+            toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME))+"\n"+c.getString(c.getColumnIndex(COLUMN_ITEM_DESC))+"\t"+price);//example I don't know the order you need
+            toBePrinted.add("x"+c.getString(c.getColumnIndex(COLUMN_ITEM_QUANTITY))+".0000\td-"+c.getString(c.getColumnIndex(COLUMN_ITEM_DISCOUNT))+"\t"+total+"\n");//example I don't know the order you need
+            totalQty = totalQty + c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
+            totalGross = totalGross + price;
+            totalDeduction = totalDeduction + c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
+        }
+            c.close();
 
 //        for(int i=0;i<items.size();i++){
 //            String[] myString;
@@ -200,7 +206,8 @@ class ReportBaKamo {
         toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
         toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
-        toBePrinted.add("NET SALES\t\t"+totalItemSales+"\n");
+        Double totalNet = totalGross - totalDeduction;
+        toBePrinted.add("NET SALES\t\t"+totalNet+"\n");
 
 //        Cursor cursor = db_data.sales();
 //        cursor.moveToFirst();
