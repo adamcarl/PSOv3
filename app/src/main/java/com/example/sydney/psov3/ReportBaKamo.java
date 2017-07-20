@@ -70,8 +70,17 @@ class ReportBaKamo {
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
         ogt = db_data.getMyOldGross();
 
-        Double exemptDiscount = Double.parseDouble(zsale);
-        Double exemptDiscount1 = exemptDiscount * .12;
+        Double exemptDiscount = 0.0;
+        Double exemptDiscount1 = 0.0;
+try{
+    exemptDiscount = Double.parseDouble(zsale);
+    exemptDiscount1 = exemptDiscount * .12;
+
+}
+catch (Exception e){
+    exemptDiscount = 0.0;
+    exemptDiscount1 = exemptDiscount * .12;
+}
         net_gross = Double.parseDouble(gross);
         net_discount = Double.parseDouble(discount)+exemptDiscount1;
         net = net_gross-net_discount;
