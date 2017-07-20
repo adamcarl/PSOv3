@@ -692,7 +692,7 @@ import static com.example.sydney.psov3.Constants.*;
          return dbr.query(TABLE_ITEM, columns, null, null, groupBy, null, null, null);
     }
 
-    void addXreport(String transNum,float cashSales, float cashCount, float cashShortOver){
+    void addXreport(String transNum,double cashSales, double cashCount, double cashShortOver){
         cv.clear();
         cv.put(COLUMN_XREPORT_TRANSACTION_NUMBER, transNum);
         cv.put(COLUMN_XREPORT_CASHSALES, cashSales);
