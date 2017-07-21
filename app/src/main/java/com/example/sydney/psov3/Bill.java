@@ -5,32 +5,22 @@
  */
 package com.example.sydney.psov3;
 
-import android.os.Handler;
-import android.os.Message;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.example.sydney.psov3.printing.Block;
 import com.example.sydney.psov3.printing.Board;
 import com.example.sydney.psov3.printing.Table;
-import com.hdx.lib.serial.SerialParam;
-import com.hdx.lib.serial.SerialPortOperaion;
+import com.example.sydney.psov3.utils.AidlUtil;
 
-import hdx.HdxUtil;
-
-class Bill {
+class Bill extends BaseActivity {
 
     public void main() {
-        SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
         ArrayList<String> products = new ArrayList<String>();
-        try {
-            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new Bill.SerialDataHandler());
-            HdxUtil.SetPrinterPower(1);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        AidlUtil.getInstance().connectPrinterService(this);
+
         String company = ""
                 + "ABZTRAK INC.\n"
                 + "TIN ###-###-###-### VAT\n"
@@ -112,24 +102,12 @@ class Bill {
 //        sign1Block.setBelowBlock(new Block(b, 48, 3, advertise).setDataAlign(Block.DATA_CENTER).allowGrid(false));
         //b.showBlockIndex(true);
         products.add(b.invalidate().build().getPreview());
-        try{
-        mSerialPrinter.sydneyDotMatrix7by7();
-        mSerialPrinter.printString(products);
-        mSerialPrinter.walkPaper(40);
-        mSerialPrinter.sendLineFeed();
-    } catch (Exception e) {
-        e.printStackTrace();
+        String string="Ako ay may loob. Lumipad sa langit.";
+        byte[] rv = null;
+        rv = string.getBytes(StandardCharsets.UTF_8);
+        sendData(rv);
     }
-    }
-    private class SerialDataHandler extends Handler {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SerialPortOperaion.SERIAL_RECEIVED_DATA_MSG:
-                    SerialPortOperaion.SerialReadData data = (SerialPortOperaion.SerialReadData)msg.obj;
-                    StringBuilder sb=new StringBuilder();
-                    for(int x=0;x<data.size;x++)
-                        sb.append(String.format("%02x", data.data[x]));
-            }
-        }
+    private void sendData(final byte[] send){
+            AidlUtil.getInstance().sendRawData(send);
     }
 }

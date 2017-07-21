@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.IdRes;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,7 +19,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,12 +35,15 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sydney.psov3.adapter.AdapterOrder;
-import com.hdx.lib.serial.SerialPortOperaion;
-import com.jolimark.JmPrinter;
-import com.jolimark.UsbPrinter;
+import com.example.sydney.psov3.utils.AidlUtil;
 
+import com.example.sydney.psov3.adapter.AdapterOrder;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,7 +78,6 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String>itemNameList = new ArrayList<>();
     ArrayList<String>itemDescList = new ArrayList<>();
     ArrayList<Integer>itemCodeList  = new ArrayList<>();
-    SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<>();
     SQLiteDatabase dbReader;
@@ -100,15 +99,6 @@ public class Cashier extends AppCompatActivity {
     Date currentDateTime;
     private GridLayoutManager mLayoutManager;
     ReportBaKamo reportBaKamo;
-
-
-    //JOLLIMARK VARIABLES
-//    private UsbPrinter marksPrinter = new UsbPrinter();
-
-
-    //JMPRINTER VARIABLES
-    private JmPrinter mPrinter;
-    private UsbPrinter marksPrinter = new UsbPrinter();
 
     private String customerCash;
     private Double dCustomerCash,change;
@@ -146,6 +136,8 @@ public class Cashier extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
+        AidlUtil.getInstance().connectPrinterService(this);
+
         db_data = new DB_Data(this);
 
         dbReader = db_data.getReadableDatabase();
@@ -161,7 +153,7 @@ public class Cashier extends AppCompatActivity {
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
 
-        mPrinter = new JmPrinter();           //Create a 78M printer object
+//        mPrinter = new JmPrinter();           //Create a 78M printer object
 
         Intent intent = getIntent();
         userNum = intent.getExtras().getString("CashNum");
@@ -422,11 +414,11 @@ cancelna();
             }
         });
 
-        createMyDialog();
-        //CREATE DIALOG Z
-        alertDialogXreport = builder.create();
-        alertDialogZreport = builder.create();
-        alertDialogCredit = builder.create();
+//        createMyDialog();
+//        //CREATE DIALOG Z
+//        alertDialogXreport = builder.create();
+//        alertDialogZreport = builder.create();
+//        alertDialogCredit = builder.create();
 
     }
 
@@ -461,10 +453,10 @@ cancelna();
             @Override
             public void onClick(View view) {
                 String convertedTransNum = Integer.toString(transNumber);
-                double cashSale = db_data.getCashSales(userNum);
+//                double cashSale = db_data.getCashSales(userNum);
                 double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
-                double cashShortOver = enteredCashDrawer - cashSale;
-                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+//                double cashShortOver = enteredCashDrawer - cashSale;
+//                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
 
                 //FOR SAVING X REPORT
                 reportBaKamo.setDb_data(db_data);
@@ -497,13 +489,13 @@ cancelna();
             @Override
             public void onClick(View view) {
                 String convertedTransNum = Integer.toString(transNumber);
-                double cashSale = db_data.getCashSales(userNum);
+//                double cashSale = db_data.getCashSales(userNum);
                 double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
-                double cashShortOver = enteredCashDrawer - cashSale;
-                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+//                double cashShortOver = enteredCashDrawer - cashSale;
+//                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
 
                 //FOR SAVING Z REPORT
-                try{
+                try {
                     transType = "zreport";
                     Date currDate = new Date();
                     final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
@@ -511,26 +503,34 @@ cancelna();
                     Date strToDate = dateTimeFormat.parse(dateToStr);
                     int bcd;
                     String dateToString = strToDate.toString();
-                    db_data.addTransaction(transType,dateToString,userNum,0,0);
+                    db_data.addTransaction(transType, dateToString, userNum, 0, 0);
                     String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
                     Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
                     cursor1.moveToLast();
                     bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
                     cursor1.close();
 
-                        reportBaKamo.setDb_data(db_data);
-                        reportBaKamo.main("no",dateToString,bcd,enteredCashDrawer);
-                        ArrayList<String> paPrintNaman = new ArrayList<>();
-                        paPrintNaman = reportBaKamo.getToBePrinted();
-                        unLockCashBox();
-                        printFunction(paPrintNaman);
-                        paPrintNaman.clear();
+                    reportBaKamo.setDb_data(db_data);
+                    reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
+                    ArrayList<String> paPrintNaman = new ArrayList<>();
+                    paPrintNaman = reportBaKamo.getToBePrinted();
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    DataOutputStream out = new DataOutputStream(baos);
+                    for (String element : paPrintNaman) {
+                        out.writeUTF(element);
                     }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
+                    byte[] bytes = baos.toByteArray();
+
+                    sendData(bytes);
+
+//                    unLockCashBox();
+//                    printFunction(paPrintNaman);
+                    paPrintNaman.clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
+        }
         });
 
 
@@ -711,18 +711,18 @@ cancelna();
         dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
-        products.add("ABZTRACK DEMO STORE");
-        products.add("VAT REG TIN:000-111-111-001");
-        products.add("MIN:12345678901234567");
-        products.add("670 SGT BUMATAY STREET");
-        products.add("PLAINVIEW, MANDALUYONG");
-        products.add("SERIAL NO. ASDFG1234567890");
+        products.add("ABZTRACK DEMO STORE\n");
+        products.add("VAT REG TIN:000-111-111-001\n");
+        products.add("MIN:12345678901234567\n");
+        products.add("670 SGT BUMATAY STREET\n");
+        products.add("PLAINVIEW, MANDALUYONG\n");
+        products.add("SERIAL NO. ASDFG1234567890\n");
         products.add("PTU No. FP121234-123-1234567-12345\n");
-        products.add("==============================================");
-        products.add("             CASH INVOICE");
-        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime+"");
-        products.add("--------------------------------------");
-        products.add("Name \t\t"+"Quantity \t\t"+"Price");
+        products.add("===============================\n");
+        products.add("CASH INVOICE\n");
+        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime+"\n");
+        products.add("-------------------------------\n");
+        products.add("Name \t\t"+"Quantity \t\t"+"Price\n");
         transType = "invoice";
 //        Calendar c = Calendar.getInstance();
         Date currDate = new Date();
@@ -767,22 +767,22 @@ cancelna();
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
             }
-            products.add("--------------------------------------");
-            products.add("Invoice Number " + abc + "");
-            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "");
-            products.add("Vatable" + "" + "\t\t" + vattable2);
-            products.add("Vat" + "" + "\t\t" + vat2);
-            products.add("Total" + "\t\t" + subTotal + "");
+            products.add("-------------------------------\n");
+            products.add("Invoice Number " + abc + "\n");
+            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "\n");
+            products.add("Vatable" + "" + "\t\t" + vattable2+"\n");
+            products.add("Vat" + "" + "\t\t" + vat2+"\n");
+            products.add("Total" + "\t\t" + subTotal + "\n");
 
             //customerCash = txt_cash.getText().toString().replace(",", "");
 //            double change = dCustomerCash - totalPrice;
 
-            products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString() + "");
-            products.add("\t\t\t\tChange" + "\t\t\t" + formatted + "");
+            products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString() + "\n");
+            products.add("\t\t\t\tChange" + "\t\t\t" + formatted + "\n");
             products.add("\n\n\n\n\n\n");
 
             //CHECK IF PRINTERS ARE OPEN
-            boolean ret = marksPrinter.Open();
+//            boolean ret = marksPrinter.Open();
 
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
@@ -793,21 +793,29 @@ cancelna();
 
 
             double doubleCustomerCash = Double.parseDouble(customerCash);
-                if(ret) {
-//                    mSerialPrinter.sydneyDotMatrix7by7();
-//                    mSerialPrinter.printString(products);
-//                    mSerialPrinter.walkPaper(50);
-//                    mSerialPrinter.sendLineFeed();
-                    //JOLLICARL PRINTER
+//                if(ret) {
+////                    mSerialPrinter.sydneyDotMatrix7by7();
+////                    mSerialPrinter.printString(products);
+////                    mSerialPrinter.walkPaper(50);
+////                    mSerialPrinter.sendLineFeed();
+//                    //JOLLICARL PRINTER
+//
+//                }
+//                else if( invoiceItemList != null && doubleCustomerCash >= due ) {
+//                    //JOLLIMARK PRINTER
+//                    unLockCashBox();
+//                    printFunction(products);
+//                    btn_print.setEnabled(false);
+//                    products.clear();
+//                }
 
-                }
-                else if( invoiceItemList != null && doubleCustomerCash >= due ) {
-                    //JOLLIMARK PRINTER
-                    unLockCashBox();
-                    printFunction(products);
-                    btn_print.setEnabled(false);
-                    products.clear();
-                }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(baos);
+            for (String element : products) {
+                out.writeUTF(element);
+            }
+            byte[] bytes = baos.toByteArray();
+            sendData(bytes);
             t2Rows.clear();
 
             products.clear();
@@ -837,13 +845,13 @@ cancelna();
         byte[] SData;
         try {
             SData = convertedArray.getBytes("UTF-8");
-            boolean retnVale = mPrinter.PrintText(SData);
+//            boolean retnVale = mPrinter.PrintText(SData);
             db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
             refreshRecyclerView();
 
-            if(!retnVale){
-                Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
-            }
+//            if(!retnVale){
+//                Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
+//            }
         } catch (UnsupportedEncodingException e) {
 
             e.printStackTrace();
@@ -953,17 +961,7 @@ cancelna();
             e.printStackTrace();
         }
     }
-    private static class SerialDataHandler extends Handler {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SerialPortOperaion.SERIAL_RECEIVED_DATA_MSG:
-                    SerialPortOperaion.SerialReadData data = (SerialPortOperaion.SerialReadData)msg.obj;
-                    StringBuilder sb=new StringBuilder();
-                    for(int x=0;x<data.size;x++)
-                        sb.append(String.format("%02x", data.data[x]));
-            }
-        }
-    }
+
 
 
 
@@ -1012,15 +1010,6 @@ cancelna();
         }
     }
 
-    //Open Cash box
-    public static boolean unLockCashBox() {
-
-        boolean retnVale = false;
-        UsbPrinter tmpUsbDev = new UsbPrinter();
-        retnVale = tmpUsbDev.UnLockOfCashBox();
-        return retnVale;
-    }
-
     private void init() {
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
@@ -1059,7 +1048,6 @@ cancelna();
             }
             //RUN CODE IF JOLLIMARK IS PRESENT
             try {
-                marksPrinter.Open(); //open the printer
             } catch (Exception e) {
 
             }
@@ -1077,5 +1065,8 @@ cancelna();
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(invoiceAdapter);
         invoiceAdapter.notifyDataSetChanged();
+    }
+    private void sendData(final byte[] send){
+        AidlUtil.getInstance().sendRawData(send);
     }
 }
