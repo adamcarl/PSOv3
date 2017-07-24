@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -28,8 +27,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.example.sydney.psov3.adapter.AdapterProd;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -71,7 +68,7 @@ public class ManageProduct extends AppCompatActivity {
         productsList = listGo();
         productAdapter = new ProductAdapter(getApplication(),productsList);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -182,7 +179,7 @@ public class ManageProduct extends AppCompatActivity {
         if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
             productsList = listGo();
             productAdapter = new ProductAdapter(getApplication(),productsList);
-            recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+            recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(productAdapter);
 
@@ -270,7 +267,7 @@ public class ManageProduct extends AppCompatActivity {
                     if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && searchView.getQuery().toString().trim().toLowerCase().equals("")){
                         productsList = listGo();
                         productAdapter = new ProductAdapter(getApplication(),productsList);
-                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),3,GridLayoutManager.VERTICAL,false));
+                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),1,GridLayoutManager.VERTICAL,false));
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(productAdapter);
                     }
@@ -394,7 +391,7 @@ public class ManageProduct extends AppCompatActivity {
                             productsList = listGo();
                             productAdapter = new ProductAdapter(getApplication(),productsList);
                             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                            recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+                            recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
                             recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
 
