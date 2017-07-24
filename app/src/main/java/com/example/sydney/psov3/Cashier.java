@@ -35,15 +35,15 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sydney.psov3.utils.AidlUtil;
 
 import com.example.sydney.psov3.adapter.AdapterOrder;
+import com.jolimark.JmPrinter;
+import com.jolimark.UsbPrinter;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +88,6 @@ public class Cashier extends AppCompatActivity {
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
-    Bill bill;
     List<List<String>> t2Rows = new ArrayList<>();
     ArrayList<Order> orderArrayList;
     AdapterOrder adapterOrder=null;
@@ -128,7 +127,11 @@ public class Cashier extends AppCompatActivity {
     private String whatDialog = "";
 
 
+    //JMPRINTER VARIABLES
+    private JmPrinter mPrinter;
+    private UsbPrinter marksPrinter = new UsbPrinter();
 
+    double enteredCashDrawer;
     int transNumber;
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
@@ -136,13 +139,11 @@ public class Cashier extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        AidlUtil.getInstance().connectPrinterService(this);
 
         db_data = new DB_Data(this);
 
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
-        bill = new Bill();
         reportBaKamo = new ReportBaKamo();
         //bill.main();
         cv = new ContentValues();
@@ -153,7 +154,7 @@ public class Cashier extends AppCompatActivity {
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
 
-//        mPrinter = new JmPrinter();           //Create a 78M printer object
+        mPrinter = new JmPrinter();           //Create a 78M printer object
 
         Intent intent = getIntent();
         userNum = intent.getExtras().getString("CashNum");
@@ -446,7 +447,7 @@ cancelna();
         String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
         Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
         cursor1.moveToLast();
-        transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+        transNumber = cursor1.getInt(cursor1.getColumnIndex(_ID)); //COLUMN _ID of TABLE_TRANSACTION
         cursor1.close();
 
         btnSubmitX.setOnClickListener(new View.OnClickListener() {
@@ -454,34 +455,11 @@ cancelna();
             public void onClick(View view) {
                 String convertedTransNum = Integer.toString(transNumber);
 //                double cashSale = db_data.getCashSales(userNum);
-                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
+                enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
 //                double cashShortOver = enteredCashDrawer - cashSale;
 //                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
 
-                //FOR SAVING X REPORT
-                reportBaKamo.setDb_data(db_data);
-                try{
-                    transType = "xreport";
-                    Date currDate = new Date();
-                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-                    String dateToStr = dateTimeFormat.format(currDate);
-                    Date strToDate = dateTimeFormat.parse(dateToStr);
-                    int bcd;
-                    String dateToString = strToDate.toString();
-                    db_data.addTransaction(transType,dateToString,userNum,0,0);
-                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-                    cursor1.moveToLast();
-                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-                    cursor1.close();
 
-                    reportBaKamo.setDb_data(db_data);
-
-                    reportBaKamo.main(userNum,dateToString,bcd,enteredCashDrawer);
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
             }
         });
 
@@ -494,42 +472,7 @@ cancelna();
 //                double cashShortOver = enteredCashDrawer - cashSale;
 //                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
 
-                //FOR SAVING Z REPORT
-                try {
-                    transType = "zreport";
-                    Date currDate = new Date();
-                    final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-                    String dateToStr = dateTimeFormat.format(currDate);
-                    Date strToDate = dateTimeFormat.parse(dateToStr);
-                    int bcd;
-                    String dateToString = strToDate.toString();
-                    db_data.addTransaction(transType, dateToString, userNum, 0, 0);
-                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-                    cursor1.moveToLast();
-                    bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-                    cursor1.close();
 
-                    reportBaKamo.setDb_data(db_data);
-                    reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
-                    ArrayList<String> paPrintNaman = new ArrayList<>();
-                    paPrintNaman = reportBaKamo.getToBePrinted();
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    DataOutputStream out = new DataOutputStream(baos);
-                    for (String element : paPrintNaman) {
-                        out.writeUTF(element);
-                    }
-                    byte[] bytes = baos.toByteArray();
-
-                    sendData(bytes);
-
-//                    unLockCashBox();
-//                    printFunction(paPrintNaman);
-                    paPrintNaman.clear();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
         }
         });
 
@@ -782,7 +725,7 @@ cancelna();
             products.add("\n\n\n\n\n\n");
 
             //CHECK IF PRINTERS ARE OPEN
-//            boolean ret = marksPrinter.Open();
+            boolean ret = marksPrinter.Open();
 
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
@@ -793,33 +736,14 @@ cancelna();
 
 
             double doubleCustomerCash = Double.parseDouble(customerCash);
-//                if(ret) {
-////                    mSerialPrinter.sydneyDotMatrix7by7();
-////                    mSerialPrinter.printString(products);
-////                    mSerialPrinter.walkPaper(50);
-////                    mSerialPrinter.sendLineFeed();
-//                    //JOLLICARL PRINTER
-//
-//                }
-//                else if( invoiceItemList != null && doubleCustomerCash >= due ) {
-//                    //JOLLIMARK PRINTER
-//                    unLockCashBox();
-//                    printFunction(products);
-//                    btn_print.setEnabled(false);
-//                    products.clear();
-//                }
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(baos);
-            for (String element : products) {
-                out.writeUTF(element);
-            }
-            byte[] bytes = baos.toByteArray();
-            sendData(bytes);
-            t2Rows.clear();
-
-            products.clear();
-
+            if( invoiceItemList != null && doubleCustomerCash >= due ) {
+                    //JOLLIMARK PRINTER
+                    unLockCashBox();
+                    printFunction(products);
+                    btn_print.setEnabled(false);
+                    products.clear();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -845,13 +769,13 @@ cancelna();
         byte[] SData;
         try {
             SData = convertedArray.getBytes("UTF-8");
-//            boolean retnVale = mPrinter.PrintText(SData);
+            boolean retnVale = mPrinter.PrintText(SData);
             db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
             refreshRecyclerView();
 
-//            if(!retnVale){
-//                Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
-//            }
+            if(!retnVale){
+                Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
+            }
         } catch (UnsupportedEncodingException e) {
 
             e.printStackTrace();
@@ -947,10 +871,60 @@ cancelna();
     }
 
     public void xreport(View view){
-        alertDialogXreport.show();
+        //FOR SAVING X REPORT
+        reportBaKamo.setDb_data(db_data);
+        try{
+            transType = "xreport";
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+            String dateToStr = dateTimeFormat.format(currDate);
+            Date strToDate = dateTimeFormat.parse(dateToStr);
+            int bcd;
+            String dateToString = strToDate.toString();
+            db_data.addTransaction(transType,dateToString,userNum,0,0);
+            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            cursor1.close();
+
+            reportBaKamo.setDb_data(db_data);
+
+            reportBaKamo.main(userNum,dateToString,bcd,enteredCashDrawer);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     public void zreport(View view){
-        alertDialogZreport.show();
+        //FOR SAVING Z REPORT
+        try {
+            transType = "zreport";
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+            String dateToStr = dateTimeFormat.format(currDate);
+            Date strToDate = dateTimeFormat.parse(dateToStr);
+            int bcd;
+            String dateToString = strToDate.toString();
+            db_data.addTransaction(transType, dateToString, userNum, 0, 0);
+            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+            cursor1.moveToLast();
+            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+            cursor1.close();
+
+            reportBaKamo.setDb_data(db_data);
+            reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
+            ArrayList<String> paPrintNaman = new ArrayList<>();
+            paPrintNaman = reportBaKamo.getToBePrinted();
+
+
+            unLockCashBox();
+            printFunction(paPrintNaman);
+            paPrintNaman.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void sleep(int ms) {
@@ -1048,6 +1022,7 @@ cancelna();
             }
             //RUN CODE IF JOLLIMARK IS PRESENT
             try {
+                marksPrinter.Open();
             } catch (Exception e) {
 
             }
@@ -1066,7 +1041,12 @@ cancelna();
         recyclerView.setAdapter(invoiceAdapter);
         invoiceAdapter.notifyDataSetChanged();
     }
-    private void sendData(final byte[] send){
-        AidlUtil.getInstance().sendRawData(send);
+
+    public static boolean unLockCashBox(){
+        boolean retnValue = false;
+        UsbPrinter tmpUsbDev = new UsbPrinter();
+        retnValue = tmpUsbDev.UnLockOfCashBox();
+
+        return retnValue;
     }
 }
