@@ -1,9 +1,7 @@
 package com.example.sydney.psov3;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +15,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -42,8 +38,6 @@ import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -103,13 +97,6 @@ public class Cashier extends AppCompatActivity {
     private String customerCash;
     private Double dCustomerCash,change;
 
-//    private AlertDialog.Builder builder = null;
-    private AlertDialog alertDialogXreport = null;
-    private AlertDialog alertDialogZreport = null;
-    private AlertDialog alertDialogCredit = null;
-    private boolean xreportButtonStatus = false;
-    private boolean zreportButtonStatus = false;
-
     private Double inCustomer;
     private String inPrint = ""; //NULL FOR THE MEANTIME
     private String inZreport = ""; //NULL FOR THE MEANTIME
@@ -123,11 +110,6 @@ public class Cashier extends AppCompatActivity {
     private Double inCreditCardNum;
     private Double inCreditExpiration;
 
-    //FOR BUTTON CLICK LISTENER X & Z REPORT DIALOG
-    private String whatButton = "";
-    private String whatDialog = "";
-
-
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
@@ -135,6 +117,8 @@ public class Cashier extends AppCompatActivity {
     double enteredCashDrawer;
     int transNumber;
 
+
+    //Dialog for Enter the Quantity
     AlertDialog.Builder builder;
     AlertDialog alertQuantity;
 
@@ -188,24 +172,14 @@ public class Cashier extends AppCompatActivity {
         spec.setContent(R.id.tab3);
         spec.setIndicator("Shift");
         tab_host.addTab(spec);
-cancelna();
+        cancelna();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
-        //forLog = db_data.searchStaff(userNum+"");
-        //String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged in.";
-        //db_data.addLog(log);
-//        invoiceItemList = new ArrayList<>();
-//        items.add("Quantity");
-//        items.add("Name");
-//        items.add("Price");
-//        items.add("Total Price");
 
-//        final GridView grid = (GridView) findViewById(R.id.grd_sell);
-//        grid.setAdapter(new ArrayAdapter<>(this, R.layout.invoice_item_card, items));
         txt_cash.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -257,25 +231,7 @@ cancelna();
                     }
                 }
         });
-//        lv_cashier_order.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                txt_admin_prod_id_edit.setText(productArrayList.get(position).getP_id());
-//                txt_admin_prod_name_edit.setText(productArrayList.get(position).getP_name());
-//                txt_admin_prod_desc_edit.setText(productArrayList.get(position).getP_desc());
-//                txt_admin_prod_price_edit.setText(""+productArrayList.get(position).getP_price()+"");
-//                txt_admin_prod_quan_edit.setText(""+productArrayList.get(position).getP_quan()+"");
-//                ll_admin_product.setVisibility(View.GONE);
-//                ll_admin_product_edit.setVisibility(View.VISIBLE);
-//            }
-//        });
-//       grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//           @Override
-//           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//               String str = grid.getItemAtPosition(i).toString();
-//               System.out.print(str);
-//           }
-//       });
+
         rg_discount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -365,9 +321,8 @@ cancelna();
                 }
             }
         });
-        //tab_host.setOnTabChangedListener(new AnimatedTabHostListener(this,tab_host));
-        //Mark's onClickListeners for Button reports
 
+        //Mark's onClickListeners for Button reports
         btn_cashier_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -692,14 +647,11 @@ cancelna();
         products.add("-------------------------------\n");
         products.add("Name \t\t"+"Quantity \t\t"+"Price\n");
         transType = "invoice";
-//        Calendar c = Calendar.getInstance();
+
         Date currDate = new Date();
         final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
         String dateToStr = dateTimeFormat.format(currDate);
         Date strToDate = dateTimeFormat.parse(dateToStr);
-//        currentDateTime = new Date();
-//        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-//        currentTime = sdf.format(new Date());
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
         String rDisc = discType + "";
         try {
@@ -818,11 +770,6 @@ cancelna();
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_cancel:
-//                Calendar c = Calendar.getInstance();
-//                SimpleDateFormat dateformat = new SimpleDateFormat("MM.dd.yyyy");
-//                dateformatted = dateformat.format(c.getTime());
-//                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-//                currentTime = sdf.format(new Date());
 
                 Date currDate = new Date();
                 final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
@@ -853,11 +800,7 @@ cancelna();
     public void cancelna(){
         txt_cash.setText(""+"0.00"+"");
         txt_search.setText("");
-//        items.clear();
-//        items.add("Quantity");
-//        items.add("Name");
-//        items.add("Price");
-//        items.add("Total Price");
+
         txt_search.requestFocus();
         lbl_due.setText(""+"0.00"+"");
         lbl_total.setText(""+"0.00"+"");
@@ -889,8 +832,6 @@ cancelna();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy hh:mm a",Locale.SIMPLIFIED_CHINESE);
         dateformatted = dateformat.format(c.getTime());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
-//        String log = dateformatted+" "+currentTime+". "+forLog[2]+" "+forLog[1]+" with staff number "+forLog[0]+" logged out.";
-//        db_data.addLog(log);
         finish();
         sleep(1000);
     }
