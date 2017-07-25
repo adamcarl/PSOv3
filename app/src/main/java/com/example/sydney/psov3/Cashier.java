@@ -600,14 +600,6 @@ public class Cashier extends AppCompatActivity {
                     }
                 });
                 txt_search.setText("");
-//                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//
-//                    }
-//                });
-//                Dialog dialog = builder.create();
-//                dialog.show();
             } else {
                 Toast.makeText(this, "Product can't be found", Toast.LENGTH_LONG).show();
             }
@@ -624,18 +616,18 @@ public class Cashier extends AppCompatActivity {
         dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
-        products.add("ABZTRACK DEMO STORE\n");
-        products.add("VAT REG TIN:000-111-111-001\n");
-        products.add("MIN:12345678901234567\n");
-        products.add("670 SGT BUMATAY STREET\n");
-        products.add("PLAINVIEW, MANDALUYONG\n");
-        products.add("SERIAL NO. ASDFG1234567890\n");
-        products.add("PTU No. FP121234-123-1234567-12345\n");
-        products.add("===============================\n");
-        products.add("CASH INVOICE\n");
-        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime+"\n");
-        products.add("-------------------------------\n");
-        products.add("Name \t\t"+"Quantity \t\t"+"Price\n");
+        products.add("ABZTRACK DEMO STORE");
+        products.add("VAT REG TIN:000-111-111-001");
+        products.add("MIN:12345678901234567");
+        products.add("670 SGT BUMATAY STREET");
+        products.add("PLAINVIEW, MANDALUYONG");
+        products.add("SERIAL NO. ASDFG1234567890");
+        products.add("PTU No. FP121234-123-1234567-12345");
+        products.add("===============================");
+        products.add("CASH INVOICE");
+        products.add("Date: \t\t\t\t "+dateformatted+" \t "+currentTime);
+        products.add("-------------------------------");
+        products.add("Name \t\t"+"Quantity \t\t"+"Price");
         transType = "invoice";
 
         Date currDate = new Date();
@@ -661,7 +653,7 @@ public class Cashier extends AppCompatActivity {
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
-            String abc=cursor.getString(0);
+            String abc = cursor.getString(0);
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
             String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
@@ -674,25 +666,25 @@ public class Cashier extends AppCompatActivity {
             itemDescList.clear();
             itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
-//                db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
+                db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
             }
-            products.add("-------------------------------\n");
-            products.add("Invoice Number " + abc + "\n");
-            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal + "\n");
-            products.add("Vatable" + "" + "\t\t" + vattable2+"\n");
-            products.add("Vat" + "" + "\t\t" + vat2+"\n");
-            products.add("Total" + "\t\t" + subTotal + "\n");
+            products.add("-------------------------------");
+            products.add("Invoice Number " + abc + "");
+            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal);
+            products.add("Vatable" + "" + "\t\t" + vattable2);
+            products.add("Vat" + "" + "\t\t" + vat2);
+            products.add("Total" + "\t\t" + subTotal);
 
             //customerCash = txt_cash.getText().toString().replace(",", "");
 //            double change = dCustomerCash - totalPrice;
 
-            products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString() + "\n");
-            products.add("\t\t\t\tChange" + "\t\t\t" + formatted + "\n");
+            products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString());
+            products.add("\t\t\t\tChange" + "\t\t\t" + formatted);
             products.add("\n\n\n\n\n\n");
 
             //CHECK IF PRINTERS ARE OPEN
-            boolean ret = marksPrinter.Open();
+//            boolean ret = marksPrinter.Open();
 
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
@@ -700,7 +692,6 @@ public class Cashier extends AppCompatActivity {
                 printBaHanapMo = printBaHanapMo +"\n"+ printBaKamo[p];
             }
             db_data.updateInvoice(abc,printBaHanapMo);
-
 
             double doubleCustomerCash = Double.parseDouble(customerCash);
 
@@ -727,9 +718,7 @@ public class Cashier extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         for(String s : list){
             sb.append(s);
-//            sb.append("\t");
             sb.append("\n");
-//            sb.insert(sb.length(),"\t");
         }
         String convertedArray = sb.toString();
 
