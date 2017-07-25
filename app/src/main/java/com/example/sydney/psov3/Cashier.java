@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,7 +58,7 @@ public class Cashier extends AppCompatActivity {
     private int quantityCount = 0,itemcodeCol,discType=0,dialogVar;
     private long code=0;
     String userNum;
-    Double vattable,vat,subTotal,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
+    Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
@@ -168,7 +170,7 @@ public class Cashier extends AppCompatActivity {
         spec.setContent(R.id.tab3);
         spec.setIndicator("Shift");
         tab_host.addTab(spec);
-        cancelna();
+//        cancelna();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         dateformatted = dateformat.format(c.getTime());
@@ -366,8 +368,7 @@ public class Cashier extends AppCompatActivity {
                 long mCode = txt_search.getText().length();
                 if(mCode >= 13){
                     searchProduct();
-                    alertQuantity = builder.create();
-                    alertQuantity.show();
+
 
                 }
             }
@@ -491,9 +492,8 @@ public class Cashier extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
             builder.setView(alertLayout);
-
-            final Button btnEnter = (Button) findViewById(R.id.btnEnter);
-            final EditText etQuan = (EditText) findViewById(R.id.etEnterQuantity);
+            final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnEnter);
+            final AppCompatEditText etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
 
             code = Long.parseLong(txt_search.getText().toString());
             final String[] itemcode = {Long.toString(code)};
@@ -502,15 +502,9 @@ public class Cashier extends AppCompatActivity {
             cursor = dbReader.query(TABLE_PRODUCT, WHERE, COLUMN_PRODUCT_ID+ " LIKE ?", itemcode, null, null, null);
             cursor.moveToFirst();
             int rows = cursor.getCount();
-            if (rows >= 1) {
-
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-//                final EditText dialogText = new EditText(this);
-//                dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                builder.setTitle("Enter Quantity");
-//                builder.setView(dialogText);
-
-
+            if (rows > 0) {
+                alertQuantity = builder.create();
+                alertQuantity.show();
 
                 btnEnter.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -593,6 +587,7 @@ public class Cashier extends AppCompatActivity {
 
                                         db_data.insertTempInvoice(invoiceItem);
                                     }
+                                    alertQuantity.dismiss();
                                 } catch (SQLiteException e){
                                     e.printStackTrace();
                                 }
@@ -614,7 +609,7 @@ public class Cashier extends AppCompatActivity {
 //                Dialog dialog = builder.create();
 //                dialog.show();
             } else {
-                Toast.makeText(this, "Product cant be found", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Product can't be found", Toast.LENGTH_LONG).show();
             }
         }
         catch(Exception ex){
@@ -624,7 +619,6 @@ public class Cashier extends AppCompatActivity {
 
     //BUTTON PRINT
     public void print(View view) throws ParseException {
-//        bill.main();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         dateformatted = dateformat.format(c.getTime());
@@ -680,7 +674,7 @@ public class Cashier extends AppCompatActivity {
             itemDescList.clear();
             itemPriceList.clear();
             for (int a = 0; a < t2Rows.size(); a++){
-                db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
+//                db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
             }
             products.add("-------------------------------\n");
@@ -793,6 +787,7 @@ public class Cashier extends AppCompatActivity {
         tab_host.setCurrentTab(0);
     }
 
+    //On Options Menu Cancel Item
     public void cancelna(){
         txt_cash.setText(""+"0.00"+"");
         txt_search.setText("");
@@ -820,8 +815,10 @@ public class Cashier extends AppCompatActivity {
         subTotal=0.00;
         subTotal2="";
 
+        db_data.deleteAllTempItemInvoice();
 
     }
+
     public void cashierLogOut(View view){
         cancelna();
         Calendar c = Calendar.getInstance();
