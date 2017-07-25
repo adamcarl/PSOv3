@@ -61,10 +61,8 @@ public class Cashier extends AppCompatActivity {
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
-//    ArrayList<String> items;
     private List<InvoiceItem> invoiceItemList;
     private RecyclerView recyclerView;
-    private InvoiceAdapter invoiceAdapter;
 
     EditText txt_search,txt_cash;
     String itemnameCol,itemdescCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
