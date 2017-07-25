@@ -1,6 +1,5 @@
 package com.example.sydney.psov3;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentValues;
@@ -11,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.annotation.IdRes;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -102,7 +103,7 @@ public class Cashier extends AppCompatActivity {
     private String customerCash;
     private Double dCustomerCash,change;
 
-    private AlertDialog.Builder builder = null;
+//    private AlertDialog.Builder builder = null;
     private AlertDialog alertDialogXreport = null;
     private AlertDialog alertDialogZreport = null;
     private AlertDialog alertDialogCredit = null;
@@ -133,6 +134,9 @@ public class Cashier extends AppCompatActivity {
 
     double enteredCashDrawer;
     int transNumber;
+
+    AlertDialog.Builder builder;
+    AlertDialog alertQuantity;
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
@@ -411,6 +415,9 @@ cancelna();
                 long mCode = txt_search.getText().length();
                 if(mCode >= 13){
                     searchProduct();
+                    alertQuantity = builder.create();
+                    alertQuantity.show();
+
                 }
             }
         });
@@ -421,76 +428,77 @@ cancelna();
 //        alertDialogZreport = builder.create();
 //        alertDialogCredit = builder.create();
 
+
     }
 
-    private void createMyDialog() {
-        builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-
-        final EditText reportTotalCashDrawerX,reportTotalCashDrawerZ;
-        final Button btnSubmitX,btnCancelX,btnSubmitZ,btnCancelZ;
-
-        final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
-        final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
-
-        builder.setView(alertLayoutXreport);
-        builder.setView(alertLayoutZreport);
-
-        reportTotalCashDrawerX = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerX);
-        btnSubmitX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitX);
-        btnCancelX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelX);
-
-        reportTotalCashDrawerZ = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerZ);
-        btnSubmitZ = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitZ);
-        btnCancelZ= (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelZ);
-
-        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-        cursor1.moveToLast();
-        transNumber = cursor1.getInt(cursor1.getColumnIndex(_ID)); //COLUMN _ID of TABLE_TRANSACTION
-        cursor1.close();
-
-        btnSubmitX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String convertedTransNum = Integer.toString(transNumber);
-//                double cashSale = db_data.getCashSales(userNum);
-                enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
-//                double cashShortOver = enteredCashDrawer - cashSale;
-//                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
-
-
-            }
-        });
-
-        btnSubmitZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String convertedTransNum = Integer.toString(transNumber);
-//                double cashSale = db_data.getCashSales(userNum);
-                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
-//                double cashShortOver = enteredCashDrawer - cashSale;
-//                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
-
-
-        }
-        });
-
-
-        btnCancelX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogXreport.dismiss();
-            }
-        });
-
-        btnCancelZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialogZreport.dismiss();
-            }
-        });
-    }
+//    private void createMyDialog() {
+//        builder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = getLayoutInflater();
+//
+//        final EditText reportTotalCashDrawerX,reportTotalCashDrawerZ;
+//        final Button btnSubmitX,btnCancelX,btnSubmitZ,btnCancelZ;
+//
+//        final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
+//        final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
+//
+//        builder.setView(alertLayoutXreport);
+//        builder.setView(alertLayoutZreport);
+//
+//        reportTotalCashDrawerX = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerX);
+//        btnSubmitX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitX);
+//        btnCancelX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelX);
+//
+//        reportTotalCashDrawerZ = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerZ);
+//        btnSubmitZ = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitZ);
+//        btnCancelZ= (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelZ);
+//
+//        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+//        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+//        cursor1.moveToLast();
+//        transNumber = cursor1.getInt(cursor1.getColumnIndex(_ID)); //COLUMN _ID of TABLE_TRANSACTION
+//        cursor1.close();
+//
+//        btnSubmitX.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String convertedTransNum = Integer.toString(transNumber);
+////                double cashSale = db_data.getCashSales(userNum);
+//                enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
+////                double cashShortOver = enteredCashDrawer - cashSale;
+////                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+//
+//
+//            }
+//        });
+//
+//        btnSubmitZ.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String convertedTransNum = Integer.toString(transNumber);
+////                double cashSale = db_data.getCashSales(userNum);
+//                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
+////                double cashShortOver = enteredCashDrawer - cashSale;
+////                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
+//
+//
+//        }
+//        });
+//
+//
+//        btnCancelX.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogXreport.dismiss();
+//            }
+//        });
+//
+//        btnCancelZ.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogZreport.dismiss();
+//            }
+//        });
+//    }
 
     private List<InvoiceItem> fill_with_data() {
         invoiceItemList = new ArrayList<>();
@@ -528,6 +536,14 @@ cancelna();
     //BUTTON SEARCH ONCLICK
     public void searchProduct() {
         try {
+            builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
+            builder.setView(alertLayout);
+
+            final Button btnEnter = (Button) findViewById(R.id.btnEnter);
+            final EditText etQuan = (EditText) findViewById(R.id.etEnterQuantity);
+
             code = Long.parseLong(txt_search.getText().toString());
             final String[] itemcode = {Long.toString(code)};
             itemCode123.add(Long.toString(code));
@@ -536,107 +552,116 @@ cancelna();
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows >= 1) {
+
                 // 1. Instantiate an AlertDialog.Builder with its constructor
-                final EditText dialogText = new EditText(this);
-                dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Enter Quantity");
-                builder.setView(dialogText);
-                txt_search.setText("");
-                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                final EditText dialogText = new EditText(this);
+//                dialogText.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                builder.setTitle("Enter Quantity");
+//                builder.setView(dialogText);
+
+
+
+                btnEnter.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                    public void onClick(View view) {
                         try {
-                                if (dialogText.getText().toString().equals("")){
-                                    Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+                            if (etQuan.getText().toString().equals("")){
+                                Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                dialogVar = Integer.parseInt(etQuan.getText().toString());
+                                itemQuan123.add(etQuan.getText().toString());
+                                itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
+                                itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
+                                itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
+                                itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+                                itemQuantityList.add(dialogVar);
+                                itemPriceList.add(itempriceCol);
+                                itemNameList.add(itemnameCol);
+                                itemCodeList.add(itemcodeCol);
+                                itemDescList.add(itemdescCol);
+                                itempricetotalCol = dialogVar * itempriceCol;
+                                itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
+                                itempricetotalCol2 = itempricetotalCol2.replace("$","");
+                                ArrayList<Double> total = new ArrayList<>();
+                                total.add(itempricetotalCol);
+                                layout.invalidate();
+                                layout.requestLayout();
+                                for (int x = 0; x < total.size(); x++) {
+                                    subTotal = subTotal + total.get(x);
+                                    quantityCount++;
                                 }
-                                else {
-                                    dialogVar = Integer.parseInt(dialogText.getText().toString());
-                                    itemQuan123.add(dialogText.getText().toString());
-                                    itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
-                                    itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
-                                    itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
-                                    itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
-                                    itemQuantityList.add(dialogVar);
-                                    itemPriceList.add(itempriceCol);
-                                    itemNameList.add(itemnameCol);
-                                    itemCodeList.add(itemcodeCol);
-                                    itemDescList.add(itemdescCol);
-                                    itempricetotalCol = dialogVar * itempriceCol;
-                                    itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
-                                    itempricetotalCol2 = itempricetotalCol2.replace("$","");
-                                    ArrayList<Double> total = new ArrayList<>();
-                                    total.add(itempricetotalCol);
-                                    layout.invalidate();
-                                    layout.requestLayout();
-                                    for (int x = 0; x < total.size(); x++) {
-                                        subTotal = subTotal + total.get(x);
-                                        quantityCount++;
+                                vattable = subTotal / 1.12;
+                                vat = vattable * 0.12;
+                                vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
+                                vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
+                                subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                                vat2 = vat2.replace("$", "");
+                                vattable2 = vattable2.replace("$", "");
+                                subTotal2 = subTotal2.replace("$", "");
+                                //products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
+                                lbl_sub.setText("" + vattable2 + "");
+                                lbl_tax.setText("" + vat2 + "");
+                                lbl_total.setText("" + subTotal2 + "");
+                                ArrayList<String> temp = new ArrayList<>();
+                                temp.add(itemnameCol);//example I don't know the order you need
+                                temp.add(itempriceCol + "");//example I don't know the order you need
+                                temp.add(dialogVar + "");//example I don't know the order you need
+                                temp.add(itempricetotalCol2);//example I don't know the order you ne
+                                t2Rows.add(temp);
+
+                                totalPrice = subTotal;
+                                due = totalPrice;
+                                due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                                due2 = due2.replace("$", "");
+                                lbl_due.setText("" + due2 + "");
+
+                                //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
+                                //INSERT TEMP INVOICE ITEMS INTO TABLE
+                                try {
+                                    String convertedCode = Long.toString(code).trim();
+                                    int result = db_data.searchDuplicateInvoice(convertedCode);
+                                    if(result > 0){
+                                        SQLiteDatabase db = db_data.getReadableDatabase();
+                                        String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
+                                        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+                                        cursor.moveToFirst();
+                                        String retrievedQuantity = cursor.getString(3);
+                                        cursor.close();
+                                        int convertedQuantity = Integer.parseInt(retrievedQuantity);
+
+                                        db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
+                                        Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
                                     }
-                                    vattable = subTotal / 1.12;
-                                    vat = vattable * 0.12;
-                                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-                                    vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-                                    subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                    vat2 = vat2.replace("$", "");
-                                    vattable2 = vattable2.replace("$", "");
-                                    subTotal2 = subTotal2.replace("$", "");
-                                    //products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
-                                    lbl_sub.setText("" + vattable2 + "");
-                                    lbl_tax.setText("" + vat2 + "");
-                                    lbl_total.setText("" + subTotal2 + "");
-                                    ArrayList<String> temp = new ArrayList<>();
-                                    temp.add(itemnameCol);//example I don't know the order you need
-                                    temp.add(itempriceCol + "");//example I don't know the order you need
-                                    temp.add(dialogVar + "");//example I don't know the order you need
-                                    temp.add(itempricetotalCol2);//example I don't know the order you ne
-                                    t2Rows.add(temp);
+                                    else if(result == 0){
+                                        InvoiceItem invoiceItem = new InvoiceItem();
+                                        invoiceItem.setInvoiceProductDescription(itemnameCol);
+                                        invoiceItem.setInvoiceProductPrice(itempriceCol);
+                                        invoiceItem.setInvoiceProductQuantity(dialogVar);
+                                        invoiceItem.setInvoiceProductID(convertedCode);
 
-                                    totalPrice = subTotal;
-                                    due = totalPrice;
-                                    due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                    due2 = due2.replace("$", "");
-                                    lbl_due.setText("" + due2 + "");
-
-                                    //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
-                                    //INSERT TEMP INVOICE ITEMS INTO TABLE
-                                    try {
-                                        String convertedCode = Long.toString(code).trim();
-                                        int result = db_data.searchDuplicateInvoice(convertedCode);
-                                        if(result > 0){
-                                            SQLiteDatabase db = db_data.getReadableDatabase();
-                                            String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
-                                            Cursor cursor = db.rawQuery(SELECT_QUERY,null);
-                                            cursor.moveToFirst();
-                                            String retrievedQuantity = cursor.getString(3);
-                                            cursor.close();
-                                            int convertedQuantity = Integer.parseInt(retrievedQuantity);
-
-                                            db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
-                                            Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else if(result == 0){
-                                            InvoiceItem invoiceItem = new InvoiceItem();
-                                            invoiceItem.setInvoiceProductDescription(itemnameCol);
-                                            invoiceItem.setInvoiceProductPrice(itempriceCol);
-                                            invoiceItem.setInvoiceProductQuantity(dialogVar);
-                                            invoiceItem.setInvoiceProductID(convertedCode);
-
-                                            db_data.insertTempInvoice(invoiceItem);
-                                        }
-                                    } catch (SQLiteException e){
-                                        e.printStackTrace();
+                                        db_data.insertTempInvoice(invoiceItem);
                                     }
-                                    refreshRecyclerView();
+                                } catch (SQLiteException e){
+                                    e.printStackTrace();
                                 }
+                                refreshRecyclerView();
+                            }
                         }catch (Exception ex){
                             ex.printStackTrace();
                             lbl_due.setText(subTotal2);
                         }
                     }
                 });
-                Dialog dialog = builder.create();
-                dialog.show();
+                txt_search.setText("");
+//                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//
+//                    }
+//                });
+//                Dialog dialog = builder.create();
+//                dialog.show();
             } else {
                 Toast.makeText(this, "Product cant be found", Toast.LENGTH_LONG).show();
             }
@@ -936,35 +961,6 @@ cancelna();
         }
     }
 
-
-
-
-
-
-    //    public void listGo(){
-//        orderArrayList.clear();
-//        String min = "min("+NUMBER_ORDER+")";
-//        String[] ALL = {NAME_ORDER, min, DATE_ORDER};
-//        String ASC = "ASC";
-//        SQLiteDatabase db = db_data.getReadableDatabase();
-////        String table = "goal";
-////        String[] columns = new String[] { "distinct id", "date", "sum(goal)" };
-////        String selection = "id=? and date=?";
-////        String[] arguments = new String[] { "0", "Sep 15, 2015" };
-////        String groupBy = "id, date";
-////        String having = null;
-////        String orderBy = null;
-////        db.query(table, column    s, selection, arguments, groupBy, having, orderBy);
-//        Cursor curse = db.query(TABLE_NAME_ORDER, ALL, null, null, NUMBER_ORDER, null, ASC);
-//        while (curse.moveToNext()) {
-//            String oname = curse.getString(0);
-//            int onumber = curse.getInt(1);
-//            long pdate = curse.getLong(2);
-//            orderArrayList.add(new Order(oname, onumber, pdate));
-//        }
-//        adapterOrder.notifyDataSetChanged();
-//        curse.close();
-//    }
     public static class FirstFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
