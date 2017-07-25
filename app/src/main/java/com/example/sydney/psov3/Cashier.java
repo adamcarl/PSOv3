@@ -86,9 +86,7 @@ public class Cashier extends AppCompatActivity {
     AdapterOrder adapterOrder=null;
     String currentTime;
     String dateformatted;
-    String[] forLog;
     String transType;
-    Date currentDateTime;
     private GridLayoutManager mLayoutManager;
     ReportBaKamo reportBaKamo;
 
