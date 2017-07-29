@@ -59,7 +59,7 @@ public class ManageJournal extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         transAdapter = new TransactionAdapter(getApplication(),transactionList);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(transAdapter);
 
@@ -94,7 +94,7 @@ public class ManageJournal extends AppCompatActivity {
         if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
             transactionList = fill_with_data();
             transAdapter = new TransactionAdapter(getApplication(),transactionList);
-            recyclerView.setLayoutManager(new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false));
+            recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(transAdapter);
 
@@ -172,7 +172,7 @@ public class ManageJournal extends AppCompatActivity {
                     if(spinnerSelected == 0 || spinnerSelected == 1 && searchView.getQuery().toString().trim().toLowerCase().equals("")){
                         transactionList = fill_with_data();
                         transAdapter = new TransactionAdapter(getApplication(),transactionList);
-                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),3,GridLayoutManager.VERTICAL,false));
+                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),1,GridLayoutManager.VERTICAL,false));
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(transAdapter);
                     }

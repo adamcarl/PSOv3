@@ -19,23 +19,25 @@ import static com.example.sydney.psov3.Constants.*;
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
-        private ContentValues cv1 = new ContentValues();
 
         DB_Data(Context ctx){
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
     public void onCreate(SQLiteDatabase arg0) {
+
         arg0.execSQL("CREATE TABLE "+TABLE_ADMIN+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ADMIN_USERNAME+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_ADMIN_PASSWORD+" TEXT NOT NULL );");
+
         arg0.execSQL("CREATE TABLE "+TABLE_CASHIER+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_CASHIER_NUMBER+" INTEGER NOT NULL UNIQUE, "
                 +COLUMN_CASHIER_NAME+" TEXT NOT NULL, "
                 +COLUMN_CASHIER_POSITION+" TEXT NOT NULL,"
                 +COLUMN_CASHIER_PASSWORD+" TEXT NOT NULL );");
+
         arg0.execSQL("CREATE TABLE "+TABLE_PRODUCT+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_PRODUCT_ID+" INTEGER NOT NULL UNIQUE, "
@@ -43,7 +45,19 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_DESCRIPTION+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_PRICE+" DOUBLE NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY+" INTEGER NOT NULL, "
-                +COLUMN_PRODUCT_VATABLE+" INTEGER );");
+                +COLUMN_PRODUCT_VATABLE+" INTEGER, "
+                +COLUMN_PRODUCT_IMEI+" INTEGER );");
+
+        arg0.execSQL("CREATE TABLE "+TABLE_PRODUCT_TEMP+" ("
+                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_PRODUCT_ID_TEMP+" INTEGER NOT NULL UNIQUE, "
+                +COLUMN_PRODUCT_NAME_TEMP+" TEXT NOT NULL, "
+                +COLUMN_PRODUCT_DESCRIPTION_TEMP+" TEXT NOT NULL, "
+                +COLUMN_PRODUCT_PRICE_TEMP+" DOUBLE NOT NULL,"
+                +COLUMN_PRODUCT_QUANTITY_TEMP+" INTEGER NOT NULL, "
+                +COLUMN_PRODUCT_VATABLE_TEMP+" INTEGER, "
+                +COLUMN_PRODUCT_IMEI_TEMP+" INTEGER );");
+
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
@@ -61,7 +75,6 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_INVOICE_CREDITCARDNUMBER+ " TEXT,"
                 +COLUMN_INVOICE_CREDITDATEOFEXPIRATION+ " TEXT);");
 
-
         arg0.execSQL("CREATE TABLE "+TABLE_ITEM+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
@@ -75,21 +88,28 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_XREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_CASHIER+" TEXT NOT NULL );");
+
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
+
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
+
         arg0.execSQL("CREATE TABLE IF NOT EXISTS receipts(invoicenumber INTEGER,transactionnumber INTEGER);");
+
         arg0.execSQL("CREATE TABLE IF NOT EXISTS departments(department TEXT,category TEXT,subcategory TEXT);");
+
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
                 +COLUMN_XREPORT_CASHSALES + " FLOAT,"
                 +COLUMN_XREPORT_CASHCOUNT + " FLOAT,"
                 +COLUMN_XREPORT_CASHSHORTOVER + " FLOAT);");
+
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
                 +COLUMN_ZREPORT_CASHSALES+" FLOAT, "
                 +COLUMN_ZREPORT_CASHCOUNT+" FLOAT);");
+
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_TRANSACTION_TYPE+" TEXT NOT NULL, "
@@ -97,9 +117,11 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_TRANSACTION_CASHIER+" TEXT NOT NULL, "
                 +COLUMN_TRANSACTION_XREPORT+" INTEGER NOT NULL, "
                 +COLUMN_TRANSACTION_ZREPORT+" INTEGER NOT NULL);");
+
         arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
@@ -119,6 +141,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_CASHIER);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_PRODUCT);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_PRODUCT_TEMP);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_INVOICE);
         onCreate(arg0);
@@ -716,5 +740,12 @@ String sales(String status){
             String tax = c.getString(0);
             c.close();
             return tax;
+        }
+        void copyToProductTemp(){
+            String sql = "DELETE FROM "+TABLE_PRODUCT_TEMP;
+            dbr.rawQuery(sql,null);
+
+            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT_TEMP;
+            dbr.rawQuery(sql,null);
         }
     }

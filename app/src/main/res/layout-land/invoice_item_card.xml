@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/cv_item"
-    android:clickable="true"
+<LinearLayout android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_item"
+        android:clickable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <TextView
-            android:id="@+id/txtInvoiceProductName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Milo 20g"
-            android:textSize="16dp" />
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/chk_delete"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="10dp"/>
+            <TextView
+                android:id="@+id/txtInvoiceProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Milo 20g"
+                android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/txtInvoiceProductQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtInvoiceProductName"
-            android:layout_toLeftOf="@+id/txInvoiceProductPrice"
-            android:padding="8dp"
-            android:text="x1"
-            android:textSize="16dp" />
+            <CheckBox
+                android:id="@+id/chk_delete"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="10dp"/>
 
-        <TextView
-            android:id="@+id/txInvoiceProductPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/txtInvoiceProductName"
-            android:padding="10dp"
-            android:text="P 7.00"
-            android:textSize="16dp" />
+            <TextView
+                android:id="@+id/txtInvoiceProductQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtInvoiceProductName"
+                android:layout_toLeftOf="@+id/txInvoiceProductPrice"
+                android:padding="8dp"
+                android:text="x1"
+                android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/txtInvoiceProductVattable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/txInvoiceProductPrice"
-            android:padding="10dp"
-            android:text="V"
-            android:textSize="16dp" />
+            <TextView
+                android:id="@+id/txInvoiceProductPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txtInvoiceProductName"
+                android:padding="10dp"
+                android:text="P 7.00"
+                android:textSize="16dp" />
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/txtInvoiceProductVattable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txInvoiceProductPrice"
+                android:padding="10dp"
+                android:text="V"
+                android:textSize="16dp" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

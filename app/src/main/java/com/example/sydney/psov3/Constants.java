@@ -23,6 +23,7 @@ interface Constants extends BaseColumns {
     String COLUMN_PRODUCT_PRICE = "ProdPrice";
     String COLUMN_PRODUCT_QUANTITY = "ProdQuan";
     String COLUMN_PRODUCT_VATABLE = "Vatable";
+    String COLUMN_PRODUCT_IMEI = "ProdIMEI";
 
     String TABLE_INVOICE = "tbl_invoice";
     String COLUMN_INVOICE_TRANSACTION_NUMBER = "InTrans";
@@ -83,4 +84,12 @@ interface Constants extends BaseColumns {
     String TABLE_TOTAL= "tbl_total";
     String COLUMN_TOTAL_GRAND= "total_grand";
 
+    String TABLE_PRODUCT_TEMP = "tbl_product";
+    String COLUMN_PRODUCT_ID_TEMP = "ProdId_temp";
+    String COLUMN_PRODUCT_NAME_TEMP = "ProdName_temp";
+    String COLUMN_PRODUCT_DESCRIPTION_TEMP = "ProdDesc_temp";
+    String COLUMN_PRODUCT_PRICE_TEMP = "ProdPrice_temp";
+    String COLUMN_PRODUCT_QUANTITY_TEMP = "ProdQuan_temp";
+    String COLUMN_PRODUCT_VATABLE_TEMP = "Vatable_temp";
+    String COLUMN_PRODUCT_IMEI_TEMP = "ProdIMEI_temp";
 }

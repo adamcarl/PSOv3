@@ -96,80 +96,80 @@ catch (Exception e){
         over = moneyCount - net;
         // Pad with zeros and a width of 6 chars.
 
-        toBePrinted.add("ABZTRACK DEMO STORE");
-        toBePrinted.add("VAT REG TIN:000-111-111-001");
-        toBePrinted.add("MIN:12345678901234567");
-        toBePrinted.add("670 SGT BUMATAY STREET");
-        toBePrinted.add("PLAINVIEW, MANDALUYONG");
-        toBePrinted.add("SERIAL NO. ASDFG1234567890");
-        toBePrinted.add("PTU No. FP121234-123-1234567-12345\n");
-        toBePrinted.add("==============================================");
-        toBePrinted.add(report+"-READ");
+        toBePrinted.add("ABZTRACK DEMO STORE\n");
+        toBePrinted.add("VAT REG TIN:000-111-111-001\n");
+        toBePrinted.add("MIN:12345678901234567\n");
+        toBePrinted.add("670 SGT BUMATAY STREET\n");
+        toBePrinted.add("PLAINVIEW, MANDALUYONG\n");
+        toBePrinted.add("SERIAL NO. ASDFG1234567890\n");
+        toBePrinted.add("PTU No. FP121234-123-1234567-12345\n\n");
+        toBePrinted.add("===============================\n");
+        toBePrinted.add(report+"-READ\n");
         if(x.equals("no")) {
-            toBePrinted.add("END-OF-DAY REPORT");
-            toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : "+date);
-            toBePrinted.add("BRANCH : HEAD OFFICE");
-            toBePrinted.add("SHIFT : ALL\t\tTRANS#"+trans+"\n");
+            toBePrinted.add("END-OF-DAY REPORT\n");
+            toBePrinted.add("===============================\n");
+            toBePrinted.add("BIZDATE : "+date+"\n");
+            toBePrinted.add("BRANCH : HEAD OFFICE\n");
+            toBePrinted.add("SHIFT : ALL\t\tTRANS#"+trans+"\n\n");
         }else {
-            toBePrinted.add("CASHIER REPORT");
-            toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : " + dateformatted + " " + currentTime);
-            toBePrinted.add("CASHIER : "+x);
-            toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
+            toBePrinted.add("CASHIER REPORT\n");
+            toBePrinted.add("===============================\n");
+            toBePrinted.add("BIZDATE : " + dateformatted + " " + currentTime+"\n");
+            toBePrinted.add("CASHIER : "+x+"\n");
+            toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n\n");
         }
-        toBePrinted.add("GROSS SALES\t\t"+gross);
-        toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("NET SALES\t\t"+ net +"\n");
+        toBePrinted.add("GROSS SALES\t\t"+gross+"\n");
+        toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount+"\n");
+        toBePrinted.add("------------------------------\n");
+        toBePrinted.add("NET SALES\t\t"+ net +"\n\n");
 
-        toBePrinted.add("TAX CODE\tSALES\tTAX");
-        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("TAX CODE\tSALES\tTAX\n");
+        toBePrinted.add("------------------------------\n");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-        toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
-        toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
-        toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
+        toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax+"\n");
+        toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax+"\n");
+        toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n\n");
 
         if(x.equals("no")){
-            toBePrinted.add("OLD GT\t000-"+ogt);
-            toBePrinted.add("NEW GT\t000-"+dngt+"\n");
+            toBePrinted.add("OLD GT\t000-"+ogt+"\n");
+            toBePrinted.add("NEW GT\t000-"+dngt+"\n\n");
 
-            toBePrinted.add("Z Count\t\t"+zf+"\n");
+            toBePrinted.add("Z Count\t\t"+zf+"\n\n");
 
-           toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
-            toBePrinted.add("\t\t\t"+t3+"\n");
+           toBePrinted.add("Trans #\t\t"+t1+" - "+t2+"\n");
+            toBePrinted.add("\t\t\t"+t3+"\n\n");
 
-            toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
+            toBePrinted.add("OR #\t\t"+or1+ " - "+or2+"\n");
         }
-        toBePrinted.add("CASH SALES\t\t"+net);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\t"+net);
+        toBePrinted.add("CASH SALES\t\t"+net+"\n");
+        toBePrinted.add("------------------------------\n");
+        toBePrinted.add("CASH IN DRAWER\t\t"+net+"\n");
 
-        toBePrinted.add("CASH COUNT\t\t"+moneyCount);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
+        toBePrinted.add("CASH COUNT\t\t"+moneyCount+"\n");
+        toBePrinted.add("------------------------------\n");
+        toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n\n");
 
 //        toBePrinted.add("TRANSACTION\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
 
 //        toBePrinted.add("TENDER\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("TOTAL CASH\t0\t0.00");
 //        toBePrinted.add("  CC BDO\tX\t0.00");
 //        toBePrinted.add("  CC BPI\tX\t0.00");
 //        toBePrinted.add("TOTAL CREDIT CA\t\t0.00\n");
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("SCD 20%\t\t-"+discount);
-        toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
-        toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n");
+        toBePrinted.add("------------------------------\n");
+        toBePrinted.add("SCD 20%\t\t-"+discount+"\n");
+        toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1+"\n");
+        toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n\n");
 
 
 
-        toBePrinted.add("ITEM SALES\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("ITEM SALES\t\tAMOUNT\n");
+        toBePrinted.add("------------------------------\n");
             List<List<String>> items = new ArrayList<>();
             ArrayList<String> temp = new ArrayList<>();
             String mWHERE;
@@ -186,14 +186,15 @@ catch (Exception e){
             Cursor c = db_data.getAllItems(x);
             c.moveToFirst();
 
-        while(c.moveToNext()){
+        while(!c.isAfterLast()){
             Double price = c.getDouble(c.getColumnIndex(COLUMN_ITEM_PRICE)) * c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
             Double total = price - c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
-            toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME))+"\n"+c.getString(c.getColumnIndex(COLUMN_ITEM_DESC))+"\t"+price);//example I don't know the order you need
+            toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME))+"\n"+c.getString(c.getColumnIndex(COLUMN_ITEM_DESC))+"\t"+price+"\n");//example I don't know the order you need
             toBePrinted.add("x"+c.getString(c.getColumnIndex(COLUMN_ITEM_QUANTITY))+".0000\td-"+c.getString(c.getColumnIndex(COLUMN_ITEM_DISCOUNT))+"\t"+total+"\n");//example I don't know the order you need
             totalQty = totalQty + c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
             totalGross = totalGross + price;
             totalDeduction = totalDeduction + c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
+            c.moveToNext();
         }
             c.close();
 
@@ -211,12 +212,12 @@ catch (Exception e){
 //            totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
 //    }
     totalItemSales = totalGross - totalDeduction;
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
-        toBePrinted.add("GROSS SALES\t\t"+totalGross);
-        toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
+        toBePrinted.add("------------------------------\n");
+        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000\n");
+        toBePrinted.add("GROSS SALES\t\t"+totalGross+"\n");
+        toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction+"\n");
         Double totalNet = totalGross - totalDeduction;
-        toBePrinted.add("NET SALES\t\t"+totalNet+"\n");
+        toBePrinted.add("NET SALES\t\t"+totalNet+"\n\n");
 
 //        Cursor cursor = db_data.sales();
 //        cursor.moveToFirst();
@@ -231,7 +232,7 @@ catch (Exception e){
         toBePrinted.add("");
 
 //        toBePrinted.add("DEPARTMENT SALES\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("NO DEPARTMENT");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -241,14 +242,14 @@ catch (Exception e){
 //        toBePrinted.add("NO DEPARTMENT");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("GROUP SALES\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("NO GROUP");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -258,14 +259,14 @@ catch (Exception e){
 //        toBePrinted.add("NO GROUP");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("BRAND SALES\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("NO BRAND");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -275,14 +276,14 @@ catch (Exception e){
 //        toBePrinted.add("NO BRAND");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
 //        toBePrinted.add("NET SALES\t\tX,XXX.XX\n");
 //
 //        toBePrinted.add("CATEGORY SALES\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("NO CATEGORY");
 //        toBePrinted.add("\t\t\tXX.XX");
 //        toBePrinted.add("xX.XXXX\td-X.XX\tXX.XX");
@@ -292,7 +293,7 @@ catch (Exception e){
 //        toBePrinted.add("NO CATEGORY");
 //        toBePrinted.add("\t\t\tX,XXX.XX");
 //        toBePrinted.add("xXXXX.XXXX\td-X.XX\tX,XXX.XX");
-//        toBePrinted.add("----------------------------------------------");
+//        toBePrinted.add("------------------------------");
 //        toBePrinted.add("TOTAL QTY\t\tXXX.XXXX");
 //        toBePrinted.add("GROSS SALES\t\tX,XXX.XX");
 //        toBePrinted.add("TOTAL DEDUCTIONS\t\t-XX.XX");
@@ -339,6 +340,7 @@ catch (Exception e){
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+        db_data.copyToProductTemp();
     }
     void setDb_data(DB_Data db_data) {
         this.db_data = db_data;

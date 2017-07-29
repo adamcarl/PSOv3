@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.hardware.usb.UsbManager;
 import android.support.annotation.IdRes;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -40,9 +42,6 @@ import com.example.sydney.psov3.adapter.AdapterOrder;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
 
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -52,10 +51,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import tw.com.prolific.driver.pl2303.PL2303Driver;
 
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
+    private static final boolean SHOW_DEBUG = true;
+    private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B19200;
+    private PL2303Driver.DataBits mDataBits = PL2303Driver.DataBits.D8;
+    private PL2303Driver.Parity mParity = PL2303Driver.Parity.NONE;
+    private PL2303Driver.StopBits mStopBits = PL2303Driver.StopBits.S1;
+    private PL2303Driver.FlowControl mFlowControl = PL2303Driver.FlowControl.OFF;
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
     private int quantityCount = 0,itemcodeCol,discType=0,dialogVar;
@@ -65,8 +71,11 @@ public class Cashier extends AppCompatActivity {
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
+    PL2303Driver mSerial;
     ContentValues cv;
-//    ArrayList<String> items;
+    private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
+
+    //    ArrayList<String> items;
     private List<InvoiceItem> invoiceItemList;
     private RecyclerView recyclerView;
     private InvoiceAdapter invoiceAdapter;
@@ -105,11 +114,6 @@ public class Cashier extends AppCompatActivity {
     private AlertDialog.Builder builder = null;
     private AlertDialog alertDialogXreport = null;
     private AlertDialog alertDialogZreport = null;
-    private AlertDialog alertDialogCredit = null;
-    private boolean xreportButtonStatus = false;
-    private boolean zreportButtonStatus = false;
-
-    private Double inCustomer;
     private String inPrint = ""; //NULL FOR THE MEANTIME
     private String inZreport = ""; //NULL FOR THE MEANTIME
     private String inXreport = ""; //NULL FOR THE MEANTIME
@@ -136,12 +140,8 @@ public class Cashier extends AppCompatActivity {
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
-
-
     protected void onCreate(Bundle savedInstanceState) {
-
         db_data = new DB_Data(this);
-
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
         reportBaKamo = new ReportBaKamo();
@@ -153,12 +153,19 @@ public class Cashier extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
+        mSerial = new PL2303Driver((UsbManager) getSystemService(Context.USB_SERVICE), this, ACTION_USB_PERMISSION);
+        try {
+            Thread.sleep(1500);
+            openUsbSerial();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        writeDataToSerial();
 
         mPrinter = new JmPrinter();           //Create a 78M printer object
 
         Intent intent = getIntent();
         userNum = intent.getExtras().getString("CashNum");
-
 
         tab_host.setup();
         orderArrayList = new ArrayList<>();
@@ -985,6 +992,7 @@ cancelna();
     }
 
     private void init() {
+
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
         rb_ddisc = (RadioButton)findViewById(R.id.rb_ddisc);
@@ -1048,5 +1056,20 @@ cancelna();
         retnValue = tmpUsbDev.UnLockOfCashBox();
 
         return retnValue;
+    }
+    private void openUsbSerial() {
+
+        if (mSerial.isConnected()) {
+            mBaudrate =PL2303Driver.BaudRate.B19200;
+        }//isConnected
+    }//openUsbSerial
+    private void writeDataToSerial() {
+        String strWrite;
+        strWrite = String.format("%1$-40" + "s", "Ako ay may lobo");
+
+        mSerial.write(strWrite.getBytes(), strWrite.length());
+    }//writeDataToSerial
+    public void paDisplayNaman(View view){
+        writeDataToSerial();
     }
 }
