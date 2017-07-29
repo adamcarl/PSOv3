@@ -80,11 +80,12 @@ interface Constants extends BaseColumns {
     String COLUMN_TEMP_PRICE = "temp_price";
     String COLUMN_TEMP_QUANTITY = "temp_quantity";
     String COLUMN_TEMP_ID = "temp_id";
+    String COLUMN_TEMP_TOTALPRICE = "temp_totalPrice";
 
     String TABLE_TOTAL= "tbl_total";
     String COLUMN_TOTAL_GRAND= "total_grand";
 
-    String TABLE_PRODUCT_TEMP = "tbl_product";
+    String TABLE_PRODUCT_TEMP = "tbl_product_temp";
     String COLUMN_PRODUCT_ID_TEMP = "ProdId_temp";
     String COLUMN_PRODUCT_NAME_TEMP = "ProdName_temp";
     String COLUMN_PRODUCT_DESCRIPTION_TEMP = "ProdDesc_temp";

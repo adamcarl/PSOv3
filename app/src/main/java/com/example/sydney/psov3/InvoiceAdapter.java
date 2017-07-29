@@ -71,9 +71,7 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
     }
 
     @Override
-    public int getItemCount(){
-        return invoiceList.size();
-    }
+    public int getItemCount(){return invoiceList.size();}
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

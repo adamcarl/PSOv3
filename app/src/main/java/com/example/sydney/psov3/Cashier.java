@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +38,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.example.sydney.psov3.adapter.AdapterOrder;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
@@ -51,17 +51,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import	android.content.pm.ActivityInfo;
+
 import tw.com.prolific.driver.pl2303.PL2303Driver;
+import android.hardware.usb.UsbManager;
+import android.util.Log;
 
 import static com.example.sydney.psov3.Constants.*;
 
 public class Cashier extends AppCompatActivity {
-    private static final boolean SHOW_DEBUG = true;
-    private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B19200;
-    private PL2303Driver.DataBits mDataBits = PL2303Driver.DataBits.D8;
-    private PL2303Driver.Parity mParity = PL2303Driver.Parity.NONE;
-    private PL2303Driver.StopBits mStopBits = PL2303Driver.StopBits.S1;
-    private PL2303Driver.FlowControl mFlowControl = PL2303Driver.FlowControl.OFF;
+    private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
+
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
     private int quantityCount = 0,itemcodeCol,discType=0,dialogVar;
@@ -71,11 +71,8 @@ public class Cashier extends AppCompatActivity {
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
-    PL2303Driver mSerial;
     ContentValues cv;
-    private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
-
-    //    ArrayList<String> items;
+//    ArrayList<String> items;
     private List<InvoiceItem> invoiceItemList;
     private RecyclerView recyclerView;
     private InvoiceAdapter invoiceAdapter;
@@ -114,6 +111,11 @@ public class Cashier extends AppCompatActivity {
     private AlertDialog.Builder builder = null;
     private AlertDialog alertDialogXreport = null;
     private AlertDialog alertDialogZreport = null;
+    private AlertDialog alertDialogCredit = null;
+    private boolean xreportButtonStatus = false;
+    private boolean zreportButtonStatus = false;
+
+    private Double inCustomer;
     private String inPrint = ""; //NULL FOR THE MEANTIME
     private String inZreport = ""; //NULL FOR THE MEANTIME
     private String inXreport = ""; //NULL FOR THE MEANTIME
@@ -140,8 +142,15 @@ public class Cashier extends AppCompatActivity {
 
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
+    private static final boolean SHOW_DEBUG = true;
+    String TAG = "PL2303HXD_APLog";
+    PL2303Driver mSerial;
+    private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
+
     protected void onCreate(Bundle savedInstanceState) {
+
         db_data = new DB_Data(this);
+
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
         reportBaKamo = new ReportBaKamo();
@@ -153,19 +162,38 @@ public class Cashier extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
-        mSerial = new PL2303Driver((UsbManager) getSystemService(Context.USB_SERVICE), this, ACTION_USB_PERMISSION);
+
+        mPrinter = new JmPrinter();           //Create a 78M printer object
+
+        Intent intent = getIntent();
+        userNum = intent.getExtras().getString("CashNum");
+
+        mSerial = new PL2303Driver((UsbManager) getSystemService(Context.USB_SERVICE),
+                this, ACTION_USB_PERMISSION);
+        mBaudrate =PL2303Driver.BaudRate.B19200;
+        if (!mSerial.PL2303USBFeatureSupported()) {
+
+            Toast.makeText(this, "No Support USB host API", Toast.LENGTH_SHORT)
+                    .show();
+
+            Log.d(TAG, "No Support USB host API");
+
+            mSerial = null;
+
+        }
+
+        if( !mSerial.enumerate() ) {
+            Toast.makeText(this, "no more devices found", Toast.LENGTH_SHORT).show();
+        }
+
         try {
             Thread.sleep(1500);
             openUsbSerial();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         writeDataToSerial();
-
-        mPrinter = new JmPrinter();           //Create a 78M printer object
-
-        Intent intent = getIntent();
-        userNum = intent.getExtras().getString("CashNum");
 
         tab_host.setup();
         orderArrayList = new ArrayList<>();
@@ -521,7 +549,7 @@ cancelna();
             invoiceItemQuantity = cursor.getInt(3);
             invoiceItemID = cursor.getString(4);
 
-            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID));
+//            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID));
         }
         cursor.close();
 
@@ -992,7 +1020,6 @@ cancelna();
     }
 
     private void init() {
-
         rb_ndisc = (RadioButton)findViewById(R.id.rb_ndisc);
         rb_spdisc = (RadioButton)findViewById(R.id.rb_rpdisc);
         rb_ddisc = (RadioButton)findViewById(R.id.rb_ddisc);
@@ -1057,19 +1084,114 @@ cancelna();
 
         return retnValue;
     }
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "Enter onDestroy");
+
+        if(mSerial!=null) {
+            mSerial.end();
+            mSerial = null;
+        }
+
+        super.onDestroy();
+        Log.d(TAG, "Leave onDestroy");
+    }
+    public void onResume() {
+        Log.d(TAG, "Enter onResume");
+        super.onResume();
+        String action =  getIntent().getAction();
+        Log.d(TAG, "onResume:"+action);
+
+        //if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action))
+        if(!mSerial.isConnected()) {
+            if (SHOW_DEBUG) {
+                Log.d(TAG, "New instance : " + mSerial);
+            }
+
+            if( !mSerial.enumerate() ) {
+
+                Toast.makeText(this, "no more devices found", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                Log.d(TAG, "onResume:enumerate succeeded!");
+            }
+            try {
+                Thread.sleep(1500);
+                openUsbSerial();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }//if isConnected
+
+        Log.d(TAG, "Leave onResume");
+    }
+
     private void openUsbSerial() {
+        Log.d(TAG, "Enter  openUsbSerial");
+
+        if(mSerial==null) {
+
+            Log.d(TAG, "No mSerial");
+            return;
+
+        }
+
 
         if (mSerial.isConnected()) {
-            mBaudrate =PL2303Driver.BaudRate.B19200;
-        }//isConnected
-    }//openUsbSerial
-    private void writeDataToSerial() {
-        String strWrite;
-        strWrite = String.format("%1$-40" + "s", "Ako ay may lobo");
+            if (SHOW_DEBUG) {
+                Log.d(TAG, "openUsbSerial : isConnected ");
+            }
 
-        mSerial.write(strWrite.getBytes(), strWrite.length());
+            // if (!mSerial.InitByBaudRate(mBaudrate)) {
+            if (!mSerial.InitByBaudRate(mBaudrate,700)) {
+                if(!mSerial.PL2303Device_IsHasPermission()) {
+                    Toast.makeText(this, "cannot open, maybe no permission", Toast.LENGTH_SHORT).show();
+                }
+
+                if(mSerial.PL2303Device_IsHasPermission() && (!mSerial.PL2303Device_IsSupportChip())) {
+                    Toast.makeText(this, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.");
+                }
+            } else {
+
+                Toast.makeText(this, "connected : OK" , Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "connected : OK");
+                Log.d(TAG, "Exit  openUsbSerial");
+
+
+            }
+        }//isConnected
+        else {
+            Toast.makeText(this, "Connected failed, Please plug in PL2303 cable again!" , Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "connected failed, Please plug in PL2303 cable again!");
+
+
+        }
+    }//openUsbSerial
+
+    private void writeDataToSerial() {
+
+        Log.d(TAG, "Enter writeDataToSerial");
+
+        if(null==mSerial)
+            return;
+
+        if(!mSerial.isConnected())
+            return;
+
+        String strWrite;
+        strWrite = String.format("%1$-40" + "s", "Loves ni Mark si     Keidel <3.");
+        if (SHOW_DEBUG) {
+            Log.d(TAG, "PL2303Driver Write 2(" + strWrite.length() + ") : " + strWrite);
+        }
+        int res = mSerial.write(strWrite.getBytes(), strWrite.length());
+        if( res<0 ) {
+            Log.d(TAG, "setup2: fail to controlTransfer: "+ res);
+            return;
+        }
+
+        Toast.makeText(this, "Write length: "+strWrite.length()+" bytes", Toast.LENGTH_SHORT).show();
+
+        Log.d(TAG, "Leave writeDataToSerial");
     }//writeDataToSerial
-    public void paDisplayNaman(View view){
-        writeDataToSerial();
-    }
 }
