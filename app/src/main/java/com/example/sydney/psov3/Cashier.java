@@ -18,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,6 +74,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String>itemNameList = new ArrayList<>();
     ArrayList<String>itemDescList = new ArrayList<>();
     ArrayList<Integer>itemCodeList  = new ArrayList<>();
+    ArrayList<Double> total = new ArrayList<>();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<>();
     SQLiteDatabase dbReader;
@@ -340,13 +342,30 @@ public class Cashier extends AppCompatActivity {
             public void onClick(View view) {
                 for(InvoiceItem item : invoiceItemList){
                     if(item.isSelected()){
-                        db_data.deleteItemInvoice(item.getInvoiceProductDescription());
-
+                        Double mSubTotal = 0.0;
+//                        int result = db_data.searchSelectedItem(item.isSelected() + "");
+                        db_data.deleteTempItemInvoice(item.getInvoiceProductID());
                         btn_cashier_confirmDelete.setVisibility(View.INVISIBLE);
                         btn_cashier_delete.setVisibility(View.VISIBLE);
 
                         refreshRecyclerView();
-                        Toast.makeText(Cashier.this, "ITEM DELETED!", Toast.LENGTH_SHORT).show();
+
+                        //START
+                        if(!invoiceItemList.isEmpty()){
+//                            invoiceItemList = fill_with_data();
+                            double marksTotal = db_data.totalPrice();
+                            totalPrice = marksTotal; //subTotal
+                            due = totalPrice;
+                            due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                            due2 = due2.replace("$", "");
+                            lbl_due.setText("" + marksTotal + "");
+
+                            Toast.makeText(Cashier.this, "ITEM DELETED!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            total.clear();
+                            cancelna();
+                        }
+                        //END
                     }
                 }
             }
@@ -457,14 +476,12 @@ public class Cashier extends AppCompatActivity {
         invoiceItemList.clear();
 
         SQLiteDatabase db = db_data.getReadableDatabase();
-//        String SELECT_QUERY = "SELECT " + COLUMN_PRODUCT_DESCRIPTION + "," + COLUMN_PRODUCT_PRICE + "," + COLUMN_PRODUCT_VATABLE +
-//                " FROM " + TABLE_PRODUCT + " WHERE " + code + "=" + COLUMN_PRODUCT_ID;
         String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING;
 
         Cursor cursor = db.rawQuery(SELECT_QUERY,null);
 
         String invoiceItemDescription,invoiceItemID;
-        Double invoiceItemPrice;
+        Double invoiceItemPrice,invoiceItemTotal;
         int invoiceItemQuantity;
 
         while(cursor.moveToNext()){
@@ -473,8 +490,9 @@ public class Cashier extends AppCompatActivity {
             String dummyVattable = "";
             invoiceItemQuantity = cursor.getInt(3);
             invoiceItemID = cursor.getString(4);
+            invoiceItemTotal = cursor.getDouble(5);
 
-            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID));
+            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID,invoiceItemTotal));
         }
         cursor.close();
 
@@ -520,6 +538,9 @@ public class Cashier extends AppCompatActivity {
                                 itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
                                 itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
                                 itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+
+                                //START OF SUPPLIER FOR ADDITEMS IN PRINTING
+                                //ADD TO ARRAYLIST FOR EACH FIELD IN PRODUCTS
                                 itemQuantityList.add(dialogVar);
                                 itemPriceList.add(itempriceCol);
                                 itemNameList.add(itemnameCol);
@@ -536,62 +557,65 @@ public class Cashier extends AppCompatActivity {
                                     subTotal = subTotal + total.get(x);
                                     quantityCount++;
                                 }
-                                vattable = subTotal / 1.12;
-                                vat = vattable * 0.12;
-                                vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-                                vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-                                subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                vat2 = vat2.replace("$", "");
-                                vattable2 = vattable2.replace("$", "");
-                                subTotal2 = subTotal2.replace("$", "");
-                                //products.add("" + itemnameCol + "\t " + dialogVar + "\t \t \t" + itempriceCol + "");
-                                lbl_sub.setText("" + vattable2 + "");
-                                lbl_tax.setText("" + vat2 + "");
-                                lbl_total.setText("" + subTotal2 + "");
-                                ArrayList<String> temp = new ArrayList<>();
-                                temp.add(itemnameCol);//example I don't know the order you need
-                                temp.add(itempriceCol + "");//example I don't know the order you need
-                                temp.add(dialogVar + "");//example I don't know the order you need
-                                temp.add(itempricetotalCol2);//example I don't know the order you ne
-                                t2Rows.add(temp);
+                                //END OF SUPPLIER FOR ADD PRODUCTS IN PRINTING
 
-                                totalPrice = subTotal;
-                                due = totalPrice;
-                                due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                due2 = due2.replace("$", "");
-                                lbl_due.setText("" + due2 + "");
+                                if(invoiceItemList != null){
+                                    vattable = subTotal / 1.12;
+                                    vat = vattable * 0.12;
+                                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
+                                    vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
+                                    subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                                    vat2 = vat2.replace("$", "");
+                                    vattable2 = vattable2.replace("$", "");
+                                    subTotal2 = subTotal2.replace("$", "");
 
-                                //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
-                                //INSERT TEMP INVOICE ITEMS INTO TABLE
-                                try {
-                                    String convertedCode = Long.toString(code).trim();
-                                    int result = db_data.searchDuplicateInvoice(convertedCode);
-                                    if(result > 0){
-                                        SQLiteDatabase db = db_data.getReadableDatabase();
-                                        String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
-                                        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
-                                        cursor.moveToFirst();
-                                        String retrievedQuantity = cursor.getString(3);
-                                        cursor.close();
-                                        int convertedQuantity = Integer.parseInt(retrievedQuantity);
-
-                                        db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
-                                        Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else if(result == 0){
+                                    //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
+                                    //INSERT TEMP INVOICE ITEMS INTO TABLE
+                                    try {
                                         InvoiceItem invoiceItem = new InvoiceItem();
-                                        invoiceItem.setInvoiceProductDescription(itemnameCol);
-                                        invoiceItem.setInvoiceProductPrice(itempriceCol);
-                                        invoiceItem.setInvoiceProductQuantity(dialogVar);
-                                        invoiceItem.setInvoiceProductID(convertedCode);
 
-                                        db_data.insertTempInvoice(invoiceItem);
+                                        String convertedCode = Long.toString(code).trim();
+                                        int result = db_data.searchDuplicateInvoice(convertedCode);
+                                        if(result > 0){
+                                            SQLiteDatabase db = db_data.getReadableDatabase();
+                                            String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
+                                            Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+                                            cursor.moveToFirst();
+                                            String retrievedQuantity = cursor.getString(3);
+                                            cursor.close();
+                                            int convertedQuantity = Integer.parseInt(retrievedQuantity);
+//                                            double marksTotal = db_data.totalPrice();
+
+                                            db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
+                                            Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                        else if(result == 0){ //IF DOESN'T HAVE DUPLICATE
+                                            invoiceItem.setInvoiceProductDescription(itemnameCol);
+                                            invoiceItem.setInvoiceProductPrice(itempriceCol);
+                                            invoiceItem.setInvoiceProductQuantity(dialogVar);
+                                            invoiceItem.setInvoiceProductID(convertedCode);
+                                            invoiceItem.setInvoiceProductTotal(itempriceCol*dialogVar);
+
+                                            db_data.insertTempInvoice(invoiceItem);
+                                        }
+
+                                        refreshRecyclerView();
+                                        double marksTotal = db_data.totalPrice();
+                                        totalPrice = marksTotal; //subTotal
+                                        due = totalPrice;
+                                        due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));
+                                        due2 = due2.replace("$", "");
+                                        lbl_due.setText("" + marksTotal + "");
+
+                                        alertQuantity.dismiss();
+                                    } catch (SQLiteException e){
+                                        e.printStackTrace();
                                     }
-                                    alertQuantity.dismiss();
-                                } catch (SQLiteException e){
-                                    e.printStackTrace();
+                                } else {
+                                    cancelna();
                                 }
-                                refreshRecyclerView();
+
                             }
                         }catch (Exception ex){
                             ex.printStackTrace();

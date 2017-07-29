@@ -10,6 +10,16 @@ class InvoiceItem {
     private double invoiceProductPrice;
     private String invoiceProductVattable;
     private int invoiceProductQuantity;
+    private boolean isSelected = false;
+    private double invoiceProductTotal;
+
+    public double getInvoiceProductTotal() {
+        return invoiceProductTotal;
+    }
+
+    public void setInvoiceProductTotal(double invoiceProductTotal) {
+        this.invoiceProductTotal = invoiceProductTotal;
+    }
 
     public String getInvoiceProductID() {
         return invoiceProductID;
@@ -27,7 +37,6 @@ class InvoiceItem {
         isSelected = selected;
     }
 
-    private boolean isSelected = false;
 
     public String getInvoiceProductDescription() {
         return invoiceProductDescription;
@@ -61,12 +70,13 @@ class InvoiceItem {
         this.invoiceProductQuantity = invoiceProductQuantity;
     }
 
-    public InvoiceItem(String invoiceProductDescription, double invoiceProductPrice, String invoiceProductVattable, int invoiceProductQuantity,String invoiceProductID) {
+    public InvoiceItem(String invoiceProductDescription, double invoiceProductPrice, String invoiceProductVattable, int invoiceProductQuantity,String invoiceProductID,double invoiceProductTotal) {
         this.invoiceProductDescription = invoiceProductDescription;
         this.invoiceProductPrice = invoiceProductPrice;
         this.invoiceProductVattable = invoiceProductVattable;
         this.invoiceProductQuantity = invoiceProductQuantity;
         this.invoiceProductID = invoiceProductID;
+        this.invoiceProductTotal = invoiceProductTotal;
     }
 
     public InvoiceItem() {

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +107,8 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
                 + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
                 + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
-                + COLUMN_TEMP_ID + " TEXT NOT NULL);");
+                + COLUMN_TEMP_ID + " TEXT NOT NULL,"
+                + COLUMN_TEMP_TOTALPRICE + " INTEGER);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TOTAL + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -454,17 +457,58 @@ import static com.example.sydney.psov3.Constants.*;
         values.put(COLUMN_TEMP_PRICE, invoiceItem.getInvoiceProductPrice());
         values.put(COLUMN_TEMP_QUANTITY, invoiceItem.getInvoiceProductQuantity());
         values.put(COLUMN_TEMP_ID, invoiceItem.getInvoiceProductID());
+        values.put(COLUMN_TEMP_TOTALPRICE, invoiceItem.getInvoiceProductTotal());
 
         database.insert(TABLE_TEMP_INVOICING, null, values);
 //        database.close();
     }
 
-    void deleteItemInvoice(String itemDes){
+    void deleteTempItemInvoice(String itemDes){
         try {
-            this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_DESCRIPTION +"='" + itemDes + "'");
+            this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID +"='" + itemDes + "'");
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+//    int searchDeletedTotal(String itemID) {
+//        SQLiteDatabase database = this.getReadableDatabase();
+//        String[] selectionArgs = new String[]{itemID};
+//        int i;
+//        Cursor cursor;
+//        cursor = database.rawQuery("SELECT "+ _ID +" FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "=?",selectionArgs);
+//        cursor.moveToFirst();
+//        i = cursor.getPosition();
+//        Log.e("GETPOSITION : ", i+"");
+//        cursor.close();
+//        return i;
+//
+//    }
+
+    int searchSelectedItem(String isSelected) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String[] selectionArgs = new String[]{isSelected};
+        int i;
+        Cursor cursor;
+        cursor = database.rawQuery("SELECT "+ _ID +" FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_TOTALPRICE + "=?",selectionArgs);
+        cursor.moveToFirst();
+        i = cursor.getPosition();
+        Log.e("GETPOSITION : ", i+"");
+        cursor.close();
+        return i;
+
+    }
+
+    double totalPrice(){
+        Double total;
+
+        String[] columns = {"SUM("+COLUMN_TEMP_TOTALPRICE+")"};
+
+        Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns, null, null, null, null, null, null);
+        cursor.moveToFirst();
+        total = cursor.getDouble(0);
+        cursor.close();
+        return total;
     }
 
     void deleteAllTempItemInvoice(){
@@ -513,7 +557,7 @@ import static com.example.sydney.psov3.Constants.*;
 
     void updateInvoiceItem(String code, int newQuantity){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
-                + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
+                 + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
     String getGrossSales(String x){
         String gross;
@@ -717,4 +761,6 @@ String sales(String status){
             c.close();
             return tax;
         }
-    }
+
+
+}
