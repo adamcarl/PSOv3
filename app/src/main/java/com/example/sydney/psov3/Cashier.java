@@ -725,7 +725,7 @@ cancelna();
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
             //// TODO: 7/15/2017
-            db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,inZreport,inXreport,vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
+            db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,"0","0",vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -744,6 +744,8 @@ cancelna();
             for (int a = 0; a < t2Rows.size(); a++){
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
+                int quanBaKamo = db_data.getQuantityofProducts(itemCode12345[a]) - Integer.parseInt(itemQuan12345[a]);
+                db_data.updateProductQuantity(itemCode12345[a],quanBaKamo);
             }
             products.add("-------------------------------\n");
             products.add("Invoice Number " + abc + "\n");
