@@ -122,6 +122,24 @@ public class Cashier extends AppCompatActivity {
     AlertDialog.Builder builder;
     AlertDialog alertQuantity;
 
+    //Variables for txt in Payment Info
+
+    double mPriceTotal;
+    double mVattable;
+    double mTax;
+    double mTotalDiscount;
+    double mTotal;
+    String mcustomerCash;
+    double mDue;
+    double mTaxPercent;
+
+    String mVattableConverted;
+    String mTaxConverted;
+    String mSubTotalConverted;
+    String mTotalDiscountConverted;
+    String mDueConverted;
+
+    double parsed = 0.0;
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
 
 
@@ -147,6 +165,9 @@ public class Cashier extends AppCompatActivity {
         Intent intent = getIntent();
         userNum = intent.getExtras().getString("CashNum");
 
+        discount = 0.0;
+        mTaxPercent = .12;
+        refreshPaymentInformation();
 
         tab_host.setup();
         orderArrayList = new ArrayList<>();
@@ -196,35 +217,20 @@ public class Cashier extends AppCompatActivity {
 
                         String cleanString = s.toString().replaceAll("[P,.]", "");
 
-                        double parsed = Double.parseDouble(cleanString);
+                        parsed = Double.parseDouble(cleanString);
                         formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
                         current = formatted;
                         txt_cash.setText(formatted.replace("$", "P"));
                         txt_cash.setSelection(formatted.length());
 
                         txt_cash.addTextChangedListener(this);
-                        customerCash = txt_cash.getText().toString().replace(",", "");
-                        dCustomerCash = Double.parseDouble(customerCash.replace("P", ""));
-                        due = totalPrice - dCustomerCash;
-                        formatted = NumberFormat.getCurrencyInstance().format((due / 1));
-                        formatted = formatted.replace("$", "");
 
-//                        double convertedCash = Double.parseDouble(txt_cash.getText().toString());
-                        if (due > 0) {
-                            btn_print.setEnabled(false);
-                            lbl_dc.setText("" + "Due" + "");
-                            lbl_due.setText(formatted);
-                        } else if (due <= 0) {
-                            change = dCustomerCash - totalPrice;
-                            btn_print.setEnabled(true);
-                            btn_print.setText("" + "Print Receipt" + "");
-                            lbl_dc.setText("" + "Change" + "");
-                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
-                            payment = Double.parseDouble(formatted.replaceAll("[$-,]", ""));
-                            formatted = formatted.replaceAll("[$-]", "P");
-                            lbl_due.setText(formatted);
-                        }
+                        refreshPaymentInformation();
+
+
                     }
+
+
                 }
                     catch (Exception e){
                         e.printStackTrace();
@@ -238,26 +244,6 @@ public class Cashier extends AppCompatActivity {
                 if(rb_spdisc.isChecked()){
                     //SENIOR DISCOUNT
                     discType = 1;
-                    vat = 0.0;
-                    vattable = subTotal / 1.12;
-                    discount = vattable * 0.20;
-                    discounted = vattable - discount;
-                    discount2 = NumberFormat.getCurrencyInstance().format((discount/1));
-                    discount2 = discount2.replace("$","");
-                    lbl_discount.setText("" + discount2 + "");
-
-                    discounted2 = NumberFormat.getCurrencyInstance().format((discounted/1));
-                    discounted2 = discounted2.replace("$","");
-                    lbl_total.setText(""+discounted2+"");
-
-                    vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
-                    vat2 = vat2.replace("$","");
-                    lbl_tax.setText(""+vat2+"");
-
-                    totalPrice = discounted;
-                    totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
-                    totalPrice2 = totalPrice2.replace("$","");
-                    lbl_due.setText(totalPrice2);
 
                     //SUPPLIER FOR addInvoice(. . .)
                     inVattable = 0.0;
@@ -265,26 +251,19 @@ public class Cashier extends AppCompatActivity {
                     inVatStatus = "x";
                     inSeniorDiscount = discount;
                     inVatExempt = 0.0;
-                    inZeroRated = vattable;
+                    inZeroRated = mVattable;
+
+                    discount = 0.20;
+                    mTaxPercent = 0;
+
+                    refreshPaymentInformation();
                 }
                 else if(rb_ddisc.isChecked()){
                     //DIPLOMAT DISCOUNT
                     discType=2;
-                    vattable = subTotal / 1.12;
-                    vat = vattable * 0.0;
 
-                    vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
-                    vat2 = vat2.replace("$","");
-                    lbl_tax.setText(""+vat2+"");
-
-                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable/1));
-                    vattable2 = vattable2.replace("$","");
-                    lbl_total.setText(""+vattable2+"");
-                    lbl_discount.setText(""+"0.00"+"");
-                    totalPrice = vattable;
-                    totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
-                    totalPrice2 = totalPrice2.replace("$","");
-                    lbl_due.setText(totalPrice2);
+                    discount = 0.0;
+                    mTaxPercent = 0;
 
                     //SUPPLIER FOR addInvoice(. . .)
                     inVattable = 0.0;
@@ -293,23 +272,15 @@ public class Cashier extends AppCompatActivity {
                     inSeniorDiscount = 0.0;
                     inVatExempt = 0.0;
                     inZeroRated = vattable;
+
+                    mTaxPercent = 0;
+                    discount = 0.0;
+                    refreshPaymentInformation();
+
                 }
                 else{
                     //NO DISCOUNT
-                    vattable = subTotal / 1.12;
-                    vat = vattable * 0.12;
-                    vat2 = NumberFormat.getCurrencyInstance().format((vat/1));
-                    vat2 = vat2.replace("$","");
-                    lbl_tax.setText(""+vat2+"");
-                    discount=0.0;
-                    lbl_discount.setText(""+"0.00"+"");
-                    subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal/1));
-                    subTotal2 = subTotal2.replace("$","");
-                    totalPrice = subTotal;
-                    totalPrice2 = NumberFormat.getCurrencyInstance().format((totalPrice/1));
-                    totalPrice2 = totalPrice2.replace("$","");
-                    lbl_due.setText(totalPrice2);
-                    lbl_total.setText(""+totalPrice2+"");
+
 
                     //SUPPLIER FOR addInvoice(. . .)
                     inVattable = vattable;
@@ -318,6 +289,11 @@ public class Cashier extends AppCompatActivity {
                     inSeniorDiscount = 0.0;
                     inVatExempt = 0.0;
                     inZeroRated = 0.0;
+
+                    discount = 0.0;
+                    mTaxPercent = .12;
+                    refreshPaymentInformation();
+
                 }
             }
         });
@@ -352,11 +328,33 @@ public class Cashier extends AppCompatActivity {
 
                         //START
                         if(!invoiceItemList.isEmpty()){
-//                            invoiceItemList = fill_with_data();
+                            //START OF COMPUTATION UPPER
+
                             double marksTotal = db_data.totalPrice();
                             totalPrice = marksTotal; //subTotal
+
+                            vattable = totalPrice / 1.12;
+                            vat = vattable * 0.12;
+                            vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
+                            vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
+                            subTotal2 = NumberFormat.getCurrencyInstance().format((totalPrice / 1));
+                            vat2 = vat2.replace("$", "");
+                            vattable2 = vattable2.replace("$", "");
+                            subTotal2 = subTotal2.replace("$", "");
+
+                            lbl_sub.setText("" + vattable2 + "");
+                            lbl_tax.setText("" + vat2 + "");
+                            lbl_total.setText("" + subTotal2 + "");
+                            ArrayList<String> temp = new ArrayList<>();
+                            temp.add(itemnameCol);//example I don't know the order you need
+                            temp.add(itempriceCol + "");//example I don't know the order you need
+                            temp.add(dialogVar + "");//example I don't know the order you need
+                            temp.add(itempricetotalCol2);//example I don't know the order you ne
+                            t2Rows.add(temp);
+                            //END OF COMPUTATION UPPER
+
                             due = totalPrice;
-                            due2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+                            due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));//subTotal
                             due2 = due2.replace("$", "");
                             lbl_due.setText("" + marksTotal + "");
 
@@ -370,6 +368,12 @@ public class Cashier extends AppCompatActivity {
                 }
             }
         });
+
+        //START AUTO COMPUTE WHEN APP CLOSES
+        if(invoiceItemList != null){
+            refreshPaymentInformation();
+        }
+        //END AUTO COMPUTE WHEN APP CLOSE
 
         txt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -528,7 +532,7 @@ public class Cashier extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         try {
-                            if (etQuan.getText().toString().equals("")){
+                            if(etQuan.getText().toString().equals("")){
                                 Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
                             }
                             else {
@@ -539,7 +543,7 @@ public class Cashier extends AppCompatActivity {
                                 itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
                                 itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
 
-                                //START OF SUPPLIER FOR ADDITEMS IN PRINTING
+                                //START OF SUPPLIER FOR ADD PRODUCTS
                                 //ADD TO ARRAYLIST FOR EACH FIELD IN PRODUCTS
                                 itemQuantityList.add(dialogVar);
                                 itemPriceList.add(itempriceCol);
@@ -557,18 +561,9 @@ public class Cashier extends AppCompatActivity {
                                     subTotal = subTotal + total.get(x);
                                     quantityCount++;
                                 }
-                                //END OF SUPPLIER FOR ADD PRODUCTS IN PRINTING
+                                //END OF SUPPLIER FOR ADD PRODUCTS
 
                                 if(invoiceItemList != null){
-                                    vattable = subTotal / 1.12;
-                                    vat = vattable * 0.12;
-                                    vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-                                    vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-                                    subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-                                    vat2 = vat2.replace("$", "");
-                                    vattable2 = vattable2.replace("$", "");
-                                    subTotal2 = subTotal2.replace("$", "");
-
                                     //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
                                     //INSERT TEMP INVOICE ITEMS INTO TABLE
                                     try {
@@ -578,17 +573,18 @@ public class Cashier extends AppCompatActivity {
                                         int result = db_data.searchDuplicateInvoice(convertedCode);
                                         if(result > 0){
                                             SQLiteDatabase db = db_data.getReadableDatabase();
-                                            String SELECT_QUERY = "SELECT * FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
+                                            String SELECT_QUERY = "SELECT "+ COLUMN_TEMP_QUANTITY + " , "+ COLUMN_TEMP_TOTALPRICE + " , "+ COLUMN_TEMP_PRICE +" FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
                                             Cursor cursor = db.rawQuery(SELECT_QUERY,null);
                                             cursor.moveToFirst();
-                                            String retrievedQuantity = cursor.getString(3);
+                                            int retrievedQuantity = cursor.getInt(0);
+                                            double retrievedTotalPrice = cursor.getDouble(1);
+                                            double retrievedProce = cursor.getDouble(2);
+                                            double totalNaTalaga = retrievedTotalPrice + (retrievedProce * dialogVar);
                                             cursor.close();
-                                            int convertedQuantity = Integer.parseInt(retrievedQuantity);
+
 //                                            double marksTotal = db_data.totalPrice();
-
-                                            db_data.updateInvoiceItem(convertedCode,convertedQuantity + dialogVar);
+                                            db_data.updateInvoiceItem(convertedCode,retrievedQuantity + dialogVar,totalNaTalaga);
                                             Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
-
                                         }
                                         else if(result == 0){ //IF DOESN'T HAVE DUPLICATE
                                             invoiceItem.setInvoiceProductDescription(itemnameCol);
@@ -600,13 +596,37 @@ public class Cashier extends AppCompatActivity {
                                             db_data.insertTempInvoice(invoiceItem);
                                         }
 
+                                        refreshPaymentInformation();
                                         refreshRecyclerView();
-                                        double marksTotal = db_data.totalPrice();
-                                        totalPrice = marksTotal; //subTotal
-                                        due = totalPrice;
-                                        due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));
-                                        due2 = due2.replace("$", "");
-                                        lbl_due.setText("" + marksTotal + "");
+
+//                                        double marksTotal = db_data.totalPrice();
+//                                        Double mtotalPrice = marksTotal; //subTotal
+//
+//                                        //START OF COMPUTATION UPPER
+//                                        vattable = mtotalPrice / 1.12;
+//                                        vat = vattable * 0.12;
+//                                        vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
+//                                        vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
+//                                        subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
+//                                        vat2 = vat2.replace("$", "");
+//                                        vattable2 = vattable2.replace("$", "");
+//                                        subTotal2 = subTotal2.replace("$", "");
+//
+//                                        lbl_sub.setText("" + vattable2 + "");
+//                                        lbl_tax.setText("" + vat2 + "");
+//                                        lbl_total.setText("" + subTotal2 + "");
+//                                        ArrayList<String> temp = new ArrayList<>();
+//                                        temp.add(itemnameCol);//example I don't know the order you need
+//                                        temp.add(itempriceCol + "");//example I don't know the order you need
+//                                        temp.add(dialogVar + "");//example I don't know the order you need
+//                                        temp.add(itempricetotalCol2);//example I don't know the order you ne
+//                                        t2Rows.add(temp);
+//                                        //END OF COMPUTATION UPPER
+//
+//                                        due = subTotal;
+//                                        due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));
+//                                        due2 = due2.replace("$", "");
+//                                        lbl_due.setText("" + marksTotal + "");
 
                                         alertQuantity.dismiss();
                                     } catch (SQLiteException e){
@@ -615,7 +635,6 @@ public class Cashier extends AppCompatActivity {
                                 } else {
                                     cancelna();
                                 }
-
                             }
                         }catch (Exception ex){
                             ex.printStackTrace();
@@ -633,6 +652,46 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
+    private void refreshPaymentInformation() {
+        //HERE HERE HERE HERE
+        mPriceTotal = db_data.totalPrice();
+        mVattable = mPriceTotal / 1.12;
+        mTax = mVattable * mTaxPercent; //.12
+        mTotalDiscount = mVattable * discount;
+        mTotal = mVattable + mTax - mTotalDiscount;
+        customerCash = txt_cash.getText().toString().replaceAll("[P,$]","");
+        if (customerCash.equals(null) || customerCash.equals("")){customerCash = "0";}
+        double mDoubleCustomerCash = 0.0;
+        mDoubleCustomerCash = Double.parseDouble(customerCash);
+        mDue = mDoubleCustomerCash - mTotal;
+
+        mVattableConverted = NumberFormat.getCurrencyInstance().format((mVattable / 1));
+        mTaxConverted = NumberFormat.getCurrencyInstance().format((mTax / 1));
+        mSubTotalConverted = NumberFormat.getCurrencyInstance().format((mTotal / 1));
+        mTotalDiscountConverted = NumberFormat.getCurrencyInstance().format((mTotalDiscount / 1));
+        mDueConverted = NumberFormat.getCurrencyInstance().format((mDue / 1));
+
+        lbl_sub.setText("" + mVattableConverted.replace("$","P") + "");
+        lbl_tax.setText("" + mTaxConverted.replace("$","P") + "");
+        lbl_total.setText("" + mSubTotalConverted.replace("$","P") + "");
+        lbl_discount.setText("" + mTotalDiscountConverted.replace("$","P") + "");
+        lbl_due.setText("P" + mDueConverted.replaceAll("[$()]","") + "");
+
+        if (mDue < 0) {
+            btn_print.setEnabled(false);
+            lbl_dc.setText("" + "Due" + "");
+        } else if (mDue >= 0) {
+            btn_print.setEnabled(true);
+            btn_print.setText("" + "Print Receipt" + "");
+            lbl_dc.setText("" + "Change" + "");
+//                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
+//                            payment = Double.parseDouble(formatted.replaceAll("[$-,]", ""));
+//                            formatted = formatted.replaceAll("[$-]", "P");
+//                            lbl_due.setText(formatted);
+        }
+
+    }
+
     //BUTTON PRINT
     public void print(View view) throws ParseException {
         Calendar c = Calendar.getInstance();
@@ -640,7 +699,7 @@ public class Cashier extends AppCompatActivity {
         dateformatted = dateformat.format(c.getTime());
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         currentTime = sdf.format(new Date());
-        products.add("ABZTRACK DEMO STORE");
+        products.add("ABZTRAK DEMO STORE");
         products.add("VAT REG TIN:000-111-111-001");
         products.add("MIN:12345678901234567");
         products.add("670 SGT BUMATAY STREET");
@@ -659,7 +718,6 @@ public class Cashier extends AppCompatActivity {
         String dateToStr = dateTimeFormat.format(currDate);
         Date strToDate = dateTimeFormat.parse(dateToStr);
         String customerCash = txt_cash.getText().toString().replaceAll("[P,]", "");
-        String rDisc = discType + "";
         try {
             String dateToString = strToDate.toString();
             db_data.addTransaction(transType,dateToString,userNum,0,0);
@@ -673,7 +731,7 @@ public class Cashier extends AppCompatActivity {
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
             //// TODO: 7/15/2017
-            db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,inZreport,inXreport,vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
+            db_data.addInvoice(transNumber+"",discount.toString(),mSubTotalConverted,inPrint,userNum,inZreport,inXreport,mVattableConverted,mTax,discType+"", 0.0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
@@ -695,16 +753,16 @@ public class Cashier extends AppCompatActivity {
             }
             products.add("-------------------------------");
             products.add("Invoice Number " + abc + "");
-            products.add(quantityCount + " item(s)" + "Subtotal\t" + subTotal);
-            products.add("Vatable" + "" + "\t\t" + vattable2);
-            products.add("Vat" + "" + "\t\t" + vat2);
-            products.add("Total" + "\t\t" + subTotal);
+            products.add(quantityCount + " item(s)");
+            products.add("Vatable" + "" + "\t\t" + mVattableConverted.replace("$","P"));
+            products.add("Vat" + "" + "\t\t" + mTaxConverted.replace("$","P"));
+            products.add("Total" + "\t\t" + mSubTotalConverted.replace("$","P"));
 
             //customerCash = txt_cash.getText().toString().replace(",", "");
 //            double change = dCustomerCash - totalPrice;
 
             products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString());
-            products.add("\t\t\t\tChange" + "\t\t\t" + formatted);
+            products.add("\t\t\t\tChange" + "\t\t\t" + "P" + mDueConverted.replaceAll("[$()]",""));
             products.add("\n\n\n\n\n\n");
 
             //CHECK IF PRINTERS ARE OPEN
@@ -719,7 +777,7 @@ public class Cashier extends AppCompatActivity {
 
             double doubleCustomerCash = Double.parseDouble(customerCash);
 
-            if( invoiceItemList != null && doubleCustomerCash >= due ) {
+            if( invoiceItemList != null && doubleCustomerCash >= mDue ) {
                     //JOLLIMARK PRINTER
                     unLockCashBox();
                     printFunction(products);
@@ -736,6 +794,8 @@ public class Cashier extends AppCompatActivity {
                 itemCodeList.clear();
         }
         cancelna();
+        btn_print.setEnabled(false);
+
     }
 
     private void printFunction(ArrayList<String> list) {
@@ -802,14 +862,15 @@ public class Cashier extends AppCompatActivity {
 
     //On Options Menu Cancel Item
     public void cancelna(){
-        txt_cash.setText(""+"0.00"+"");
+        txt_cash.setText(""+"P0.00"+"");
         txt_search.setText("");
 
         txt_search.requestFocus();
-        lbl_due.setText(""+"0.00"+"");
-        lbl_total.setText(""+"0.00"+"");
-        lbl_sub.setText(""+"0.00"+"");
-        lbl_tax.setText(""+"0.00"+"");
+        lbl_due.setText(""+"P0.00"+"");
+        lbl_total.setText(""+"P0.00"+"");
+        lbl_sub.setText(""+"P0.00"+"");
+        lbl_tax.setText(""+"P0.00"+"");
+        lbl_discount.setText(""+"P0.00"+"");
         dialogVar=0;
         vat=0.00;
         vat2="";

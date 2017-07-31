@@ -96,7 +96,7 @@ catch (Exception e){
         over = moneyCount - net;
         // Pad with zeros and a width of 6 chars.
 
-        toBePrinted.add("ABZTRACK DEMO STORE");
+        toBePrinted.add("ABZTRAK DEMO STORE");
         toBePrinted.add("VAT REG TIN:000-111-111-001");
         toBePrinted.add("MIN:12345678901234567");
         toBePrinted.add("670 SGT BUMATAY STREET");

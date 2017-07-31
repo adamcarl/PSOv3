@@ -555,9 +555,9 @@ import static com.example.sydney.psov3.Constants.*;
 
 
 
-    void updateInvoiceItem(String code, int newQuantity){
-        this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING+ " SET "
-                 + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
+    void updateInvoiceItem(String code, int newQuantity, double newTotalPrice){
+        this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
+                + COLUMN_TEMP_TOTALPRICE +"='"+ newTotalPrice + "'," + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
     String getGrossSales(String x){
         String gross;

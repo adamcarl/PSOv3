@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
+
+        //Todo DIALOG LOADING
+
         getSupportActionBar().hide();
         try {
             db_data.addAdmin("admin", "admin");
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
     //Initialization
     private void init() {
