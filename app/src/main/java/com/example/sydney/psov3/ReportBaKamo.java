@@ -19,6 +19,8 @@ import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION_TEMP;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME_TEMP;
 import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 
 
@@ -340,6 +342,15 @@ catch (Exception e){
 //            e.printStackTrace();
 //        }
         db_data.copyToProductTemp();
+        Cursor cProd = db_data.getAllProductsSample();
+        cProd.moveToFirst();
+
+        while(cProd.moveToNext()){
+            toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
+            toBePrinted.add("\n\n");
+        }
+        cProd.close();
+
     }
     void setDb_data(DB_Data db_data) {
         this.db_data = db_data;

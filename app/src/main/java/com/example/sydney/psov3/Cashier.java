@@ -155,6 +155,9 @@ public class Cashier extends AppCompatActivity {
     PL2303Driver mSerial;
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
 
+    ZreportExportFunction zreportExportFunction;
+
+
     protected void onCreate(Bundle savedInstanceState) {
 
         db_data = new DB_Data(this);
@@ -437,7 +440,7 @@ public class Cashier extends AppCompatActivity {
 //        alertDialogXreport = builder.create();
 //        alertDialogZreport = builder.create();
 //        alertDialogCredit = builder.create();
-
+        zreportExportFunction = new ZreportExportFunction();
 
     }
 
@@ -989,6 +992,11 @@ public class Cashier extends AppCompatActivity {
             ArrayList<String> paPrintNaman = new ArrayList<>();
             paPrintNaman = reportBaKamo.getToBePrinted();
 
+            //EXPORT TO CSV
+            boolean sent = zreportExportFunction.showDialogLoading(Cashier.this);
+            if(sent){
+                zreportExportFunction.closeDialog();
+            }
 
             unLockCashBox();
             printFunction(paPrintNaman);

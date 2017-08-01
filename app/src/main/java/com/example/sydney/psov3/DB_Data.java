@@ -783,10 +783,10 @@ import static com.example.sydney.psov3.Constants.*;
         }
         void copyToProductTemp(){
             String sql = "DELETE FROM "+TABLE_PRODUCT_TEMP;
-            dbr.rawQuery(sql,null);
+            dbr.execSQL(sql);
 
-            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT_TEMP;
-            dbr.rawQuery(sql,null);
+            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT;
+            dbr.execSQL(sql);
         }
         int getQuantityofProducts(String prodID){
             int quan = 0;
@@ -807,6 +807,11 @@ import static com.example.sydney.psov3.Constants.*;
             String[] mWHERE_ARGS = new String[]{prodID};
                 cv.put(COLUMN_PRODUCT_QUANTITY,newQuan);
             dbw.update(TABLE_PRODUCT,cv,mWHERE,mWHERE_ARGS);
+        }
+        Cursor getAllProductsSample(){
+            String[] columns = {COLUMN_PRODUCT_NAME_TEMP,COLUMN_PRODUCT_DESCRIPTION_TEMP,COLUMN_PRODUCT_QUANTITY_TEMP,COLUMN_PRODUCT_PRICE_TEMP};
+            String groupBy = COLUMN_PRODUCT_NAME_TEMP;
+            return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
         }
 }
 
