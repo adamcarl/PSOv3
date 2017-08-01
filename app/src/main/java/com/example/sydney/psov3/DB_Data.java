@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+TABLE_PRODUCT+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_PRODUCT_ID+" INTEGER NOT NULL UNIQUE, "
+                +COLUMN_PRODUCT_ID+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_PRICE+" DOUBLE NOT NULL,"
@@ -52,7 +53,7 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+TABLE_PRODUCT_TEMP+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
-                +COLUMN_PRODUCT_ID_TEMP+" INTEGER NOT NULL UNIQUE, "
+                +COLUMN_PRODUCT_ID_TEMP+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME_TEMP+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION_TEMP+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_PRICE_TEMP+" DOUBLE NOT NULL,"
@@ -83,7 +84,7 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_NAME+" TEXT NOT NULL, "
                 +COLUMN_ITEM_DESC+" TEXT NOT NULL, "
                 +COLUMN_ITEM_PRICE+" TEXT NOT NULL, "
-                +COLUMN_ITEM_PRODUCT+" INTEGER NOT NULL, "
+                +COLUMN_ITEM_PRODUCT+" TEXT NOT NULL, "
                 +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_DISCOUNT+" TEXT NOT NULL, "
                 +COLUMN_ITEM_STATUS+" INTEGER NOT NULL,"
@@ -224,9 +225,9 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-        void addGrandTotal(){
+        void addGrandTotal(Double gTotal){
             cv.clear();
-            cv.put(COLUMN_TOTAL_GRAND, 0.0);
+            cv.put(COLUMN_TOTAL_GRAND, gTotal);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
 
@@ -520,14 +521,11 @@ import static com.example.sydney.psov3.Constants.*;
         Log.e("GETPOSITION : ", i+"");
         cursor.close();
         return i;
-
     }
 
     double totalPrice(){
         Double total;
-
         String[] columns = {"SUM("+COLUMN_TEMP_TOTALPRICE+")"};
-
         Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
         total = cursor.getDouble(0);
@@ -576,8 +574,6 @@ import static com.example.sydney.psov3.Constants.*;
             }
             return 0;
         }
-
-
 
     void updateInvoiceItem(String code, int newQuantity, double newTotalPrice){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
@@ -707,7 +703,6 @@ import static com.example.sydney.psov3.Constants.*;
                     mWHERE_ARGS = new String[]{"0",status};
                 }
                 else {
-                    mWHERE = COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
                     mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
                     mWHERE_ARGS = new String[]{"0",x,status};
                 }
@@ -746,12 +741,12 @@ import static com.example.sydney.psov3.Constants.*;
         String groupBy = COLUMN_ITEM_NAME;
 
         if(x.equals("no")) {
-            mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
+            mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
             mWHERE_ARGS = new String[]{"0"};
         }
         else {
-            mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
-            mWHERE_ARGS = new String[]{"0"};
+            mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
+            mWHERE_ARGS = new String[]{"0",x};
         }
      return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, groupBy, null, null, null);
     }
@@ -794,20 +789,18 @@ import static com.example.sydney.psov3.Constants.*;
             String mWHERE;
             String[] mWHERE_ARGS;
             String[] columns = {COLUMN_PRODUCT_QUANTITY};
-                mWHERE = COLUMN_PRODUCT_ID+" = ?";
+                mWHERE = COLUMN_PRODUCT_ID +" = ?";
                 mWHERE_ARGS = new String[]{prodID};
-            c = dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            c = dbr.query(TABLE_PRODUCT, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
             c.moveToFirst();
-            quan = c.getInt(0);
+            quan = c.getInt(c.getColumnIndex(COLUMN_PRODUCT_QUANTITY));
             return quan;
         }
         void updateProductQuantity(String prodID, int newQuan){
             cv.clear();
             String mWHERE = COLUMN_PRODUCT_ID+" = ?";
             String[] mWHERE_ARGS = new String[]{prodID};
-                cv.put(COLUMN_PRODUCT_QUANTITY,newQuan);
+            cv.put(COLUMN_PRODUCT_QUANTITY,newQuan);
             dbw.update(TABLE_PRODUCT,cv,mWHERE,mWHERE_ARGS);
         }
-}
-
 }
