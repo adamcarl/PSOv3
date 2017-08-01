@@ -766,8 +766,8 @@ public class Cashier extends AppCompatActivity {
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
             //// TODO: 7/15/2017
-            db_data.addInvoice(transNumber+"",discount.toString(),mSubTotalConverted,inPrint,userNum,inZreport,inXreport,mVattableConverted,mTax,discType+"", 0.0,"","","");
-            db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,"0","0",vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
+            db_data.addInvoice(transNumber+"",discount.toString(),mSubTotalConverted,inPrint,userNum,"0","0",mVattableConverted,mTax,discType+"", 0.0,"","","");
+            //db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,"0","0",vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
