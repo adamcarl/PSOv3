@@ -37,6 +37,8 @@ class ReportBaKamo {
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
 
+    private Cursor cProd = null;
+
     void main(String x, String date, int transNum, double moneyCount){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
@@ -182,7 +184,7 @@ catch (Exception e){
                 mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
                 mWHERE_ARGS = new String[]{"0"};
             }
-            Cursor c = db_data.getAllItems(x);
+            Cursor c = db_data.getAllItems(x);//// TODO: 8/2/2017  
             c.moveToFirst();
 
         while(c.moveToNext()){
@@ -339,14 +341,14 @@ catch (Exception e){
 //            e.printStackTrace();
 //        }
         db_data.copyToProductTemp();
-        Cursor cProd = db_data.getAllProductsSample();
+        cProd = db_data.getAllProductsSample();
         cProd.moveToFirst();
 
         while(cProd.moveToNext()){
             toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
             toBePrinted.add("\n\n");
         }
-        cProd.close();
+//        cProd.close();
 
     }
     void setDb_data(DB_Data db_data) {
@@ -364,6 +366,10 @@ catch (Exception e){
 //            }
 //        }
 //    }
+    Cursor getCursorInReportBaKamo(){
+        return cProd;
+    }
+
     ArrayList<String> getToBePrinted(){
         return toBePrinted;
     }

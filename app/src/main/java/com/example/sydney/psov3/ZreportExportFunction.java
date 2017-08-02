@@ -21,7 +21,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 
 /**
@@ -31,10 +30,10 @@ import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 public class ZreportExportFunction extends AppCompatActivity{
     Context receivedCtx = null;
     ProgressDialog progressDialog = null;
-    Cursor cursor = null;
+//    Cursor cursor = null;
 //    public static final int requestcode = 1;
 
-    boolean showDialogLoading(Context ctx){
+    boolean showDialogLoading(Context ctx, Cursor cursor){
         DB_Data db_data = new DB_Data(ctx);
         receivedCtx = ctx;
         boolean isSent = false;
@@ -46,7 +45,7 @@ public class ZreportExportFunction extends AppCompatActivity{
 
         //WRITE FILE TO EXTERNAL STORAGE
         try {
-            cursor = db_data.queryDataRead("SELECT * FROM " + TABLE_PRODUCT);
+//            cursor = db_data.queryDataRead("SELECT * FROM " + TABLE_PRODUCT_TEMP);
             int rowcount = 0;
             int colcount = 0;
             File sdCardDir = Environment.getExternalStorageDirectory();
@@ -59,7 +58,7 @@ public class ZreportExportFunction extends AppCompatActivity{
             try{
                 for (int i = 0; i < rowcount; i++) {
                     cursor.moveToPosition(i);
-                    for (int j = 1; j < colcount; j++) { //I'VE CHANGED THE VALUE OF VARIABLE int j to 1. (original value 0)
+                    for (int j = 0; j < colcount; j++) { //I'VE CHANGED THE VALUE OF VARIABLE int j to 1. (original value 0)
                         if (j != colcount - 1)
                             bw.write(cursor.getString(j) + "\t");
                         else
@@ -70,7 +69,7 @@ public class ZreportExportFunction extends AppCompatActivity{
                 }
                 isSent = true;
                 Log.e("Mark's Filter", "OCCURED sql TRY!");
-            } catch (SQLException ex){
+            } catch (NullPointerException ex){
                 ex.printStackTrace();
                 Log.e("Mark's Filter", "OCCURED SQLException!");
             }
@@ -85,10 +84,10 @@ public class ZreportExportFunction extends AppCompatActivity{
         return isSent;
     }
 
-    void closeDialog(){
-        progressDialog.dismiss();
-        Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
-    }
+//    void closeDialog(){
+//        progressDialog.dismiss();
+//        Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
+//    }
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
