@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         try {
             db_data.addAdmin("admin", "admin");
-            db_data.addGrandTotal();
+            db_data.addGrandTotal(0.0);
         }catch(Exception ex){
         }
         importProduct();

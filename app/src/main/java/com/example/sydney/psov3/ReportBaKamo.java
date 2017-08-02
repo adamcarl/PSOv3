@@ -36,7 +36,6 @@ class ReportBaKamo {
     Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
-    List<List<String>> items = new ArrayList<>();
 
     void main(String x, String date, int transNum, double moneyCount){
         Calendar calendar = Calendar.getInstance();
@@ -133,7 +132,7 @@ catch (Exception e){
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
-            toBePrinted.add("OLD GT\t000-"+ogt);
+            toBePrinted.add("OLD GT\t000-"+dogt);
             toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
             toBePrinted.add("Z Count\t\t"+zf+"\n");
@@ -167,8 +166,6 @@ catch (Exception e){
         toBePrinted.add("SCD 20%\t\t-"+discount);
         toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
         toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n");
-
-
 
         toBePrinted.add("ITEM SALES\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");

@@ -208,7 +208,7 @@ public class ManageProduct extends AppCompatActivity {
             Cursor c = db_data.searchProductBaKamo(searchItem,colWhere);
 
             while (c.moveToNext()) {
-                String pid = c.getInt(1) + "";
+                String pid = c.getString(1);
                 String pname = c.getString(2);
                 String pdesc = c.getString(3);
                 double pprice = c.getDouble(4);
@@ -235,7 +235,7 @@ public class ManageProduct extends AppCompatActivity {
         SQLiteDatabase db = db_data.getReadableDatabase();
         Cursor cursor = db.query(TABLE_PRODUCT, ALL, null, null, null, null, null);
         while (cursor.moveToNext()){
-            String pid = cursor.getInt(0) + "";
+            String pid = cursor.getString(0);
             String pname = cursor.getString(1);
             String pdesc = cursor.getString(2);
             double pprice = cursor.getDouble(3);

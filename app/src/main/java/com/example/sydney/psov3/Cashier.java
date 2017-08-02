@@ -3,7 +3,6 @@ package com.example.sydney.psov3;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -93,7 +92,6 @@ public class Cashier extends AppCompatActivity {
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
-    List<List<String>> t2Rows = new ArrayList<>();
     ArrayList<Order> orderArrayList;
     AdapterOrder adapterOrder=null;
     String currentTime;
@@ -389,7 +387,6 @@ public class Cashier extends AppCompatActivity {
                             temp.add(itempriceCol + "");//example I don't know the order you need
                             temp.add(dialogVar + "");//example I don't know the order you need
                             temp.add(itempricetotalCol2);//example I don't know the order you ne
-                            t2Rows.add(temp);
                             //END OF COMPUTATION UPPER
 
                             due = totalPrice;
@@ -658,7 +655,6 @@ public class Cashier extends AppCompatActivity {
 //                                        temp.add(itempriceCol + "");//example I don't know the order you need
 //                                        temp.add(dialogVar + "");//example I don't know the order you need
 //                                        temp.add(itempricetotalCol2);//example I don't know the order you ne
-//                                        t2Rows.add(temp);
 //                                        //END OF COMPUTATION UPPER
 //
 //                                        due = subTotal;
@@ -778,20 +774,20 @@ public class Cashier extends AppCompatActivity {
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
             String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
-            String[] itemDesc12345 = itemNameList.toArray(new String[itemNameList.size()]);
+            String[] itemDesc12345 = itemDescList.toArray(new String[itemNameList.size()]);
             Double[] itemPrice12345 = itemPriceList.toArray(new Double[itemPriceList.size()]);
             cursor.close();
-            itemCode123.clear();
-            itemQuan123.clear();
-            itemNameList.clear();
-            itemDescList.clear();
-            itemPriceList.clear();
-            for (int a = 0; a < t2Rows.size(); a++){
+            for (int a = 0; a < itemQuan123.size(); a++){
                 db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
                 products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
                 int quanBaKamo = db_data.getQuantityofProducts(itemCode12345[a]) - Integer.parseInt(itemQuan12345[a]);
                 db_data.updateProductQuantity(itemCode12345[a],quanBaKamo);
             }
+            itemCode123.clear();
+            itemQuan123.clear();
+            itemNameList.clear();
+            itemDescList.clear();
+            itemPriceList.clear();
             products.add("-------------------------------");
             products.add("Invoice Number " + abc + "");
             products.add(quantityCount + " item(s)");
@@ -889,7 +885,6 @@ public class Cashier extends AppCompatActivity {
                 }
 
                 cancelna();
-                t2Rows.clear();
                 products.clear();
                 return true;
             case R.id.action_vieworder:
@@ -946,7 +941,6 @@ public class Cashier extends AppCompatActivity {
 
     public void xreport(View view){
         //FOR SAVING X REPORT
-        reportBaKamo.setDb_data(db_data);
         try{
             transType = "xreport";
             Date currDate = new Date();
@@ -965,6 +959,12 @@ public class Cashier extends AppCompatActivity {
             reportBaKamo.setDb_data(db_data);
 
             reportBaKamo.main(userNum,dateToString,bcd,enteredCashDrawer);
+            ArrayList<String> paPrintNaman;
+            paPrintNaman = reportBaKamo.getToBePrinted();
+
+//            unLockCashBox();
+            printFunction(paPrintNaman);
+            paPrintNaman.clear();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -989,7 +989,7 @@ public class Cashier extends AppCompatActivity {
 
             reportBaKamo.setDb_data(db_data);
             reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
-            ArrayList<String> paPrintNaman = new ArrayList<>();
+            ArrayList<String> paPrintNaman;
             paPrintNaman = reportBaKamo.getToBePrinted();
 
             //EXPORT TO CSV
@@ -998,7 +998,7 @@ public class Cashier extends AppCompatActivity {
                 zreportExportFunction.closeDialog();
             }
 
-            unLockCashBox();
+            //unLockCashBox();
             printFunction(paPrintNaman);
             paPrintNaman.clear();
         } catch (Exception e) {
