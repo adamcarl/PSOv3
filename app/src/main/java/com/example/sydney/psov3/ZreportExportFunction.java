@@ -67,7 +67,6 @@ public class ZreportExportFunction extends AppCompatActivity{
                     bw.newLine();
                     bw.flush();
                 }
-                isSent = true;
                 Log.e("Mark's Filter", "OCCURED sql TRY!");
             } catch (NullPointerException ex){
                 ex.printStackTrace();
@@ -84,10 +83,10 @@ public class ZreportExportFunction extends AppCompatActivity{
         return isSent;
     }
 
-//    void closeDialog(){
-//        progressDialog.dismiss();
-//        Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
-//    }
+    void closeDialog(){
+        progressDialog.dismiss();
+        Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
+    }
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {

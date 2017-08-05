@@ -191,6 +191,7 @@ public class ManageProduct extends AppCompatActivity {
         fileIntent.setType("gagt/sdf");
         try {
             startActivityForResult(fileIntent, requestcode);
+            db_data.copyToProductTemp();
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
             e.printStackTrace();

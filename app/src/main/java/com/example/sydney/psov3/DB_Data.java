@@ -137,6 +137,20 @@ import static com.example.sydney.psov3.Constants.*;
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_TOTAL_GRAND + " DOUBLE);");
 
+        arg0.execSQL("CREATE TABLE "+ TABLE_RETRIEVED_JOINTABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_RETRIEVED_BARCODE + " TEXT,"
+                + COLUMN_RETRIEVED_NAME + " TEXT,"
+                + COLUMN_RETRIEVED_QUANTITY + " INTEGER,"
+                + COLUMN_RETRIEVED_SOLDITEM + " INTEGER,"
+                + COLUMN_RETRIEVED_NEWQUANTITY + " INTEGER);");
+
+//        String COLUMN_RETRIEVED_BARCODE = "total_ret_barcode";
+//        String COLUMN_RETRIEVED_NAME = "total_ret_name";
+//        String COLUMN_RETRIEVED_QUANTITY = "total_ret_quantity";
+//        String COLUMN_RETRIEVED_SOLDITEM = "total_ret_solditem";
+//        String COLUMN_RETRIEVED_NEWQUANTITY = "total_ret_newquantity";
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -161,6 +175,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TEMP_INVOICING);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TOTAL);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_RETRIEVED_JOINTABLE);
         onCreate(arg0);
     }
 
@@ -807,6 +823,20 @@ import static com.example.sydney.psov3.Constants.*;
             String[] columns = {COLUMN_PRODUCT_NAME_TEMP,COLUMN_PRODUCT_DESCRIPTION_TEMP,COLUMN_PRODUCT_QUANTITY_TEMP,COLUMN_PRODUCT_PRICE_TEMP};
             String groupBy = COLUMN_PRODUCT_NAME_TEMP;
             return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
+        }
+
+        void insertRetrievedJoinTable(JoinTable joinTable){
+            SQLiteDatabase database = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+
+            values.put(COLUMN_RETRIEVED_BARCODE, joinTable.getBarcode());
+            values.put(COLUMN_RETRIEVED_NAME, joinTable.getName());
+            values.put(COLUMN_RETRIEVED_QUANTITY, joinTable.getQuantity());
+            values.put(COLUMN_RETRIEVED_SOLDITEM, joinTable.getSolditem());
+            values.put(COLUMN_RETRIEVED_NEWQUANTITY, joinTable.getNewQuantity());
+
+            database.insert(TABLE_RETRIEVED_JOINTABLE, null, values);
+//        database.close();
         }
 }
 

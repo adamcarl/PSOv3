@@ -93,4 +93,22 @@ interface Constants extends BaseColumns {
     String COLUMN_PRODUCT_QUANTITY_TEMP = "ProdQuan_temp";
     String COLUMN_PRODUCT_VATABLE_TEMP = "Vatable_temp";
     String COLUMN_PRODUCT_IMEI_TEMP = "ProdIMEI_temp";
+
+    String TABLE_RETRIEVED_JOINTABLE = "tbl_retrieved";
+    String COLUMN_RETRIEVED_BARCODE = "total_ret_barcode";
+    String COLUMN_RETRIEVED_NAME = "total_ret_name";
+    String COLUMN_RETRIEVED_QUANTITY = "total_ret_quantity";
+    String COLUMN_RETRIEVED_SOLDITEM = "total_ret_solditem";
+    String COLUMN_RETRIEVED_NEWQUANTITY = "total_ret_newquantity";
 }
+
+//"SELECT c1."+COLUMN_PRODUCT_ID + "," +
+//       "c1."+COLUMN_PRODUCT_NAME + "," +
+//       "c2."+COLUMN_PRODUCT_QUANTITY_TEMP + "," +
+//       "c3."+COLUMN_ITEM_QUANTITY + "," +
+//       "c1."+COLUMN_PRODUCT_QUANTITY +
+//       " FROM " + TABLE_PRODUCT + " c1 " +
+//       " INNER JOIN " + TABLE_PRODUCT_TEMP + " c2 " +
+//          " ON " + "c1."+COLUMN_PRODUCT_ID + "= c2."+COLUMN_PRODUCT_ID_TEMP +
+//       " INNER JOIN " + TABLE_ITEM c3 +
+//          " ON " + "c1."+COLUMN_PRODUCT_ID + "= c3."+COLUMN_ITEM_PRODUCT+";"

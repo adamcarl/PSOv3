@@ -344,10 +344,10 @@ catch (Exception e){
         cProd = db_data.getAllProductsSample();
         cProd.moveToFirst();
 
-        while(cProd.moveToNext()){
-            toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
-            toBePrinted.add("\n\n");
-        }
+//        while(cProd.moveToNext()){
+//            toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
+//            toBePrinted.add("\n\n");
+//        }
 //        cProd.close();
 
     }
