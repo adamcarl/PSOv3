@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/myColorDialogBG"
+    android:id="@+id/llQuan">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MODIFY ITEM"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <android.support.v7.widget.AppCompatButton
+                android:textSize="20dp"
+                android:id="@+id/btnAddQuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_dialog"
+                android:elevation="2dp"
+                android:text="ADD QUANTITY"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold" />
+            <android.support.v7.widget.AppCompatButton
+                android:textSize="20dp"
+                android:id="@+id/btnEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_dialog"
+                android:elevation="2dp"
+                android:text="EDIT"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold" />
+            <android.support.v7.widget.AppCompatButton
+                android:textSize="20dp"
+                android:id="@+id/btnMinus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight=".5"
+                android:background="@drawable/custom_button_dialog"
+                android:elevation="2dp"
+                android:text="MINUS"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

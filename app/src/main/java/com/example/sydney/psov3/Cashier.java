@@ -744,6 +744,8 @@ public class Cashier extends AppCompatActivity {
 //                            lbl_due.setText(formatted);
         }
 
+        writeDataToSerial("Total : " + lbl_total.getText().toString(),"Change : " + lbl_due.getText().toString(),"");
+
     }
 
     //BUTTON PRINT
@@ -855,7 +857,7 @@ public class Cashier extends AppCompatActivity {
         }
         cancelna();
         btn_print.setEnabled(false);
-
+        writeDataToSerial("SALAMAT PO!","PAWIL KINI!","");
     }
 
     private void printFunction(ArrayList<String> list) {

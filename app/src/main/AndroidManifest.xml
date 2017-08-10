@@ -62,6 +62,16 @@
             android:label="My Profile"
             android:parentActivityName=".AdminActivity" />
         <activity android:name=".temp"></activity>
+
+        <activity
+            android:name=".ModifyAddQuantity"
+            android:label="Add Quantity"
+            android:parentActivityName=".ManageProduct" />
+
+        <activity
+            android:name=".ModifyEdit"
+            android:label="Edit Item"
+            android:parentActivityName=".ManageProduct" />
     </application>
 
 </manifest>

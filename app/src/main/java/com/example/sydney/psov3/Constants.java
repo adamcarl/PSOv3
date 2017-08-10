@@ -100,6 +100,15 @@ interface Constants extends BaseColumns {
     String COLUMN_RETRIEVED_QUANTITY = "total_ret_quantity";
     String COLUMN_RETRIEVED_SOLDITEM = "total_ret_solditem";
     String COLUMN_RETRIEVED_NEWQUANTITY = "total_ret_newquantity";
+
+    String TABLE_PRODUCTLOGS = "tbl_productLogs";
+    String COLUMN_PRODUCTLOGS_BARCODE = "prodLog_barcode";
+    String COLUMN_PRODUCTLOGS_TYPE = "prodLog_type";
+    String COLUMN_PRODUCTLOGS_VALUEADDED = "prodLog_valueadded";
+    String COLUMN_PRODUCTLOGS_VALUEMINUS = "prodLog_valueminus";
+    String COLUMN_PRODUCTLOGS_REMARKS = "prodLog_remarks";
+    String COLUMN_PRODUCTLOGS_OTHER = "prodLog_others";
+
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

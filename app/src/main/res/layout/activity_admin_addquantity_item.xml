@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/myColorDialogBG"
+    android:id="@+id/addQuantityCl">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:inputType="number"
+            android:id="@+id/etUpdateAddQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="Enter value of Quantity to be added "
+            android:textColor="@color/myColorEditTextDialogDisable"
+            android:textColorHint="@color/myColorDialogBG" />
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp">
+
+            <RadioButton
+                android:id="@+id/rbDelivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Delivery" />
+
+            <RadioButton
+                android:id="@+id/rbTransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Transfer In" />
+        </RadioGroup>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:inputType="text"
+            android:id="@+id/etAddQuantityRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="Remarks (required for Transfer in)"
+            android:textColor="@color/myColorEditTextDialogDisable"
+            android:textColorHint="@color/myColorDialogBG" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp">
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_dialog"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnSaveAddQuantity"
+                android:text="SAVE"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:elevation="2dp"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_weight=".5"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_dialog"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCancelAddQuantity"
+                android:text="CANCEL"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

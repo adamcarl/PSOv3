@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -40,7 +41,7 @@ import static com.example.sydney.psov3.Constants.*;
  * Created by PROGRAMMER2 on 6/2/2017.
  */
 
-public class ManageProduct extends AppCompatActivity {
+public class ManageProduct extends AppCompatActivity  implements ProductAdapter.OnRecyclerItemClickListener{
     AlertDialog.Builder builder = null;
     AlertDialog alertDialog = null;
     DB_Data db_data;
@@ -66,7 +67,7 @@ public class ManageProduct extends AppCompatActivity {
 
         //INITIALIZE DATA SET
         productsList = listGo();
-        productAdapter = new ProductAdapter(getApplication(),productsList);
+        productAdapter = new ProductAdapter(getApplication(),productsList,this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -178,7 +179,7 @@ public class ManageProduct extends AppCompatActivity {
         }
         if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
             productsList = listGo();
-            productAdapter = new ProductAdapter(getApplication(),productsList);
+            productAdapter = new ProductAdapter(getApplication(),productsList,ManageProduct.this);
             recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(productAdapter);
@@ -267,7 +268,7 @@ public class ManageProduct extends AppCompatActivity {
 
                     if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && searchView.getQuery().toString().trim().toLowerCase().equals("")){
                         productsList = listGo();
-                        productAdapter = new ProductAdapter(getApplication(),productsList);
+                        productAdapter = new ProductAdapter(getApplication(),productsList,ManageProduct.this);
                         recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),1,GridLayoutManager.VERTICAL,false));
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(productAdapter);
@@ -390,7 +391,7 @@ public class ManageProduct extends AppCompatActivity {
                             }
                             //INITIALIZE DATA SET
                             productsList = listGo();
-                            productAdapter = new ProductAdapter(getApplication(),productsList);
+                            productAdapter = new ProductAdapter(getApplication(),productsList,ManageProduct.this);
                             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                             recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -424,5 +425,66 @@ public class ManageProduct extends AppCompatActivity {
                 }
         }
         listGo();
+    }
+
+    @Override
+    public void onRecyclerItemClick(View view, final int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_edit_products, null);
+        alertDialogBuilder.setView(alertLayout);
+
+        Button btnAddQuan = (Button) alertLayout.findViewById(R.id.btnAddQuan);
+        Button btnEdit = (Button) alertLayout.findViewById(R.id.btnEdit);
+        Button btnMinus = (Button) alertLayout.findViewById(R.id.btnMinus);
+
+        final AlertDialog alertDialogModify = alertDialogBuilder.create();
+        alertDialogModify.show();
+
+        //ONLY QUANTITY CAN BE EDITED!
+        btnAddQuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ManageProduct.this,ModifyAddQuantity.class);
+                intent.putExtra("POS",position);
+                intent.putExtra("ID",productsList.get(position).getP_id());
+                intent.putExtra("NAME",productsList.get(position).getP_name());
+                intent.putExtra("DESCRIPTION",productsList.get(position).getP_desc());
+                intent.putExtra("PRICE",productsList.get(position).getP_price());
+                intent.putExtra("QUANTITY",productsList.get(position).getP_quan());
+                startActivity(intent);
+                alertDialogModify.dismiss();
+            }
+        });
+
+        //ONLY NAME,DESCRIPTION,PRICE CAN BE EDITED!
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ManageProduct.this,ModifyEdit.class);
+                intent.putExtra("ID",productsList.get(position).getP_id());
+                intent.putExtra("NAME",productsList.get(position).getP_name());
+                intent.putExtra("DESCRIPTION",productsList.get(position).getP_desc());
+                intent.putExtra("PRICE",productsList.get(position).getP_price());
+                intent.putExtra("QUANTITY",productsList.get(position).getP_quan());
+                startActivity(intent);
+                alertDialogModify.dismiss();
+            }
+        });
+
+        btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ManageProduct.this,ModifyMinus.class);
+                intent.putExtra("ID",productsList.get(position).getP_id());
+                intent.putExtra("NAME",productsList.get(position).getP_name());
+                intent.putExtra("DESCRIPTION",productsList.get(position).getP_desc());
+                intent.putExtra("PRICE",productsList.get(position).getP_price());
+                intent.putExtra("QUANTITY",productsList.get(position).getP_quan());
+                startActivity(intent);
+                alertDialogModify.dismiss();
+
+            }
+        });
     }
 }

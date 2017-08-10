@@ -92,6 +92,15 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_CASHIER+" TEXT NOT NULL );");
 
+        arg0.execSQL("CREATE TABLE "+TABLE_PRODUCTLOGS+" ("
+                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_PRODUCTLOGS_BARCODE+" TEXT NOT NULL, "
+                +COLUMN_PRODUCTLOGS_TYPE+" TEXT NOT NULL, " //transfer out/in, return to manufacturer
+                +COLUMN_PRODUCTLOGS_VALUEADDED+" INTEGER, "
+                +COLUMN_PRODUCTLOGS_VALUEMINUS+" INTEGER, "
+                +COLUMN_PRODUCTLOGS_REMARKS+" TEXT NOT NULL );");
+
+
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
 
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
@@ -145,12 +154,6 @@ import static com.example.sydney.psov3.Constants.*;
                 + COLUMN_RETRIEVED_SOLDITEM + " INTEGER,"
                 + COLUMN_RETRIEVED_NEWQUANTITY + " INTEGER);");
 
-//        String COLUMN_RETRIEVED_BARCODE = "total_ret_barcode";
-//        String COLUMN_RETRIEVED_NAME = "total_ret_name";
-//        String COLUMN_RETRIEVED_QUANTITY = "total_ret_quantity";
-//        String COLUMN_RETRIEVED_SOLDITEM = "total_ret_solditem";
-//        String COLUMN_RETRIEVED_NEWQUANTITY = "total_ret_newquantity";
-
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -177,6 +180,8 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TOTAL);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_RETRIEVED_JOINTABLE);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_PRODUCTLOGS);
         onCreate(arg0);
     }
 
@@ -825,18 +830,45 @@ import static com.example.sydney.psov3.Constants.*;
             return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
         }
 
-        void insertRetrievedJoinTable(JoinTable joinTable){
-            SQLiteDatabase database = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
+        void insertRetrievedJoinTable(JoinTable joinTable) {
 
-            values.put(COLUMN_RETRIEVED_BARCODE, joinTable.getBarcode());
-            values.put(COLUMN_RETRIEVED_NAME, joinTable.getName());
-            values.put(COLUMN_RETRIEVED_QUANTITY, joinTable.getQuantity());
-            values.put(COLUMN_RETRIEVED_SOLDITEM, joinTable.getSolditem());
-            values.put(COLUMN_RETRIEVED_NEWQUANTITY, joinTable.getNewQuantity());
-
-            database.insert(TABLE_RETRIEVED_JOINTABLE, null, values);
-//        database.close();
         }
-}
+
+        public void updateAddQuantity(String id, int quantity) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_QUANTITY, quantity);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void modifyItem(String id, String name, String description, double price) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_NAME, name);
+            cv.put(COLUMN_PRODUCT_DESCRIPTION, description);
+            cv.put(COLUMN_PRODUCT_QUANTITY, price);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void minusItemQuantity(String id, int newQuantity) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_QUANTITY, newQuantity);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogOther) {
+            cv.clear();
+            cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
+            cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
+            cv.put(COLUMN_PRODUCTLOGS_VALUEADDED, prodLogValueAdded);
+            cv.put(COLUMN_PRODUCTLOGS_VALUEMINUS, prodLogValueMinus);
+            cv.put(COLUMN_PRODUCTLOGS_REMARKS, prodLogRemarks);
+            cv.put(COLUMN_PRODUCTLOGS_OTHER, prodLogOther);
+            dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
+        }
+    }
 
