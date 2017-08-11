@@ -72,6 +72,11 @@
             android:name=".ModifyEdit"
             android:label="Edit Item"
             android:parentActivityName=".ManageProduct" />
+
+        <activity
+            android:name=".ModifyMinus"
+            android:label="Decrease Quantity"
+            android:parentActivityName=".ManageProduct" />
     </application>
 
 </manifest>

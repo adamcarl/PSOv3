@@ -29,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            android:id="@+id/rgAddQuantity">
 
             <RadioButton
                 android:id="@+id/rbDelivery"
@@ -44,6 +45,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Transfer In" />
+
+            <RadioButton
+                android:id="@+id/rbOtherAddQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Other" />
         </RadioGroup>
 
         <android.support.v7.widget.AppCompatEditText
@@ -54,7 +62,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
-            android:hint="Remarks (required for Transfer in)"
+            android:hint="Remarks (required)"
             android:textColor="@color/myColorEditTextDialogDisable"
             android:textColorHint="@color/myColorDialogBG" />
 

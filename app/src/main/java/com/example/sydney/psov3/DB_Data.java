@@ -98,7 +98,8 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCTLOGS_TYPE+" TEXT NOT NULL, " //transfer out/in, return to manufacturer
                 +COLUMN_PRODUCTLOGS_VALUEADDED+" INTEGER, "
                 +COLUMN_PRODUCTLOGS_VALUEMINUS+" INTEGER, "
-                +COLUMN_PRODUCTLOGS_REMARKS+" TEXT NOT NULL );");
+                +COLUMN_PRODUCTLOGS_REMARKS+" TEXT NOT NULL,"
+                +COLUMN_PRODUCTLOGS_DATE+" TEXT NOT NULL);");
 
 
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
@@ -860,14 +861,15 @@ import static com.example.sydney.psov3.Constants.*;
             dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
         }
 
-        public void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogOther) {
+        public void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
             cv.clear();
             cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
             cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
             cv.put(COLUMN_PRODUCTLOGS_VALUEADDED, prodLogValueAdded);
             cv.put(COLUMN_PRODUCTLOGS_VALUEMINUS, prodLogValueMinus);
             cv.put(COLUMN_PRODUCTLOGS_REMARKS, prodLogRemarks);
-            cv.put(COLUMN_PRODUCTLOGS_OTHER, prodLogOther);
+            cv.put(COLUMN_PRODUCTLOGS_DATE, prodLogDate);
+
             dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
         }
     }

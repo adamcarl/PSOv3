@@ -29,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            android:id="@+id/modifyMinusRG">
 
             <RadioButton
                 android:id="@+id/rbReturnToManufacturer"
@@ -44,6 +45,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Transfer Out"/>
+
+            <RadioButton
+                android:id="@+id/rbOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Others"/>
+
+
+
         </RadioGroup>
 
         <android.support.v7.widget.AppCompatEditText

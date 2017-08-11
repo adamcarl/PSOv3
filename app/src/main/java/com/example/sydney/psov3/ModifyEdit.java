@@ -73,6 +73,7 @@ public class ModifyEdit extends AppCompatActivity{
         etName = (EditText) findViewById(R.id.etUpdateName);
         etDescription = (EditText) findViewById(R.id.etUpdateDescription);
         etPrice = (EditText) findViewById(R.id.etUpdatePrice);
+        etQuantity = (EditText) findViewById(R.id.etQuantity);
         btnSave = (Button) findViewById(R.id.btnSaveModifyItem);
         btnCancel = (Button) findViewById(R.id.btnCancelModifyItem);
         modifyCl = (CoordinatorLayout) findViewById(R.id.modifyItemCl);

@@ -107,7 +107,9 @@ interface Constants extends BaseColumns {
     String COLUMN_PRODUCTLOGS_VALUEADDED = "prodLog_valueadded";
     String COLUMN_PRODUCTLOGS_VALUEMINUS = "prodLog_valueminus";
     String COLUMN_PRODUCTLOGS_REMARKS = "prodLog_remarks";
-    String COLUMN_PRODUCTLOGS_OTHER = "prodLog_others";
+//    String COLUMN_PRODUCTLOGS_OTHER = "prodLog_others";
+    String COLUMN_PRODUCTLOGS_DATE = "prodLog_date";
+
 
 }
 
