@@ -38,7 +38,7 @@ import java.util.List;
 import static com.example.sydney.psov3.Constants.*;
 
 /**
- * Created by PROGRAMMER2 on 6/2/2017.
+ * Created by Marky on 6/2/2017.
  */
 
 public class ManageProduct extends AppCompatActivity  implements ProductAdapter.OnRecyclerItemClickListener{
@@ -55,12 +55,19 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
     RecyclerView recyclerView;
     SearchView searchView;
 
+    private ZreportExportFunction zreportExportFunction = null;
+    SQLiteDatabase dbReader;
+
     public static final int requestcode = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_manage_product);
         db_data = new DB_Data(this);
+
+        zreportExportFunction = new ZreportExportFunction();
+        dbReader = db_data.getReadableDatabase();
 
         spinner = (Spinner) findViewById(R.id.spinnerProductSearch);
         spinner.setSelection(0); //initially Product ID
@@ -302,10 +309,26 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                 //IMPORTING PRODUCT
                 importProduct();
 
+            case R.id.menu_show_log:
+                //PRINT PRODUCT LOGS
+                printProductLog();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private void printProductLog() {
+        Cursor retrievedCursorFromProductLog;
+        Cursor cursorDummy = null;
+        String logProductQuery = "SELECT * FROM " + TABLE_PRODUCTLOGS;
+        retrievedCursorFromProductLog = dbReader.rawQuery(logProductQuery,null);
+
+        boolean sent = zreportExportFunction.showDialogLoading(ManageProduct.this,cursorDummy,retrievedCursorFromProductLog);
+        if(sent){
+            zreportExportFunction.closeDialog();
+        }
+    }
+
     private void createMyDialog(){
         builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();

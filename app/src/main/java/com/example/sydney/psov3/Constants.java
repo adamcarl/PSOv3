@@ -102,14 +102,12 @@ interface Constants extends BaseColumns {
     String COLUMN_RETRIEVED_NEWQUANTITY = "total_ret_newquantity";
 
     String TABLE_PRODUCTLOGS = "tbl_productLogs";
-    String COLUMN_PRODUCTLOGS_BARCODE = "prodLog_barcode";
-    String COLUMN_PRODUCTLOGS_TYPE = "prodLog_type";
-    String COLUMN_PRODUCTLOGS_VALUEADDED = "prodLog_valueadded";
-    String COLUMN_PRODUCTLOGS_VALUEMINUS = "prodLog_valueminus";
-    String COLUMN_PRODUCTLOGS_REMARKS = "prodLog_remarks";
-//    String COLUMN_PRODUCTLOGS_OTHER = "prodLog_others";
-    String COLUMN_PRODUCTLOGS_DATE = "prodLog_date";
-
+    String COLUMN_PRODUCTLOGS_BARCODE = "CODE";
+    String COLUMN_PRODUCTLOGS_TYPE = "TYPE";
+    String COLUMN_PRODUCTLOGS_VALUEADDED = "ADDED";
+    String COLUMN_PRODUCTLOGS_VALUEMINUS = "SUBTRACT";
+    String COLUMN_PRODUCTLOGS_REMARKS = "REMARKS";
+    String COLUMN_PRODUCTLOGS_DATE = "DATE";
 
 }
 

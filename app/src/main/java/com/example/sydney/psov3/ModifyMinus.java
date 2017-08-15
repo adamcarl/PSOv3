@@ -63,9 +63,14 @@ public class ModifyMinus extends AppCompatActivity {
                 String dateConvertion = dateTimeFormat.format(currDate);
 
                 int intValueToMinus = Integer.parseInt(etValueToMinus.getText().toString());
+                if(etValueToMinus.getText().toString().equals("")){
+                    intValueToMinus = 0;
+                }
+
                 DB_Data db_data = new DB_Data(ModifyMinus.this);
 
-                if(intValueToMinus > 0 && intValueToMinus < quantity ){
+                if(intValueToMinus > 0 && intValueToMinus < quantity && etMinusRemarks.getText().toString() != ""
+                        && rbReturnToManufacter.isChecked() || rbTransferOut.isChecked() || rbOther.isChecked()){
                     db_data.minusItemQuantity(id,quantity - intValueToMinus);
                     db_data.addProductLogs(id,logType,0,intValueToMinus,etMinusRemarks.getText().toString(),dateConvertion);
                     Intent intent = new Intent(ModifyMinus.this,ManageProduct.class);

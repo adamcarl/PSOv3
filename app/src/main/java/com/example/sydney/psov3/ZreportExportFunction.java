@@ -33,7 +33,7 @@ public class ZreportExportFunction extends AppCompatActivity{
 //    Cursor cursor = null;
 //    public static final int requestcode = 1;
 
-    boolean showDialogLoading(Context ctx, Cursor cursor){
+    boolean showDialogLoading(Context ctx, Cursor cursorZreport, Cursor cursorLog){
         DB_Data db_data = new DB_Data(ctx);
         receivedCtx = ctx;
         boolean isSent = false;
@@ -43,29 +43,54 @@ public class ZreportExportFunction extends AppCompatActivity{
         progressDialog.setMessage("File is Exporting. . .");
         progressDialog.show();
 
+        if(cursorZreport!= null){
+            writeToStorage(cursorZreport,"Zreport");
+            isSent = true;
+        }
+
+        else if(cursorLog != null){
+            writeToStorage(cursorLog,"ProductLog");
+            isSent = true;
+        }
+
+        return isSent;
+    }
+
+    void writeToStorage(Cursor cursor, String fileName){
         //WRITE FILE TO EXTERNAL STORAGE
         try {
 //            cursor = db_data.queryDataRead("SELECT * FROM " + TABLE_PRODUCT_TEMP);
             int rowcount = 0;
             int colcount = 0;
             File sdCardDir = Environment.getExternalStorageDirectory();
-            String filename = "ExportedFile.txt"; // the name of the file to export with
+            String filename = "ExportedFile"+fileName+".txt"; // the name of the file to export with
             File saveFile = new File(sdCardDir, filename);
             FileWriter fw = new FileWriter(saveFile);
             BufferedWriter bw = new BufferedWriter(fw);
             rowcount = cursor.getCount();
             colcount = cursor.getColumnCount();
             try{
-                for (int i = 0; i < rowcount; i++) {
-                    cursor.moveToPosition(i);
-                    for (int j = 0; j < colcount; j++) { //I'VE CHANGED THE VALUE OF VARIABLE int j to 1. (original value 0)
-                        if (j != colcount - 1)
-                            bw.write(cursor.getString(j) + "\t");
-                        else
-                            bw.write(cursor.getString(j));
+                if (rowcount > 0) {
+                    cursor.moveToFirst();
+                    for (int i = 1; i < colcount; i++) {
+                        if (i != colcount - 1) {
+                            bw.write(cursor.getColumnName(i) + ",");
+                        } else {
+                            bw.write(cursor.getColumnName(i));
+                        }
                     }
                     bw.newLine();
-                    bw.flush();
+                    for (int i = 0; i < rowcount; i++) {
+                        cursor.moveToPosition(i);
+                        for (int j = 1; j < colcount; j++) { //I'VE CHANGED THE VALUE OF VARIABLE int j to 1. (original value 0)
+                            if (j != colcount - 1)
+                                bw.write(cursor.getString(j) + ",");
+                            else
+                                bw.write(cursor.getString(j));
+                        }
+                        bw.newLine();
+                        bw.flush();
+                    }
                 }
                 Log.e("Mark's Filter", "OCCURED sql TRY!");
             } catch (NullPointerException ex){
@@ -73,14 +98,41 @@ public class ZreportExportFunction extends AppCompatActivity{
                 Log.e("Mark's Filter", "OCCURED SQLException!");
             }
 
+
+//            //                    if (rowcount > 0) {
+////                        cursor.moveToFirst();
+////                        for (int i = 1; i < colcount; i++) {
+////                            if (i != colcount - 1) {
+////                                bw.write(cursor.getColumnName(i) + "\t");
+////                            } else {
+////                                bw.write(cursor.getColumnName(i));
+////                            }
+////                        }
+////                        bw.newLine();
+//            //I COMMENTED THE ABOVE CODE SNIPPET TO REMOVE THE FIELD NAMES WHEN EXPORTING FILE
+//            for (int i = 0; i < rowcount; i++) {
+//                cursor.moveToPosition(i);
+//                for (int j = 1; j < colcount; j++) { //I'VE CHANGED THE VALUE OF VARIABLE int j to 1. (original value 0)
+//                    if (j != colcount - 1)
+//                        bw.write(cursor.getString(j) + "\t");
+//                    else
+//                        bw.write(cursor.getString(j));
+//                }
+//                bw.newLine();
+////                        }
+//                bw.flush();
+//                resultMsg.setText("");
+//            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
             progressDialog.dismiss();
-            Toast.makeText(ctx, "Failed to Export file!", Toast.LENGTH_SHORT).show();
-            isSent = false;
+//            Toast.makeText(ctx, "Failed to Export file!", Toast.LENGTH_SHORT).show();
+//            isSent = false;
+        } finally{
+            cursor.close();
         }
         //END
-        return isSent;
     }
 
     void closeDialog(){

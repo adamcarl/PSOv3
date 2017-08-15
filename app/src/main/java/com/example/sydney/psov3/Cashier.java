@@ -592,6 +592,12 @@ public class Cashier extends AppCompatActivity {
                                 itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
                                 itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
 
+                                ArrayList<String> temp = new ArrayList<>();
+                                temp.add(itemnameCol);//example I don't know the order you need
+                                temp.add(itempriceCol + "");//example I don't know the order you need
+                                temp.add(dialogVar + "");//example I don't know the order you need
+                                temp.add(itempricetotalCol2);//example I don't know the order you ne
+                                t2Rows.add(temp);
                                 //START OF SUPPLIER FOR ADD PRODUCTS
                                 //ADD TO ARRAYLIST FOR EACH FIELD IN PRODUCTS
 //                                itemQuantityList.add(dialogVar);
@@ -796,15 +802,18 @@ public class Cashier extends AppCompatActivity {
             String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
             String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
             String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
-            String[] itemDesc12345 = itemDescList.toArray(new String[itemNameList.size()]);
+            String[] itemDesc12345 = itemDescList.toArray(new String[itemDescList.size()]);
             Double[] itemPrice12345 = itemPriceList.toArray(new Double[itemPriceList.size()]);
             cursor.close();
-
-            for (int a = 0; a < itemDescList.size(); a++){
-                db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
-                products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
-                int quanBaKamo = db_data.getQuantityofProducts(itemCode12345[a]) - Integer.parseInt(itemQuan12345[a]);
-                db_data.updateProductQuantity(itemCode12345[a],quanBaKamo);
+            try{
+                for (int a = 0; a < t2Rows.size(); a++){
+                    db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
+                    products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
+                    int quanBaKamo = db_data.getQuantityofProducts(itemCode12345[a]) - Integer.parseInt(itemQuan12345[a]);
+                    db_data.updateProductQuantity(itemCode12345[a],quanBaKamo);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
             }
 
             itemCode123.clear();
@@ -1016,12 +1025,15 @@ public class Cashier extends AppCompatActivity {
             //EXPORT TO CSV
             //Cursor retrievedCursorFromReportBaKaMo = reportBaKamo.getCursorInReportBaKamo();
             Cursor retrievedCursorFromJoinTable;
-            String joinTableQuery = "SELECT c1."+COLUMN_PRODUCT_ID + "," +
-                    "c1."+COLUMN_PRODUCT_NAME + "," +
-                    "c2."+COLUMN_PRODUCT_QUANTITY_TEMP + "," +
-                    "SUM(c3."+COLUMN_ITEM_QUANTITY + ")," +
+            Cursor cursorDummy = null;
+
+            String joinTableQuery = "SELECT c1."+ _ID+ " as ID, "+
+                    "c1."+COLUMN_PRODUCT_ID + " as CODE," +
+                    "c1."+COLUMN_PRODUCT_NAME + " as ITEM," +
+                        "c2."+COLUMN_PRODUCT_QUANTITY_TEMP + " as BEGINNING," +
+                    "SUM(c3."+COLUMN_ITEM_QUANTITY + ") as SALES," +
                     "c1."+COLUMN_PRODUCT_QUANTITY +
-                    " FROM " + TABLE_PRODUCT + " c1 " +
+                    " as ENDING FROM " + TABLE_PRODUCT + " c1 " +
                     " INNER JOIN " + TABLE_PRODUCT_TEMP + " c2 " +
                     " ON " + "c1."+COLUMN_PRODUCT_ID + "= c2."+COLUMN_PRODUCT_ID_TEMP +
                     " LEFT JOIN " + TABLE_ITEM + " c3 " +
@@ -1030,8 +1042,7 @@ public class Cashier extends AppCompatActivity {
                     " GROUP BY " + COLUMN_PRODUCT_ID + ";";
             retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery,null);
 
-
-            boolean sent = zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable);
+            boolean sent = zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable,cursorDummy);
             if(sent){
                 zreportExportFunction.closeDialog();
             }

@@ -66,17 +66,24 @@ public class ModifyAddQuantity  extends AppCompatActivity{
 //                Date strToDate = dateTimeFormat.parse(dateConvertion);
 //                String dateToString = strToDate.toString();
 
-                int cQuantity = Integer.parseInt(etQuantity.getText().toString().trim().replaceAll("[.]",""));
+                String strQuantity = etQuantity.getText().toString().trim().replaceAll("[.]","");
+                if(strQuantity.isEmpty()){
+                    strQuantity = "0";
+                }
+                String strRemarks = etAddQuantityRemarks.getText().toString();
+                int cQuantity = Integer.parseInt(strQuantity);
+
                 DB_Data db_data = new DB_Data(ModifyAddQuantity.this);
-                if(!TextUtils.isEmpty(etQuantity.getText().toString())){
+                if(!TextUtils.isEmpty(strQuantity) || !strQuantity.equals("0") && !TextUtils.isEmpty(strRemarks) || strRemarks.equals("")
+                        && rbTransfer.isChecked() || rbOtherAddQuantity.isChecked() || rbDelivery.isChecked()){
                     db_data.updateAddQuantity(id,quantity+cQuantity);
-                    db_data.addProductLogs(id,logType,cQuantity,0,etAddQuantityRemarks.getText().toString(),dateConvertion);
+                    db_data.addProductLogs(id,logType,cQuantity,0,strRemarks,dateConvertion);
                     Intent intent = new Intent(ModifyAddQuantity.this,ManageProduct.class);
                     Snackbar.make(mCl,"Added Successfully!",Snackbar.LENGTH_SHORT).show();
                     startActivity(intent);
                 }
                 else{
-                    Snackbar.make(mCl,"Fill all fields!",Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(mCl,"Complete all fields!",Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
