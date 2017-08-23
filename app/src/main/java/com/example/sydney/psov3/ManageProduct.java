@@ -323,10 +323,8 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
         String logProductQuery = "SELECT * FROM " + TABLE_PRODUCTLOGS;
         retrievedCursorFromProductLog = dbReader.rawQuery(logProductQuery,null);
 
-        boolean sent = zreportExportFunction.showDialogLoading(ManageProduct.this,cursorDummy,retrievedCursorFromProductLog);
-        if(sent){
-            zreportExportFunction.closeDialog();
-        }
+        zreportExportFunction.showDialogLoading(ManageProduct.this,cursorDummy,retrievedCursorFromProductLog);
+
     }
 
     private void createMyDialog(){

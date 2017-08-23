@@ -63,7 +63,7 @@ public class Cashier extends AppCompatActivity {
     private int quantityCount = 0,itemcodeCol,discType=0,dialogVar;
     private String code = "";
     String userNum;
-    Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol,discount=0.0,discounted,totalPrice;
+    Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol=0.0,discount=0.0,discounted,totalPrice;
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
@@ -75,9 +75,10 @@ public class Cashier extends AppCompatActivity {
     String itemnameCol,itemdescCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
 //    ArrayList<Integer>itemQuantityList = new ArrayList<>();
     ArrayList<Double>itemPriceList = new ArrayList<>();
+    ArrayList<Integer>itemQuantityList = new ArrayList<>();
+    ArrayList<Integer>itemCodeList = new ArrayList<>();
     ArrayList<String>itemNameList = new ArrayList<>();
     ArrayList<String>itemDescList = new ArrayList<>();
-//    ArrayList<Integer>itemCodeList  = new ArrayList<>();
     ArrayList<Double> total = new ArrayList<>();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<>();
@@ -138,11 +139,14 @@ public class Cashier extends AppCompatActivity {
     double mDue;
     double mTaxPercent;
 
-    String mVattableConverted;
-    String mTaxConverted;
-    String mSubTotalConverted;
-    String mTotalDiscountConverted;
-    String mDueConverted;
+    String mVattableConverted = "";
+    String mTaxConverted = "";
+    String mSubTotalConverted = "";
+    String mTotalDiscountConverted = "";
+    String mDueConverted = "";
+    String cleanSubtotal = "";
+    String cleanVattable = "";
+    String cleanTax = "";
 
     double parsed = 0.0;
     static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
@@ -153,6 +157,9 @@ public class Cashier extends AppCompatActivity {
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
 
     ZreportExportFunction zreportExportFunction;
+
+    InvoiceAdapter invoiceAdapter = null;
+    AppCompatEditText etQuan = null;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +211,7 @@ public class Cashier extends AppCompatActivity {
 //        writeDataToSerial("ABZTRAK INC.");
         discount = 0.0;
         mTaxPercent = .12;
-        refreshPaymentInformation();
+
 
         tab_host.setup();
         orderArrayList = new ArrayList<>();
@@ -230,7 +237,6 @@ public class Cashier extends AppCompatActivity {
         spec.setContent(R.id.tab3);
         spec.setIndicator("Shift");
         tab_host.addTab(spec);
-//        cancelna();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
         dateformatted = dateformat.format(c.getTime());
@@ -269,10 +275,6 @@ public class Cashier extends AppCompatActivity {
                             btn_print.setEnabled(true);
                             btn_print.setText("" + "Print Receipt" + "");
                             lbl_dc.setText("" + "Change" + "");
-//                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
-//                            payment = Double.parseDouble(formatted.replaceAll("[$-,]", ""));
-//                            formatted = formatted.replaceAll("[$-]", "P");
-//                            lbl_due.setText(formatted);
                         }
 
                         refreshPaymentInformation();
@@ -376,37 +378,9 @@ public class Cashier extends AppCompatActivity {
                         refreshRecyclerView();
 
                         //START
-                        if(!invoiceItemList.isEmpty()){
+                        if(invoiceAdapter.getItemCount() > 0){
                             //START OF COMPUTATION UPPER
                             refreshPaymentInformation();
-//                            double marksTotal = db_data.totalPrice();
-//                            totalPrice = marksTotal; //subTotal
-//
-//                            vattable = totalPrice / 1.12;
-//                            vat = vattable * 0.12;
-//                            vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-//                            vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-//                            subTotal2 = NumberFormat.getCurrencyInstance().format((totalPrice / 1));
-//                            vat2 = vat2.replace("$", "");
-//                            vattable2 = vattable2.replace("$", "");
-//                            subTotal2 = subTotal2.replace("$", "");
-//
-//                            lbl_sub.setText("" + vattable2 + "");
-//                            lbl_tax.setText("" + vat2 + "");
-//                            lbl_total.setText("" + subTotal2 + "");
-                            ArrayList<String> temp = new ArrayList<>();
-                            temp.add(itemnameCol);//example I don't know the order you need
-                            temp.add(itempriceCol + "");//example I don't know the order you need
-                            temp.add(dialogVar + "");//example I don't know the order you need
-                            temp.add(itempricetotalCol2);//example I don't know the order you ne
-                            t2Rows.add(temp);
-                            //END OF COMPUTATION UPPER
-
-//                            due = totalPrice;
-//                            due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));//subTotal
-//                            due2 = due2.replace("$", "");
-//                            lbl_due.setText("" + marksTotal + "");
-
                             Toast.makeText(Cashier.this, "ITEM DELETED!", Toast.LENGTH_SHORT).show();
                         } else {
                             isOn = false;
@@ -420,7 +394,8 @@ public class Cashier extends AppCompatActivity {
         });
 
         //START AUTO COMPUTE WHEN APP CLOSES
-        if(invoiceItemList != null){
+        if(invoiceAdapter.getItemCount() > 0){
+            Log.e("InvoiceAdapter : ", invoiceAdapter.getItemCount()+"");
             refreshPaymentInformation();
         }
         //END AUTO COMPUTE WHEN APP CLOSE
@@ -533,19 +508,20 @@ public class Cashier extends AppCompatActivity {
 
         Cursor cursor = db.rawQuery(SELECT_QUERY,null);
 
-        String invoiceItemDescription,invoiceItemID;
-        Double invoiceItemPrice,invoiceItemTotal;
+        String invoiceItemName,invoiceItemDescription,invoiceItemID;
+        double invoiceItemPrice,invoiceItemTotal;
         int invoiceItemQuantity;
 
         while(cursor.moveToNext()){
-            invoiceItemDescription = cursor.getString(1);
-            invoiceItemPrice = cursor.getDouble(2);
+            invoiceItemName = cursor.getString(1);
+            invoiceItemDescription = cursor.getString(2);
+            invoiceItemPrice = cursor.getDouble(3);
             String dummyVattable = "";
-            invoiceItemQuantity = cursor.getInt(3);
-            invoiceItemID = cursor.getString(4);
-            invoiceItemTotal = cursor.getDouble(5);
+            invoiceItemQuantity = cursor.getInt(4);
+            invoiceItemID = cursor.getString(5);
+            invoiceItemTotal = cursor.getDouble(6);
 
-            invoiceItemList.add(new InvoiceItem(invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID,invoiceItemTotal));
+            invoiceItemList.add(new InvoiceItem(invoiceItemName,invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID,invoiceItemTotal));
         }
         cursor.close();
 
@@ -564,7 +540,7 @@ public class Cashier extends AppCompatActivity {
             final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
             builder.setView(alertLayout);
             final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnEnter);
-            final AppCompatEditText etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
+            etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
 
             code = txt_search.getText().toString();
             final String[] itemcode = {code};
@@ -586,36 +562,7 @@ public class Cashier extends AppCompatActivity {
                             }
                             else {
                                 dialogVar = Integer.parseInt(etQuan.getText().toString());
-                                itemQuan123.add(etQuan.getText().toString());
-                                itempriceCol = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
-                                itemnameCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
-                                itemdescCol = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
-                                itemcodeCol = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
 
-                                ArrayList<String> temp = new ArrayList<>();
-                                temp.add(itemnameCol);//example I don't know the order you need
-                                temp.add(itempriceCol + "");//example I don't know the order you need
-                                temp.add(dialogVar + "");//example I don't know the order you need
-                                temp.add(itempricetotalCol2);//example I don't know the order you ne
-                                t2Rows.add(temp);
-                                //START OF SUPPLIER FOR ADD PRODUCTS
-                                //ADD TO ARRAYLIST FOR EACH FIELD IN PRODUCTS
-//                                itemQuantityList.add(dialogVar);
-                                itemPriceList.add(itempriceCol);
-                                itemNameList.add(itemnameCol);
-//                                itemCodeList.add(itemcodeCol);
-                                itemDescList.add(itemdescCol);
-                                itempricetotalCol = dialogVar * itempriceCol;
-                                itempricetotalCol2 = NumberFormat.getCurrencyInstance().format((itempricetotalCol/1));
-                                itempricetotalCol2 = itempricetotalCol2.replace("$","");
-                                ArrayList<Double> total = new ArrayList<>();
-                                total.add(itempricetotalCol);
-                                layout.invalidate();
-                                layout.requestLayout();
-                                for (int x = 0; x < total.size(); x++) {
-                                    subTotal = subTotal + total.get(x);
-                                    quantityCount++;
-                                }
                                 //END OF SUPPLIER FOR ADD PRODUCTS
 
                                 if(invoiceItemList != null){
@@ -625,6 +572,11 @@ public class Cashier extends AppCompatActivity {
                                         InvoiceItem invoiceItem = new InvoiceItem();
 
                                         String convertedCode = code.trim();
+                                        Double prodPrice = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
+                                        String prodName = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
+                                        String prodDes = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
+                                        String prodId = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+
                                         int result = db_data.searchDuplicateInvoice(convertedCode);
                                         if(result > 0){
                                             SQLiteDatabase db = db_data.getReadableDatabase();
@@ -642,11 +594,12 @@ public class Cashier extends AppCompatActivity {
                                             Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
                                         }
                                         else if(result == 0){ //IF DOESN'T HAVE DUPLICATE
-                                            invoiceItem.setInvoiceProductDescription(itemnameCol);
-                                            invoiceItem.setInvoiceProductPrice(itempriceCol);
-                                            invoiceItem.setInvoiceProductQuantity(dialogVar);
-                                            invoiceItem.setInvoiceProductID(convertedCode);
-                                            invoiceItem.setInvoiceProductTotal(itempriceCol*dialogVar);
+                                            invoiceItem.setInvoiceProductName(prodName);
+                                            invoiceItem.setInvoiceProductDescription(prodDes);
+                                            invoiceItem.setInvoiceProductPrice(prodPrice);//toAdd item
+                                            invoiceItem.setInvoiceProductQuantity(dialogVar);//toAdd item
+                                            invoiceItem.setInvoiceProductID(prodId);//toAdd item
+                                            invoiceItem.setInvoiceProductTotal(prodPrice*dialogVar);//toAdd item
 
                                             db_data.insertTempInvoice(invoiceItem);
                                         }
@@ -660,34 +613,6 @@ public class Cashier extends AppCompatActivity {
 
                                         refreshRecyclerView();
 
-//                                        double marksTotal = db_data.totalPrice();
-//                                        Double mtotalPrice = marksTotal; //subTotal
-//
-//                                        //START OF COMPUTATION UPPER
-//                                        vattable = mtotalPrice / 1.12;
-//                                        vat = vattable * 0.12;
-//                                        vattable2 = NumberFormat.getCurrencyInstance().format((vattable / 1));
-//                                        vat2 = NumberFormat.getCurrencyInstance().format((vat / 1));
-//                                        subTotal2 = NumberFormat.getCurrencyInstance().format((subTotal / 1));
-//                                        vat2 = vat2.replace("$", "");
-//                                        vattable2 = vattable2.replace("$", "");
-//                                        subTotal2 = subTotal2.replace("$", "");
-//
-//                                        lbl_sub.setText("" + vattable2 + "");
-//                                        lbl_tax.setText("" + vat2 + "");
-//                                        lbl_total.setText("" + subTotal2 + "");
-//                                        ArrayList<String> temp = new ArrayList<>();
-//                                        temp.add(itemnameCol);//example I don't know the order you need
-//                                        temp.add(itempriceCol + "");//example I don't know the order you need
-//                                        temp.add(dialogVar + "");//example I don't know the order you need
-//                                        temp.add(itempricetotalCol2);//example I don't know the order you ne
-//                                        //END OF COMPUTATION UPPER
-//
-//                                        due = subTotal;
-//                                        due2 = NumberFormat.getCurrencyInstance().format((marksTotal / 1));
-//                                        due2 = due2.replace("$", "");
-//                                        lbl_due.setText("" + marksTotal + "");
-
                                         alertQuantity.dismiss();
                                     } catch (SQLiteException e){
                                         e.printStackTrace();
@@ -698,7 +623,7 @@ public class Cashier extends AppCompatActivity {
                             }
                         }catch (Exception ex){
                             ex.printStackTrace();
-                            lbl_due.setText(subTotal2);
+//                            lbl_due.setText(subTotal2);
                         }
                     }
                 });
@@ -713,6 +638,10 @@ public class Cashier extends AppCompatActivity {
     }
 
     private void refreshPaymentInformation() {
+
+        quantityCount = db_data.getQuantityCount(); //GET ITEM QUANTITY TOTAL COUNT
+
+
         //HERE HERE HERE HERE
         mPriceTotal = db_data.totalPrice();
         mVattable = mPriceTotal / 1.12;
@@ -737,17 +666,16 @@ public class Cashier extends AppCompatActivity {
         lbl_discount.setText("" + mTotalDiscountConverted.replace("$","P") + "");
         lbl_due.setText("P" + mDueConverted.replaceAll("[$()]","") + "");
 
+        cleanVattable = mVattableConverted.replaceAll("[$,]","");
+        cleanSubtotal = mSubTotalConverted.replaceAll("[$,]","");
+
         if (mDue < 0) {
             btn_print.setEnabled(false);
             lbl_dc.setText("" + "Due" + "");
-        } else if (mDue >= 0 && invoiceItemList !=null) {
+        } else if (mDue >= 0 && invoiceAdapter.getItemCount() > 0) {
             btn_print.setEnabled(true);
             btn_print.setText("" + "Print Receipt" + "");
             lbl_dc.setText("" + "Change" + "");
-//                            formatted = NumberFormat.getCurrencyInstance().format((change / 1));
-//                            payment = Double.parseDouble(formatted.replaceAll("[$-,]", ""));
-//                            formatted = formatted.replaceAll("[$-]", "P");
-//                            lbl_due.setText(formatted);
         }
 
         writeDataToSerial("Total : " + lbl_total.getText().toString(),"Change : " + lbl_due.getText().toString(),"");
@@ -793,24 +721,42 @@ public class Cashier extends AppCompatActivity {
             String customerDiscount = lbl_discount.getText().toString().trim();
             //--END
             //// TODO: 7/15/2017
-            db_data.addInvoice(transNumber+"",discount.toString(),mSubTotalConverted,inPrint,userNum,"0","0",mVattableConverted,mTax,discType+"", 0.0,"","","");
+            try{
+                db_data.addInvoice(transNumber+"",discount.toString(),cleanSubtotal,inPrint,userNum,"0","0",cleanVattable,mTax,discType+"", 0.0,"","","");
+                Log.e("AddInvoice : ", "trans#"+transNumber+ "|disc"+discount.toString()+ "|subtotyal"+cleanSubtotal+"|print"+inPrint+ "|cashier"+userNum+ "|clean vattable: "+cleanVattable+"|tax: "+mTax+"|disc typee"+discType+"");
+            } catch(Exception e){
+                e.printStackTrace();
+            }
             //db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,"0","0",vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
             cursor.moveToLast();
             String abc = cursor.getString(0);
-            String[] itemCode12345 = itemCode123.toArray(new String[itemCode123.size()]);
-            String[] itemQuan12345 = itemQuan123.toArray(new String[itemQuan123.size()]);
-            String[] itemName12345 = itemNameList.toArray(new String[itemNameList.size()]);
-            String[] itemDesc12345 = itemDescList.toArray(new String[itemDescList.size()]);
-            Double[] itemPrice12345 = itemPriceList.toArray(new Double[itemPriceList.size()]);
-            cursor.close();
+
+            Cursor receivedCursorFromTemp = db_data.selectAllTempInvoice();
+            receivedCursorFromTemp.moveToFirst();
+
             try{
-                for (int a = 0; a < t2Rows.size(); a++){
-                    db_data.addItem(abc,itemCode12345[a],itemQuan12345[a],0,itemName12345[a],itemDesc12345[a],itemPrice12345[a],userNum);
-                    products.add("" + itemName12345[a] + "\t" + itemQuan12345[a] + "\t" + itemPrice12345[a] * Double.parseDouble(itemQuan12345[a]) + "");
-                    int quanBaKamo = db_data.getQuantityofProducts(itemCode12345[a]) - Integer.parseInt(itemQuan12345[a]);
-                    db_data.updateProductQuantity(itemCode12345[a],quanBaKamo);
+                while (!receivedCursorFromTemp.isAfterLast()){
+                    db_data.addItem(
+                            abc,
+                            receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID)),
+                            receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY)),
+                            0,
+                            receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_NAME )),
+                            receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)),
+                            receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)),
+                            userNum);
+
+                    products.add("" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)) +
+                                "\t" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY)) +
+                                "\t" + receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)) * Double.parseDouble(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY))) + "");
+
+                    int quanBaKamo = db_data.getQuantityofProducts(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID))) - receivedCursorFromTemp.getInt(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY));
+
+                    db_data.updateProductQuantity(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID)) ,quanBaKamo);
+
+                    receivedCursorFromTemp.moveToNext();
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -848,7 +794,7 @@ public class Cashier extends AppCompatActivity {
 
             double doubleCustomerCash = Double.parseDouble(customerCash);
 
-            if( invoiceItemList != null && doubleCustomerCash >= mDue ) {
+            if( invoiceAdapter.getItemCount() > 0 && doubleCustomerCash >= mDue ) {
                     //JOLLIMARK PRINTER
 //                    unLockCashBox();
                     printFunction(products);
@@ -1042,10 +988,11 @@ public class Cashier extends AppCompatActivity {
                     " GROUP BY " + COLUMN_PRODUCT_ID + ";";
             retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery,null);
 
-            boolean sent = zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable,cursorDummy);
-            if(sent){
-                zreportExportFunction.closeDialog();
-            }
+            zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable,cursorDummy);
+//            boolean sent =
+//            if(sent){
+//                zreportExportFunction.closeDialog();
+//            }
             //END OF EXPORT CSV
 
             reportBaKamo.setDb_data(db_data);
@@ -1146,7 +1093,7 @@ public class Cashier extends AppCompatActivity {
     private void refreshRecyclerView() {
         //REFRESHING THE RECYCLER
         invoiceItemList = fill_with_data();
-        InvoiceAdapter invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
+        invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
         mLayoutManager = new GridLayoutManager(Cashier.this,2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

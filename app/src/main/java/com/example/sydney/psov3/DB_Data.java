@@ -46,7 +46,7 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_ID+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION+" TEXT NOT NULL, "
-                +COLUMN_PRODUCT_PRICE+" DOUBLE NOT NULL,"
+                +COLUMN_PRODUCT_PRICE+" REAL NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY+" INTEGER NOT NULL, "
                 +COLUMN_PRODUCT_VATABLE+" INTEGER, "
                 +COLUMN_PRODUCT_IMEI+" INTEGER );");
@@ -56,24 +56,24 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_ID_TEMP+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME_TEMP+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION_TEMP+" TEXT NOT NULL, "
-                +COLUMN_PRODUCT_PRICE_TEMP+" DOUBLE NOT NULL,"
+                +COLUMN_PRODUCT_PRICE_TEMP+" REAL NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY_TEMP+" INTEGER NOT NULL, "
-                +COLUMN_PRODUCT_VATABLE_TEMP+" INTEGER, "
+                +COLUMN_PRODUCT_VATABLE_TEMP+" REAL, "
                 +COLUMN_PRODUCT_IMEI_TEMP+" INTEGER );");
 
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_DISCOUNT+" INTEGER,"
-                +COLUMN_INVOICE_NORMALSALE +" INTEGER NOT NULL,"
+                +COLUMN_INVOICE_DISCOUNT+" REAL,"
+                +COLUMN_INVOICE_NORMALSALE +" REAL NOT NULL,"
                 +COLUMN_INVOICE_PRINT+" TEXT,"
                 +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
                 +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
                 +COLUMN_INVOICE_XREPORT_STATUS +" TEXT,"
-                +COLUMN_INVOICE_VATTABLE+ " INTEGER,"
-                +COLUMN_INVOICE_VATTED+ " INTEGER,"
+                +COLUMN_INVOICE_VATTABLE+ " REAL,"
+                +COLUMN_INVOICE_VATTED+ " REAL,"
                 +COLUMN_INVOICE_VAT_STATUS+ " TEXT,"
-                +COLUMN_INVOICE_CREDITSALE+ " FLOAT,"
+                +COLUMN_INVOICE_CREDITSALE+ " REAL,"
                 +COLUMN_INVOICE_DATEANDTIME+ " TEXT,"
                 +COLUMN_INVOICE_CREDITCARDNUMBER+ " TEXT,"
                 +COLUMN_INVOICE_CREDITDATEOFEXPIRATION+ " TEXT);");
@@ -83,10 +83,10 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_NAME+" TEXT NOT NULL, "
                 +COLUMN_ITEM_DESC+" TEXT NOT NULL, "
-                +COLUMN_ITEM_PRICE+" TEXT NOT NULL, "
+                +COLUMN_ITEM_PRICE+" REAL NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" TEXT NOT NULL, "
                 +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
-                +COLUMN_ITEM_DISCOUNT+" TEXT NOT NULL, "
+                +COLUMN_ITEM_DISCOUNT+" REAL NOT NULL, "
                 +COLUMN_ITEM_STATUS+" INTEGER NOT NULL,"
                 +COLUMN_ITEM_XREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL,"
@@ -113,15 +113,15 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
-                +COLUMN_XREPORT_CASHSALES + " FLOAT,"
-                +COLUMN_XREPORT_CASHCOUNT + " FLOAT,"
-                +COLUMN_XREPORT_CASHSHORTOVER + " FLOAT);");
+                +COLUMN_XREPORT_CASHSALES + " REAL,"
+                +COLUMN_XREPORT_CASHCOUNT + " REAL,"
+                +COLUMN_XREPORT_CASHSHORTOVER + " REAL);");
 
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
-                +COLUMN_ZREPORT_CASHSALES+" FLOAT, "
-                +COLUMN_ZREPORT_CASHCOUNT+" FLOAT);");
+                +COLUMN_ZREPORT_CASHSALES+" REAL, "
+                +COLUMN_ZREPORT_CASHCOUNT+" REAL);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -137,6 +137,7 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TEMP_NAME + " TEXT NOT NULL,"
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
                 + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
                 + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
@@ -145,7 +146,7 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TOTAL + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_TOTAL_GRAND + " DOUBLE);");
+                + COLUMN_TOTAL_GRAND + " REAL);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_RETRIEVED_JOINTABLE + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -247,14 +248,14 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-        void addGrandTotal(Double gTotal){
+        void addGrandTotal(double gTotal){
             cv.clear();
             cv.put(COLUMN_TOTAL_GRAND, gTotal);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
 
 
-        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, Double inVatted, String inVatStatus, Double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
+        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
@@ -273,7 +274,7 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, Double itemPrice, String itemCashier){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, double itemPrice, String itemCashier){
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
@@ -500,6 +501,7 @@ import static com.example.sydney.psov3.Constants.*;
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
+        values.put(COLUMN_TEMP_NAME, invoiceItem.getInvoiceProductName());
         values.put(COLUMN_TEMP_DESCRIPTION, invoiceItem.getInvoiceProductDescription());
         values.put(COLUMN_TEMP_PRICE, invoiceItem.getInvoiceProductPrice());
         values.put(COLUMN_TEMP_QUANTITY, invoiceItem.getInvoiceProductQuantity());
@@ -546,7 +548,7 @@ import static com.example.sydney.psov3.Constants.*;
     }
 
     double totalPrice(){
-        Double total;
+        double total;
         String[] columns = {"SUM("+COLUMN_TEMP_TOTALPRICE+")"};
         Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
@@ -555,12 +557,28 @@ import static com.example.sydney.psov3.Constants.*;
         return total;
     }
 
+    int getQuantityCount(){
+        int quanCount;
+        String[] columns = {"SUM("+COLUMN_TEMP_QUANTITY+")"};
+        Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns,null, null, null, null, null, null);
+        cursor.moveToFirst();
+        quanCount = cursor.getInt(0);
+        cursor.close();
+        Log.e("QuantityCount : ", quanCount+"");
+        return quanCount;
+    }
+
     void deleteAllTempItemInvoice(){
         try {
             this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING);
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    Cursor selectAllTempInvoice(){
+        // TODO: 8/19/2017
+        return dbr.rawQuery("SELECT * FROM "+ TABLE_TEMP_INVOICING,null);
     }
 
     int searchDuplicateInvoice(String itemID) {
@@ -601,8 +619,8 @@ import static com.example.sydney.psov3.Constants.*;
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
                 + COLUMN_TEMP_TOTALPRICE +"='"+ newTotalPrice + "'," + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
-    String getGrossSales(String x){
-        String gross;
+    double getGrossSales(String x){
+        double gross;
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
@@ -616,8 +634,9 @@ import static com.example.sydney.psov3.Constants.*;
         }
         Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
-        gross = cursor.getString(0);
+        gross = cursor.getDouble(0);
         cursor.close();
+        Log.e("Gross sales : ", gross+"");
         return  gross;
     }
     String getDiscountSales(String x){
@@ -735,23 +754,23 @@ import static com.example.sydney.psov3.Constants.*;
             return discount;
         }
         //Grand Total is the sum of all accumulated NET SALES.
-    String getMyOldGross(){
-        String gross;
+    double getMyOldGross(){
+        double gross;
         String[] columns = {"SUM("+COLUMN_TOTAL_GRAND+")"};
         Cursor cursor = dbr.query(TABLE_TOTAL, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
         try {
-            gross = cursor.getString(0);
-            String sale = getGrossSales("no");
+            gross = cursor.getDouble(0);
+            double sale = getGrossSales("no");
 
-            float s = Float.parseFloat(sale);
+//            float s = Float.parseFloat(sale);
             // TODO
             cv.clear();
-            cv.put(COLUMN_TOTAL_GRAND,s);
+            cv.put(COLUMN_TOTAL_GRAND,sale);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
         catch (Exception e){
-            gross = "0.0";
+            gross = 0.0;
         }
         cursor.close();
         return gross;

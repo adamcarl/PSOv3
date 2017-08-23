@@ -32,7 +32,8 @@ class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> toBePrinted = new ArrayList<>();
     SQLiteDatabase dbReader;
-    String gross, discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ogt, ngt, trans;
+    double gross= 0.0, ogt = 0.0;
+    String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
     Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
@@ -84,7 +85,7 @@ catch (Exception e){
     exemptDiscount = 0.0;
     exemptDiscount1 = exemptDiscount * .12;
 }
-        net_gross = Double.parseDouble(gross);
+        net_gross = gross;
         net_discount = Double.parseDouble(discount)+exemptDiscount1;
         net = net_gross-net_discount;
         or1 = String.format("%1$06d", or[0]);
@@ -94,7 +95,7 @@ catch (Exception e){
         t3 = transArray[1] - transArray[0];
         zf = String.format("%1$05d", z);
         trans = String.format("%1$06d", transNum);
-        dogt = Double.parseDouble(ogt);
+        dogt = ogt;
         dngt = dogt + net;
         over = moneyCount - net;
         // Pad with zeros and a width of 6 chars.
@@ -198,19 +199,7 @@ catch (Exception e){
         }
             c.close();
 
-//        for(int i=0;i<items.size();i++){
-//            String[] myString;
-//            myString=items.get(i).toArray(new String[items.size()]);
-//            Double price = Double.parseDouble(myString[4]);
-//            Double discount = Double.parseDouble(myString[3]);
-//            Double net = price-discount;
-//            toBePrinted.add(myString[0]);
-//            toBePrinted.add(myString[1]+"\t\t"+myString[4]);
-//            toBePrinted.add("x"+myString[2]+".0000"+"\td-"+myString[3]+"\t"+net);
-//            totalQty = totalQty + Integer.parseInt(myString[2]);
-//            totalGross = totalGross + Double.parseDouble(myString[4]);
-//            totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
-//    }
+
     totalItemSales = totalGross - totalDeduction;
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
