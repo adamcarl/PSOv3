@@ -82,6 +82,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<Double> total = new ArrayList<>();
     RelativeLayout layout;
     ArrayList<String> products = new ArrayList<>();
+    ArrayList<String> reprint = new ArrayList<>(); //Use to duplicate last print
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
     TabHost tab_host;
@@ -160,6 +161,7 @@ public class Cashier extends AppCompatActivity {
 
     InvoiceAdapter invoiceAdapter = null;
     AppCompatEditText etQuan = null;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -797,10 +799,12 @@ public class Cashier extends AppCompatActivity {
             if( invoiceAdapter.getItemCount() > 0 && doubleCustomerCash >= mDue ) {
                     //JOLLIMARK PRINTER
 //                    unLockCashBox();
-                    printFunction(products);
-                    btn_print.setEnabled(false);
-                    products.clear();
-                }
+                printFunction(products);
+                reprint = products;
+                reprint.add(0,"DUPLICATE");
+                btn_print.setEnabled(false);
+                products.clear();
+            }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1221,5 +1225,13 @@ public class Cashier extends AppCompatActivity {
 
         Log.d(TAG, "Leave writeDataToSerial");
     }//writeDataToSerial
+
+    public void reprintBakamo(View view){
+        printFunction(reprint);
+
+        reprint.clear();
+    }
+
+
 }
 // SELECT TP.PN, TPT.Q, S.Q, TP.Q

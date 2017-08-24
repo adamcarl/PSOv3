@@ -61,18 +61,18 @@ class ReportBaKamo {
         else {
             report = "X";
         }
+        ogt = db_data.getMyOldGross();
         gross = db_data.getGrossSales(x);
         discount = db_data.getDiscountSales(x);
-        vsale = db_data.sales("0");
-        xsale = db_data.sales("1");
-        zsale = db_data.sales("2");
-        vtax = db_data.tax("0");
-        xtax = db_data.tax("1");
-        ztax = db_data.tax("2");
+        vsale = db_data.sales("0",x);
+        xsale = db_data.sales("1",x);
+        zsale = db_data.sales("2",x);
+        vtax = db_data.tax("0",x);
+        xtax = db_data.tax("1",x);
+        ztax = db_data.tax("2",x);
         z = db_data.pleaseGiveMeTheZCount();
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-        ogt = db_data.getMyOldGross();
 
         Double exemptDiscount = 0.0;
         Double exemptDiscount1 = 0.0;
@@ -90,13 +90,7 @@ catch (Exception e){
         net = net_gross-net_discount;
         or1 = String.format("%1$06d", or[0]);
         or2 = String.format("%1$06d", or[1]);
-        t1 = String.format("%1$06d", transArray[0]);
-        t2 = String.format("%1$06d", transArray[1]);
-        t3 = transArray[1] - transArray[0];
-        zf = String.format("%1$05d", z);
         trans = String.format("%1$06d", transNum);
-        dogt = ogt;
-        dngt = dogt + net;
         over = moneyCount - net;
         // Pad with zeros and a width of 6 chars.
 
@@ -135,6 +129,14 @@ catch (Exception e){
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
+            dogt = ogt;
+            dngt = dogt + net;
+            zf = String.format("%1$05d", z);
+
+            t1 = String.format("%1$06d", transArray[0]);
+            t2 = String.format("%1$06d", transArray[1]);
+            t3 = transArray[1] - transArray[0];
+
             toBePrinted.add("OLD GT\t000-"+dogt);
             toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
@@ -312,7 +314,6 @@ catch (Exception e){
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
-//                db_data.updateTransactions(cursor.getInt(0),x);
 //
 //                curseInvoice.close();
 //                cursor.moveToNext();
@@ -330,6 +331,8 @@ catch (Exception e){
 //            e.printStackTrace();
 //        }
         db_data.copyToProductTemp();
+        db_data.updateTransactions(x);
+
         cProd = db_data.getAllProductsSample();
         cProd.moveToFirst();
 
@@ -338,7 +341,6 @@ catch (Exception e){
 //            toBePrinted.add("\n\n");
 //        }
 //        cProd.close();
-
     }
     void setDb_data(DB_Data db_data) {
         this.db_data = db_data;
