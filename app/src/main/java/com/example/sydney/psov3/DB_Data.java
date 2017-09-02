@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.nio.DoubleBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
@@ -933,6 +935,31 @@ import static com.example.sydney.psov3.Constants.*;
             cv.put(COLUMN_PRODUCTLOGS_DATE, prodLogDate);
 
             dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
+        }
+
+        double getHourlyGrossSale(String x) {
+            double gross;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh");
+            String dateToStr = dateTimeFormat.format(currDate);
+
+            if(x.equals("no")){
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_DATEANDTIME+" = ?";
+                mWHERE_ARGS = new String[]{"0","'%"+dateToStr+"%'"};
+            }
+            else {
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+                mWHERE_ARGS = new String[]{"0",x,dateToStr+"%"};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            gross = cursor.getDouble(0);
+            cursor.close();
+            Log.e("Hourly Gross sales : ", gross+" | Date from INVOICE:"+COLUMN_INVOICE_DATEANDTIME.toString()+"|date presses z"+ dateToStr);
+            return  gross;
         }
     }
 

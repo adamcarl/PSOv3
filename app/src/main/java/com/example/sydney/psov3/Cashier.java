@@ -670,6 +670,7 @@ public class Cashier extends AppCompatActivity {
 
         cleanVattable = mVattableConverted.replaceAll("[$,]","");
         cleanSubtotal = mSubTotalConverted.replaceAll("[$,]","");
+        cleanTax = mTotalDiscountConverted.replaceAll("[$,]","");
 
         if (mDue < 0) {
             btn_print.setEnabled(false);
@@ -724,8 +725,8 @@ public class Cashier extends AppCompatActivity {
             //--END
             //// TODO: 7/15/2017
             try{
-                db_data.addInvoice(transNumber+"",discount.toString(),cleanSubtotal,inPrint,userNum,"0","0",cleanVattable,mTax,discType+"", 0.0,"","","");
-                Log.e("AddInvoice : ", "trans#"+transNumber+ "|disc"+discount.toString()+ "|subtotyal"+cleanSubtotal+"|print"+inPrint+ "|cashier"+userNum+ "|clean vattable: "+cleanVattable+"|tax: "+mTax+"|disc typee"+discType+"");
+                db_data.addInvoice(transNumber+"",cleanTax,cleanSubtotal,inPrint,userNum,"0","0",cleanVattable,mTax,discType+"", 0.0,dateToStr,"","");
+                Log.e("AddInvoice : ", "trans#"+transNumber+ "|disc"+discount.toString()+ "|subtotyal"+cleanSubtotal+"|print"+inPrint+ "|cashier"+userNum+ "|clean vattable: "+cleanVattable+"|tax: "+mTax+"|disc typee"+discType+"|Date:"+dateToStr+"");
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -963,8 +964,9 @@ public class Cashier extends AppCompatActivity {
             final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
             String dateToStr = dateTimeFormat.format(currDate);
             Date strToDate = dateTimeFormat.parse(dateToStr);
-            int bcd;
             String dateToString = strToDate.toString();
+
+            int bcd;
             db_data.addTransaction(transType, dateToString, userNum, 0, 0);
             String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
             Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);

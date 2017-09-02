@@ -34,7 +34,7 @@ class ReportBaKamo {
     SQLiteDatabase dbReader;
     double gross= 0.0, ogt = 0.0;
     String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
-    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
+    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0,hourlyGrossSale = 0.0 ;
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
 
@@ -61,6 +61,7 @@ class ReportBaKamo {
         else {
             report = "X";
         }
+        hourlyGrossSale = db_data.getHourlyGrossSale(x);
         ogt = db_data.getMyOldGross();
         gross = db_data.getGrossSales(x);
         discount = db_data.getDiscountSales(x);
@@ -208,7 +209,10 @@ catch (Exception e){
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
         toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
         Double totalNet = totalGross - totalDeduction;
-        toBePrinted.add("NET SALES\t\t"+totalNet+"\n");
+        toBePrinted.add("NET SALES\t\t"+totalNet+"\n\n\n");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("HOURLY SALES\t\t\t\t\tNo./AMOUNT");
+        toBePrinted.add(hourlyGrossSale+"");
 
 //        Cursor cursor = db_data.sales();
 //        cursor.moveToFirst();
