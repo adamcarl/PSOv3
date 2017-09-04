@@ -7,6 +7,8 @@
     <string name="logout">Logout</string>
     <string name="import_product">Import CSV</string>
     <string name="add_product">Add Product</string>
+    <string name="show_log">Show Log</string>
+    <string name="send_server">Send to Server</string>
 
     <string-array name="cashstaffpos">
         <item>Manager</item>

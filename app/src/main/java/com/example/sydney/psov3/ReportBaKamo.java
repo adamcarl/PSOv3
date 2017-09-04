@@ -19,6 +19,8 @@ import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION_TEMP;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME_TEMP;
 import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 
 
@@ -30,10 +32,13 @@ class ReportBaKamo {
     private DB_Data db_data;
     private ArrayList<String> toBePrinted = new ArrayList<>();
     SQLiteDatabase dbReader;
-    String gross, discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ogt, ngt, trans;
-    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
+    double gross= 0.0, ogt = 0.0;
+    String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
+    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0,hourlyGrossSale = 0.0 ;
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
+
+    private Cursor cProd = null;
 
     void main(String x, String date, int transNum, double moneyCount){
         Calendar calendar = Calendar.getInstance();
@@ -56,18 +61,19 @@ class ReportBaKamo {
         else {
             report = "X";
         }
+        hourlyGrossSale = db_data.getHourlyGrossSale(x);
+        ogt = db_data.getMyOldGross();
         gross = db_data.getGrossSales(x);
         discount = db_data.getDiscountSales(x);
-        vsale = db_data.sales("0");
-        xsale = db_data.sales("1");
-        zsale = db_data.sales("2");
-        vtax = db_data.tax("0");
-        xtax = db_data.tax("1");
-        ztax = db_data.tax("2");
+        vsale = db_data.sales("0",x);
+        xsale = db_data.sales("1",x);
+        zsale = db_data.sales("2",x);
+        vtax = db_data.tax("0",x);
+        xtax = db_data.tax("1",x);
+        ztax = db_data.tax("2",x);
         z = db_data.pleaseGiveMeTheZCount();
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-        ogt = db_data.getMyOldGross();
 
         Double exemptDiscount = 0.0;
         Double exemptDiscount1 = 0.0;
@@ -80,18 +86,12 @@ catch (Exception e){
     exemptDiscount = 0.0;
     exemptDiscount1 = exemptDiscount * .12;
 }
-        net_gross = Double.parseDouble(gross);
+        net_gross = gross;
         net_discount = Double.parseDouble(discount)+exemptDiscount1;
         net = net_gross-net_discount;
         or1 = String.format("%1$06d", or[0]);
         or2 = String.format("%1$06d", or[1]);
-        t1 = String.format("%1$06d", transArray[0]);
-        t2 = String.format("%1$06d", transArray[1]);
-        t3 = transArray[1] - transArray[0];
-        zf = String.format("%1$05d", z);
         trans = String.format("%1$06d", transNum);
-        dogt = Double.parseDouble(ogt);
-        dngt = dogt + net;
         over = moneyCount - net;
         // Pad with zeros and a width of 6 chars.
 
@@ -130,6 +130,14 @@ catch (Exception e){
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
+            dogt = ogt;
+            dngt = dogt + net;
+            zf = String.format("%1$05d", z);
+
+            t1 = String.format("%1$06d", transArray[0]);
+            t2 = String.format("%1$06d", transArray[1]);
+            t3 = transArray[1] - transArray[0];
+
             toBePrinted.add("OLD GT\t000-"+dogt);
             toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
@@ -180,7 +188,7 @@ catch (Exception e){
                 mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
                 mWHERE_ARGS = new String[]{"0"};
             }
-            Cursor c = db_data.getAllItems(x);
+            Cursor c = db_data.getAllItems(x);//// TODO: 8/2/2017  
             c.moveToFirst();
 
         while(c.moveToNext()){
@@ -194,26 +202,17 @@ catch (Exception e){
         }
             c.close();
 
-//        for(int i=0;i<items.size();i++){
-//            String[] myString;
-//            myString=items.get(i).toArray(new String[items.size()]);
-//            Double price = Double.parseDouble(myString[4]);
-//            Double discount = Double.parseDouble(myString[3]);
-//            Double net = price-discount;
-//            toBePrinted.add(myString[0]);
-//            toBePrinted.add(myString[1]+"\t\t"+myString[4]);
-//            toBePrinted.add("x"+myString[2]+".0000"+"\td-"+myString[3]+"\t"+net);
-//            totalQty = totalQty + Integer.parseInt(myString[2]);
-//            totalGross = totalGross + Double.parseDouble(myString[4]);
-//            totalDeduction = totalDeduction + Double.parseDouble(myString[3]);
-//    }
+
     totalItemSales = totalGross - totalDeduction;
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
         toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
         Double totalNet = totalGross - totalDeduction;
-        toBePrinted.add("NET SALES\t\t"+totalNet+"\n");
+        toBePrinted.add("NET SALES\t\t"+totalNet+"\n\n\n");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("HOURLY SALES\t\t\t\t\tNo./AMOUNT");
+        toBePrinted.add(hourlyGrossSale+"");
 
 //        Cursor cursor = db_data.sales();
 //        cursor.moveToFirst();
@@ -319,7 +318,6 @@ catch (Exception e){
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
-//                db_data.updateTransactions(cursor.getInt(0),x);
 //
 //                curseInvoice.close();
 //                cursor.moveToNext();
@@ -337,6 +335,16 @@ catch (Exception e){
 //            e.printStackTrace();
 //        }
         db_data.copyToProductTemp();
+        db_data.updateTransactions(x);
+
+        cProd = db_data.getAllProductsSample();
+        cProd.moveToFirst();
+
+//        while(cProd.moveToNext()){
+//            toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
+//            toBePrinted.add("\n\n");
+//        }
+//        cProd.close();
     }
     void setDb_data(DB_Data db_data) {
         this.db_data = db_data;
@@ -353,6 +361,10 @@ catch (Exception e){
 //            }
 //        }
 //    }
+    Cursor getCursorInReportBaKamo(){
+        return cProd;
+    }
+
     ArrayList<String> getToBePrinted(){
         return toBePrinted;
     }

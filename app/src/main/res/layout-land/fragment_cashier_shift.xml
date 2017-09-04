@@ -8,7 +8,7 @@
         android:id="@+id/btn_cashier_reprint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="paDisplayNaman"
+        android:onClick="reprintBakamo"
         android:text="Reprint Receipt" />
 
     <LinearLayout
@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="xreport"
             android:text="X Report" />
 
         <Button

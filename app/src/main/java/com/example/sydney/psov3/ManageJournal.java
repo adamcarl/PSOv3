@@ -5,23 +5,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.provider.Telephony.Carriers.PORT;
 import static com.example.sydney.psov3.Constants.*;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 
 /**
  * Created by PROGRAMMER2 on 6/2/2017.
@@ -41,6 +59,20 @@ public class ManageJournal extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private String colWhere;
+
+    //FTP
+    final String FTPHost = "files.000webhost.com";
+    final String user = "attendancemonitor";
+    final String pass = "darksalad12";
+    final int PORT = 21;
+    final int PICK_FILE = 1;
+
+
+    String filename, filepath;
+    AlertDialog.Builder builder = null;
+    AlertDialog alertDialog = null;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,8 +95,9 @@ public class ManageJournal extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(transAdapter);
 
-//        prepareTransactions();
     }
+
+
 
     private void allOnClickLiteners() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -152,8 +185,11 @@ public class ManageJournal extends AppCompatActivity {
 
         MenuItem importCSV = menu.findItem(R.id.menu_import_product);
         MenuItem addProduct = menu.findItem(R.id.menu_add_product);
+        MenuItem showLog = menu.findItem(R.id.menu_show_log);
         importCSV.setVisible(false);
         addProduct.setVisible(false);
+        showLog.setVisible(false);
+
 
         if(menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
@@ -198,13 +234,63 @@ public class ManageJournal extends AppCompatActivity {
             case R.id.menu_logout:
                 Intent intent = new Intent(ManageJournal.this, MainActivity.class);
                 startActivity(intent);
-
                 //Todo Function Here for saving Transaction
-
                 return true;
+
+            case R.id.menu_send_to_server:
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("file/*");
+                startActivityForResult(i, PICK_FILE);
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_FILE && data.getData() != null) {
+            filepath = data.getData().getPath();
+            filename = data.getData().getLastPathSegment();
+            new UploadFile().execute(filepath,FTPHost, user, pass);
+
+//            alertDialog.show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class UploadFile extends AsyncTask<String, Integer, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            FTPClient client = new FTPClient();
+            try {
+                client.connect(params[1], PORT);
+                client.login(params[2], params[3]);
+                client.enterLocalPassiveMode();
+                client.changeWorkingDirectory("/public_html/CSVFiles");
+                client.setFileType(FTP.BINARY_FILE_TYPE);
+                return client.storeFile(filename, new FileInputStream(new File(params[0])));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("FTP", e.toString());
+                return false;
+            } finally {
+                try {
+                    client.logout();
+                    client.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean sucess) {
+            if (sucess)
+                Toast.makeText(ManageJournal.this, "File Sent", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(ManageJournal.this, "Error", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

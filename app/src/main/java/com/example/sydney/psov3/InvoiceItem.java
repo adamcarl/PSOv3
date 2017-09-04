@@ -6,6 +6,7 @@ package com.example.sydney.psov3;
 
 class InvoiceItem {
     private String invoiceProductID;
+    private String invoiceProductName;
     private String invoiceProductDescription;
     private double invoiceProductPrice;
     private String invoiceProductVattable;
@@ -70,7 +71,8 @@ class InvoiceItem {
         this.invoiceProductQuantity = invoiceProductQuantity;
     }
 
-    public InvoiceItem(String invoiceProductDescription, double invoiceProductPrice, String invoiceProductVattable, int invoiceProductQuantity,String invoiceProductID,double invoiceProductTotal) {
+    public InvoiceItem(String invoiceProductName, String invoiceProductDescription, double invoiceProductPrice, String invoiceProductVattable, int invoiceProductQuantity,String invoiceProductID,double invoiceProductTotal) {
+        this.invoiceProductName = invoiceProductName;
         this.invoiceProductDescription = invoiceProductDescription;
         this.invoiceProductPrice = invoiceProductPrice;
         this.invoiceProductVattable = invoiceProductVattable;
@@ -83,4 +85,11 @@ class InvoiceItem {
     }
 
 
+    public String getInvoiceProductName() {
+        return invoiceProductName;
+    }
+
+    public void setInvoiceProductName(String invoiceProductName) {
+        this.invoiceProductName = invoiceProductName;
+    }
 }

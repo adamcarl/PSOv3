@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.nio.DoubleBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
@@ -46,7 +48,7 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_ID+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION+" TEXT NOT NULL, "
-                +COLUMN_PRODUCT_PRICE+" DOUBLE NOT NULL,"
+                +COLUMN_PRODUCT_PRICE+" REAL NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY+" INTEGER NOT NULL, "
                 +COLUMN_PRODUCT_VATABLE+" INTEGER, "
                 +COLUMN_PRODUCT_IMEI+" INTEGER );");
@@ -56,24 +58,24 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_PRODUCT_ID_TEMP+" TEXT NOT NULL UNIQUE, "
                 +COLUMN_PRODUCT_NAME_TEMP+" TEXT NOT NULL, "
                 +COLUMN_PRODUCT_DESCRIPTION_TEMP+" TEXT NOT NULL, "
-                +COLUMN_PRODUCT_PRICE_TEMP+" DOUBLE NOT NULL,"
+                +COLUMN_PRODUCT_PRICE_TEMP+" REAL NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY_TEMP+" INTEGER NOT NULL, "
-                +COLUMN_PRODUCT_VATABLE_TEMP+" INTEGER, "
+                +COLUMN_PRODUCT_VATABLE_TEMP+" REAL, "
                 +COLUMN_PRODUCT_IMEI_TEMP+" INTEGER );");
 
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
-                +COLUMN_INVOICE_DISCOUNT+" INTEGER,"
-                +COLUMN_INVOICE_NORMALSALE +" INTEGER NOT NULL,"
+                +COLUMN_INVOICE_DISCOUNT+" REAL,"
+                +COLUMN_INVOICE_NORMALSALE +" REAL NOT NULL,"
                 +COLUMN_INVOICE_PRINT+" TEXT,"
                 +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
                 +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
                 +COLUMN_INVOICE_XREPORT_STATUS +" TEXT,"
-                +COLUMN_INVOICE_VATTABLE+ " INTEGER,"
-                +COLUMN_INVOICE_VATTED+ " INTEGER,"
+                +COLUMN_INVOICE_VATTABLE+ " REAL,"
+                +COLUMN_INVOICE_VATTED+ " REAL,"
                 +COLUMN_INVOICE_VAT_STATUS+ " TEXT,"
-                +COLUMN_INVOICE_CREDITSALE+ " FLOAT,"
+                +COLUMN_INVOICE_CREDITSALE+ " REAL,"
                 +COLUMN_INVOICE_DATEANDTIME+ " TEXT,"
                 +COLUMN_INVOICE_CREDITCARDNUMBER+ " TEXT,"
                 +COLUMN_INVOICE_CREDITDATEOFEXPIRATION+ " TEXT);");
@@ -83,14 +85,24 @@ import static com.example.sydney.psov3.Constants.*;
                 +COLUMN_ITEM_INVOICE+" INTEGER NOT NULL, "
                 +COLUMN_ITEM_NAME+" TEXT NOT NULL, "
                 +COLUMN_ITEM_DESC+" TEXT NOT NULL, "
-                +COLUMN_ITEM_PRICE+" TEXT NOT NULL, "
+                +COLUMN_ITEM_PRICE+" REAL NOT NULL, "
                 +COLUMN_ITEM_PRODUCT+" TEXT NOT NULL, "
                 +COLUMN_ITEM_QUANTITY+" INTEGER NOT NULL, "
-                +COLUMN_ITEM_DISCOUNT+" TEXT NOT NULL, "
+                +COLUMN_ITEM_DISCOUNT+" REAL NOT NULL, "
                 +COLUMN_ITEM_STATUS+" INTEGER NOT NULL,"
                 +COLUMN_ITEM_XREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_ZREPORT+" TEXT NOT NULL,"
                 +COLUMN_ITEM_CASHIER+" TEXT NOT NULL );");
+
+        arg0.execSQL("CREATE TABLE "+TABLE_PRODUCTLOGS+" ("
+                +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                +COLUMN_PRODUCTLOGS_BARCODE+" TEXT NOT NULL, "
+                +COLUMN_PRODUCTLOGS_TYPE+" TEXT NOT NULL, " //transfer out/in, return to manufacturer
+                +COLUMN_PRODUCTLOGS_VALUEADDED+" INTEGER, "
+                +COLUMN_PRODUCTLOGS_VALUEMINUS+" INTEGER, "
+                +COLUMN_PRODUCTLOGS_REMARKS+" TEXT NOT NULL,"
+                +COLUMN_PRODUCTLOGS_DATE+" TEXT NOT NULL);");
+
 
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
 
@@ -103,15 +115,15 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("CREATE TABLE "+TABLE_XREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_XREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
-                +COLUMN_XREPORT_CASHSALES + " FLOAT,"
-                +COLUMN_XREPORT_CASHCOUNT + " FLOAT,"
-                +COLUMN_XREPORT_CASHSHORTOVER + " FLOAT);");
+                +COLUMN_XREPORT_CASHSALES + " REAL,"
+                +COLUMN_XREPORT_CASHCOUNT + " REAL,"
+                +COLUMN_XREPORT_CASHSHORTOVER + " REAL);");
 
         arg0.execSQL("CREATE TABLE "+TABLE_ZREPORT+ " ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
-                +COLUMN_ZREPORT_CASHSALES+" FLOAT, "
-                +COLUMN_ZREPORT_CASHCOUNT+" FLOAT);");
+                +COLUMN_ZREPORT_CASHSALES+" REAL, "
+                +COLUMN_ZREPORT_CASHCOUNT+" REAL);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -127,6 +139,7 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_TEMP_NAME + " TEXT NOT NULL,"
                 + COLUMN_TEMP_DESCRIPTION + " TEXT NOT NULL,"
                 + COLUMN_TEMP_PRICE + " TEXT NOT NULL,"
                 + COLUMN_TEMP_QUANTITY + " TEXT NOT NULL,"
@@ -135,7 +148,15 @@ import static com.example.sydney.psov3.Constants.*;
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TOTAL + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_TOTAL_GRAND + " DOUBLE);");
+                + COLUMN_TOTAL_GRAND + " REAL);");
+
+        arg0.execSQL("CREATE TABLE "+ TABLE_RETRIEVED_JOINTABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_RETRIEVED_BARCODE + " TEXT,"
+                + COLUMN_RETRIEVED_NAME + " TEXT,"
+                + COLUMN_RETRIEVED_QUANTITY + " INTEGER,"
+                + COLUMN_RETRIEVED_SOLDITEM + " INTEGER,"
+                + COLUMN_RETRIEVED_NEWQUANTITY + " INTEGER);");
 
     }
     @Override
@@ -161,6 +182,10 @@ import static com.example.sydney.psov3.Constants.*;
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TEMP_INVOICING);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_TOTAL);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_RETRIEVED_JOINTABLE);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_PRODUCTLOGS);
         onCreate(arg0);
     }
 
@@ -225,14 +250,14 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-        void addGrandTotal(Double gTotal){
+        void addGrandTotal(double gTotal){
             cv.clear();
             cv.put(COLUMN_TOTAL_GRAND, gTotal);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
 
 
-        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, Double inVatted, String inVatStatus, Double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
+        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
@@ -251,7 +276,7 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, Double itemPrice, String itemCashier){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, double itemPrice, String itemCashier){
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
@@ -383,21 +408,43 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.update(TABLE_INVOICE, cv, WHERE_CASH,WHERE_ARGS_CASH);
     }
 
-    void updateTransactions(int id,String name){
+    void updateTransactions(String name){
         cv.clear();
         String WHERE_CASH;
         String[] mWHERE_ARGS;
         if(name.equals("no")){
-            WHERE_CASH = _ID + " = ?";
-            mWHERE_ARGS = new String[]{Integer.toString(id)};
+            WHERE_CASH = COLUMN_TRANSACTION_ZREPORT + " = ?";
+            mWHERE_ARGS = new String[]{"0"};
             cv.put(COLUMN_TRANSACTION_ZREPORT,"1");
+            dbw.update(TABLE_TRANSACTION,cv,WHERE_CASH,mWHERE_ARGS);
+
+            cv.clear();
+            WHERE_CASH = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            cv.put(COLUMN_INVOICE_ZREPORT_STATUS,"1");
+            dbw.update(TABLE_INVOICE,cv,WHERE_CASH,mWHERE_ARGS);
+
+            cv.clear();
+            WHERE_CASH = COLUMN_ITEM_ZREPORT + " = ?";
+            cv.put(COLUMN_ITEM_ZREPORT,"1");
+            dbw.update(TABLE_ITEM,cv,WHERE_CASH,mWHERE_ARGS);
+
         }
         else {
-            WHERE_CASH = _ID +" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
-            mWHERE_ARGS = new String[]{Integer.toString(id),name};
+            WHERE_CASH = COLUMN_TRANSACTION_XREPORT+" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
+            mWHERE_ARGS = new String[]{"0",name};
             cv.put(COLUMN_TRANSACTION_XREPORT,"1");
+            dbw.update(TABLE_TRANSACTION,cv,WHERE_CASH,mWHERE_ARGS);
+
+            WHERE_CASH = COLUMN_INVOICE_XREPORT_STATUS +" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            cv.clear();
+            cv.put(COLUMN_INVOICE_XREPORT_STATUS,"1");
+            dbw.update(TABLE_INVOICE,cv,WHERE_CASH,mWHERE_ARGS);
+
+            WHERE_CASH = COLUMN_ITEM_XREPORT +" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
+            cv.clear();
+            cv.put(COLUMN_ITEM_XREPORT,"1");
+            dbw.update(TABLE_ITEM,cv,WHERE_CASH,mWHERE_ARGS);
         }
-        dbw.update(TABLE_TRANSACTION,cv,WHERE_CASH,mWHERE_ARGS);
     }
 //OLD SEARCH FOR PRODUCTS!!!!
 //    public Cursor searchViewProduct(String searchItem) {
@@ -478,6 +525,7 @@ import static com.example.sydney.psov3.Constants.*;
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
+        values.put(COLUMN_TEMP_NAME, invoiceItem.getInvoiceProductName());
         values.put(COLUMN_TEMP_DESCRIPTION, invoiceItem.getInvoiceProductDescription());
         values.put(COLUMN_TEMP_PRICE, invoiceItem.getInvoiceProductPrice());
         values.put(COLUMN_TEMP_QUANTITY, invoiceItem.getInvoiceProductQuantity());
@@ -524,7 +572,7 @@ import static com.example.sydney.psov3.Constants.*;
     }
 
     double totalPrice(){
-        Double total;
+        double total;
         String[] columns = {"SUM("+COLUMN_TEMP_TOTALPRICE+")"};
         Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
@@ -533,12 +581,28 @@ import static com.example.sydney.psov3.Constants.*;
         return total;
     }
 
+    int getQuantityCount(){
+        int quanCount;
+        String[] columns = {"SUM("+COLUMN_TEMP_QUANTITY+")"};
+        Cursor cursor = dbr.query(TABLE_TEMP_INVOICING, columns,null, null, null, null, null, null);
+        cursor.moveToFirst();
+        quanCount = cursor.getInt(0);
+        cursor.close();
+        Log.e("QuantityCount : ", quanCount+"");
+        return quanCount;
+    }
+
     void deleteAllTempItemInvoice(){
         try {
             this.getWritableDatabase().execSQL("DELETE FROM " + TABLE_TEMP_INVOICING);
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    Cursor selectAllTempInvoice(){
+        // TODO: 8/19/2017
+        return dbr.rawQuery("SELECT * FROM "+ TABLE_TEMP_INVOICING,null);
     }
 
     int searchDuplicateInvoice(String itemID) {
@@ -579,8 +643,8 @@ import static com.example.sydney.psov3.Constants.*;
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
                 + COLUMN_TEMP_TOTALPRICE +"='"+ newTotalPrice + "'," + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
-    String getGrossSales(String x){
-        String gross;
+    double getGrossSales(String x){
+        double gross;
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
@@ -594,8 +658,9 @@ import static com.example.sydney.psov3.Constants.*;
         }
         Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
-        gross = cursor.getString(0);
+        gross = cursor.getDouble(0);
         cursor.close();
+        Log.e("Gross sales : ", gross+"");
         return  gross;
     }
     String getDiscountSales(String x){
@@ -713,23 +778,23 @@ import static com.example.sydney.psov3.Constants.*;
             return discount;
         }
         //Grand Total is the sum of all accumulated NET SALES.
-    String getMyOldGross(){
-        String gross;
+    double getMyOldGross(){
+        double gross;
         String[] columns = {"SUM("+COLUMN_TOTAL_GRAND+")"};
         Cursor cursor = dbr.query(TABLE_TOTAL, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
         try {
-            gross = cursor.getString(0);
-            String sale = getGrossSales("no");
+            gross = cursor.getDouble(0);
+            double sale = getGrossSales("no");
 
-            float s = Float.parseFloat(sale);
+//            float s = Float.parseFloat(sale);
             // TODO
             cv.clear();
-            cv.put(COLUMN_TOTAL_GRAND,s);
+            cv.put(COLUMN_TOTAL_GRAND,sale);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
         catch (Exception e){
-            gross = "0.0";
+            gross = 0.0;
         }
         cursor.close();
         return gross;
@@ -760,17 +825,38 @@ import static com.example.sydney.psov3.Constants.*;
         dbw.insertOrThrow(TABLE_XREPORT, null, cv);
     }
 
-    String sales(String status){
-        String sql = "SELECT SUM("+COLUMN_INVOICE_VATTABLE+") FROM "+ TABLE_INVOICE+" WHERE "+COLUMN_INVOICE_VAT_STATUS+" LIKE "+status;
-        Cursor c = dbr.rawQuery(sql,null);
+    String sales(String status, String x){
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
+        if(x.equals("no")){
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0",status};
+        }
+        else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0",x,status};
+        }
+        Cursor c = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null);
         c.moveToFirst();
         String sales = c.getString(0);
         c.close();
         return sales;
     }
-        String tax(String status){
-            String sql = "SELECT SUM("+COLUMN_INVOICE_VATTED+") FROM "+ TABLE_INVOICE+" WHERE "+COLUMN_INVOICE_VAT_STATUS+" LIKE "+status;
-            Cursor c = dbr.rawQuery(sql,null);
+        String tax(String status, String x){
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] COLUMNS = {"SUM("+COLUMN_INVOICE_VATTED+")"};
+            if(x.equals("no")){
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
+                mWHERE_ARGS = new String[]{"0",status};
+            }
+            else {
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
+                mWHERE_ARGS = new String[]{"0",x,status};
+            }
+
+            Cursor c = dbr.query(TABLE_INVOICE,COLUMNS,mWHERE,mWHERE_ARGS,null,null,null);
             c.moveToFirst();
             String tax = c.getString(0);
             c.close();
@@ -778,10 +864,10 @@ import static com.example.sydney.psov3.Constants.*;
         }
         void copyToProductTemp(){
             String sql = "DELETE FROM "+TABLE_PRODUCT_TEMP;
-            dbr.rawQuery(sql,null);
+            dbr.execSQL(sql);
 
-            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT_TEMP;
-            dbr.rawQuery(sql,null);
+            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT;
+            dbr.execSQL(sql);
         }
         int getQuantityofProducts(String prodID){
             int quan = 0;
@@ -803,4 +889,77 @@ import static com.example.sydney.psov3.Constants.*;
             cv.put(COLUMN_PRODUCT_QUANTITY,newQuan);
             dbw.update(TABLE_PRODUCT,cv,mWHERE,mWHERE_ARGS);
         }
-}
+        Cursor getAllProductsSample(){
+            String[] columns = {COLUMN_PRODUCT_NAME_TEMP,COLUMN_PRODUCT_DESCRIPTION_TEMP,COLUMN_PRODUCT_QUANTITY_TEMP,COLUMN_PRODUCT_PRICE_TEMP};
+            String groupBy = COLUMN_PRODUCT_NAME_TEMP;
+            return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
+        }
+
+        void insertRetrievedJoinTable(JoinTable joinTable) {
+
+        }
+
+        public void updateAddQuantity(String id, int quantity) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_QUANTITY, quantity);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void modifyItem(String id, String name, String description, double price) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_NAME, name);
+            cv.put(COLUMN_PRODUCT_DESCRIPTION, description);
+            cv.put(COLUMN_PRODUCT_QUANTITY, price);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void minusItemQuantity(String id, int newQuantity) {
+            cv.clear();
+            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
+            String[] WHERE_ARGS_CASH = new String[]{id};
+            cv.put(COLUMN_PRODUCT_QUANTITY, newQuantity);
+            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
+        }
+
+        public void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
+            cv.clear();
+            cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
+            cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
+            cv.put(COLUMN_PRODUCTLOGS_VALUEADDED, prodLogValueAdded);
+            cv.put(COLUMN_PRODUCTLOGS_VALUEMINUS, prodLogValueMinus);
+            cv.put(COLUMN_PRODUCTLOGS_REMARKS, prodLogRemarks);
+            cv.put(COLUMN_PRODUCTLOGS_DATE, prodLogDate);
+
+            dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
+        }
+
+        double getHourlyGrossSale(String x) {
+            double gross;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh");
+            String dateToStr = dateTimeFormat.format(currDate);
+
+            if(x.equals("no")){
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_DATEANDTIME+" = ?";
+                mWHERE_ARGS = new String[]{"0","'%"+dateToStr+"%'"};
+            }
+            else {
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+                mWHERE_ARGS = new String[]{"0",x,dateToStr+"%"};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            gross = cursor.getDouble(0);
+            cursor.close();
+            Log.e("Hourly Gross sales : ", gross+" | Date from INVOICE:"+COLUMN_INVOICE_DATEANDTIME.toString()+"|date presses z"+ dateToStr);
+            return  gross;
+        }
+    }
+

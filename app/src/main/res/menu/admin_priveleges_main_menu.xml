@@ -22,4 +22,15 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView" />
+    <item
+        android:id="@+id/menu_show_log"
+        android:orderInCategory="1"
+        android:title="@string/show_log"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_send_to_server"
+        android:orderInCategory="1"
+        android:title="@string/send_server"
+        app:showAsAction="never" />
 </menu>
