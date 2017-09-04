@@ -1072,7 +1072,7 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
-    private void refreshRecyclerView() {
+    private void    refreshRecyclerView() {
         //REFRESHING THE RECYCLER
         invoiceItemList = fill_with_data();
         InvoiceAdapter invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
