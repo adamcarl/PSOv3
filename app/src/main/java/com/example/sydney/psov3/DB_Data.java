@@ -942,7 +942,7 @@ import static com.example.sydney.psov3.Constants.*;
             String dateToStr = dateTimeFormat.format(currDate);
             for(int mHour=0;mHour<24;mHour++){
                 if(x.equals("no")){
-                    mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " = ?";
+                    mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
                     if(mHour<12) {
                         String time = String.format("%1$02d", mHour);
                         mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ AM"};
@@ -965,7 +965,7 @@ import static com.example.sydney.psov3.Constants.*;
                         mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% PM'"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
                     }
-                    mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" = ?";
+                    mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" LIKE ?";
                 }
                 Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
                 cursor.moveToFirst();
