@@ -895,11 +895,7 @@ import static com.example.sydney.psov3.Constants.*;
             return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
         }
 
-        void insertRetrievedJoinTable(JoinTable joinTable) {
-
-        }
-
-        public void updateAddQuantity(String id, int quantity) {
+        void updateAddQuantity(String id, int quantity) {
             cv.clear();
             String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
             String[] WHERE_ARGS_CASH = new String[]{id};
@@ -907,7 +903,7 @@ import static com.example.sydney.psov3.Constants.*;
             dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
         }
 
-        public void modifyItem(String id, String name, String description, double price) {
+        void modifyItem(String id, String name, String description, double price) {
             cv.clear();
             String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
             String[] WHERE_ARGS_CASH = new String[]{id};
@@ -917,7 +913,7 @@ import static com.example.sydney.psov3.Constants.*;
             dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
         }
 
-        public void minusItemQuantity(String id, int newQuantity) {
+        void minusItemQuantity(String id, int newQuantity) {
             cv.clear();
             String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
             String[] WHERE_ARGS_CASH = new String[]{id};
@@ -925,7 +921,7 @@ import static com.example.sydney.psov3.Constants.*;
             dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
         }
 
-        public void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
+        void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
             cv.clear();
             cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
             cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
@@ -936,30 +932,49 @@ import static com.example.sydney.psov3.Constants.*;
 
             dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
         }
-
-        double getHourlyGrossSale(String x) {
-            double gross;
+        double[] getHourlyGrossSale(String x) {
+            double[] gross= new double[24];
             String mWHERE;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
             Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh");
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
             String dateToStr = dateTimeFormat.format(currDate);
-
-            if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_DATEANDTIME+" = ?";
-                mWHERE_ARGS = new String[]{"0","'%"+dateToStr+"%'"};
+            for(int mHour=0;mHour<24;mHour++){
+                if(x.equals("no")){
+                    mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " = ?";
+                    if(mHour<12) {
+                        String time = String.format("%1$02d", mHour);
+                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ AM"};
+                        Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
+                    }
+                    else {
+                        String time = String.format("%1$02d", mHour-12);
+                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ PM"};
+                        Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
+                    }
+                }
+                else {
+                    if(mHour<12) {
+                        String time = String.format("%1$02d", mHour);
+                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% AM'"};
+                        Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
+                    }
+                    else {
+                        String time = String.format("%1$02d", mHour-12);
+                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% PM'"};
+                        Log.e("mWHERE_ARGS", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
+                    }
+                    mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" = ?";
+                }
+                Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+                cursor.moveToFirst();
+                gross[mHour] = cursor.getDouble(0);
+                cursor.close();
+                Log.e("Hourly Gross sales", gross[mHour]+" | Date from INVOICE:"+COLUMN_INVOICE_DATEANDTIME.toString()+"|date presses z"+ dateToStr);
             }
-            else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
-                mWHERE_ARGS = new String[]{"0",x,dateToStr+"%"};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            gross = cursor.getDouble(0);
-            cursor.close();
-            Log.e("Hourly Gross sales : ", gross+" | Date from INVOICE:"+COLUMN_INVOICE_DATEANDTIME.toString()+"|date presses z"+ dateToStr);
             return  gross;
         }
+        //Sep-06-2017 10:37 AM
+        //Sep-06-2017 10:_%_% AM
     }
-

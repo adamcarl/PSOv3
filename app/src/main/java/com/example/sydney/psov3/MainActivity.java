@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         //Todo DIALOG LOADING
-
         getSupportActionBar().hide();
         try {
             db_data.addAdmin("admin", "admin");
@@ -141,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         //For SignUp
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,13 +176,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
     //Initialization
     private void init() {
         //Database
         db_data = new DB_Data(this);
-
 
            //For LogIn
         btn_login=(Button)findViewById(R.id.btnLogin);
@@ -218,77 +214,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void importProduct() {
-        Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileIntent.setType("gagt/sdf");
         try {
-            startActivityForResult(fileIntent, requestcode);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null)
-            return;
-        switch (requestCode) {
-            case requestcode:
-                String filepath = data.getData().getPath();
-                SQLiteDatabase db = db_data.getWritableDatabase();
-                String tableName = TABLE_PRODUCT;
-//                db.execSQL("delete from " + tableName);
-                try {
-                    if (resultCode == RESULT_OK) {
-                        try {
-                            FileReader file = new FileReader(filepath);
-                            BufferedReader buffer = new BufferedReader(file);
-                            ContentValues contentValues = new ContentValues();
-                            String line = "";
-                            db.beginTransaction();
-                            while ((line = buffer.readLine()) != null) {
-                                String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
-                                //Id, Company,Name,Price
+            String filepath = "/storage/emulated/0/download/updatepos.csv";
+            SQLiteDatabase db = db_data.getWritableDatabase();
+            //                db.execSQL("delete from " + tableName);
+                    try {
+                        FileReader file = new FileReader(filepath);
+                        BufferedReader buffer = new BufferedReader(file);
+                        ContentValues contentValues = new ContentValues();
+                        String line = "";
+                        db.beginTransaction();
+                        while ((line = buffer.readLine()) != null) {
+                            String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
+                            //Id, Company,Name,Price
 //                                String pId = str[0];
 //                                String pName = str[1];
-                                String pDesc = str[2];
-                                String pPrice = str[3];
+                            String pDesc = str[2];
+                            String pPrice = str[3];
 //                                String pQuan = str[4];
 //                                contentValues.put(COLUMN_PRODUCT_ID, pId);
 //                                contentValues.put(COLUMN_PRODUCT_NAME, pName);
-                                contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
-                                contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
+                            contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
+                            contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
 //                                contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
-
-                                String mWHERE = COLUMN_PRODUCT_DESCRIPTION+" = ?";
-                                String[] mWHERE_ARGS = new String[]{pDesc};
-                                db.update(tableName, contentValues, mWHERE, mWHERE_ARGS);
-                            }
-
-                            Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
-                            db.setTransactionSuccessful();
-                            db.endTransaction();
-                        } catch (IOException e) {
-                            if (db.inTransaction())
-                                db.endTransaction();
-                            Dialog d = new Dialog(this);
-                            d.setTitle(e.getMessage() + "first");
-                            d.show();
-                            // db.endTransaction();
+                            String mWHERE = COLUMN_PRODUCT_DESCRIPTION+" = ?";
+                            String[] mWHERE_ARGS = new String[]{pDesc};
+                            db.update(TABLE_PRODUCT, contentValues, mWHERE, mWHERE_ARGS);
                         }
-                    } else {
+                        Toast.makeText(this, "Update Successful", Toast.LENGTH_LONG).show();
+                        db.setTransactionSuccessful();
+                        db.endTransaction();
+                    } catch (IOException e) {
                         if (db.inTransaction())
                             db.endTransaction();
                         Dialog d = new Dialog(this);
-                        d.setTitle("Only CSV files allowed");
+                        d.setTitle(e.getMessage() + "first");
                         d.show();
+                        // db.endTransaction();
                     }
-                } catch (Exception ex) {
-                    if (db.inTransaction())
-                        db.endTransaction();
-                    Dialog d = new Dialog(this);
-                    d.setTitle(ex.getMessage() + "second");
-                    d.show();
-                    // db.endTransaction();
-                }
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 }

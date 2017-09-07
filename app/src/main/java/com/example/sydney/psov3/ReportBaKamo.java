@@ -34,9 +34,10 @@ class ReportBaKamo {
     SQLiteDatabase dbReader;
     double gross= 0.0, ogt = 0.0;
     String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
-    Double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0,hourlyGrossSale = 0.0 ;
+    double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
+    double[] hourlyGrossSale = new double[24];
 
     private Cursor cProd = null;
 
@@ -191,7 +192,7 @@ catch (Exception e){
             Cursor c = db_data.getAllItems(x);//// TODO: 8/2/2017  
             c.moveToFirst();
 
-        while(c.moveToNext()){
+        while(!c.isAfterLast()){
             Double price = c.getDouble(c.getColumnIndex(COLUMN_ITEM_PRICE)) * c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
             Double total = price - c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
             toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME))+"\n"+c.getString(c.getColumnIndex(COLUMN_ITEM_DESC))+"\t"+price);//example I don't know the order you need
@@ -199,6 +200,7 @@ catch (Exception e){
             totalQty = totalQty + c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
             totalGross = totalGross + price;
             totalDeduction = totalDeduction + c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
+            c.moveToNext();
         }
             c.close();
 
@@ -211,8 +213,17 @@ catch (Exception e){
         Double totalNet = totalGross - totalDeduction;
         toBePrinted.add("NET SALES\t\t"+totalNet+"\n\n\n");
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("HOURLY SALES\t\t\t\t\tNo./AMOUNT");
-        toBePrinted.add(hourlyGrossSale+"");
+        toBePrinted.add("HOURLY SALES\t\t\t\t\tAMOUNT");
+        for(int mHour=0;mHour<24;mHour++){
+            if(mHour<12) {
+                String time = String.format("%1$02d", mHour);
+                toBePrinted.add(time+":00AM - "+time+":59AM\t\t"+hourlyGrossSale[mHour]);
+            }
+            else {
+                String time = String.format("%1$02d", mHour-12);
+                toBePrinted.add(time+":00PM - "+time+":59PM\t\t"+hourlyGrossSale[mHour]);
+            }
+        }
 
 //        Cursor cursor = db_data.sales();
 //        cursor.moveToFirst();
@@ -305,7 +316,7 @@ catch (Exception e){
 //        }
 //        Cursor cursor = db_data.searchInvoiceTransactions(x);
 //            cursor.moveToFirst();
-//            while (!cursor.isAfterLast()) {
+//             while (!cursor.isAfterLast()) {
 //                Cursor curseInvoice = db_data.searchInvoice(cursor.getInt(0));
 //                curseInvoice.moveToFirst();
 //                toBePrinted.add(curseInvoice.getString(0));
