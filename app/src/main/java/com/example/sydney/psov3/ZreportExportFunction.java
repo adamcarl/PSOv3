@@ -1,29 +1,16 @@
 package com.example.sydney.psov3;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 
 /**
  * Created by PROGRAMMER2 on 8/1/2017.
@@ -34,7 +21,6 @@ public class ZreportExportFunction extends AppCompatActivity{
     ProgressDialog progressDialog = null;
 //    Cursor cursor = null;
 //    public static final int requestcode = 1;
-
     public void showDialogLoading(Context ctx, Cursor cursorZreport, Cursor cursorLog){
         DB_Data db_data = new DB_Data(ctx);
         receivedCtx = ctx;
@@ -47,11 +33,9 @@ public class ZreportExportFunction extends AppCompatActivity{
         if(cursorZreport!= null){
             writeToStorage(cursorZreport,"Zreport");
         }
-
         else if(cursorLog != null){
             writeToStorage(cursorLog,"ProductLog");
         }
-
     }
 
     void writeToStorage(Cursor cursor, String fileName){
@@ -115,5 +99,4 @@ public class ZreportExportFunction extends AppCompatActivity{
         },2000);
         progressDialog.dismiss();
     }
-
 }

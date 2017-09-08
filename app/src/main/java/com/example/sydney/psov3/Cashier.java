@@ -8,8 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.hardware.usb.UsbManager;
-import android.support.annotation.IdRes;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -53,24 +53,47 @@ import java.util.Locale;
 
 import tw.com.prolific.driver.pl2303.PL2303Driver;
 
-import static com.example.sydney.psov3.Constants.*;
+import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRODUCT;
+import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
+import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID_TEMP;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY_TEMP;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_DESCRIPTION;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_ID;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_NAME;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_PRICE;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_QUANTITY;
+import static com.example.sydney.psov3.Constants.COLUMN_TEMP_TOTALPRICE;
+import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
+import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
+import static com.example.sydney.psov3.Constants.TABLE_ITEM;
+import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
+import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
+import static com.example.sydney.psov3.Constants.TABLE_TEMP_INVOICING;
+import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
+import static com.example.sydney.psov3.Constants._ID;
 
 public class Cashier extends AppCompatActivity {
     private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
+    private static final boolean SHOW_DEBUG = true;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }    //TO SUPPORT VECTOR DRAWABLES
 
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
-    private int quantityCount = 0,itemcodeCol,discType=0,dialogVar;
-    private String code = "";
     String userNum;
     Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol=0.0,discount=0.0,discounted,totalPrice;
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
-    private List<InvoiceItem> invoiceItemList;
-    private RecyclerView recyclerView;
-
     EditText txt_search,txt_cash;
     String itemnameCol,itemdescCol,formatted,vat2,vattable2,subTotal2,due2,totalPrice2,itempricetotalCol2,discount2,discounted2;
 //    ArrayList<Integer>itemQuantityList = new ArrayList<>();
@@ -97,12 +120,44 @@ public class Cashier extends AppCompatActivity {
     String currentTime;
     String dateformatted;
     String transType;
-    private GridLayoutManager mLayoutManager;
     ReportBaKamo reportBaKamo;
+    double enteredCashDrawer;
+    int transNumber;
+    boolean isOn = false;
+    //Dialog for Enter the Quantity
+    AlertDialog.Builder builder;
+    AlertDialog alertQuantity;
+    double mPriceTotal;
+    double mVattable;
+    double mTax;
+    double mTotalDiscount;
+    double mTotal;
+    String mcustomerCash;
+    double mDue;
+    double mTaxPercent;
+    String mVattableConverted = "";
+    String mTaxConverted = "";
+    String mSubTotalConverted = "";
+    String mTotalDiscountConverted = "";
+    String mDueConverted = "";
+    String cleanSubtotal = "";
+    String cleanVattable = "";
+    String cleanTax = "";
+    double parsed = 0.0;
+    String TAG = "PL2303HXD_APLog";
+    PL2303Driver mSerial;
 
+    //Variables for txt in Payment Info
+    ZreportExportFunction zreportExportFunction;
+    InvoiceAdapter invoiceAdapter = null;
+    AppCompatEditText etQuan = null;
+    private int quantityCount = 0, itemcodeCol, discType = 0, dialogVar;
+    private String code = "";
+    private List<InvoiceItem> invoiceItemList;
+    private RecyclerView recyclerView;
+    private GridLayoutManager mLayoutManager;
     private String customerCash;
-    private Double dCustomerCash,change;
-
+    private Double dCustomerCash, change;
     private Double inCustomer;
     private String inPrint = ""; //NULL FOR THE MEANTIME
     private String inZreport = ""; //NULL FOR THE MEANTIME
@@ -115,54 +170,87 @@ public class Cashier extends AppCompatActivity {
     private Double inZeroRated;
     private Double inCreditCardNum;
     private Double inCreditExpiration;
-
     //JMPRINTER VARIABLES
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
-
-    double enteredCashDrawer;
-    int transNumber;
-    boolean isOn = false;
-
-
-    //Dialog for Enter the Quantity
-    AlertDialog.Builder builder;
-    AlertDialog alertQuantity;
-
-    //Variables for txt in Payment Info
-
-    double mPriceTotal;
-    double mVattable;
-    double mTax;
-    double mTotalDiscount;
-    double mTotal;
-    String mcustomerCash;
-    double mDue;
-    double mTaxPercent;
-
-    String mVattableConverted = "";
-    String mTaxConverted = "";
-    String mSubTotalConverted = "";
-    String mTotalDiscountConverted = "";
-    String mDueConverted = "";
-    String cleanSubtotal = "";
-    String cleanVattable = "";
-    String cleanTax = "";
-
-    double parsed = 0.0;
-    static {AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}    //TO SUPPORT VECTOR DRAWABLES
-
-    private static final boolean SHOW_DEBUG = true;
-    String TAG = "PL2303HXD_APLog";
-    PL2303Driver mSerial;
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
 
-    ZreportExportFunction zreportExportFunction;
+    public static boolean unLockCashBox() {
+        boolean retnValue = false;
+        UsbPrinter tmpUsbDev = new UsbPrinter();
+        retnValue = tmpUsbDev.UnLockOfCashBox();
 
-    InvoiceAdapter invoiceAdapter = null;
-    AppCompatEditText etQuan = null;
+        return retnValue;
+    }
 
-
+//    private void createMyDialog() {
+//        builder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = getLayoutInflater();
+//
+//        final EditText reportTotalCashDrawerX,reportTotalCashDrawerZ;
+//        final Button btnSubmitX,btnCancelX,btnSubmitZ,btnCancelZ;
+//
+//        final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
+//        final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
+//
+//        builder.setView(alertLayoutXreport);
+//        builder.setView(alertLayoutZreport);
+//
+//        reportTotalCashDrawerX = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerX);
+//        btnSubmitX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitX);
+//        btnCancelX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelX);
+//
+//        reportTotalCashDrawerZ = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerZ);
+//        btnSubmitZ = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitZ);
+//        btnCancelZ= (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelZ);
+//
+//        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+//        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+//        cursor1.moveToLast();
+//        transNumber = cursor1.getInt(cursor1.getColumnIndex(_ID)); //COLUMN _ID of TABLE_TRANSACTION
+//        cursor1.close();
+//
+//        btnSubmitX.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String convertedTransNum = Integer.toString(transNumber);
+////                double cashSale = db_data.getCashSales(userNum);
+//                enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
+////                double cashShortOver = enteredCashDrawer - cashSale;
+////                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
+//
+//
+//            }
+//        });
+//
+//        btnSubmitZ.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String convertedTransNum = Integer.toString(transNumber);
+////                double cashSale = db_data.getCashSales(userNum);
+//                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
+////                double cashShortOver = enteredCashDrawer - cashSale;
+////                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
+//
+//
+//        }
+//        });
+//
+//
+//        btnCancelX.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogXreport.dismiss();
+//            }
+//        });
+//
+//        btnCancelZ.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialogZreport.dismiss();
+//            }
+//        });
+//    }
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -247,13 +335,16 @@ public class Cashier extends AppCompatActivity {
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
 
         txt_cash.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
             @Override
             public void afterTextChanged(Editable arg0) {
             }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-            private String current = "";
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
@@ -431,75 +522,6 @@ public class Cashier extends AppCompatActivity {
         zreportExportFunction = new ZreportExportFunction();
 
     }
-
-//    private void createMyDialog() {
-//        builder = new AlertDialog.Builder(this);
-//        LayoutInflater inflater = getLayoutInflater();
-//
-//        final EditText reportTotalCashDrawerX,reportTotalCashDrawerZ;
-//        final Button btnSubmitX,btnCancelX,btnSubmitZ,btnCancelZ;
-//
-//        final View alertLayoutXreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
-//        final View alertLayoutZreport = inflater.inflate(R.layout.custom_alertdialog_xreport,null);
-//
-//        builder.setView(alertLayoutXreport);
-//        builder.setView(alertLayoutZreport);
-//
-//        reportTotalCashDrawerX = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerX);
-//        btnSubmitX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitX);
-//        btnCancelX = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelX);
-//
-//        reportTotalCashDrawerZ = (EditText) alertLayoutXreport.findViewById(R.id.etTotalCashDrawerZ);
-//        btnSubmitZ = (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerSubmitZ);
-//        btnCancelZ= (Button) alertLayoutXreport.findViewById(R.id.btnCashDrawerCancelZ);
-//
-//        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-//        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-//        cursor1.moveToLast();
-//        transNumber = cursor1.getInt(cursor1.getColumnIndex(_ID)); //COLUMN _ID of TABLE_TRANSACTION
-//        cursor1.close();
-//
-//        btnSubmitX.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String convertedTransNum = Integer.toString(transNumber);
-////                double cashSale = db_data.getCashSales(userNum);
-//                enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerX.getText().toString().trim());
-////                double cashShortOver = enteredCashDrawer - cashSale;
-////                db_data.addXreport(convertedTransNum,cashSale,enteredCashDrawer,cashShortOver);
-//
-//
-//            }
-//        });
-//
-//        btnSubmitZ.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String convertedTransNum = Integer.toString(transNumber);
-////                double cashSale = db_data.getCashSales(userNum);
-//                double enteredCashDrawer = Double.parseDouble(reportTotalCashDrawerZ.getText().toString().trim());
-////                double cashShortOver = enteredCashDrawer - cashSale;
-////                db_data.addXreport(convertedTransNum, cashSale, enteredCashDrawer, cashShortOver);
-//
-//
-//        }
-//        });
-//
-//
-//        btnCancelX.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                alertDialogXreport.dismiss();
-//            }
-//        });
-//
-//        btnCancelZ.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                alertDialogZreport.dismiss();
-//            }
-//        });
-//    }
 
     private List<InvoiceItem> fill_with_data() {
         invoiceItemList = new ArrayList<>();
@@ -851,6 +873,7 @@ public class Cashier extends AppCompatActivity {
         menuInflater.inflate(R.menu.my_menu,menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
@@ -878,6 +901,7 @@ public class Cashier extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     public void onBackPressed(){
         tab_host.setCurrentTab(0);
     }
@@ -956,6 +980,7 @@ public class Cashier extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     public void zreport(View view){
         //FOR SAVING Z REPORT
         try {
@@ -974,6 +999,22 @@ public class Cashier extends AppCompatActivity {
             bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
+
+            reportBaKamo.setDb_data(db_data);
+            reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
+            ArrayList<String> paPrintNaman;
+            paPrintNaman = reportBaKamo.getToBePrinted();
+
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_ITEM_ZREPORT, 1);
+            String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
+            String[] WhereArgBaKamo = {"0"};
+            dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
+
+            //unLockCashBox();
+            printFunction(paPrintNaman);
+//            retrievedCursorFromJoinTable.close();
+
             //EXPORT TO CSV
             //Cursor retrievedCursorFromReportBaKaMo = reportBaKamo.getCursorInReportBaKamo();
             Cursor retrievedCursorFromJoinTable;
@@ -982,7 +1023,7 @@ public class Cashier extends AppCompatActivity {
             String joinTableQuery = "SELECT c1."+ _ID+ " as ID, "+
                     "c1."+COLUMN_PRODUCT_ID + " as CODE," +
                     "c1."+COLUMN_PRODUCT_NAME + " as ITEM," +
-                        "c2."+COLUMN_PRODUCT_QUANTITY_TEMP + " as BEGINNING," +
+                    "c2." + COLUMN_PRODUCT_QUANTITY_TEMP + " as BEGINNING," +
                     "SUM(c3."+COLUMN_ITEM_QUANTITY + ") as SALES," +
                     "c1."+COLUMN_PRODUCT_QUANTITY +
                     " as ENDING FROM " + TABLE_PRODUCT + " c1 " +
@@ -1001,21 +1042,8 @@ public class Cashier extends AppCompatActivity {
 //            }
             //END OF EXPORT CSV
 
-            reportBaKamo.setDb_data(db_data);
-            reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
-            ArrayList<String> paPrintNaman;
-            paPrintNaman = reportBaKamo.getToBePrinted();
-
-            ContentValues cv = new ContentValues();
-            cv.put(COLUMN_ITEM_ZREPORT,1);
-            String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
-            String[] WhereArgBaKamo = {"0"};
-            dbWriter.update(TABLE_ITEM,cv,whereBaKamo,WhereArgBaKamo);
-
-            //unLockCashBox();
-            printFunction(paPrintNaman);
-//            retrievedCursorFromJoinTable.close();
             paPrintNaman.clear();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1027,25 +1055,6 @@ public class Cashier extends AppCompatActivity {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static class FirstFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_cashier_invoice, container, false);
-        }
-    }
-    public static class SecondFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_cashier_payment, container, false);
-        }
-    }
-    public static class ThirdFragment extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
         }
     }
 
@@ -1096,7 +1105,7 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
-    private void    refreshRecyclerView() {
+    private void refreshRecyclerView() {
         //REFRESHING THE RECYCLER
         invoiceItemList = fill_with_data();
         invoiceAdapter = new InvoiceAdapter(getApplication(), invoiceItemList);
@@ -1107,13 +1116,6 @@ public class Cashier extends AppCompatActivity {
         invoiceAdapter.notifyDataSetChanged();
     }
 
-    public static boolean unLockCashBox(){
-        boolean retnValue = false;
-        UsbPrinter tmpUsbDev = new UsbPrinter();
-        retnValue = tmpUsbDev.UnLockOfCashBox();
-
-        return retnValue;
-    }
     @Override
     protected void onDestroy() {
         Log.d(TAG, "Enter onDestroy");
@@ -1126,6 +1128,7 @@ public class Cashier extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "Leave onDestroy");
     }
+
     public void onResume() {
         Log.d(TAG, "Enter onResume");
         super.onResume();
@@ -1232,6 +1235,27 @@ public class Cashier extends AppCompatActivity {
         printFunction(reprint);
 
         reprint.clear();
+    }
+
+    public static class FirstFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_invoice, container, false);
+        }
+    }
+
+    public static class SecondFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_payment, container, false);
+        }
+    }
+
+    public static class ThirdFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
+        }
     }
 
 

@@ -3,13 +3,11 @@ package com.example.sydney.psov3;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_CASHIER;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DESC;
@@ -19,9 +17,6 @@ import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME_TEMP;
-import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 
 
 /**
@@ -29,8 +24,6 @@ import static com.example.sydney.psov3.Constants.TABLE_ITEM;
  */
 
 class ReportBaKamo {
-    private DB_Data db_data;
-    private ArrayList<String> toBePrinted = new ArrayList<>();
     SQLiteDatabase dbReader;
     double gross= 0.0, ogt = 0.0;
     String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
@@ -38,7 +31,8 @@ class ReportBaKamo {
     int z, t3,totalQty=0;
     int[] or = new int[1], transArray = new int[1];
     double[] hourlyGrossSale = new double[24];
-
+    private DB_Data db_data;
+    private ArrayList<String> toBePrinted = new ArrayList<>();
     private Cursor cProd = null;
 
     void main(String x, String date, int transNum, double moneyCount){
@@ -76,12 +70,11 @@ class ReportBaKamo {
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
 
-        Double exemptDiscount = 0.0;
-        Double exemptDiscount1 = 0.0;
+        double exemptDiscount;
+        double exemptDiscount1;
 try{
     exemptDiscount = Double.parseDouble(zsale);
     exemptDiscount1 = exemptDiscount * .12;
-
 }
 catch (Exception e){
     exemptDiscount = 0.0;
@@ -143,8 +136,7 @@ catch (Exception e){
             toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
             toBePrinted.add("Z Count\t\t"+zf+"\n");
-
-           toBePrinted.add("Trans #\t\t"+t1+" - "+t2);
+            toBePrinted.add("Trans #\t\t" + t1 + " - " + t2);
             toBePrinted.add("\t\t\t"+t3+"\n");
 
             toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
