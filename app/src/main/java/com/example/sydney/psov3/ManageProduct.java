@@ -24,9 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -35,17 +33,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.sydney.psov3.Constants.*;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE;
+import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY;
+import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
+import static com.example.sydney.psov3.Constants.TABLE_PRODUCTLOGS;
 
 /**
  * Created by Marky on 6/2/2017.
  */
 
 public class ManageProduct extends AppCompatActivity  implements ProductAdapter.OnRecyclerItemClickListener{
+    public static final int requestcode = 1;
     AlertDialog.Builder builder = null;
     AlertDialog alertDialog = null;
     DB_Data db_data;
-
     ProductAdapter productAdapter = null;
 //    SearchView search_prod;
     Spinner spinner;
@@ -54,11 +58,8 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
     int spinnerSelected;
     RecyclerView recyclerView;
     SearchView searchView;
-
-    private ZreportExportFunction zreportExportFunction = null;
     SQLiteDatabase dbReader;
-
-    public static final int requestcode = 1;
+    private ZreportExportFunction zreportExportFunction = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -324,7 +325,6 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
         retrievedCursorFromProductLog = dbReader.rawQuery(logProductQuery,null);
 
         zreportExportFunction.showDialogLoading(ManageProduct.this,cursorDummy,retrievedCursorFromProductLog);
-
     }
 
     private void createMyDialog(){
