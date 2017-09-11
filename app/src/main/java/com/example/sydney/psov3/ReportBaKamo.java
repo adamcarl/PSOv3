@@ -337,8 +337,7 @@ catch (Exception e){
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        db_data.copyToProductTemp();
-        db_data.updateTransactions(x);
+
 
         cProd = db_data.getAllProductsSample();
         cProd.moveToFirst();

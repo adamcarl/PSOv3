@@ -200,7 +200,6 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
         fileIntent.setType("gagt/sdf");
         try {
             startActivityForResult(fileIntent, requestcode);
-            db_data.copyToProductTemp();
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -421,6 +420,10 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                             Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
+                            int quer = db_data.getProdTempCount();
+                            if (quer<=0){
+                                db_data.copyToProductTemp();
+                            }
                         } catch (IOException e) {
                             if (db.inTransaction())
                                 db.endTransaction();

@@ -1005,11 +1005,7 @@ public class Cashier extends AppCompatActivity {
             ArrayList<String> paPrintNaman;
             paPrintNaman = reportBaKamo.getToBePrinted();
 
-            ContentValues cv = new ContentValues();
-            cv.put(COLUMN_ITEM_ZREPORT, 1);
-            String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
-            String[] WhereArgBaKamo = {"0"};
-            dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
+
 
             //unLockCashBox();
             printFunction(paPrintNaman);
@@ -1035,6 +1031,7 @@ public class Cashier extends AppCompatActivity {
                     " GROUP BY " + COLUMN_PRODUCT_ID + ";";
             retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery,null);
 
+
             zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable,cursorDummy);
 //            boolean sent =
 //            if(sent){
@@ -1042,13 +1039,23 @@ public class Cashier extends AppCompatActivity {
 //            }
             //END OF EXPORT CSV
 
+            db_data.updateTransactions(userNum);
+
+            //GETTING QUANTITY SALES
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_ITEM_ZREPORT, 1);
+            String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
+            String[] WhereArgBaKamo = {"0"};
+            dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
+            //END OF QUANTITY SALES
+
             paPrintNaman.clear();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+//94 3 97
     private void sleep(int ms) {
         try {
             java.lang.Thread.sleep(ms);
