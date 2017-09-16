@@ -127,6 +127,11 @@ public class Cashier extends AppCompatActivity {
     //Dialog for Enter the Quantity
     AlertDialog.Builder builder;
     AlertDialog alertQuantity;
+
+    //Dialog for Enter the Credit Card
+    AlertDialog.Builder creditBuilder;
+    AlertDialog alertCredit;
+
     double mPriceTotal;
     double mVattable;
     double mTax;
@@ -151,6 +156,15 @@ public class Cashier extends AppCompatActivity {
     ZreportExportFunction zreportExportFunction;
     InvoiceAdapter invoiceAdapter = null;
     AppCompatEditText etQuan = null;
+
+    AppCompatEditText etCreditPayment = null;
+    AppCompatEditText etCreditBank = null;
+    AppCompatEditText etCreditNumber = null;
+    AppCompatEditText etCreditExpiry = null;
+    String creditBank, creditNumber, creditExpiry;
+    double creditPayment = 0.0;
+    int creditStatus = 0;
+
     private int quantityCount = 0, itemcodeCol, discType = 0, dialogVar;
     private String code = "";
     private List<InvoiceItem> invoiceItemList;
@@ -363,7 +377,6 @@ public class Cashier extends AppCompatActivity {
 
                         if (mDue < 0 ) {
                             btn_print.setEnabled(false);
-                            lbl_dc.setText("" + "Due" + "");
                         } else if (mDue >= 0) {
                             btn_print.setEnabled(true);
                             btn_print.setText("" + "Print Receipt" + "");
@@ -439,6 +452,13 @@ public class Cashier extends AppCompatActivity {
                     refreshPaymentInformation();
 
                 }
+            }
+        });
+
+        btnCreditCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterCreditDetails();
             }
         });
 
@@ -661,10 +681,50 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
+    void enterCreditDetails() {
+        try {
+            creditBuilder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_creditcard, null);
+            creditBuilder.setView(alertLayout);
+            final AppCompatButton btnEnterCredit = (AppCompatButton) alertLayout.findViewById(R.id.btnEnterCredit);
+            etCreditPayment = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditPayment);
+            etCreditBank = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditBank);
+            etCreditNumber = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditNumber);
+            etCreditExpiry = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditExpiry);
+
+            alertCredit = creditBuilder.create();
+            alertCredit.show();
+
+            btnEnterCredit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (etCreditPayment.getText().toString().equals("") || etCreditBank.getText().toString().equals("") || etCreditNumber.getText().toString().equals("") || etCreditExpiry.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            creditPayment = Double.parseDouble(etCreditPayment.getText().toString());
+                            creditBank = etCreditBank.getText().toString();
+                            creditNumber = etCreditNumber.getText().toString();
+                            creditExpiry = etCreditExpiry.getText().toString();
+                            creditStatus = 1;
+                            refreshPaymentInformation();
+                            alertCredit.dismiss();
+                        }
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void refreshPaymentInformation() {
 
         quantityCount = db_data.getQuantityCount(); //GET ITEM QUANTITY TOTAL COUNT
-
 
         //HERE HERE HERE HERE
         mPriceTotal = db_data.totalPrice();
@@ -673,9 +733,8 @@ public class Cashier extends AppCompatActivity {
         mTotalDiscount = mVattable * discount;
         mTotal = mVattable + mTax - mTotalDiscount;
         customerCash = txt_cash.getText().toString().replaceAll("[P,$]","");
-        if (customerCash.equals(null) || customerCash.equals("")){customerCash = "0";}
-        double mDoubleCustomerCash = 0.0;
-        mDoubleCustomerCash = Double.parseDouble(customerCash);
+        if (customerCash.equals(null) || customerCash.equals("")) customerCash = "0";
+        double mDoubleCustomerCash = Double.parseDouble(customerCash) + creditPayment;
         mDue = mDoubleCustomerCash - mTotal;
 
         mVattableConverted = NumberFormat.getCurrencyInstance().format((mVattable / 1));
@@ -702,9 +761,7 @@ public class Cashier extends AppCompatActivity {
             btn_print.setText("" + "Print Receipt" + "");
             lbl_dc.setText("" + "Change" + "");
         }
-
         writeDataToSerial("Total : " + lbl_total.getText().toString(),"Change : " + lbl_due.getText().toString(),"");
-
     }
 
     //BUTTON PRINT
@@ -747,7 +804,11 @@ public class Cashier extends AppCompatActivity {
             //--END
             //// TODO: 7/15/2017
             try{
-                db_data.addInvoice(transNumber+"",cleanTax,cleanSubtotal,inPrint,userNum,"0","0",cleanVattable,mTax,discType+"", 0.0,dateToStr,"","");
+                db_data.addInvoice(transNumber + "", cleanTax, cleanSubtotal, inPrint, userNum, "0", "0", cleanVattable, mTax, discType + "", creditPayment, dateToStr, creditNumber, creditExpiry);
+                if (creditStatus == 1) {
+                    db_data.addCredit(transNumber + "", userNum, dateToString, creditPayment, creditBank, creditNumber, creditExpiry);
+                }
+
                 Log.e("AddInvoice : ", "trans#"+transNumber+ "|disc"+discount.toString()+ "|subtotyal"+cleanSubtotal+"|print"+inPrint+ "|cashier"+userNum+ "|clean vattable: "+cleanVattable+"|tax: "+mTax+"|disc typee"+discType+"|Date:"+dateToStr+"");
             } catch(Exception e){
                 e.printStackTrace();
@@ -816,10 +877,15 @@ public class Cashier extends AppCompatActivity {
                 printBaHanapMo = printBaHanapMo +"\n"+ printBaKamo[p];
             }
             db_data.updateInvoice(abc,printBaHanapMo);
+            double mCashBaKamo = 0.0;
+            try {
+                mCashBaKamo = Double.parseDouble(customerCash);
+            } catch (Exception e) {
+                mCashBaKamo = 0.0;
+            }
+            double doubleCustomer = mCashBaKamo + creditPayment;
 
-            double doubleCustomerCash = Double.parseDouble(customerCash);
-
-            if( invoiceAdapter.getItemCount() > 0 && doubleCustomerCash >= mDue ) {
+            if (invoiceAdapter.getItemCount() > 0 && doubleCustomer >= mDue) {
                     //JOLLIMARK PRINTER
 //                    unLockCashBox();
                 printFunction(products);
@@ -1169,7 +1235,6 @@ public class Cashier extends AppCompatActivity {
 
         }
 
-
         if (mSerial.isConnected()) {
             if (SHOW_DEBUG) {
                 Log.d(TAG, "openUsbSerial : isConnected ");
@@ -1197,7 +1262,6 @@ public class Cashier extends AppCompatActivity {
         else {
             Toast.makeText(this, "Connected failed, Please plug in PL2303 cable again!" , Toast.LENGTH_SHORT).show();
             Log.d(TAG, "connected failed, Please plug in PL2303 cable again!");
-
 
         }
     }//openUsbSerial
@@ -1257,7 +1321,6 @@ public class Cashier extends AppCompatActivity {
             return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
         }
     }
-
 
 }
 // SELECT TP.PN, TPT.Q, S.Q, TP.Q

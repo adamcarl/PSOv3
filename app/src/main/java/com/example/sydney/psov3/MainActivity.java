@@ -2,15 +2,11 @@ package com.example.sydney.psov3;
 
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,30 +32,26 @@ import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
 
 public class MainActivity extends AppCompatActivity {
+    //For Update
+    public static final int requestcode = 1;
     //For Database
     DB_Data db_data;
-    
     //For ActivityLogin
     CheckBox chk_admin;
     EditText et_usernum,et_pass;
     Button btn_login;
     TextView tv_signup;
-
     //For FragmentSignUp
     LinearLayout layout_signup;
     EditText et_regName,et_regUsernum,et_regPass;
     Spinner spn_regPosition;
     Button btn_cancel,btn_register;
     FlexboxLayout flexNiLogin,flexNiSignUp;
-
     //For Orientation
     int o=0;
     int or;
     String ori;
     CharSequence userText;
-
-    //For Update
-    public static final int requestcode = 1;
 
     protected void onSaveInstanceState(Bundle savedInstanceState){
         userText = o+"";
@@ -206,55 +198,57 @@ public class MainActivity extends AppCompatActivity {
     //BackButton Holder
     public void onBackPressed(){
     }
+
+    private void importProduct() {
+        try {
+            String filepath = "/storage/emulated/0/download/updatepos.csv";
+            SQLiteDatabase db = db_data.getWritableDatabase();
+            String tableName = TABLE_PRODUCT;
+            db.execSQL("delete from " + tableName);
+            try {
+                FileReader file = new FileReader(filepath);
+                BufferedReader buffer = new BufferedReader(file);
+                ContentValues contentValues = new ContentValues();
+                String line = "";
+                db.beginTransaction();
+                while ((line = buffer.readLine()) != null) {
+                    String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
+                    //Id, Company,Name,Price
+                    String pId = str[0];
+                    String pName = str[1];
+                    String pDesc = str[2];
+                    String pPrice = str[3];
+                    String pQuan = str[4];
+                    contentValues.put(COLUMN_PRODUCT_ID, pId);
+                    contentValues.put(COLUMN_PRODUCT_NAME, pName);
+                    contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
+                    contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
+                    contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
+                    db.insert(tableName, null, contentValues);
+
+                    }
+                Toast.makeText(this, "Update Successful", Toast.LENGTH_LONG).show();
+                db.setTransactionSuccessful();
+                db.endTransaction();
+            } catch (IOException e) {
+                if (db.inTransaction())
+                    db.endTransaction();
+                Dialog d = new Dialog(this);
+                d.setTitle(e.getMessage() + "first");
+                d.show();
+                // db.endTransaction();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
     //Fragments
     public static class FragmentSignUp extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_signup, container, false);
-        }
-    }
-    private void importProduct() {
-        try {
-            String filepath = "/storage/emulated/0/download/updatepos.csv";
-            SQLiteDatabase db = db_data.getWritableDatabase();
-            //                db.execSQL("delete from " + tableName);
-                    try {
-                        FileReader file = new FileReader(filepath);
-                        BufferedReader buffer = new BufferedReader(file);
-                        ContentValues contentValues = new ContentValues();
-                        String line = "";
-                        db.beginTransaction();
-                        while ((line = buffer.readLine()) != null) {
-                            String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
-                            //Id, Company,Name,Price
-//                                String pId = str[0];
-//                                String pName = str[1];
-                            String pDesc = str[2];
-                            String pPrice = str[3];
-//                                String pQuan = str[4];
-//                                contentValues.put(COLUMN_PRODUCT_ID, pId);
-//                                contentValues.put(COLUMN_PRODUCT_NAME, pName);
-                            contentValues.put(COLUMN_PRODUCT_DESCRIPTION, pDesc);
-                            contentValues.put(COLUMN_PRODUCT_PRICE, pPrice);
-//                                contentValues.put(COLUMN_PRODUCT_QUANTITY, pQuan);
-                            String mWHERE = COLUMN_PRODUCT_DESCRIPTION+" = ?";
-                            String[] mWHERE_ARGS = new String[]{pDesc};
-                            db.update(TABLE_PRODUCT, contentValues, mWHERE, mWHERE_ARGS);
-                        }
-                        Toast.makeText(this, "Update Successful", Toast.LENGTH_LONG).show();
-                        db.setTransactionSuccessful();
-                        db.endTransaction();
-                    } catch (IOException e) {
-                        if (db.inTransaction())
-                            db.endTransaction();
-                        Dialog d = new Dialog(this);
-                        d.setTitle(e.getMessage() + "first");
-                        d.show();
-                        // db.endTransaction();
-                    }
-        } catch (Exception e) {
-            Toast.makeText(this, "Failed to import", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 }
