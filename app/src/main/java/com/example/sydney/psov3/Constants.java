@@ -36,6 +36,7 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_VATTABLE = "InVattable"; //FROM VATTABLE IF CUSTOMER HAS NO DISCOUNT!
     String COLUMN_INVOICE_VATTED = "InVatted"; //TAX OF VATTABLED ITEMS
     String COLUMN_INVOICE_VAT_STATUS = "InVatStatus"; //V,X,Z
+    String COLUMN_INVOICE_TOTALPRICE = "InTotalPrice";
     String COLUMN_INVOICE_CREDITSALE = "InCreditSale";
     String COLUMN_INVOICE_DATEANDTIME = "InDateTime";
     String COLUMN_INVOICE_CREDITCARDNUMBER = "InCreditNumber";
@@ -110,6 +111,14 @@ interface Constants extends BaseColumns {
     String COLUMN_PRODUCTLOGS_REMARKS = "REMARKS";
     String COLUMN_PRODUCTLOGS_DATE = "DATE";
 
+    String TABLE_CREDIT_CARD = "tbl_credit";
+    String COLUMN_CREDIT_TRANS = "creditTrans";
+    String COLUMN_CREDIT_CASHIER = "creditCashier";
+    String COLUMN_CREDIT_DATE = "creditDate";
+    String COLUMN_CREDIT_PAYMENT = "creditPayment";
+    String COLUMN_CREDIT_BANK = "creditBank";
+    String COLUMN_CREDITT_NUMBER = "creditNumber";
+    String COLUMN_CREDIT_EXPIRY = "creditExpiry";
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

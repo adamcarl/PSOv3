@@ -1,7 +1,6 @@
 package com.example.sydney.psov3;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,19 +17,31 @@ import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
 
-
 /**
  * Created by Poging Adam on 6/28/2017.
  */
 
 class ReportBaKamo {
-    SQLiteDatabase dbReader;
-    double gross= 0.0, ogt = 0.0;
-    String discount, vsale, xsale, zsale, vtax, xtax, ztax, zf, t1, t2, or1, or2, ngt, trans;
-    double net_gross, net_discount, net, dogt, dngt, over, totalGross=0.0, totalDeduction=0.0, totalItemSales=0.0;
-    int z, t3,totalQty=0;
-    int[] or = new int[1], transArray = new int[1];
-    double[] hourlyGrossSale = new double[24];
+    private String zsale;
+    private String vtax;
+    private String xtax;
+    private String ztax;
+    private String t1;
+    private String t2;
+    private String or1;
+    private String or2;
+    private String trans;
+    private double net_discount;
+    private double net;
+    private double dogt;
+    private double dngt;
+    private double over;
+    private double totalGross = 0.0;
+    private double totalDeduction = 0.0;
+    private double totalItemSales = 0.0;
+    private int z, t3, totalQty = 0;
+    private int[] or = new int[1], transArray = new int[1];
+    private double[] hourlyGrossSale = new double[24];
     private DB_Data db_data;
     private ArrayList<String> toBePrinted = new ArrayList<>();
     private Cursor cProd = null;
@@ -57,11 +68,12 @@ class ReportBaKamo {
             report = "X";
         }
         hourlyGrossSale = db_data.getHourlyGrossSale(x);
-        ogt = db_data.getMyOldGross();
-        gross = db_data.getGrossSales(x);
-        discount = db_data.getDiscountSales(x);
-        vsale = db_data.sales("0",x);
-        xsale = db_data.sales("1",x);
+        double ogt = db_data.getMyOldGross();
+        double gross = db_data.getNormalSales(x);
+        double credit = db_data.getCreditSales(x);
+        String discount = db_data.getDiscountSales(x);
+        String vsale = db_data.sales("0", x);
+        String xsale = db_data.sales("1", x);
         zsale = db_data.sales("2",x);
         vtax = db_data.tax("0",x);
         xtax = db_data.tax("1",x);
@@ -80,9 +92,9 @@ catch (Exception e){
     exemptDiscount = 0.0;
     exemptDiscount1 = exemptDiscount * .12;
 }
-        net_gross = gross;
+        double net_gross = gross + credit;
         net_discount = Double.parseDouble(discount)+exemptDiscount1;
-        net = net_gross-net_discount;
+        net = net_gross - net_discount;
         or1 = String.format("%1$06d", or[0]);
         or2 = String.format("%1$06d", or[1]);
         trans = String.format("%1$06d", transNum);
@@ -111,7 +123,7 @@ catch (Exception e){
             toBePrinted.add("CASHIER : "+x);
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
-        toBePrinted.add("GROSS SALES\t\t"+gross);
+        toBePrinted.add("GROSS SALES\t\t" + gross + credit);
         toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
@@ -119,14 +131,14 @@ catch (Exception e){
         toBePrinted.add("TAX CODE\tSALES\tTAX");
         toBePrinted.add("----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-        toBePrinted.add("[v] V-Sal\t"+vsale+"\t"+vtax);
-        toBePrinted.add("[x] E-Sal\t"+xsale+"\t"+xtax);
+        toBePrinted.add("[v] V-Sal\t" + vsale + "\t" + vtax);
+        toBePrinted.add("[x] E-Sal\t" + xsale + "\t" + xtax);
         toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
 
         if(x.equals("no")){
             dogt = ogt;
             dngt = dogt + net;
-            zf = String.format("%1$05d", z);
+            String zf = String.format("%1$05d", z);
 
             t1 = String.format("%1$06d", transArray[0]);
             t2 = String.format("%1$06d", transArray[1]);
@@ -135,7 +147,7 @@ catch (Exception e){
             toBePrinted.add("OLD GT\t000-"+dogt);
             toBePrinted.add("NEW GT\t000-"+dngt+"\n");
 
-            toBePrinted.add("Z Count\t\t"+zf+"\n");
+            toBePrinted.add("Z Count\t\t" + zf + "\n");
             toBePrinted.add("Trans #\t\t" + t1 + " - " + t2);
             toBePrinted.add("\t\t\t"+t3+"\n");
 
@@ -148,21 +160,20 @@ catch (Exception e){
         toBePrinted.add("CASH COUNT\t\t"+moneyCount);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
+        toBePrinted.add("TRANSACTION\t\tAMOUNT");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
 
-//        toBePrinted.add("TRANSACTION\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
-//        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
-
-//        toBePrinted.add("TENDER\t\tAMOUNT");
-//        toBePrinted.add("----------------------------------------------");
-//        toBePrinted.add("TOTAL CASH\t0\t0.00");
-//        toBePrinted.add("  CC BDO\tX\t0.00");
-//        toBePrinted.add("  CC BPI\tX\t0.00");
-//        toBePrinted.add("TOTAL CREDIT CA\t\t0.00\n");
+        toBePrinted.add("TENDER\t\tAMOUNT");
+        toBePrinted.add("----------------------------------------------");
+        toBePrinted.add("TOTAL CASH\t0\t0.00");
+        toBePrinted.add("  CC BDO\tX\t0.00");
+        toBePrinted.add("  CC BPI\tX\t0.00");
+        toBePrinted.add("TOTAL CREDIT CA\t\t" + credit + "\n");
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("SCD 20%\t\t-"+discount);
+        toBePrinted.add("SCD 20%\t\t-" + discount);
         toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
         toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n");
 
@@ -195,7 +206,6 @@ catch (Exception e){
             c.moveToNext();
         }
             c.close();
-
 
     totalItemSales = totalGross - totalDeduction;
         toBePrinted.add("----------------------------------------------");
