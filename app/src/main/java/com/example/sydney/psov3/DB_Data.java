@@ -117,9 +117,6 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
-        private static String[] FROM_ADMIN = {COLUMN_ADMIN_USERNAME, COLUMN_ADMIN_PASSWORD};
-        private static String[] FROM_CASH = {COLUMN_CASHIER_PASSWORD};
-        private static String[] ALL = {COLUMN_CASHIER_NUMBER, COLUMN_CASHIER_NAME, COLUMN_CASHIER_POSITION};
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
@@ -975,6 +972,15 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
             sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT;
             dbr.execSQL(sql);
         }
+
+        int getProdTempCount(){
+            Cursor cursor = dbr.rawQuery("SELECT * FROM "+TABLE_PRODUCT_TEMP,null);
+            cursor.moveToFirst();
+            int a = cursor.getCount();
+            cursor.close();
+            return a;
+        }
+
         int getQuantityofProducts(String prodID){
             int quan = 0;
             Cursor c;
@@ -1092,5 +1098,24 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
                 Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateToStr);
             }
             return  gross;
+        }
+        double getCreditSales(String x) {
+            double credit;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
+            if (x.equals("no")) {
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+                mWHERE_ARGS = new String[]{"0"};
+            } else {
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+                mWHERE_ARGS = new String[]{"0", x};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            credit = cursor.getDouble(0);
+            cursor.close();
+            Log.e("Credit sales : ", credit + "");
+            return credit;
         }
     }
