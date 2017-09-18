@@ -1,44 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_centerHorizontal="true"
+    android:gravity="center"
+    android:background="@color/myColorBackgroundOrange">
 
-    <Button
-        android:id="@+id/btn_cashier_reprint"
-        android:layout_width="match_parent"
+    <com.google.android.flexbox.FlexboxLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/flexNiAdminPriveleges"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:onClick="reprintBakamo"
-        android:text="Reprint Receipt" />
+        app:alignItems="center"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Button
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:layout_margin="5dp"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            android:id="@+id/btn_cashier_reprint"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:elevation="4dp"
+            android:text="Reprint Receipt"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            android:shadowColor="@color/myColorActionBar"
+            android:background="@drawable/custom_button_rounded8"
+            app:layout_flexBasisPercent="28%"
+            android:onClick="reprintBakamo"/>
+
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:layout_margin="5dp"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            app:drawableTopCompat = "@drawable/ic_people_black_48px"
             android:id="@+id/btn_cashier_x_report"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="xreport"
-            android:text="X Report" />
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:elevation="4dp"
+            android:text="X-READ"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            android:shadowColor="@color/myColorActionBar"
+            android:background="@drawable/custom_button_rounded8"
+            app:layout_flexBasisPercent="28%"
+            android:onClick="xreport"/>
 
-        <Button
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:layout_margin="5dp"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            app:drawableTopCompat = "@drawable/ic_people_black_48px"
             android:id="@+id/btn_cashier_z_report"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="zreport"
-            android:text="Z Report" />
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:elevation="4dp"
+            android:text="Z-READ"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            android:shadowColor="@color/myColorActionBar"
+            android:background="@drawable/custom_button_rounded8"
+            app:layout_flexBasisPercent="28%"
+            android:onClick="zreport"/>
 
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:layout_margin="5dp"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            android:id="@+id/btn_cashier_cashinout"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:elevation="4dp"
+            android:text="CASH IN/OUT"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            android:shadowColor="@color/myColorActionBar"
+            android:background="@drawable/custom_button_rounded8"
+            app:layout_flexBasisPercent="28%"
+            android:onClick="cashierCashInOut"/>
 
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_cashier_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="cashierLogOut"
-        android:text="Log Out" />
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:layout_margin="5dp"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            android:id="@+id/btn_cashier_logout"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:elevation="4dp"
+            android:text="LOGOUT"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            android:shadowColor="@color/myColorActionBar"
+            android:background="@drawable/custom_button_rounded8"
+            app:layout_flexBasisPercent="28%"
+            android:onClick="cashierLogOut"/>
+    </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

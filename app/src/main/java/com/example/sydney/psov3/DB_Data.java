@@ -14,106 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
-import static com.example.sydney.psov3.Constants.COLUMN_ADMIN_PASSWORD;
-import static com.example.sydney.psov3.Constants.COLUMN_ADMIN_USERNAME;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_PASSWORD;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_POSITION;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDITT_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_BANK;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_DATE;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_EXPIRY;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_PAYMENT;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_TRANS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CASHIER_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITCARDNUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITDATEOFEXPIRATION;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITSALE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_DATEANDTIME;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_DISCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_NORMALSALE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_PRINT;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VATTABLE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VATTED;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VAT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_XREPORT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_ZREPORT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DESC;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DISCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_INVOICE;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRODUCT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_LOG_STRING;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_BARCODE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_DATE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_REMARKS;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_TYPE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_VALUEADDED;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_VALUEMINUS;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_IMEI;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_IMEI_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_VATABLE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_VATABLE_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_BARCODE;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_NEWQUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_SOLDITEM;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_DESCRIPTION;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_ID;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_TOTALPRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_TOTAL_GRAND;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_DATETIME;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_XREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_ZREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHSALES;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHSHORTOVER;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_CASHCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_CASHSALES;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.TABLE_ADMIN;
-import static com.example.sydney.psov3.Constants.TABLE_CASHIER;
-import static com.example.sydney.psov3.Constants.TABLE_CREDIT_CARD;
-import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
-import static com.example.sydney.psov3.Constants.TABLE_ITEM;
-import static com.example.sydney.psov3.Constants.TABLE_LOG;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCTLOGS;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
-import static com.example.sydney.psov3.Constants.TABLE_RETRIEVED_JOINTABLE;
-import static com.example.sydney.psov3.Constants.TABLE_TEMP_INVOICING;
-import static com.example.sydney.psov3.Constants.TABLE_TOTAL;
-import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
-import static com.example.sydney.psov3.Constants.TABLE_XREPORT;
-import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
+import static com.example.sydney.psov3.Constants.*;
 
-    class DB_Data extends SQLiteOpenHelper {
+class DB_Data extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
@@ -202,13 +105,13 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
 
         arg0.execSQL("CREATE TABLE " + TABLE_CREDIT_CARD + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_CREDIT_TRANS + " INTEGER NOT NLL, "
+                + COLUMN_CREDIT_TRANS + " INTEGER NOT NULL, "
                 + COLUMN_CREDIT_CASHIER + " TEXT NOT NULL, "
                 + COLUMN_CREDIT_DATE + " TEXT NOT NULL, "
-                + COLUMN_CREDIT_PAYMENT + " DOUBLE NOT NULL,"
+                + COLUMN_CREDIT_PAYMENT + " REAL NOT NULL,"
                 + COLUMN_CREDIT_BANK + " TEXT NOT NULL, "
                 + COLUMN_CREDITT_NUMBER + " TEXT NOT NULL, "
-                + COLUMN_CREDIT_EXPIRY + " TEXT NOT NULL_;");
+                + COLUMN_CREDIT_EXPIRY + " TEXT NOT NULL);");
 
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
@@ -261,6 +164,26 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
                 + COLUMN_RETRIEVED_SOLDITEM + " INTEGER,"
                 + COLUMN_RETRIEVED_NEWQUANTITY + " INTEGER);");
 
+        arg0.execSQL("CREATE TABLE "+ TABLE_CASH + " ("
+                +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASH_CASHIERNUM + " TEXT NOT NULL,"
+                + COLUMN_CASH_DATEANDTIME + " TEXT,"
+                + COLUMN_CASH_ADDCASH + " REAL,"
+                + COLUMN_CASH_MINNUSCASH + " REAL,"
+                + COLUMN_CASH_CURRENTCASH + " REAL,"
+                + COLUMN_CASH_ZREPORT + " TEXT,"
+                + COLUMN_CASH_XREPORT + " TEXT);");
+
+        arg0.execSQL("CREATE TABLE "+ TABLE_CASHTRANS + " ("
+                +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASHTRANS_CASHIERNUM + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_DATETIME + " TEXT,"
+                + COLUMN_CASHTRANS_REASON + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_REMARKS1 + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
+                + COLUMN_CASHTRANS_REMARKS3 + " TEXT,"
+                + COLUMN_CASHTRANS_REMARKS4 + " TEXT);");
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
@@ -289,6 +212,10 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_RETRIEVED_JOINTABLE);
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_PRODUCTLOGS);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_CASH);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_CASHTRANS);
         onCreate(arg0);
     }
 
@@ -1118,4 +1045,24 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
             Log.e("Credit sales : ", credit + "");
             return credit;
         }
+
+    double getNormalSales(String x) {
+        double normal;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+            mWHERE_ARGS = new String[]{"0", x};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        normal = cursor.getDouble(0);
+        cursor.close();
+        Log.e("Normal sales : ", normal + "");
+        return normal;
+    }
     }
