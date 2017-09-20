@@ -21,7 +21,7 @@
         <com.example.sydney.psov3.CustomButtonForDrawableTop
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            app:drawableTopCompat = "@drawable/ic_print_black_48px"
             android:id="@+id/btn_cashier_reprint"
             android:layout_width="115dp"
             android:layout_height="115dp"
@@ -37,7 +37,7 @@
         <com.example.sydney.psov3.CustomButtonForDrawableTop
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
             android:id="@+id/btn_cashier_x_report"
             android:layout_width="115dp"
             android:layout_height="115dp"
@@ -53,7 +53,7 @@
         <com.example.sydney.psov3.CustomButtonForDrawableTop
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
             android:id="@+id/btn_cashier_z_report"
             android:layout_width="115dp"
             android:layout_height="115dp"
@@ -69,7 +69,7 @@
         <com.example.sydney.psov3.CustomButtonForDrawableTop
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            app:drawableTopCompat = "@drawable/ic_monetization_on_black_48px"
             android:id="@+id/btn_cashier_cashinout"
             android:layout_width="115dp"
             android:layout_height="115dp"
@@ -85,7 +85,7 @@
         <com.example.sydney.psov3.CustomButtonForDrawableTop
             android:layout_margin="5dp"
             android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
+            app:drawableTopCompat = "@drawable/ic_power_settings_new_black_48px"
             android:id="@+id/btn_cashier_logout"
             android:layout_width="115dp"
             android:layout_height="115dp"

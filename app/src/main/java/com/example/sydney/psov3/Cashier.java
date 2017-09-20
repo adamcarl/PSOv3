@@ -266,6 +266,11 @@ public class Cashier extends AppCompatActivity {
 //        });
 //    }
 
+    //TO SUPPORT VECTOR DRAWABLES
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
 
         db_data = new DB_Data(this);
@@ -1323,6 +1328,7 @@ public class Cashier extends AppCompatActivity {
     }
 
     public static class ThirdFragment extends Fragment {
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_cashier_shift, container, false);
