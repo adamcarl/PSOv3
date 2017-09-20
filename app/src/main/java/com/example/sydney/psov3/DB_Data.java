@@ -205,13 +205,13 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
 
         arg0.execSQL("CREATE TABLE " + TABLE_CREDIT_CARD + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_CREDIT_TRANS + " INTEGER NOT NLL, "
+                + COLUMN_CREDIT_TRANS + " INTEGER NOT NULL, "
                 + COLUMN_CREDIT_CASHIER + " TEXT NOT NULL, "
                 + COLUMN_CREDIT_DATE + " TEXT NOT NULL, "
                 + COLUMN_CREDIT_PAYMENT + " DOUBLE NOT NULL,"
                 + COLUMN_CREDIT_BANK + " TEXT NOT NULL, "
                 + COLUMN_CREDITT_NUMBER + " TEXT NOT NULL, "
-                + COLUMN_CREDIT_EXPIRY + " TEXT NOT NULL_;");
+                + COLUMN_CREDIT_EXPIRY + " TEXT NOT NULL);");
 
         arg0.execSQL("CREATE TABLE IF NOT EXISTS cashierlog(date TEXT, time TEXT,userNum TEXT,lastname TEXT,username TEXT,transactionnumber INTEGER PRIMARY KEY AUTOINCREMENT);");
         arg0.execSQL("CREATE TABLE IF NOT EXISTS sessions(time TEXT,date TEXT, username TEXT ); ");
@@ -727,7 +727,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         return 0;
     }
 
-    public int searchDuplicateProduct(String itemID) {
+        int searchDuplicateProduct(String itemID) {
             SQLiteDatabase database = this.getReadableDatabase();
             String[] selectionArgs = new String[]{itemID};
             try {

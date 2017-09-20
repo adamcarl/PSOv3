@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sydney.psov3">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -32,52 +33,58 @@
             android:name=".ManageProduct"
             android:label="Manage Product"
             android:parentActivityName=".AdminActivity">
-
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"></action>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.SearchManager"
-                android:value="com.example.sydney.psov3"></meta-data>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"></meta-data>
+            <meta-data
+                android:name="android.app.SearchManager"
+                android:value="com.example.sydney.psov3" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".ManageJournal"
             android:label="Manage Journal"
-            android:parentActivityName=".AdminActivity" >
-
+            android:parentActivityName=".AdminActivity">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"></action>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.SearchManager"
-                android:value="com.example.sydney.psov3"></meta-data>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"></meta-data>
+            <meta-data
+                android:name="android.app.SearchManager"
+                android:value="com.example.sydney.psov3" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".ManageProfile"
             android:label="My Profile"
             android:parentActivityName=".AdminActivity" />
-        <activity android:name=".temp"></activity>
-
+        <activity android:name=".temp" />
         <activity
             android:name=".ModifyAddQuantity"
             android:label="Add Quantity"
             android:parentActivityName=".ManageProduct" />
-
         <activity
             android:name=".ModifyEdit"
             android:label="Edit Item"
             android:parentActivityName=".ManageProduct" />
-
         <activity
             android:name=".ModifyMinus"
             android:label="Decrease Quantity"
             android:parentActivityName=".ManageProduct" />
+
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -438,7 +438,6 @@ public class Cashier extends AppCompatActivity {
                 else{
                     //NO DISCOUNT
 
-
                     //SUPPLIER FOR addInvoice(. . .)
                     inVattable = vattable;
                     inVatted = vat;
@@ -450,7 +449,6 @@ public class Cashier extends AppCompatActivity {
                     discount = 0.0;
                     mTaxPercent = .12;
                     refreshPaymentInformation();
-
                 }
             }
         });
@@ -529,7 +527,6 @@ public class Cashier extends AppCompatActivity {
                 long mCode = txt_search.getText().length();
                 if(mCode >= 13){
                     searchProduct();
-
                 }
             }
         });
@@ -654,7 +651,6 @@ public class Cashier extends AppCompatActivity {
                                         int sizeOfChar = itemPriceConverted.trim().length();
                                         int lengthOfCharToBeAdded = 20 - sizeOfChar;
                                         writeDataToSerial(itemdescCol,itemPriceConverted, String.valueOf(lengthOfCharToBeAdded));
-
                                         refreshRecyclerView();
 
                                         alertQuantity.dismiss();
