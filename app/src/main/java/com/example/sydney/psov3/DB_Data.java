@@ -14,112 +14,12 @@ import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
-import static com.example.sydney.psov3.Constants.COLUMN_ADMIN_PASSWORD;
-import static com.example.sydney.psov3.Constants.COLUMN_ADMIN_USERNAME;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_PASSWORD;
-import static com.example.sydney.psov3.Constants.COLUMN_CASHIER_POSITION;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDITT_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_BANK;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_DATE;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_EXPIRY;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_PAYMENT;
-import static com.example.sydney.psov3.Constants.COLUMN_CREDIT_TRANS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CASHIER_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITCARDNUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITDATEOFEXPIRATION;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_CREDITSALE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_DATEANDTIME;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_DISCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_NORMALSALE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_PRINT;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VATTABLE;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VATTED;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_VAT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_XREPORT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_INVOICE_ZREPORT_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DESC;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DISCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_INVOICE;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRODUCT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_STATUS;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_LOG_STRING;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_BARCODE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_DATE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_REMARKS;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_TYPE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_VALUEADDED;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCTLOGS_VALUEMINUS;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_DESCRIPTION_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_ID_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_IMEI;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_IMEI_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_NAME_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_PRICE_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_QUANTITY_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_VATABLE;
-import static com.example.sydney.psov3.Constants.COLUMN_PRODUCT_VATABLE_TEMP;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_BARCODE;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_NEWQUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_RETRIEVED_SOLDITEM;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_DESCRIPTION;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_ID;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_TEMP_TOTALPRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_TOTAL_GRAND;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_CASHIER;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_DATETIME;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_XREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_ZREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHSALES;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_CASHSHORTOVER;
-import static com.example.sydney.psov3.Constants.COLUMN_XREPORT_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_CASHCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_CASHSALES;
-import static com.example.sydney.psov3.Constants.COLUMN_ZREPORT_TRANSACTION_NUMBER;
-import static com.example.sydney.psov3.Constants.TABLE_ADMIN;
-import static com.example.sydney.psov3.Constants.TABLE_CASHIER;
-import static com.example.sydney.psov3.Constants.TABLE_CREDIT_CARD;
-import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
-import static com.example.sydney.psov3.Constants.TABLE_ITEM;
-import static com.example.sydney.psov3.Constants.TABLE_LOG;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCTLOGS;
-import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
-import static com.example.sydney.psov3.Constants.TABLE_RETRIEVED_JOINTABLE;
-import static com.example.sydney.psov3.Constants.TABLE_TEMP_INVOICING;
-import static com.example.sydney.psov3.Constants.TABLE_TOTAL;
-import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
-import static com.example.sydney.psov3.Constants.TABLE_XREPORT;
-import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
+import static com.example.sydney.psov3.Constants.*;
 
-    class DB_Data extends SQLiteOpenHelper {
+class DB_Data extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
-        private static String[] FROM_ADMIN = {COLUMN_ADMIN_USERNAME, COLUMN_ADMIN_PASSWORD};
-        private static String[] FROM_CASH = {COLUMN_CASHIER_PASSWORD};
-        private static String[] ALL = {COLUMN_CASHIER_NUMBER, COLUMN_CASHIER_NAME, COLUMN_CASHIER_POSITION};
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
@@ -167,7 +67,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_INVOICE_TRANSACTION_NUMBER +" INTEGER NOT NULL ,"
                 +COLUMN_INVOICE_DISCOUNT+" REAL,"
-                + COLUMN_INVOICE_NORMALSALE + " REAL NOT NULL,"
+                +COLUMN_INVOICE_NORMALSALE +" REAL NOT NULL,"
                 +COLUMN_INVOICE_PRINT+" TEXT,"
                 +COLUMN_INVOICE_CASHIER_NUMBER+" TEXT,"
                 +COLUMN_INVOICE_ZREPORT_STATUS +" TEXT,"
@@ -208,7 +108,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
                 + COLUMN_CREDIT_TRANS + " INTEGER NOT NULL, "
                 + COLUMN_CREDIT_CASHIER + " TEXT NOT NULL, "
                 + COLUMN_CREDIT_DATE + " TEXT NOT NULL, "
-                + COLUMN_CREDIT_PAYMENT + " DOUBLE NOT NULL,"
+                + COLUMN_CREDIT_PAYMENT + " REAL NOT NULL,"
                 + COLUMN_CREDIT_BANK + " TEXT NOT NULL, "
                 + COLUMN_CREDITT_NUMBER + " TEXT NOT NULL, "
                 + COLUMN_CREDIT_EXPIRY + " TEXT NOT NULL);");
@@ -264,8 +164,27 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
                 + COLUMN_RETRIEVED_SOLDITEM + " INTEGER,"
                 + COLUMN_RETRIEVED_NEWQUANTITY + " INTEGER);");
 
-    }
+        arg0.execSQL("CREATE TABLE "+ TABLE_CASH + " ("
+                +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASH_CASHIERNUM + " TEXT NOT NULL,"
+                + COLUMN_CASH_DATEANDTIME + " TEXT,"
+                + COLUMN_CASH_ADDCASH + " REAL,"
+                + COLUMN_CASH_MINNUSCASH + " REAL,"
+                + COLUMN_CASH_CURRENTCASH + " REAL,"
+                + COLUMN_CASH_ZREPORT + " TEXT,"
+                + COLUMN_CASH_XREPORT + " TEXT);");
 
+        arg0.execSQL("CREATE TABLE "+ TABLE_CASHTRANS + " ("
+                +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASHTRANS_CASHIERNUM + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_DATETIME + " TEXT,"
+                + COLUMN_CASHTRANS_REASON + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_REMARKS1 + " TEXT NOT NULL,"
+                + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
+                + COLUMN_CASHTRANS_REMARKS3 + " TEXT,"
+                + COLUMN_CASHTRANS_REMARKS4 + " TEXT);");
+
+    }
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_ADMIN);
@@ -294,10 +213,13 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         onCreate(arg0);
         arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_PRODUCTLOGS);
         onCreate(arg0);
-        arg0.execSQL("DROP TABLE IF EXISTS " + TABLE_CREDIT_CARD);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_CASH);
+        onCreate(arg0);
+        arg0.execSQL("DROP TABLE IF EXISTS "+ TABLE_CASHTRANS);
         onCreate(arg0);
     }
 
+    private static String[] FROM_ADMIN = {COLUMN_ADMIN_USERNAME,COLUMN_ADMIN_PASSWORD};
     int adminLogin(String usernum, String Pass) {
         String WHERE_ADMIN = "Username = ? and Password = ?";
         String[] WHERE_ARGS_ADMIN = new String[]{usernum,Pass};
@@ -315,6 +237,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         return 0;
     }
 
+    private static String[] FROM_CASH = {COLUMN_CASHIER_PASSWORD};
     int cashierLogin(String cname, String cpass) {
         String WHERE_CASH = "Cashiernum LIKE ? and Password = ?";
         String[] WHERE_ARGS_CASH = new String[]{cname.toLowerCase().trim(),cpass};
@@ -362,6 +285,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
             cv.put(COLUMN_TOTAL_GRAND, gTotal);
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
+
 
         void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
@@ -427,6 +351,7 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         return cashnum;
     }
 
+    private static String[] ALL = {COLUMN_CASHIER_NUMBER, COLUMN_CASHIER_NAME, COLUMN_CASHIER_POSITION};
     String[] searchStaff(String cnum) {
         String WHERE_CASH = COLUMN_CASHIER_NUMBER+" = ?";
         String[] WHERE_ARGS_CASH = new String[]{cnum};
@@ -748,46 +673,26 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
                 + COLUMN_TEMP_TOTALPRICE +"='"+ newTotalPrice + "'," + COLUMN_TEMP_QUANTITY +"='"+ newQuantity + "' WHERE "+ COLUMN_TEMP_ID+"='" + code + "'");
     }
-
-        double getNormalSales(String x) {
-            double normal;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
-            if (x.equals("no")) {
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
-                mWHERE_ARGS = new String[]{"0"};
-            } else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
-                mWHERE_ARGS = new String[]{"0", x};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            normal = cursor.getDouble(0);
-            cursor.close();
-            Log.e("Normal sales : ", normal + "");
-            return normal;
+    double getGrossSales(String x){
+        double gross;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM("+COLUMN_INVOICE_NORMALSALE+")"};
+        if(x.equals("no")){
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
+            mWHERE_ARGS = new String[]{"0"};
         }
-
-        double getCreditSales(String x) {
-            double credit;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-            if (x.equals("no")) {
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
-                mWHERE_ARGS = new String[]{"0"};
-            } else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
-                mWHERE_ARGS = new String[]{"0", x};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            credit = cursor.getDouble(0);
-            cursor.close();
-            Log.e("Credit sales : ", credit + "");
-            return credit;
+        else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ?";
+            mWHERE_ARGS = new String[]{"0",x};
         }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        gross = cursor.getDouble(0);
+        cursor.close();
+        Log.e("Gross sales : ", gross+"");
+        return  gross;
+    }
     String getDiscountSales(String x){
         String discount;
         String mWHERE;
@@ -994,6 +899,15 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
             sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT;
             dbr.execSQL(sql);
         }
+
+        int getProdTempCount(){
+            Cursor cursor = dbr.rawQuery("SELECT * FROM "+TABLE_PRODUCT_TEMP,null);
+            cursor.moveToFirst();
+            int a = cursor.getCount();
+            cursor.close();
+            return a;
+        }
+
         int getQuantityofProducts(String prodID){
             int quan = 0;
             Cursor c;
@@ -1112,4 +1026,43 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
             }
             return  gross;
         }
+        double getCreditSales(String x) {
+            double credit;
+            String mWHERE;
+            String[] mWHERE_ARGS;
+            String[] columns = {"SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
+            if (x.equals("no")) {
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+                mWHERE_ARGS = new String[]{"0"};
+            } else {
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+                mWHERE_ARGS = new String[]{"0", x};
+            }
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            credit = cursor.getDouble(0);
+            cursor.close();
+            Log.e("Credit sales : ", credit + "");
+            return credit;
+        }
+
+    double getNormalSales(String x) {
+        double normal;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+            mWHERE_ARGS = new String[]{"0", x};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        normal = cursor.getDouble(0);
+        cursor.close();
+        Log.e("Normal sales : ", normal + "");
+        return normal;
+    }
     }

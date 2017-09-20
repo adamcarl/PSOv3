@@ -16,8 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:theme="@style/AppTheme"
-        android:id="@+id/toolbar"
-        />
+        android:id="@+id/toolbar" />
     <TabHost
         android:layout_width="match_parent"
         android:id="@+id/tabHost"
@@ -102,16 +101,15 @@
                         android:baselineAligned="false"
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="4dip">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
                         <fragment
                             android:name="com.example.sydney.psov3.Cashier$ThirdFragment"
                             android:id="@+id/fragment_shift"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"/>
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

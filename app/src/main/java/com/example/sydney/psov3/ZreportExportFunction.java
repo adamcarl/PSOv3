@@ -19,10 +19,11 @@ import java.io.FileWriter;
 public class ZreportExportFunction extends AppCompatActivity{
     Context receivedCtx = null;
     ProgressDialog progressDialog = null;
+    DB_Data db_data = null;
 //    Cursor cursor = null;
 //    public static final int requestcode = 1;
     public void showDialogLoading(Context ctx, Cursor cursorZreport, Cursor cursorLog){
-        DB_Data db_data = new DB_Data(ctx);
+        db_data = new DB_Data(ctx);
         receivedCtx = ctx;
 
         //START
@@ -88,6 +89,8 @@ public class ZreportExportFunction extends AppCompatActivity{
             cursor.close();
         }
         //END
+        db_data.copyToProductTemp();
+
     }
 
     void delayDialogClose(){

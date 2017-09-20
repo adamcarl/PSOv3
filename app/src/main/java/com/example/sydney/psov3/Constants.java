@@ -119,6 +119,24 @@ interface Constants extends BaseColumns {
     String COLUMN_CREDIT_BANK = "creditBank";
     String COLUMN_CREDITT_NUMBER = "creditNumber";
     String COLUMN_CREDIT_EXPIRY = "creditExpiry";
+
+    String TABLE_CASH = "tbl_cash";
+    String COLUMN_CASH_CASHIERNUM = "cash_num";
+    String COLUMN_CASH_DATEANDTIME = "cash_datetime";
+    String COLUMN_CASH_ADDCASH = "cash_added";
+    String COLUMN_CASH_MINNUSCASH = "cash_subtract";
+    String COLUMN_CASH_CURRENTCASH = "cash_current";
+    String COLUMN_CASH_ZREPORT = "cash_z";
+    String COLUMN_CASH_XREPORT = "cash_x";
+
+    String TABLE_CASHTRANS = "tbl_cashtrans";
+    String COLUMN_CASHTRANS_CASHIERNUM = "cashtrans_num";
+    String COLUMN_CASHTRANS_DATETIME = "cashtrans_datetime";
+    String COLUMN_CASHTRANS_REASON = "cashtrans_reason";
+    String COLUMN_CASHTRANS_REMARKS1 = "cashtrans_remarks1";
+    String COLUMN_CASHTRANS_REMARKS2 = "cashtrans_remarks2";
+    String COLUMN_CASHTRANS_REMARKS3 = "cashtrans_remarks3";
+    String COLUMN_CASHTRANS_REMARKS4 = "cashtrans_remarks4";
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +
