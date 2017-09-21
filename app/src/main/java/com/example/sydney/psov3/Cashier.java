@@ -15,10 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,7 +92,7 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
     String userNum;
-    Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol=0.0,discount=0.0,discounted,totalPrice;
+    Double vattable,vat,subTotal=0.0,itempriceCol,itempricetotalCol=0.0,discount=0.0;
     Double due,payment;
     Cursor cursor;
     DB_Data db_data;
@@ -123,14 +126,18 @@ public class Cashier extends AppCompatActivity {
     ReportBaKamo reportBaKamo;
     double enteredCashDrawer;
     int transNumber;
-    boolean isOn = false;
+    boolean isOn = false, cashIn = false;
     //Dialog for Enter the Quantity
     AlertDialog.Builder builder;
     AlertDialog alertQuantity;
 
     //Dialog for Enter the Credit Card
-    AlertDialog.Builder creditBuilder;
-    AlertDialog alertCredit;
+    AlertDialog.Builder creditBuilder = null;
+    AlertDialog alertCredit = null;
+
+    //Dialog for Enter the Cash IN OUT
+    AlertDialog.Builder cashinoutBuilder = null;
+    AlertDialog alertCashinout = null;
 
     double mPriceTotal;
     double mVattable;
@@ -1018,6 +1025,130 @@ public class Cashier extends AppCompatActivity {
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
         finish();
         sleep(1000);
+    }
+
+    public void cashierCashInOut(View view){
+        cashinoutBuilder = new AlertDialog.Builder(Cashier.this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_cashierinout, null);
+        RadioGroup rgINorOUT = (RadioGroup) alertLayout.findViewById(R.id.rg_inout);
+        final AppCompatRadioButton rbIN = (AppCompatRadioButton) alertLayout.findViewById(R.id.rgIN);
+        final AppCompatRadioButton rbOUT = (AppCompatRadioButton) alertLayout.findViewById(R.id.rgOUT);
+        final AppCompatEditText cashValue = (AppCompatEditText) alertLayout.findViewById(R.id.etValueCashinOut);
+        final AppCompatEditText remarks1 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks1);
+        final AppCompatEditText remarks2 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks2);
+        final AppCompatEditText remarks3 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks3);
+        final AppCompatEditText remarks4 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks4);
+        final Spinner cashinoutSpinner = (Spinner) alertLayout.findViewById(R.id.spinnerCashinout);
+        AppCompatButton btnSubmitCashinout = (AppCompatButton) alertLayout.findViewById(R.id.btnSubmitCashinout);
+        AppCompatButton btnCancelCashinout = (AppCompatButton) alertLayout.findViewById(R.id.btnCancelCashinout);
+        final AppCompatButton btnAddremarksCashinout = (AppCompatButton) alertLayout.findViewById(R.id.btnAddRemarksCashinout);
+
+
+        cashinoutBuilder.setView(alertLayout);
+        alertCashinout = cashinoutBuilder.create();
+        alertCashinout.show();
+
+        rgINorOUT.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                if(rbIN.isChecked()){
+                    cashIn = true;
+                }
+                else if(rbOUT.isChecked()){
+                    cashIn = false;
+                }
+            }
+        });
+
+        btnAddremarksCashinout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int count = 0;
+
+                if(count == 1 && remarks4.getVisibility() != View.VISIBLE){
+                    remarks4.setVisibility(View.VISIBLE);
+                    count = 0;
+                    btnAddremarksCashinout.setVisibility(View.GONE);
+
+                }
+
+                if(remarks3.getVisibility() != View.VISIBLE){
+                    remarks3.setVisibility(View.VISIBLE);
+                    count = 1;
+                }
+
+            }
+        });
+
+        btnSubmitCashinout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                double ctCashAdd = 0.0,ctCashMinus = 0.0;
+
+
+                Date currDate = new Date();
+                final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                String dateToStr = dateTimeFormat.format(currDate);
+                Date strToDate = null;
+                try {
+                    strToDate = dateTimeFormat.parse(dateToStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String dateToString = strToDate.toString();
+                CashTransaction ct = new CashTransaction();
+
+
+                if(cashValue.equals("") || remarks1.equals("") || remarks2.equals("")){
+                    Toast.makeText(Cashier.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else {
+                    if(!cashIn && cashValue.getText().toString() != ""){
+                        if(cashValue.getText().toString().equals("")){
+                            ctCashMinus = 0.0;
+                        }
+                        else {
+                            ctCashAdd = 0.0;
+                            ctCashMinus = Double.parseDouble(cashValue.getText().toString());
+                        }
+
+                    }
+                    else if(cashIn && cashValue.getText().toString() != ""){
+                        if(cashValue.getText().toString().equals("")){
+                            ctCashAdd = 0.0;
+                        }
+                        else{
+                            ctCashAdd = Double.parseDouble(cashValue.getText().toString());
+                            ctCashMinus = 0.0;
+                        }
+
+                    }
+                    ct.setCtTransnum(transNumber+"");
+                    ct.setCtCashNum(userNum);
+                    ct.setCtDateTime(dateToString);
+                    ct.setCtCashAdd(ctCashAdd);
+                    ct.setCtCashMinus(ctCashMinus);
+                    ct.setCtReason(cashinoutSpinner.getSelectedItem().toString());
+                    ct.setCtRemarks1(remarks1.getText().toString());
+                    ct.setCtRemarks2(remarks2.getText().toString());
+                    ct.setCtRemarks3(remarks3.getText().toString());
+                    ct.setCtRemarks4(remarks4.getText().toString());
+                }
+                db_data.addCashTransaction(ct);
+                alertCashinout.dismiss();
+            }
+        });
+
+        btnCancelCashinout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertCashinout.dismiss();
+            }
+        });
+
     }
 
     public void xreport(View view){

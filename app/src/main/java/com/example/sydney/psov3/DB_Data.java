@@ -166,6 +166,7 @@ class DB_Data extends SQLiteOpenHelper {
 
         arg0.execSQL("CREATE TABLE "+ TABLE_CASH + " ("
                 +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASH_TRANSNUM + " TEXT NOT NULL,"
                 + COLUMN_CASH_CASHIERNUM + " TEXT NOT NULL,"
                 + COLUMN_CASH_DATEANDTIME + " TEXT,"
                 + COLUMN_CASH_ADDCASH + " REAL,"
@@ -176,8 +177,11 @@ class DB_Data extends SQLiteOpenHelper {
 
         arg0.execSQL("CREATE TABLE "+ TABLE_CASHTRANS + " ("
                 +_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CASHTRANS_TRANSNUM + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_CASHIERNUM + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_DATETIME + " TEXT,"
+                + COLUMN_CASHTRANS_ADDCASH + " REAL,"
+                + COLUMN_CASHTRANS_MINNUSCASH  + " REAL,"
                 + COLUMN_CASHTRANS_REASON + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS1 + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
@@ -252,6 +256,34 @@ class DB_Data extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    void addCashInOut(String cashTransNum,String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ){
+        cv.clear();
+        cv.put(COLUMN_CASH_TRANSNUM, cashTransNum);
+        cv.put(COLUMN_CASH_CASHIERNUM, cashCashierNum);
+        cv.put(COLUMN_CASH_DATEANDTIME, cashDateTime);
+        cv.put(COLUMN_CASH_ADDCASH, cashAdd);
+        cv.put(COLUMN_CASH_MINNUSCASH, cashMinus);
+        cv.put(COLUMN_CASH_CURRENTCASH, cashCurrent);
+        cv.put(COLUMN_CASH_XREPORT, cashX);
+        cv.put(COLUMN_CASH_ZREPORT, cashZ);
+        dbw.insertOrThrow(TABLE_CASH, null, cv);
+    }
+
+    void addCashTransaction(CashTransaction ct){
+        cv.clear();
+        cv.put(COLUMN_CASHTRANS_TRANSNUM, ct.getCtTransnum());
+        cv.put(COLUMN_CASHTRANS_CASHIERNUM, ct.getCtCashNum());
+        cv.put(COLUMN_CASHTRANS_DATETIME, ct.getCtDateTime());
+        cv.put(COLUMN_CASHTRANS_ADDCASH, ct.getCtCashAdd());
+        cv.put(COLUMN_CASHTRANS_MINNUSCASH, ct.getCtCashMinus());
+        cv.put(COLUMN_CASHTRANS_REASON, ct.getCtReason());
+        cv.put(COLUMN_CASHTRANS_REMARKS1, ct.getCtRemarks1());
+        cv.put(COLUMN_CASHTRANS_REMARKS2, ct.getCtRemarks2());
+        cv.put(COLUMN_CASHTRANS_REMARKS3, ct.getCtRemarks3());
+        cv.put(COLUMN_CASHTRANS_REMARKS4, ct.getCtRemarks4());
+        dbw.insertOrThrow(TABLE_CASHTRANS, null, cv);
     }
 
     void addCashier(String Name,String UserNum, String Pass, String Pos){
