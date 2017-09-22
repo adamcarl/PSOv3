@@ -86,6 +86,11 @@ public class Cashier extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }    //TO SUPPORT VECTOR DRAWABLES
 
+    //TO SUPPORT VECTOR DRAWABLES
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
     String userNum;
@@ -127,11 +132,13 @@ public class Cashier extends AppCompatActivity {
     //Dialog for Enter the Quantity
     AlertDialog.Builder builder;
     AlertDialog alertQuantity;
-
     //Dialog for Enter the Credit Card
     AlertDialog.Builder creditBuilder;
     AlertDialog alertCredit;
-
+    AlertDialog.Builder zReportBuilder;
+    AlertDialog alertZreport;
+    AlertDialog.Builder xReportBuilder;
+    AlertDialog alertXreport;
     double mPriceTotal;
     double mVattable;
     double mTax;
@@ -151,12 +158,10 @@ public class Cashier extends AppCompatActivity {
     double parsed = 0.0;
     String TAG = "PL2303HXD_APLog";
     PL2303Driver mSerial;
-
     //Variables for txt in Payment Info
     ZreportExportFunction zreportExportFunction;
     InvoiceAdapter invoiceAdapter = null;
     AppCompatEditText etQuan = null;
-
     AppCompatEditText etCreditPayment = null;
     AppCompatEditText etCreditBank = null;
     AppCompatEditText etCreditNumber = null;
@@ -164,7 +169,8 @@ public class Cashier extends AppCompatActivity {
     String creditBank, creditNumber, creditExpiry;
     double creditPayment = 0.0;
     int creditStatus = 0;
-
+    AppCompatEditText etTotalCashDrawerZ = null;
+    AppCompatEditText etTotalCashDrawerX = null;
     private int quantityCount = 0, itemcodeCol, discType = 0, dialogVar;
     private String code = "";
     private List<InvoiceItem> invoiceItemList;
@@ -188,14 +194,6 @@ public class Cashier extends AppCompatActivity {
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
-
-    public static boolean unLockCashBox() {
-        boolean retnValue = false;
-        UsbPrinter tmpUsbDev = new UsbPrinter();
-        retnValue = tmpUsbDev.UnLockOfCashBox();
-
-        return retnValue;
-    }
 
 //    private void createMyDialog() {
 //        builder = new AlertDialog.Builder(this);
@@ -266,9 +264,12 @@ public class Cashier extends AppCompatActivity {
 //        });
 //    }
 
-    //TO SUPPORT VECTOR DRAWABLES
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    public static boolean unLockCashBox() {
+        boolean retnValue = false;
+        UsbPrinter tmpUsbDev = new UsbPrinter();
+        retnValue = tmpUsbDev.UnLockOfCashBox();
+
+        return retnValue;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -866,6 +867,7 @@ public class Cashier extends AppCompatActivity {
 //            double change = dCustomerCash - totalPrice;
 
             products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString());
+            products.add("\t\t\t\tTender" + "\t\t\t\t" + creditPayment);
             products.add("\t\t\t\tChange" + "\t\t\t" + "P" + mDueConverted.replaceAll("[$()]",""));
             products.add("\n\n\n\n\n\n");
 
@@ -1001,6 +1003,10 @@ public class Cashier extends AppCompatActivity {
         due2="";
         subTotal=0.00;
         subTotal2="";
+        creditPayment = 0.0;
+        creditBank = "";
+        creditNumber = "";
+        creditExpiry = "";
 
         db_data.deleteAllTempItemInvoice();
 
@@ -1016,34 +1022,62 @@ public class Cashier extends AppCompatActivity {
         sleep(1000);
     }
 
-    public void xreport(View view){
+    public void xreport(View view) {
         //FOR SAVING X REPORT
-        try{
-            transType = "xreport";
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-            String dateToStr = dateTimeFormat.format(currDate);
-            Date strToDate = dateTimeFormat.parse(dateToStr);
-            int bcd;
-            String dateToString = strToDate.toString();
-            db_data.addTransaction(transType,dateToString,userNum,0,0);
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-            cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            cursor1.close();
 
-            reportBaKamo.setDb_data(db_data);
+        try {
+            xReportBuilder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_xreport, null);
+            xReportBuilder.setView(alertLayout);
 
-            reportBaKamo.main(userNum,dateToString,bcd,enteredCashDrawer);
-            ArrayList<String> paPrintNaman;
-            paPrintNaman = reportBaKamo.getToBePrinted();
+            final AppCompatButton btnEnterZreport = (AppCompatButton) alertLayout.findViewById(R.id.btnCashDrawerSubmitZ);
+            etTotalCashDrawerX = (AppCompatEditText) alertLayout.findViewById(R.id.etTotalCashDrawerX);
+
+            alertXreport = xReportBuilder.create();
+            alertXreport.show();
+
+            btnEnterZreport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+
+                        if (etTotalCashDrawerZ.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            enteredCashDrawer = Double.parseDouble(etTotalCashDrawerZ.getText().toString());
+                            alertZreport.dismiss();
+                        }
+
+                        transType = "xreport";
+                        Date currDate = new Date();
+                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                        String dateToStr = dateTimeFormat.format(currDate);
+                        Date strToDate = dateTimeFormat.parse(dateToStr);
+                        int bcd;
+                        String dateToString = strToDate.toString();
+                        db_data.addTransaction(transType, dateToString, userNum, 0, 0);
+                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                        cursor1.moveToLast();
+                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                        cursor1.close();
+
+                        reportBaKamo.setDb_data(db_data);
+
+                        reportBaKamo.main(userNum, dateToString, bcd, enteredCashDrawer);
+                        ArrayList<String> paPrintNaman;
+                        paPrintNaman = reportBaKamo.getToBePrinted();
 
 //            unLockCashBox();
-            printFunction(paPrintNaman);
-            paPrintNaman.clear();
-        }
-        catch(Exception e){
+                        printFunction(paPrintNaman);
+                        paPrintNaman.clear();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1051,73 +1085,96 @@ public class Cashier extends AppCompatActivity {
     public void zreport(View view){
         //FOR SAVING Z REPORT
         try {
-            transType = "zreport";
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-            String dateToStr = dateTimeFormat.format(currDate);
-            Date strToDate = dateTimeFormat.parse(dateToStr);
-            String dateToString = strToDate.toString();
+            zReportBuilder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = getLayoutInflater();
+            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_zreport, null);
+            zReportBuilder.setView(alertLayout);
 
-            int bcd;
-            db_data.addTransaction(transType, dateToString, userNum, 0, 0);
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-            Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
-            cursor1.moveToLast();
-            bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
-            cursor1.close();
+            final AppCompatButton btnEnterZreport = (AppCompatButton) alertLayout.findViewById(R.id.btnCashDrawerSubmitZ);
+            etTotalCashDrawerZ = (AppCompatEditText) alertLayout.findViewById(R.id.etTotalCashDrawerZ);
 
+            alertZreport = zReportBuilder.create();
+            alertZreport.show();
 
-            reportBaKamo.setDb_data(db_data);
-            reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
-            ArrayList<String> paPrintNaman;
-            paPrintNaman = reportBaKamo.getToBePrinted();
+            btnEnterZreport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
 
+                        if (etTotalCashDrawerZ.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            enteredCashDrawer = Double.parseDouble(etTotalCashDrawerZ.getText().toString());
+                            alertZreport.dismiss();
+                        }
 
+                        transType = "zreport";
+                        Date currDate = new Date();
+                        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+                        String dateToStr = dateTimeFormat.format(currDate);
+                        Date strToDate = dateTimeFormat.parse(dateToStr);
+                        String dateToString = strToDate.toString();
 
-            //unLockCashBox();
-            printFunction(paPrintNaman);
+                        int bcd;
+                        db_data.addTransaction(transType, dateToString, userNum, 0, 0);
+                        String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+                        Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                        cursor1.moveToLast();
+                        bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
+                        cursor1.close();
+
+                        reportBaKamo.setDb_data(db_data);
+                        reportBaKamo.main("no", dateToString, bcd, enteredCashDrawer);
+                        ArrayList<String> paPrintNaman;
+                        paPrintNaman = reportBaKamo.getToBePrinted();
+
+                        //unLockCashBox();
+                        printFunction(paPrintNaman);
 //            retrievedCursorFromJoinTable.close();
 
-            //EXPORT TO CSV
-            //Cursor retrievedCursorFromReportBaKaMo = reportBaKamo.getCursorInReportBaKamo();
-            Cursor retrievedCursorFromJoinTable;
-            Cursor cursorDummy = null;
+                        //EXPORT TO CSV
+                        //Cursor retrievedCursorFromReportBaKaMo = reportBaKamo.getCursorInReportBaKamo();
+                        Cursor retrievedCursorFromJoinTable;
+                        Cursor cursorDummy = null;
 
-            String joinTableQuery = "SELECT c1."+ _ID+ " as ID, "+
-                    "c1."+COLUMN_PRODUCT_ID + " as CODE," +
-                    "c1."+COLUMN_PRODUCT_NAME + " as ITEM," +
-                    "c2." + COLUMN_PRODUCT_QUANTITY_TEMP + " as BEGINNING," +
-                    "SUM(c3."+COLUMN_ITEM_QUANTITY + ") as SALES," +
-                    "c1."+COLUMN_PRODUCT_QUANTITY +
-                    " as ENDING FROM " + TABLE_PRODUCT + " c1 " +
-                    " INNER JOIN " + TABLE_PRODUCT_TEMP + " c2 " +
-                    " ON " + "c1."+COLUMN_PRODUCT_ID + "= c2."+COLUMN_PRODUCT_ID_TEMP +
-                    " LEFT JOIN " + TABLE_ITEM + " c3 " +
-                    " ON " + "c1."+COLUMN_PRODUCT_ID + "= c3."+COLUMN_ITEM_PRODUCT +
-                    " AND c3." + COLUMN_ITEM_ZREPORT + "= 0"+
-                    " GROUP BY " + COLUMN_PRODUCT_ID + ";";
-            retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery,null);
+                        String joinTableQuery = "SELECT c1." + _ID + " as ID, " +
+                                "c1." + COLUMN_PRODUCT_ID + " as CODE," +
+                                "c1." + COLUMN_PRODUCT_NAME + " as ITEM," +
+                                "c2." + COLUMN_PRODUCT_QUANTITY_TEMP + " as BEGINNING," +
+                                "SUM(c3." + COLUMN_ITEM_QUANTITY + ") as SALES," +
+                                "c1." + COLUMN_PRODUCT_QUANTITY +
+                                " as ENDING FROM " + TABLE_PRODUCT + " c1 " +
+                                " INNER JOIN " + TABLE_PRODUCT_TEMP + " c2 " +
+                                " ON " + "c1." + COLUMN_PRODUCT_ID + "= c2." + COLUMN_PRODUCT_ID_TEMP +
+                                " LEFT JOIN " + TABLE_ITEM + " c3 " +
+                                " ON " + "c1." + COLUMN_PRODUCT_ID + "= c3." + COLUMN_ITEM_PRODUCT +
+                                " AND c3." + COLUMN_ITEM_ZREPORT + "= 0" +
+                                " GROUP BY " + COLUMN_PRODUCT_ID + ";";
+                        retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery, null);
 
-
-            zreportExportFunction.showDialogLoading(Cashier.this,retrievedCursorFromJoinTable,cursorDummy);
+                        zreportExportFunction.showDialogLoading(Cashier.this, retrievedCursorFromJoinTable, cursorDummy);
 //            boolean sent =
 //            if(sent){
 //                zreportExportFunction.closeDialog();
 //            }
-            //END OF EXPORT CSV
+                        //END OF EXPORT CSV
 
-            db_data.updateTransactions(userNum);
+                        db_data.updateTransactions(userNum);
 
-            //GETTING QUANTITY SALES
-            ContentValues cv = new ContentValues();
-            cv.put(COLUMN_ITEM_ZREPORT, 1);
-            String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
-            String[] WhereArgBaKamo = {"0"};
-            dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
-            //END OF QUANTITY SALES
+                        //GETTING QUANTITY SALES
+                        ContentValues cv = new ContentValues();
+                        cv.put(COLUMN_ITEM_ZREPORT, 1);
+                        String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
+                        String[] WhereArgBaKamo = {"0"};
+                        dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
+                        //END OF QUANTITY SALES
 
-            paPrintNaman.clear();
-
+                        paPrintNaman.clear();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
