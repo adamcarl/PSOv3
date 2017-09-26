@@ -20,12 +20,22 @@
                 android:textColorHint="@color/myColorEditTextDialogDisable"
                 android:textColor="@color/myColorEditTextDialogDisable"
                 android:id="@+id/txt_cashier_search"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/custom_edittext_dialog"
                 android:ems="10"
                 android:hint="Product Id"
                 android:inputType="number" />
+            <Button
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="1"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:id="@+id/btnQuantity"
+                android:background="@drawable/custom_button_payment_mode"/>
         </android.support.v7.widget.CardView>
 
 
