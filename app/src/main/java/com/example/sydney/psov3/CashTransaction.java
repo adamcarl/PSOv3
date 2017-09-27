@@ -16,6 +16,9 @@ public class CashTransaction {
     private String ctRemarks3;
     private String ctRemarks4;
 
+    public CashTransaction() {
+    }
+
     public String getCtTransnum() {
         return ctTransnum;
     }
@@ -94,8 +97,5 @@ public class CashTransaction {
 
     public void setCtRemarks4(String ctRemarks4) {
         this.ctRemarks4 = ctRemarks4;
-    }
-
-    public CashTransaction() {
     }
 }

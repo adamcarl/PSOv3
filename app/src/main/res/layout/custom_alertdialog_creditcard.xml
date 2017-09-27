@@ -21,18 +21,6 @@
             android:textStyle="bold" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/etCreditPayment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:background="@drawable/custom_edittext_dialog"
-            android:elevation="2dp"
-            android:hint="Amount to pay"
-            android:inputType="text"
-            android:textColor="@color/myColorEditTextDialogDisable"
-            android:textColorHint="@color/myColorDialogBG" />
-
-        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etCreditBank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +28,7 @@
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
             android:hint="Credit Card Company"
-            android:inputType="text"
+            android:inputType="textCapCharacters"
             android:textColor="@color/myColorEditTextDialogDisable"
             android:textColorHint="@color/myColorDialogBG" />
 
@@ -52,7 +40,7 @@
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
             android:hint="Credit Card Number"
-            android:inputType="text"
+            android:inputType="number"
             android:textColor="@color/myColorEditTextDialogDisable"
             android:textColorHint="@color/myColorDialogBG" />
 
@@ -64,7 +52,7 @@
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
             android:hint="Credit Card Expiry"
-            android:inputType="text"
+            android:inputType="number"
             android:textColor="@color/myColorEditTextDialogDisable"
             android:textColorHint="@color/myColorDialogBG" />
 
@@ -87,7 +75,6 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 </LinearLayout>

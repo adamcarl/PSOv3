@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/myColorDialogBG">
+    android:background="@color/myColorDialogBG"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -10,24 +12,25 @@
         android:padding="16dp">
 
         <RadioGroup
+            android:id="@+id/rg_inout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:id="@+id/rg_inout">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rgIN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="IN"
-                android:id="@+id/rgIN"/>
+                android:text="IN" />
+
             <android.support.v7.widget.AppCompatRadioButton
-                android:layout_marginLeft="50dp"
+                android:id="@+id/rgOUT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OUT"
-                android:id="@+id/rgOUT"/>
+                android:layout_marginLeft="50dp"
+                android:text="OUT" />
         </RadioGroup>
 
         <android.support.v7.widget.AppCompatEditText
@@ -41,103 +44,102 @@
             android:textColorHint="@color/myColorDialogBG" />
 
         <android.support.v7.widget.AppCompatSpinner
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/spinnerCashinout"
-            android:entries="@array/cashinout"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:entries="@array/cashinout" />
 
 
         <android.support.v7.widget.AppCompatEditText
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/etRemarks1"
-            android:hint="REMARKS 1"/>
-
-        <android.support.v7.widget.AppCompatEditText
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="REMARKS 1"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG" />
+
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etRemarks2"
-            android:hint="REMARKS 2"/>
-
-        <android.support.v7.widget.AppCompatEditText
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="REMARKS 2"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG" />
+
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etRemarks3"
-            android:hint="REMARKS 3"
-            android:visibility="gone"/>
-
-        <android.support.v7.widget.AppCompatEditText
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:elevation="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="REMARKS 3"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etRemarks4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
             android:hint="REMARKS 4"
-            android:visibility="gone"/>
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG"
+            android:visibility="gone" />
 
         <android.support.v7.widget.AppCompatButton
-            android:elevation="2dp"
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textStyle="bold"
-            android:background="@drawable/custom_button_payment_mode"
+            android:id="@+id/btnAddRemarksCashinout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnAddRemarksCashinout"
             android:layout_marginTop="10dp"
-            android:text="+ REMARKS"/>
+            android:background="@drawable/custom_button_payment_mode"
+            android:elevation="2dp"
+            android:text="+ REMARKS"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textStyle="bold" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
-            android:layout_marginTop="15dp">
+            android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatButton
-                android:elevation="2dp"
-                android:textColor="@color/myColorBackgroundWhite"
-                android:textStyle="bold"
-                android:layout_weight=".5"
-                android:background="@drawable/custom_button_dialog"
+                android:id="@+id/btnSubmitCashinout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnSubmitCashinout"
-                android:text="SUBMIT"/>
+                android:layout_weight=".5"
+                android:background="@drawable/custom_button_dialog"
+                android:elevation="2dp"
+                android:text="SUBMIT"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold" />
 
             <android.support.v7.widget.AppCompatButton
-                android:elevation="2dp"
-                android:textColor="@color/myColorBackgroundWhite"
-                android:textStyle="bold"
+                android:id="@+id/btnCancelCashinout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight=".5"
                 android:background="@drawable/custom_button_dialog"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnCancelCashinout"
-                android:text="CANCEL"/>
+                android:elevation="2dp"
+                android:text="CANCEL"
+                android:textColor="@color/myColorBackgroundWhite"
+                android:textStyle="bold" />
 
         </LinearLayout>
-
 
 
     </LinearLayout>

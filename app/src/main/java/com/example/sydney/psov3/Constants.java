@@ -121,7 +121,7 @@ interface Constants extends BaseColumns {
     String COLUMN_CREDIT_EXPIRY = "creditExpiry";
 
     String TABLE_CASH = "tbl_cash";
-    String COLUMN_CASH_TRANSNUM= "cash_num";
+    String COLUMN_CASH_TRANSNUM = "cash_num";
     String COLUMN_CASH_CASHIERNUM = "cash_transnum";
     String COLUMN_CASH_DATEANDTIME = "cash_datetime";
     String COLUMN_CASH_ADDCASH = "cash_added";
@@ -131,7 +131,7 @@ interface Constants extends BaseColumns {
     String COLUMN_CASH_XREPORT = "cash_x";
 
     String TABLE_CASHTRANS = "tbl_cashtrans";
-    String COLUMN_CASHTRANS_TRANSNUM= "cashtrans_transnum";
+    String COLUMN_CASHTRANS_TRANSNUM = "cashtrans_transnum";
     String COLUMN_CASHTRANS_CASHIERNUM = "cashtrans_num";
     String COLUMN_CASHTRANS_DATETIME = "cashtrans_datetime";
     String COLUMN_CASHTRANS_ADDCASH = "cash_added";
