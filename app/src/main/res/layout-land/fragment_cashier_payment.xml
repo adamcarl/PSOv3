@@ -28,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_edittext_dialog"
                 android:gravity="right"
-                android:hint="P0.00"
                 android:inputType="numberDecimal"
                 android:padding="20dp"
                 android:textColor="@color/myColorEditTextDialogDisable"
@@ -75,13 +74,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="4dp">
+
+                        <Button
+                            android:id="@+id/btnCash"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:text="Cash"
+                            android:textColor="@color/myColorWhite" />
 
                         <Button
                             android:id="@+id/btnCredit"
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
                             android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
                             android:text="Credit Card"
@@ -92,20 +103,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
                             android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderDebit"
                             android:text="Debit Card"
                             android:textColor="@color/myColorWhite" />
 
-                        <Button
-                            android:id="@+id/btnGift"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight=".3"
-                            android:background="@drawable/custom_button_payment_mode"
-                            android:text="Gift Check"
-                            android:textColor="@color/myColorWhite" />
 
                     </LinearLayout>
 
@@ -113,35 +117,55 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="4dp">
+
+                        <Button
+                            android:id="@+id/btnGift"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderGift"
+                            android:text="Gift Check"
+                            android:textColor="@color/myColorWhite" />
+
 
                         <Button
                             android:id="@+id/btnDiscount"
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
                             android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderDiscount"
                             android:text="Discount"
                             android:textColor="@color/myColorWhite" />
 
-                        <Button
-                            android:id="@+id/btnRedeem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight=".3"
-                            android:background="@drawable/custom_button_payment_mode"
-                            android:text="Redeem"
-                            android:textColor="@color/myColorWhite" />
+                        <!--<Button-->
+                        <!--android:id="@+id/btnRedeem"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="80dp"-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:layout_weight=".3"-->
+                        <!--android:background="@drawable/custom_button_payment_mode"-->
+                        <!--android:onClick="tenderRedeem"-->
+                        <!--android:text="Redeem"-->
+                        <!--android:visibility="invisible"-->
+                        <!--android:textColor="@color/myColorWhite" />-->
 
                         <Button
                             android:id="@+id/btnOthers"
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
                             android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderOthers"
                             android:text="Other"
                             android:textColor="@color/myColorWhite" />
 

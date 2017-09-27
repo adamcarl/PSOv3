@@ -159,6 +159,8 @@ public class Cashier extends AppCompatActivity {
     AppCompatEditText etCreditExpiry = null;
     String creditBank, creditNumber, creditExpiry;
     double creditPayment = 0.0;
+
+    int tenderCashStatus = 0;
     int tenderCreditStatus = 0;
     int tenderDebitStatus = 0;
     int tenderDiscountStatus = 0;
@@ -166,12 +168,14 @@ public class Cashier extends AppCompatActivity {
     int tenderGiftStatus = 0;
     int tenderOthersStatus = 0;
 
+    double tenderCashAmount = 0.0;
     double tenderCreditAmount = 0.0;
     double tenderDebitAmount = 0.0;
     double tenderDiscountAmount = 0.0;
     double tenderRedeemQuantity = 0.0;
     double tenderGiftAmount = 0.0;
     double tenderOthersAmount = 0.0;
+
     AppCompatEditText etTotalCashDrawerZ = null;
     AppCompatEditText etTotalCashDrawerX = null;
     private int quantityCount = 0, itemcodeCol, discType = 0, dialogVar;
@@ -281,7 +285,7 @@ public class Cashier extends AppCompatActivity {
         dbReader = db_data.getReadableDatabase();
         dbWriter = db_data.getWritableDatabase();
         reportBaKamo = new ReportBaKamo();
-        //bill.main();
+        //bill.main();x
         cv = new ContentValues();
 
         printerDetection();
@@ -383,15 +387,15 @@ public class Cashier extends AppCompatActivity {
 
                         txt_cash.addTextChangedListener(this);
 
-                        if (mDue < 0 ) {
-                            btn_print.setEnabled(false);
-                        } else if (mDue >= 0) {
-                            btn_print.setEnabled(true);
-                            btn_print.setText("" + "Print Receipt" + "");
-                            lbl_dc.setText("" + "Change" + "");
-                        }
-
-                        refreshPaymentInformation();
+//                        if (mDue < 0 ) {
+//                            btn_print.setEnabled(false);
+//                        } else if (mDue >= 0) {
+//                            btn_print.setEnabled(true);
+//                            btn_print.setText("" + "Print Receipt" + "");
+//                            lbl_dc.setText("" + "Change" + "");
+//                        }
+//
+//                        refreshPaymentInformation();
 
 
                     }
@@ -840,6 +844,23 @@ public class Cashier extends AppCompatActivity {
     private void refreshPaymentInformation() {
 
         quantityCount = db_data.getQuantityCount(); //GET ITEM QUANTITY TOTAL COUNT
+        double mDoubleCustomerCash = 0.0;
+        if (tenderCashStatus == 1) {
+            mDoubleCustomerCash += tenderCashAmount;
+        }
+        if (tenderCreditStatus == 1) {
+            mDoubleCustomerCash += tenderCreditAmount;
+        }
+        if (tenderDebitStatus == 1) {
+            mDoubleCustomerCash += tenderDebitAmount;
+        }
+        if (tenderGiftStatus == 1) {
+            mDoubleCustomerCash += tenderCreditAmount;
+        }
+        if (tenderOthersStatus == 1) {
+            mDoubleCustomerCash += tenderCreditAmount;
+        }
+
 
         //HERE HERE HERE HERE
         mPriceTotal = db_data.totalPrice();
@@ -847,7 +868,6 @@ public class Cashier extends AppCompatActivity {
         mTax = mVattable * mTaxPercent; //.12
         mTotalDiscount = mVattable * discount;
         mTotal = mVattable + mTax - mTotalDiscount;
-        double mDoubleCustomerCash = getTxtCashDouble() + creditPayment;
         mDue = mDoubleCustomerCash - mTotal;
 
         mVattableConverted = NumberFormat.getCurrencyInstance().format((mVattable / 1));
@@ -970,9 +990,25 @@ public class Cashier extends AppCompatActivity {
 //            double change = dCustomerCash - totalPrice;
 
             products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString());
-            products.add("\t\t\t\tTender" + "\t\t\t\t" + creditPayment);
+            products.add("\t\t\t\tCredit" + "\t\t\t\t" + creditPayment);
             products.add("\t\t\t\tChange" + "\t\t\t" + "P" + mDueConverted.replaceAll("[$()]",""));
             products.add("\n\n\n\n\n\n");
+
+            if (tenderCashStatus == 1) {
+                products.add("Cash\t" + tenderCashAmount);
+            }
+            if (tenderCreditStatus == 1) {
+                products.add("Credit\t" + tenderCreditAmount);
+            }
+            if (tenderDebitStatus == 1) {
+                products.add("Debit\t" + tenderDebitAmount);
+            }
+            if (tenderGiftStatus == 1) {
+                products.add("Gift Check\t" + tenderGiftAmount);
+            }
+            if (tenderOthersStatus == 1) {
+                products.add("Others\t" + tenderOthersAmount);
+            }
 
             //CHECK IF PRINTERS ARE OPEN
 //            boolean ret = marksPrinter.Open();
@@ -1095,6 +1131,18 @@ public class Cashier extends AppCompatActivity {
         creditNumber = "";
         creditExpiry = "";
 
+        tenderCreditAmount = 0.0;
+        tenderDebitAmount = 0.0;
+        tenderDiscountAmount = 0.0;
+        tenderGiftAmount = 0.0;
+        tenderOthersAmount = 0.0;
+
+        tenderCreditStatus = 0;
+        tenderDebitStatus = 0;
+        tenderDiscountStatus = 0;
+        tenderGiftStatus = 0;
+        tenderOthersStatus = 0;
+
         db_data.deleteAllTempItemInvoice();
 
     }
@@ -1106,53 +1154,69 @@ public class Cashier extends AppCompatActivity {
         sleep(1000);
     }
 
-    void tenderDebit(View view) {
+    public void tenderCash(View view) {
+        if (getTxtCashDouble() == 0.0) {
+            Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
+        } else {
+            tenderCashAmount = getTxtCashDouble();
+            tenderCashStatus = 1;
+            refreshPaymentInformation();
+            txt_cash.setText("" + "P0.00" + "");
+        }
+    }
+
+    public void tenderDebit(View view) {
         if (getTxtCashDouble() == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
             tenderDebitAmount = getTxtCashDouble();
             tenderDebitStatus = 1;
+            refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
         }
     }
 
-    void tenderDiscount(View view) {
+    public void tenderDiscount(View view) {
         if (getTxtCashDouble() == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
             tenderDiscountAmount = getTxtCashDouble();
             tenderDiscountStatus = 1;
+            refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
         }
     }
 
-    void tenderRedeem(View view) {
+    public void tenderRedeem(View view) {
         if (getTxtCashDouble() == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter quantity", Toast.LENGTH_SHORT).show();
         } else {
             tenderRedeemQuantity = getTxtCashDouble();
             tenderRedeemStatus = 1;
+            refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
         }
 
     }
 
-    void tenderGift(View view) {
+    public void tenderGift(View view) {
         if (getTxtCashDouble() == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
             tenderGiftAmount = getTxtCashDouble();
             tenderGiftStatus = 1;
+            refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
         }
     }
 
-    void tenderOthers(View view) {
+    public void tenderOthers(View view) {
         if (getTxtCashDouble() == 0.0) {
             Toast.makeText(getApplicationContext(), "Please fill all fields.", Toast.LENGTH_SHORT).show();
         } else {
             tenderOthersAmount = getTxtCashDouble();
             tenderOthersStatus = 1;
+            refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
         }
     }
@@ -1351,7 +1415,7 @@ public class Cashier extends AppCompatActivity {
         rg_discount = (RadioGroup)findViewById(R.id.rg_discount);
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
-        btnSetQuantity = (Button) findViewById(R.id.btnRegisterQuantity);
+//        btnSetQuantity = (Button) findViewById(R.id.btnRegisterQuantity);
 
         //Mark's Initialization
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_invoice);
@@ -1508,6 +1572,7 @@ public class Cashier extends AppCompatActivity {
     }//writeDataToSerial
 
     public void reprintBakamo(View view){
+        reprint.add(0, "DUPLICATE");
         printFunction(reprint);
 
         reprint.clear();
