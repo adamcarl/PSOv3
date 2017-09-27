@@ -108,7 +108,7 @@ public class Cashier extends AppCompatActivity {
     SQLiteDatabase dbWriter;
     TabHost tab_host;
     TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
-    Button btn_print,btn_cashier_confirmDelete,btnCreditCard;
+    Button btn_print,btn_cashier_confirmDelete,btnCreditCard, btnSetQuantity;
     ImageButton btn_cashier_delete;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
@@ -581,15 +581,128 @@ public class Cashier extends AppCompatActivity {
         txt_cash.requestFocus();
     }
 
-    //BUTTON SEARCH ONCLICK
+    //BUTTON SET QUANTITY ONCLICK
+    public void setRegisterQuantity(View view){
+        builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
+        builder.setView(alertLayout);
+        final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnEnter);
+        etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
+
+        alertQuantity = builder.create();
+        alertQuantity.show();
+
+        btnEnter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(etQuan.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+                } else {
+                    btnSetQuantity.setText(etQuan.getText().toString());
+                    alertQuantity.dismiss();
+                }
+            }
+        });
+//        code = txt_search.getText().toString();
+//        final String[] itemcode = {code};
+//        itemCode123.add(code);
+//        String[] WHERE = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION,COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_PRICE};
+//        cursor = dbReader.query(TABLE_PRODUCT, WHERE, COLUMN_PRODUCT_ID+ " LIKE ?", itemcode, null, null, null);
+//        cursor.moveToFirst();
+//        int rows = cursor.getCount();
+//        if (rows > 0) { // if may nahanap
+//            alertQuantity = builder.create();
+//            alertQuantity.show();
+//
+//            btnEnter.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    try {
+//                        if(etQuan.getText().toString().equals("")){
+//                            Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+//                        }
+//                        else {
+//                            dialogVar = Integer.parseInt(etQuan.getText().toString());
+//
+//                            //END OF SUPPLIER FOR ADD PRODUCTS
+//
+//                            if(invoiceItemList != null){
+//                                //MARK'S SOLUTION FOR TEMPORARY INVOICING ITEMS
+//                                //INSERT TEMP INVOICE ITEMS INTO TABLE
+//                                try {
+//                                    InvoiceItem invoiceItem = new InvoiceItem();
+//
+//                                    String convertedCode = code.trim();
+//                                    Double prodPrice = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
+//                                    String prodName = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
+//                                    String prodDes = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
+//                                    String prodId = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+//
+//                                    int result = db_data.searchDuplicateInvoice(convertedCode);
+//                                    if(result > 0){
+//                                        SQLiteDatabase db = db_data.getReadableDatabase();
+//                                        String SELECT_QUERY = "SELECT "+ COLUMN_TEMP_QUANTITY + " , "+ COLUMN_TEMP_TOTALPRICE + " , "+ COLUMN_TEMP_PRICE +" FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='"+ convertedCode +"'";
+//                                        Cursor cursor = db.rawQuery(SELECT_QUERY,null);
+//                                        cursor.moveToFirst();
+//                                        int retrievedQuantity = cursor.getInt(0);
+//                                        double retrievedTotalPrice = cursor.getDouble(1);
+//                                        double retrievedProce = cursor.getDouble(2);
+//                                        double totalNaTalaga = retrievedTotalPrice + (retrievedProce * dialogVar);
+//                                        cursor.close();
+//
+////                                            double marksTotal = db_data.totalPrice();
+//                                        db_data.updateInvoiceItem(convertedCode,retrievedQuantity + dialogVar,totalNaTalaga);
+//                                        Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    else if(result == 0){ //IF DOESN'T HAVE DUPLICATE
+//                                        invoiceItem.setInvoiceProductName(prodName);
+//                                        invoiceItem.setInvoiceProductDescription(prodDes);
+//                                        invoiceItem.setInvoiceProductPrice(prodPrice);//toAdd item
+//                                        invoiceItem.setInvoiceProductQuantity(dialogVar);//toAdd item
+//                                        invoiceItem.setInvoiceProductID(prodId);//toAdd item
+//                                        invoiceItem.setInvoiceProductTotal(prodPrice*dialogVar);//toAdd item
+//
+//                                        db_data.insertTempInvoice(invoiceItem);
+//                                    }
+//                                    isOn = true;
+//                                    refreshPaymentInformation();
+//
+//                                    String itemPriceConverted = String.valueOf(itempriceCol);
+//                                    int sizeOfChar = itemPriceConverted.trim().length();
+//                                    int lengthOfCharToBeAdded = 20 - sizeOfChar;
+//                                    writeDataToSerial(itemdescCol,itemPriceConverted, String.valueOf(lengthOfCharToBeAdded));
+//
+//                                    refreshRecyclerView();
+//
+//                                    alertQuantity.dismiss();
+//                                } catch (SQLiteException e){
+//                                    e.printStackTrace();
+//                                }
+//                            } else {
+//                                cancelna();
+//                            }
+//                        }
+//                    }catch (Exception ex){
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            });
+//            txt_search.setText("");
+//        } else {
+//            Toast.makeText(this, "Product can't be found", Toast.LENGTH_LONG).show();
+//        }
+    }
+
     public void searchProduct() {
         try {
-            builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = getLayoutInflater();
-            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
-            builder.setView(alertLayout);
-            final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnEnter);
-            etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
+//            builder = new AlertDialog.Builder(this);
+//            LayoutInflater inflater = getLayoutInflater();
+//            final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_enterquantity, null);
+//            builder.setView(alertLayout);
+//            final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnEnter);
+//            etQuan = (AppCompatEditText) alertLayout.findViewById(R.id.etEnterQuantity);
+
 
             code = txt_search.getText().toString();
             final String[] itemcode = {code};
@@ -599,18 +712,18 @@ public class Cashier extends AppCompatActivity {
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows > 0) {
-                alertQuantity = builder.create();
-                alertQuantity.show();
+//                alertQuantity = builder.create();
+//                alertQuantity.show();
 
-                btnEnter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+//                btnEnter.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
                         try {
-                            if(etQuan.getText().toString().equals("")){
+                            if(btnSetQuantity.getText().toString().equals("")){
                                 Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                dialogVar = Integer.parseInt(etQuan.getText().toString());
+                                dialogVar = Integer.parseInt(btnSetQuantity.getText().toString());
 
                                 //END OF SUPPLIER FOR ADD PRODUCTS
 
@@ -661,7 +774,6 @@ public class Cashier extends AppCompatActivity {
                                         writeDataToSerial(itemdescCol,itemPriceConverted, String.valueOf(lengthOfCharToBeAdded));
                                         refreshRecyclerView();
 
-                                        alertQuantity.dismiss();
                                     } catch (SQLiteException e){
                                         e.printStackTrace();
                                     }
@@ -673,9 +785,8 @@ public class Cashier extends AppCompatActivity {
                             ex.printStackTrace();
 //                            lbl_due.setText(subTotal2);
                         }
-                    }
-                });
                 txt_search.setText("");
+                btnSetQuantity.setText("1");
             } else {
                 Toast.makeText(this, "Product can't be found", Toast.LENGTH_LONG).show();
             }
@@ -1240,6 +1351,7 @@ public class Cashier extends AppCompatActivity {
         rg_discount = (RadioGroup)findViewById(R.id.rg_discount);
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
+        btnSetQuantity = (Button) findViewById(R.id.btnRegisterQuantity);
 
         //Mark's Initialization
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_invoice);
