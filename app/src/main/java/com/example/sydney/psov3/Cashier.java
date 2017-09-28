@@ -1003,6 +1003,9 @@ public class Cashier extends AppCompatActivity {
             if (tenderDebitStatus == 1) {
                 products.add("Debit\t" + tenderDebitAmount);
             }
+            if (tenderDiscountStatus == 1) {
+                products.add("Debit\t" + tenderDebitAmount);
+            }
             if (tenderGiftStatus == 1) {
                 products.add("Gift Check\t" + tenderGiftAmount);
             }
