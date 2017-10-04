@@ -167,10 +167,8 @@ catch (Exception e){
 
         toBePrinted.add("TENDER\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("TOTAL CASH\t0\t" + gross);
-        toBePrinted.add("  CC BDO\tX\t0.00");
-        toBePrinted.add("  CC BPI\tX\t0.00");
-        toBePrinted.add("TOTAL CREDIT CA\t\t" + credit + "\n");
+        toBePrinted.add("TOTAL CASH\t" + gross);
+        toBePrinted.add("TOTAL CREDIT CA\t" + credit + "\n");
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");

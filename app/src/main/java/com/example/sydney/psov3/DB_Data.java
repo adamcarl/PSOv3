@@ -1097,4 +1097,16 @@ class DB_Data extends SQLiteOpenHelper {
         Log.e("Normal sales : ", normal + "");
         return normal;
     }
+
+    String getTheCashierLevel(String userNum) {
+        String[] columns = {COLUMN_CASHIER_POSITION};
+        String mWHERE = COLUMN_CASHIER_NUMBER + " = ?";
+        String[] mWHERE_ARGS = new String[]{userNum};
+        Cursor cursor = dbr.query(TABLE_CASHIER, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        String level = cursor.getString(0);
+        cursor.close();
+        Log.e("Cashier Level", level);
+        return level;
+    }
     }

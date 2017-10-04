@@ -72,7 +72,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:padding="4dp">
@@ -84,6 +84,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderCash"
                             android:text="Cash"
                             android:textColor="@color/myColorWhite" />
 
@@ -115,7 +116,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:padding="4dp">
