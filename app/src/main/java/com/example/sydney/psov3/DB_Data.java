@@ -1097,4 +1097,24 @@ class DB_Data extends SQLiteOpenHelper {
         Log.e("Normal sales : ", normal + "");
         return normal;
     }
+
+    public String getPrintForTransactionNumber(String a) {
+//        String mWHERE;
+//        String[] mWHERE_ARGS;
+//        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
+//        if (x.equals("no")) {
+//            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+//            mWHERE_ARGS = new String[]{"0"};
+//        } else {
+//            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+//            mWHERE_ARGS = new String[]{"0", x};
+//        }
+//        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+//        cursor.moveToFirst();
+//        normal = cursor.getDouble(0);
+//        cursor.close();
+//        Log.e("Normal sales : ", normal + "");
+//        return normal;
+        return a;
     }
+}
