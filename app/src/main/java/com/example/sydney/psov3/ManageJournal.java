@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,13 +48,14 @@ import org.apache.commons.net.ftp.FTPClient;
  * Created by PROGRAMMER2 on 6/2/2017.
  */
 
-public class ManageJournal extends AppCompatActivity {
+public class ManageJournal extends AppCompatActivity implements TransactionAdapter.OnRecyclerItemClickListener {
 
     private TransactionAdapter transAdapter;
     private List<Transactions> transactionList;
 
     private DB_Data db_data;
     private Cursor cursor;
+
 
     private SearchView searchView;
     private Spinner spinner;
@@ -89,7 +93,7 @@ public class ManageJournal extends AppCompatActivity {
 //        cursor = db_data.getData();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        transAdapter = new TransactionAdapter(getApplication(),transactionList);
+        transAdapter = new TransactionAdapter(getApplication(),transactionList,this);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -126,7 +130,7 @@ public class ManageJournal extends AppCompatActivity {
         }
         if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
             transactionList = fill_with_data();
-            transAdapter = new TransactionAdapter(getApplication(),transactionList);
+            transAdapter = new TransactionAdapter(getApplication(),transactionList,this);
             recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(transAdapter);
@@ -207,7 +211,7 @@ public class ManageJournal extends AppCompatActivity {
 
                     if(spinnerSelected == 0 || spinnerSelected == 1 && searchView.getQuery().toString().trim().toLowerCase().equals("")){
                         transactionList = fill_with_data();
-                        transAdapter = new TransactionAdapter(getApplication(),transactionList);
+                        transAdapter = new TransactionAdapter(getApplication(),transactionList,ManageJournal.this);
                         recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),1,GridLayoutManager.VERTICAL,false));
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(transAdapter);
@@ -257,6 +261,39 @@ public class ManageJournal extends AppCompatActivity {
 //            alertDialog.show();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRecyclerItemClick(View childView, int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_viewjournal, null);
+        alertDialogBuilder.setView(alertLayout);
+
+        AppCompatButton btnPrint = (AppCompatButton) alertLayout.findViewById(R.id.btnPrint);
+        AppCompatButton btnExit = (AppCompatButton) alertLayout.findViewById(R.id.btnExit);
+        AppCompatTextView txtJournalContent = (AppCompatTextView) alertLayout.findViewById(R.id.txtJournalContent);
+
+        final AlertDialog alertDialogModify = alertDialogBuilder.create();
+        alertDialogModify.show();
+        String a = "";
+        String receivedFromTransaction = db_data.getPrintForTransactionNumber(a);
+        txtJournalContent.setText("SHOULD SUPPLY BY TRANSACTION!!!");
+        //ONLY QUANTITY CAN BE EDITED!
+        btnPrint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogModify.dismiss();
+            }
+        });
+
     }
 
     private class UploadFile extends AsyncTask<String, Integer, Boolean> {

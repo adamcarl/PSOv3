@@ -1,6 +1,7 @@
 package com.example.sydney.psov3;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -20,29 +21,50 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private Context mContext;
     private List<Transactions> transactionList = Collections.emptyList();
+    private TransactionAdapter.OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-    public TransactionAdapter(Context mContext, List<Transactions> transactionList){
-        this.mContext = mContext;
-        this.transactionList = transactionList;
+    public interface OnRecyclerItemClickListener{
+        void onRecyclerItemClick(View childView, int position);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public TransactionAdapter(Context mContext, List<Transactions> transactionList, OnRecyclerItemClickListener onRecyclerItemClickListener){
+        this.mContext = mContext;
+        this.transactionList = transactionList;
+        this.onRecyclerItemClickListener = onRecyclerItemClickListener;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView transNumber,transType,transDateTime;
         public CardView cv;
+        private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
-        public MyViewHolder(View view){
+
+        public MyViewHolder(View view, OnRecyclerItemClickListener onRecyclerItemClickListener){
             super(view);
             cv = (CardView) view.findViewById(R.id.card_view);
             transNumber = (TextView) view.findViewById(R.id.txtTransNumber);
             transType = (TextView) view.findViewById(R.id.txtTransType);
             transDateTime = (TextView) view.findViewById(R.id.txtTransDateTime);
+
+            this.onRecyclerItemClickListener = onRecyclerItemClickListener;
+
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(onRecyclerItemClickListener != null){
+                onRecyclerItemClickListener.onRecyclerItemClick(view,getAdapterPosition());
+            } else {
+                Snackbar.make(view,"Null OnRecItemListener!",Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_card, parent, false);
-        MyViewHolder holder = new MyViewHolder(itemView);
+        MyViewHolder holder = new MyViewHolder(itemView,onRecyclerItemClickListener);
         return holder;
     }
 
