@@ -14,6 +14,9 @@ public class Cashinout {
     private String cioXreport;
     private String cioZreport;
 
+    public Cashinout() {
+    }
+
     public String getCioTransNum() {
         return cioTransNum;
     }
@@ -76,8 +79,5 @@ public class Cashinout {
 
     public void setCioZreport(String cioZreport) {
         this.cioZreport = cioZreport;
-    }
-
-    public Cashinout() {
     }
 }

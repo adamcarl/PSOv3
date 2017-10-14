@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.flexbox.FlexboxLayout
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:alignItems="center"
-    app:flexWrap="wrap"
     app:flexDirection="row"
-    app:justifyContent="space_around"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    app:flexWrap="wrap"
+    app:justifyContent="space_around">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,34 +16,33 @@
 
 
         <android.support.v7.widget.CardView
-            app:cardElevation="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/myColorCardViewCashier"
             app:cardCornerRadius="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:cardElevation="2dp">
 
             <EditText
-                android:textColor="@color/myColorEditTextDialogDisable"
-                android:background="@drawable/custom_edittext_dialog"
-                android:padding="20dp"
-                android:textSize="30sp"
-                android:gravity="right"
                 android:id="@+id/txt_cash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:hint="P0.00"
+                android:background="@drawable/custom_edittext_dialog"
+                android:gravity="right"
+                android:inputType="numberDecimal"
+                android:padding="20dp"
+                android:textColor="@color/myColorEditTextDialogDisable"
                 android:textColorHint="@color/myColorEditTextDialogDisable"
-                android:inputType="numberDecimal"/>
+                android:textSize="30sp"
+                android:textStyle="bold" />
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            app:cardElevation="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/myColorCardViewCashier"
             app:cardCornerRadius="4dp"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            app:cardElevation="2dp">
 
             <!--<TextView-->
             <!--android:textColor="@color/myColorWhite"-->
@@ -57,12 +55,12 @@
 
 
             <LinearLayout
-                android:padding="15dp"
-                android:layout_gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:padding="15dp">
 
 
 
@@ -74,48 +72,111 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="4dp">
 
                         <Button
-                            android:textColor="@color/myColorWhite"
+                            android:id="@+id/btnCash"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
                             android:layout_marginLeft="5dp"
+                            android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderCash"
+                            android:text="Cash"
+                            android:textColor="@color/myColorWhite" />
+
+                        <Button
                             android:id="@+id/btnCredit"
                             android:layout_width="wrap_content"
                             android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
                             android:text="Credit Card"
-                            android:layout_weight=".3"/>
+                            android:textColor="@color/myColorWhite" />
 
-                        <!--<Button-->
-                            <!--android:textColor="@color/myColorWhite"-->
-                            <!--android:layout_marginLeft="5dp"-->
-                            <!--android:background="@drawable/custom_button_payment_mode"-->
-                            <!--android:id="@+id/button7"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="80dp"-->
-                            <!--android:text="Gift Card"-->
-                            <!--android:layout_weight=".3"/>-->
-
-                        <!--<Button-->
-                            <!--android:textColor="@color/myColorWhite"-->
-                            <!--android:layout_marginLeft="5dp"-->
-                            <!--android:background="@drawable/custom_button_payment_mode"-->
-                            <!--android:id="@+id/button9"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="80dp"-->
-                            <!--android:text="Other"-->
-                            <!--android:layout_weight=".3"/>-->
+                        <Button
+                            android:id="@+id/btnDebit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderDebit"
+                            android:text="Debit Card"
+                            android:textColor="@color/myColorWhite" />
 
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:padding="4dp">
+
+                        <Button
+                            android:id="@+id/btnGift"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderGift"
+                            android:text="Gift Check"
+                            android:textColor="@color/myColorWhite" />
+
+
+                        <Button
+                            android:id="@+id/btnDiscount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderDiscount"
+                            android:text="Discount"
+                            android:textColor="@color/myColorWhite" />
+
+                        <!--<Button-->
+                        <!--android:id="@+id/btnRedeem"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="80dp"-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:layout_weight=".3"-->
+                        <!--android:background="@drawable/custom_button_payment_mode"-->
+                        <!--android:onClick="tenderRedeem"-->
+                        <!--android:text="Redeem"-->
+                        <!--android:visibility="invisible"-->
+                        <!--android:textColor="@color/myColorWhite" />-->
+
+                        <Button
+                            android:id="@+id/btnOthers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_weight=".3"
+                            android:background="@drawable/custom_button_payment_mode"
+                            android:onClick="tenderOthers"
+                            android:text="Other"
+                            android:textColor="@color/myColorWhite" />
+
+                    </LinearLayout>
+
                     <RadioGroup
-                        android:layout_marginTop="10dp"
                         android:id="@+id/rg_discount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
                         android:orientation="horizontal"
                         android:padding="16dp">
 
@@ -144,13 +205,13 @@
                 </LinearLayout>
 
                 <Button
-                    android:enabled="false"
                     android:id="@+id/btn_printBaKamo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/custom_button_login"
                     android:elevation="4dp"
+                    android:enabled="false"
                     android:onClick="print"
                     android:text="Complete Transaction"
                     android:textColor="@color/myColorWhite"
@@ -169,20 +230,20 @@
 
 
     <android.support.v7.widget.CardView
-        app:cardElevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="@color/myColorCardViewCashier"
         app:cardCornerRadius="4dp"
-        app:layout_flexBasisPercent="@fraction/fraction50percent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        app:cardElevation="2dp"
+        app:layout_flexBasisPercent="@fraction/fraction50percent">
 
         <LinearLayout
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -190,22 +251,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textColor="@color/myColorFont"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/textView13"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Vatable :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorFont"
                     android:textSize="30sp" />
 
                 <TextView
-                    android:layout_marginRight="10dp"
                     android:id="@+id/lbl_subtotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:text="0.00"
                     android:textAlignment="viewEnd"
@@ -221,23 +282,23 @@
 
 
                 <TextView
-                    android:textColor="@color/myColorFont"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/textView15"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Tax :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorFont"
                     android:textSize="30sp" />
 
                 <TextView
-                    android:layout_marginRight="10dp"
-
                     android:id="@+id/lbl_tax"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:text="0.00"
                     android:textAlignment="viewEnd"
@@ -252,7 +313,6 @@
 
 
                 <TextView
-                    android:textColor="@color/myColorFont"
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -260,14 +320,15 @@
                     android:layout_weight="2"
                     android:text="Discount :"
                     android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorFont"
                     android:textSize="30sp" />
 
                 <TextView
-                    android:layout_marginRight="10dp"
                     android:id="@+id/lbl_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:text="0.00"
                     android:textAlignment="viewEnd"
@@ -281,22 +342,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textColor="@color/myColorFont"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/textView17"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Total :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorFont"
                     android:textSize="30sp" />
 
                 <TextView
-                    android:layout_marginRight="10dp"
                     android:id="@+id/lbl_total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:text="0.00"
                     android:textAlignment="viewEnd"
@@ -321,14 +382,14 @@
 
 
                 <TextView
-                    android:textColor="@color/myColorHeading"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/lbl_dc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Due :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
                     android:textSize="30sp"/>
 
                 <TextView

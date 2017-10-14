@@ -20,6 +20,9 @@ class DB_Data extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pos_db.db";
     private static final int DATABASE_VERSION = 1;
+    private static String[] FROM_ADMIN = {COLUMN_ADMIN_USERNAME, COLUMN_ADMIN_PASSWORD};
+    private static String[] FROM_CASH = {COLUMN_CASHIER_PASSWORD};
+    private static String[] ALL = {COLUMN_CASHIER_NUMBER, COLUMN_CASHIER_NAME, COLUMN_CASHIER_POSITION};
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
@@ -189,6 +192,7 @@ class DB_Data extends SQLiteOpenHelper {
                 + COLUMN_CASHTRANS_REMARKS4 + " TEXT);");
 
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
         arg0.execSQL("DROP TABLE IF EXISTS "+TABLE_ADMIN);
@@ -223,7 +227,6 @@ class DB_Data extends SQLiteOpenHelper {
         onCreate(arg0);
     }
 
-    private static String[] FROM_ADMIN = {COLUMN_ADMIN_USERNAME,COLUMN_ADMIN_PASSWORD};
     int adminLogin(String usernum, String Pass) {
         String WHERE_ADMIN = "Username = ? and Password = ?";
         String[] WHERE_ARGS_ADMIN = new String[]{usernum,Pass};
@@ -241,7 +244,6 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-    private static String[] FROM_CASH = {COLUMN_CASHIER_PASSWORD};
     int cashierLogin(String cname, String cpass) {
         String WHERE_CASH = "Cashiernum LIKE ? and Password = ?";
         String[] WHERE_ARGS_CASH = new String[]{cname.toLowerCase().trim(),cpass};
@@ -318,7 +320,6 @@ class DB_Data extends SQLiteOpenHelper {
             dbw.insertOrThrow(TABLE_TOTAL, null, cv);
         }
 
-
         void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
@@ -383,7 +384,6 @@ class DB_Data extends SQLiteOpenHelper {
         return cashnum;
     }
 
-    private static String[] ALL = {COLUMN_CASHIER_NUMBER, COLUMN_CASHIER_NAME, COLUMN_CASHIER_POSITION};
     String[] searchStaff(String cnum) {
         String WHERE_CASH = COLUMN_CASHIER_NUMBER+" = ?";
         String[] WHERE_ARGS_CASH = new String[]{cnum};
@@ -684,7 +684,7 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-    public int searchDuplicateProduct(String itemID) {
+        int searchDuplicateProduct(String itemID) {
             SQLiteDatabase database = this.getReadableDatabase();
             String[] selectionArgs = new String[]{itemID};
             try {
@@ -1096,6 +1096,19 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         Log.e("Normal sales : ", normal + "");
         return normal;
+    }
+
+    String getTheCashierLevel(String userNum) {
+        String[] columns = {COLUMN_CASHIER_POSITION};
+        String mWHERE = COLUMN_CASHIER_NUMBER + " = ?";
+        String[] mWHERE_ARGS = new String[]{userNum};
+        Cursor cursor = dbr.query(TABLE_CASHIER, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        String level = cursor.getString(0);
+        cursor.close();
+        Log.e("Cashier Level", level);
+        return level;
+    }
     }
 
     public String getPrintForTransactionNumber(String a) {

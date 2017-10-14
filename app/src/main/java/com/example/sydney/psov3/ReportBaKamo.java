@@ -98,7 +98,7 @@ catch (Exception e){
         or1 = String.format("%1$06d", or[0]);
         or2 = String.format("%1$06d", or[1]);
         trans = String.format("%1$06d", transNum);
-        over = moneyCount - net;
+        over = moneyCount - gross;
         // Pad with zeros and a width of 6 chars.
 
         toBePrinted.add("ABZTRAK DEMO STORE");
@@ -123,7 +123,8 @@ catch (Exception e){
             toBePrinted.add("CASHIER : "+x);
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
-        toBePrinted.add("GROSS SALES\t\t" + gross + credit);
+        double mGrossBaKamo = gross + credit;
+        toBePrinted.add("GROSS SALES\t\t" + mGrossBaKamo);
         toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
@@ -153,9 +154,9 @@ catch (Exception e){
 
             toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
         }
-        toBePrinted.add("CASH SALES\t\t"+net);
+        toBePrinted.add("CASH SALES\t\t" + gross);
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\t"+net);
+        toBePrinted.add("CASH IN DRAWER\t\t" + gross);
 
         toBePrinted.add("CASH COUNT\t\t"+moneyCount);
         toBePrinted.add("----------------------------------------------");
@@ -166,10 +167,8 @@ catch (Exception e){
 
         toBePrinted.add("TENDER\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("TOTAL CASH\t0\t0.00");
-        toBePrinted.add("  CC BDO\tX\t0.00");
-        toBePrinted.add("  CC BPI\tX\t0.00");
-        toBePrinted.add("TOTAL CREDIT CA\t\t" + credit + "\n");
+        toBePrinted.add("TOTAL CASH\t" + gross);
+        toBePrinted.add("TOTAL CREDIT CA\t" + credit + "\n");
 
         toBePrinted.add("DISCOUNT\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");

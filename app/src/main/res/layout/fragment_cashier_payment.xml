@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.flexbox.FlexboxLayout
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:alignItems="center"
-    app:flexWrap="wrap"
-    app:flexDirection="row"
-    app:justifyContent="space_around"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/myColorBackgroundCashier"
-    android:padding="6dp">
+    android:padding="6dp"
+    app:alignItems="center"
+    app:flexDirection="row"
+    app:flexWrap="wrap"
+    app:justifyContent="space_around">
 
     <android.support.v7.widget.CardView
-        app:cardBackgroundColor="@color/myColorCardViewCashier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/myColorCardViewCashier"
         app:layout_flexBasisPercent="@fraction/fraction100percent">
         <EditText
-            android:textColor="@color/myColorEditTextDialogDisable"
-            android:background="@drawable/custom_edittext_dialog"
             android:id="@+id/txt_cash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/custom_edittext_dialog"
             android:gravity="right"
             android:hint="Php 0.00"
             android:inputType="numberDecimal"
             android:padding="10dp"
+            android:textColor="@color/myColorEditTextDialogDisable"
             android:textColorHint="@color/myColorEditTextDialogDisable"
             android:textSize="40sp"
             android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/nigger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_flexBasisPercent="@fraction/fraction100percent"
         android:elevation="2dp"
-        android:id="@+id/nigger">
+        app:layout_flexBasisPercent="@fraction/fraction100percent">
 
         <!--<TextView-->
         <!--android:textColor="@color/myColorWhite"-->
@@ -53,10 +52,10 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingRight="15dp"
+            android:paddingBottom="20dp"
             android:paddingLeft="15dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:paddingRight="15dp"
+            android:paddingTop="20dp">
 
             <LinearLayout
                 android:id="@+id/ll_tender"
@@ -88,15 +87,14 @@
                         <!--android:layout_weight=".3"-->
                         <!--android:text="Other" />-->
 
-
                 </LinearLayout>
 
                 <RadioGroup
-                    android:gravity="center"
                     android:id="@+id/rg_discount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="3dp">
 
@@ -125,13 +123,13 @@
             </LinearLayout>
 
             <Button
-                android:enabled="false"
                 android:id="@+id/btn_printBaKamo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/custom_button_login"
                 android:elevation="4dp"
+                android:enabled="false"
                 android:onClick="print"
                 android:text="Complete Transaction"
                 android:textColor="@color/myColorWhite"
@@ -140,38 +138,31 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-
-
-
-
-
-
-
     <android.support.v7.widget.CardView
-        android:elevation="2dp"
         android:id="@+id/ofay"
-        app:layout_flexBasisPercent="@fraction/fraction100percent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        app:layout_flexBasisPercent="@fraction/fraction100percent">
 
         <LinearLayout
-            android:paddingTop="10dp"
-            android:padding="10dp"
-            android:layout_gravity="center_vertical"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
 
             <TextView
-                android:textAlignment="center"
-                android:textColor="@color/myColorHeading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:text="Transaction Details"
-                android:textSize="20dp"
-                android:padding="10dp"/>
+                android:textAlignment="center"
+                android:textColor="@color/myColorHeading"
+                android:textSize="20dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -179,22 +170,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textColor="@color/myColorFont"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/textView13"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Vatable :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorFont"
                     android:textSize="18dp" />
 
                 <TextView
-                    android:layout_marginRight="10dp"
                     android:id="@+id/lbl_subtotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:text="0.00"
                     android:textAlignment="viewEnd"
@@ -309,14 +300,14 @@
 
 
                 <TextView
-                    android:textColor="@color/myColorHeading"
-                    android:layout_gravity="end"
-                    android:textAlignment="viewEnd"
                     android:id="@+id/lbl_dc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:layout_weight="2"
                     android:text="Due :"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/myColorHeading"
                     android:textSize="30sp"/>
 
                 <TextView
