@@ -141,6 +141,8 @@ interface Constants extends BaseColumns {
     String COLUMN_CASHTRANS_REMARKS2 = "cashtrans_remarks2";
     String COLUMN_CASHTRANS_REMARKS3 = "cashtrans_remarks3";
     String COLUMN_CASHTRANS_REMARKS4 = "cashtrans_remarks4";
+
+
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

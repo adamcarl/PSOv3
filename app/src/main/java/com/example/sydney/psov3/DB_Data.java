@@ -1109,7 +1109,6 @@ class DB_Data extends SQLiteOpenHelper {
         Log.e("Cashier Level", level);
         return level;
     }
-    }
 
     public String getPrintForTransactionNumber(String a) {
 //        String mWHERE;
@@ -1129,5 +1128,27 @@ class DB_Data extends SQLiteOpenHelper {
 //        Log.e("Normal sales : ", normal + "");
 //        return normal;
         return a;
+    }
+
+    double getCashinoutForShift(String cashierNum, String date){
+        double currentCashinout = 0.0, minuin, subtrahend ;
+
+        String WHERE;
+        String[] IS_EQUAL;
+        String[] COLUMNS = { COLUMN_CASHTRANS_ADDCASH, COLUMN_CASHTRANS_MINNUSCASH};
+
+        WHERE =  COLUMN_CASHTRANS_CASHIERNUM + " = ? AND " + COLUMN_CASHTRANS_DATETIME + " = ?";
+
+        IS_EQUAL = new String[]{"'"+cashierNum+"'","'"+date+"%'"};
+        Log.e("DB_Data.java ", "cashiernum =" + cashierNum+ " date =" + date);
+        Cursor cursor = dbr.query(TABLE_CASHTRANS,COLUMNS,WHERE,IS_EQUAL,null,null,null,null);
+        cursor.moveToFirst();
+        minuin = cursor.getDouble(0);
+        subtrahend = cursor.getDouble(1);
+        cursor.close();
+
+        currentCashinout = minuin - subtrahend;
+
+        return currentCashinout;
     }
 }

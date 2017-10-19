@@ -1,7 +1,9 @@
 package com.example.sydney.psov3;
 
 import android.database.Cursor;
+import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +38,7 @@ class ReportBaKamo {
     private double dogt;
     private double dngt;
     private double over;
+    private double currentCashInOutEveryShift;
     private double totalGross = 0.0;
     private double totalDeduction = 0.0;
     private double totalItemSales = 0.0;
@@ -46,12 +49,18 @@ class ReportBaKamo {
     private ArrayList<String> toBePrinted = new ArrayList<>();
     private Cursor cProd = null;
 
-    void main(String x, String date, int transNum, double moneyCount){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
-        String dateformatted = dateformat.format(calendar.getTime());
+    void main(String x, String date, int transNum, double moneyCount) throws ParseException {
+        Date currDate = new Date();
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        String dateToStr = dateTimeFormat.format(currDate);
+//        Date strToDate = null;
+//        strToDate = dateTimeFormat.parse(dateToStr);
+//        String dateToString = strToDate.toString();
+//        Log.e("main in ReportBakamo ", dateToStr);
+
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         String currentTime = sdf.format(new Date());
+
 //        SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
 //        try {
 //            mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
@@ -81,6 +90,9 @@ class ReportBaKamo {
         z = db_data.pleaseGiveMeTheZCount();
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
+        if(!x.equals("no")){
+            currentCashInOutEveryShift = db_data.getCashinoutForShift(x,dateToStr);
+        }
 
         double exemptDiscount;
         double exemptDiscount1;
@@ -119,7 +131,7 @@ catch (Exception e){
         }else {
             toBePrinted.add("CASHIER REPORT");
             toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : " + dateformatted + " " + currentTime);
+            toBePrinted.add("BIZDATE : " + dateToStr + " " + currentTime);
             toBePrinted.add("CASHIER : "+x);
             toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
         }
@@ -158,7 +170,7 @@ catch (Exception e){
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH IN DRAWER\t\t" + gross);
 
-        toBePrinted.add("CASH COUNT\t\t"+moneyCount);
+        toBePrinted.add("CASH COUNT\t\t"+moneyCount + currentCashInOutEveryShift);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
         toBePrinted.add("TRANSACTION\t\tAMOUNT");
