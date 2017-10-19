@@ -1,13 +1,7 @@
 package com.example.sydney.psov3;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,19 +26,6 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
         this.invoiceList = invoiceList;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView invoiceProductName,invoiceProductPrice,invoiceProductVattable,invoiceProductQuantity;
-        CardView cv;
-        MyViewHolder(View view){
-            super(view);
-            cv = (CardView) view.findViewById(R.id.cv_item);
-            invoiceProductName = (TextView) view.findViewById(R.id.txtInvoiceProductName);
-            invoiceProductPrice = (TextView) view.findViewById(R.id.txInvoiceProductPrice);
-            invoiceProductVattable = (TextView) view.findViewById(R.id.txtInvoiceProductVattable);
-            invoiceProductQuantity = (TextView) view.findViewById(R.id.txtInvoiceProductQuantity);
-        }
-    }
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.invoice_item_card, parent, false);
@@ -64,7 +45,7 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
             }
         });
 
-        holder.invoiceProductName.setText(invoiceList.get(position).getInvoiceProductDescription());
+        holder.invoiceProductName.setText(invoiceList.get(position).getInvoiceProductName());
         holder.invoiceProductPrice.setText(Double.toString(invoiceList.get(position).getInvoiceProductPrice()));
         holder.invoiceProductVattable.setText(invoiceList.get(position).getInvoiceProductVattable());
         holder.invoiceProductQuantity.setText(Integer.toString(invoiceList.get(position).getInvoiceProductQuantity()));
@@ -82,5 +63,18 @@ class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.MyViewHolder> {
         invoiceList.add(position,invoice);
         notifyItemInserted(position);
     }
-}
 
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView invoiceProductName, invoiceProductPrice, invoiceProductVattable, invoiceProductQuantity;
+        CardView cv;
+
+        MyViewHolder(View view) {
+            super(view);
+            cv = (CardView) view.findViewById(R.id.cv_item);
+            invoiceProductName = (TextView) view.findViewById(R.id.txtInvoiceProductName);
+            invoiceProductPrice = (TextView) view.findViewById(R.id.txInvoiceProductPrice);
+            invoiceProductVattable = (TextView) view.findViewById(R.id.txtInvoiceProductVattable);
+            invoiceProductQuantity = (TextView) view.findViewById(R.id.txtInvoiceProductQuantity);
+        }
+    }
+}

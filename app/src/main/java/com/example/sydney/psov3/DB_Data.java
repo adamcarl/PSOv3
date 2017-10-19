@@ -10,7 +10,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
@@ -1016,36 +1016,36 @@ class DB_Data extends SQLiteOpenHelper {
         }
 
         double[] getHourlyGrossSale(String x) {
-            double[] gross= new double[24];
+            double[] gross = new double[24];
             String mWHERE;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
-            String dateToStr = dateTimeFormat.format(currDate);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+            String dateformatted = dateformat.format(calendar.getTime());
             for(int mHour=0;mHour<24;mHour++){
                 if(x.equals("no")){
                     mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
                     if(mHour<12) {
                         String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ AM"};
+                        mWHERE_ARGS = new String[]{"0", dateformatted + " " + time + ":__ AM"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
                     }
                     else {
                         String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ PM"};
+                        mWHERE_ARGS = new String[]{"0", dateformatted + " " + time + ":__ PM"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
                     }
                 }
                 else {
                     if(mHour<12) {
                         String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% AM'"};
-                        Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
+                        mWHERE_ARGS = new String[]{"0", x, dateformatted + " " + time + ":__ AM"};
+                        Log.e("mWHERE_ARGS", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
                     }
                     else {
                         String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% PM'"};
+                        mWHERE_ARGS = new String[]{"0", x, dateformatted + " " + time + ":__ PM"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
                     }
                     mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" LIKE ?";
@@ -1054,7 +1054,7 @@ class DB_Data extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 gross[mHour] = cursor.getDouble(0) + cursor.getDouble(1);
                 cursor.close();
-                Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateToStr);
+                Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateformatted);
             }
             return  gross;
         }
@@ -1108,5 +1108,37 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         Log.e("Cashier Level", level);
         return level;
+    }
+
+    String getPrintForTransactionNumber(String a) {
+//        String mWHERE;
+//        String[] mWHERE_ARGS;
+//        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
+//        if (x.equals("no")) {
+//            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+//            mWHERE_ARGS = new String[]{"0"};
+//        } else {
+//            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+//            mWHERE_ARGS = new String[]{"0", x};
+//        }
+//        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+//        cursor.moveToFirst();
+//        normal = cursor.getDouble(0);
+//        cursor.close();
+//        Log.e("Normal sales : ", normal + "");
+//        return normal;
+        return a;
+    }
+
+    String getPrintJournal(int journalID) {
+        String mPRINT;
+        String mWHERE = COLUMN_INVOICE_TRANSACTION_NUMBER + " = ?";
+        String[] mWHERE_ARGS = {journalID + ""};
+        String[] columns = {COLUMN_INVOICE_PRINT};
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        mPRINT = cursor.getString(0);
+        cursor.close();
+        return mPRINT;
     }
     }
