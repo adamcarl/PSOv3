@@ -10,7 +10,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
@@ -184,7 +184,7 @@ class DB_Data extends SQLiteOpenHelper {
                 + COLUMN_CASHTRANS_CASHIERNUM + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_DATETIME + " TEXT,"
                 + COLUMN_CASHTRANS_ADDCASH + " REAL,"
-                + COLUMN_CASHTRANS_MINNUSCASH + " REAL,"
+                + COLUMN_CASHTRANS_MINNUSCASH  + " REAL,"
                 + COLUMN_CASHTRANS_REASON + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS1 + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
@@ -260,7 +260,7 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-    void addCashInOut(String cashTransNum, String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ) {
+    void addCashInOut(String cashTransNum,String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ){
         cv.clear();
         cv.put(COLUMN_CASH_TRANSNUM, cashTransNum);
         cv.put(COLUMN_CASH_CASHIERNUM, cashCashierNum);
@@ -273,7 +273,7 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_CASH, null, cv);
     }
 
-    void addCashTransaction(CashTransaction ct) {
+    void addCashTransaction(CashTransaction ct){
         cv.clear();
         cv.put(COLUMN_CASHTRANS_TRANSNUM, ct.getCtTransnum());
         cv.put(COLUMN_CASHTRANS_CASHIERNUM, ct.getCtCashNum());
@@ -1016,36 +1016,36 @@ class DB_Data extends SQLiteOpenHelper {
         }
 
         double[] getHourlyGrossSale(String x) {
-            double[] gross = new double[24];
+            double[] gross= new double[24];
             String mWHERE;
             String[] mWHERE_ARGS;
             String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
-            String dateformatted = dateformat.format(calendar.getTime());
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
+            String dateToStr = dateTimeFormat.format(currDate);
             for(int mHour=0;mHour<24;mHour++){
                 if(x.equals("no")){
                     mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
                     if(mHour<12) {
                         String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0", dateformatted + " " + time + ":__ AM"};
+                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ AM"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
                     }
                     else {
                         String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0", dateformatted + " " + time + ":__ PM"};
+                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ PM"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
                     }
                 }
                 else {
                     if(mHour<12) {
                         String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0", x, dateformatted + " " + time + ":__ AM"};
-                        Log.e("mWHERE_ARGS", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
+                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% AM'"};
+                        Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
                     }
                     else {
                         String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0", x, dateformatted + " " + time + ":__ PM"};
+                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% PM'"};
                         Log.e("mWHERE_ARGS", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
                     }
                     mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" LIKE ?";
@@ -1054,7 +1054,7 @@ class DB_Data extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 gross[mHour] = cursor.getDouble(0) + cursor.getDouble(1);
                 cursor.close();
-                Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateformatted);
+                Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateToStr);
             }
             return  gross;
         }
@@ -1110,7 +1110,7 @@ class DB_Data extends SQLiteOpenHelper {
         return level;
     }
 
-    String getPrintForTransactionNumber(String a) {
+    public String getPrintForTransactionNumber(String a) {
 //        String mWHERE;
 //        String[] mWHERE_ARGS;
 //        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
@@ -1130,15 +1130,25 @@ class DB_Data extends SQLiteOpenHelper {
         return a;
     }
 
-    String getPrintJournal(int journalID) {
-        String mPRINT;
-        String mWHERE = COLUMN_INVOICE_TRANSACTION_NUMBER + " = ?";
-        String[] mWHERE_ARGS = {journalID + ""};
-        String[] columns = {COLUMN_INVOICE_PRINT};
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+    double getCashinoutForShift(String cashierNum, String date){
+        double currentCashinout = 0.0, minuin, subtrahend ;
+
+        String WHERE;
+        String[] IS_EQUAL;
+        String[] COLUMNS = { COLUMN_CASHTRANS_ADDCASH, COLUMN_CASHTRANS_MINNUSCASH};
+
+        WHERE =  COLUMN_CASHTRANS_CASHIERNUM + " = ? AND " + COLUMN_CASHTRANS_DATETIME + " = ?";
+
+        IS_EQUAL = new String[]{"'"+cashierNum+"'","'"+date+"%'"};
+        Log.e("DB_Data.java ", "cashiernum =" + cashierNum+ " date =" + date);
+        Cursor cursor = dbr.query(TABLE_CASHTRANS,COLUMNS,WHERE,IS_EQUAL,null,null,null,null);
         cursor.moveToFirst();
-        mPRINT = cursor.getString(0);
+        minuin = cursor.getDouble(0);
+        subtrahend = cursor.getDouble(1);
         cursor.close();
-        return mPRINT;
+
+        currentCashinout = minuin - subtrahend;
+
+        return currentCashinout;
     }
-    }
+}

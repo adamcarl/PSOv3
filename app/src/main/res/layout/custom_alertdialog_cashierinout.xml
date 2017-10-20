@@ -23,7 +23,8 @@
                 android:id="@+id/rgIN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="IN" />
+                android:text="IN"
+                android:checked="true"/>
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rgOUT"
@@ -43,12 +44,12 @@
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG" />
 
-        <android.support.v7.widget.AppCompatSpinner
+        <Spinner
             android:id="@+id/spinnerCashinout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:entries="@array/cashinout" />
+            android:entries="@array/cashin" />
 
 
         <android.support.v7.widget.AppCompatEditText

@@ -16,9 +16,13 @@
         <item>Cashier</item>
     </string-array>
 
-    <string-array name="cashinout">
+    <string-array name="cashin">
         <item>Petty cash</item>
-        <item>Cahange</item>
+        <item>Change</item>
+    </string-array>
+
+    <string-array name="cashout">
+        <item>Petty cash</item>
     </string-array>
 
     <string-array name="productField">

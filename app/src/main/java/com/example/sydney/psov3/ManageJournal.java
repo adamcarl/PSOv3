@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,25 +24,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.jolimark.JmPrinter;
-import com.jolimark.UsbPrinter;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_DATETIME;
-import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
-import static com.example.sydney.psov3.Constants._ID;
+import static android.provider.Telephony.Carriers.PORT;
+import static com.example.sydney.psov3.Constants.*;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 
 /**
  * Created by PROGRAMMER2 on 6/2/2017.
@@ -49,34 +50,39 @@ import static com.example.sydney.psov3.Constants._ID;
 
 public class ManageJournal extends AppCompatActivity implements TransactionAdapter.OnRecyclerItemClickListener {
 
+    private TransactionAdapter transAdapter;
+    private List<Transactions> transactionList;
+
+    private DB_Data db_data;
+    private Cursor cursor;
+
+
+    private SearchView searchView;
+    private Spinner spinner;
+    private int spinnerSelected;
+    private RecyclerView recyclerView;
+
+    private String colWhere;
+
     //FTP
     final String FTPHost = "files.000webhost.com";
     final String user = "attendancemonitor";
     final String pass = "darksalad12";
     final int PORT = 21;
     final int PICK_FILE = 1;
+
+
     String filename, filepath;
     AlertDialog.Builder builder = null;
     AlertDialog alertDialog = null;
-    private TransactionAdapter transAdapter;
-    private List<Transactions> transactionList;
-    private DB_Data db_data;
-    private Cursor cursor;
-    private SearchView searchView;
-    private Spinner spinner;
-    private int spinnerSelected;
-    private RecyclerView recyclerView;
-    private String colWhere;
-    private JmPrinter mPrinter;
-    private UsbPrinter marksPrinter = new UsbPrinter();
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_manage_journal);
 
-        printerDetection();
-        mPrinter = new JmPrinter();           //Create a 78M printer object
         db_data = new DB_Data(this);
 
         spinner = (Spinner) findViewById(R.id.spinnerTransactionSearch);
@@ -188,6 +194,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         addProduct.setVisible(false);
         showLog.setVisible(false);
 
+
         if(menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
@@ -257,7 +264,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
     }
 
     @Override
-    public void onRecyclerItemClick(View childView, final int position) {
+    public void onRecyclerItemClick(View childView, int position) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_viewjournal, null);
@@ -276,16 +283,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> paPrint = new ArrayList<>();
-                try {
-                    paPrint.add("COPY");
-                    paPrint.add(db_data.getPrintJournal(position + 1));
-                    printFunction(paPrint);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(ManageJournal.this, "Invoice only", Toast.LENGTH_LONG).show();
-                }
-                alertDialogModify.dismiss();
+
             }
         });
 
@@ -296,49 +294,6 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
             }
         });
 
-    }
-
-    private void printFunction(ArrayList<String> list) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : list) {
-            sb.append(s);
-            sb.append("\n");
-        }
-        String convertedArray = sb.toString();
-
-        byte[] SData;
-        try {
-            SData = convertedArray.getBytes("UTF-8");
-            boolean retnVale = mPrinter.PrintText(SData);
-            //db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
-
-            if (!retnVale) {
-                Toast.makeText(ManageJournal.this, mPrinter.GetLastPrintErr(), Toast.LENGTH_SHORT).show();
-            }
-        } catch (UnsupportedEncodingException e) {
-
-            e.printStackTrace();
-        }
-    }
-
-    private void printerDetection() {
-        try {
-            //RUN CODE IF JOLLICARL IS PRESENT
-            try {
-//                mSerialPrinter.OpenPrinter(new SerialParam(9600, "/dev/ttyS3", 0), new SerialDataHandler());
-//                HdxUtil.SetPrinterPower(1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //RUN CODE IF JOLLIMARK IS PRESENT
-            try {
-                marksPrinter.Open();
-            } catch (Exception e) {
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private class UploadFile extends AsyncTask<String, Integer, Boolean> {
