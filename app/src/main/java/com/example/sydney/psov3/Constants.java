@@ -65,6 +65,7 @@ interface Constants extends BaseColumns {
     String COLUMN_ZREPORT_TRANSACTION_NUMBER = "zreportTransNum";
     String COLUMN_ZREPORT_CASHSALES = "zreportCashsales";
     String COLUMN_ZREPORT_CASHCOUNT = "zreportCashcount";
+    String COLUMN_ZREPORT_PRINT = "zreportPrint";
 
     String TABLE_TRANSACTION = "tbl_trans";
     String COLUMN_TRANSACTION_TYPE = "TransType";
@@ -72,9 +73,7 @@ interface Constants extends BaseColumns {
     String COLUMN_TRANSACTION_CASHIER = "TransCashier";
     String COLUMN_TRANSACTION_ZREPORT = "TransZreport";
     String COLUMN_TRANSACTION_XREPORT = "TransXreport";
-
-    String TABLE_LOG = "tbl_log";
-    String COLUMN_LOG_STRING= "LogString";
+    String COLUMN_TRANSACTION_PRINT = "TransPrint";
 
     String TABLE_TEMP_INVOICING = "tbl_temp";
     String COLUMN_TEMP_NAME = "temp_name";
@@ -142,7 +141,11 @@ interface Constants extends BaseColumns {
     String COLUMN_CASHTRANS_REMARKS3 = "cashtrans_remarks3";
     String COLUMN_CASHTRANS_REMARKS4 = "cashtrans_remarks4";
 
-
+    String TABLE_LOG = "tbl_Log";
+    String COLUMN_LOG_TYPE = "LogType";
+    String COLUMN_LOG_DATETIME = "LogDateTime";
+    String COLUMN_LOG_CASHIER = "LogCashier";
+    String COLUMN_LOG_PRINT = "LogPrint";
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

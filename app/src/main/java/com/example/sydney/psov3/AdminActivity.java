@@ -1,39 +1,20 @@
 package com.example.sydney.psov3;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdminActivity extends AppCompatActivity{
     //For Database
 
 
     //For Admin Privilege
-
-    Button btn_adminManStaff,btn_adminManProd,btn_adminManJournal,btn_dummyA, btn_adminManProfile;
-
-
-
-    //TO SUPPORT VECTOR DRAWABLES
 
     static {
 
@@ -42,6 +23,9 @@ public class AdminActivity extends AppCompatActivity{
     }
 
 
+    //TO SUPPORT VECTOR DRAWABLES
+
+    Button btn_adminManStaff, btn_adminManProd, btn_adminManJournal, btn_adminManReport, btn_adminManProfile;
 
     @Override
 
@@ -114,14 +98,15 @@ public class AdminActivity extends AppCompatActivity{
         });
 
 
-
-        btn_dummyA.setOnClickListener(new View.OnClickListener() {
+        btn_adminManReport.setOnClickListener(new View.OnClickListener() {
 
             @Override
 
             public void onClick(View view) {
 
-                Toast.makeText(AdminActivity.this, "Manage A", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AdminActivity.this, ManageReport.class);
+
+                startActivity(intent);
 
             }
 
@@ -152,7 +137,7 @@ public class AdminActivity extends AppCompatActivity{
         btn_adminManStaff=(Button)findViewById(R.id.btnStaff);
         btn_adminManProd=(Button)findViewById(R.id.btnProduct);
         btn_adminManJournal=(Button)findViewById(R.id.btnJournal);
-        btn_dummyA=(Button)findViewById(R.id.btnD);
+        btn_adminManReport = (Button) findViewById(R.id.btnReport);
         btn_adminManProfile =(Button)findViewById(R.id.btnProfile);
     }
     //MENU//MENU//MENU//MENU//MENU

@@ -27,7 +27,7 @@ class DB_Data extends SQLiteOpenHelper {
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
 
-        DB_Data(Context ctx){
+    DB_Data(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -64,7 +64,7 @@ class DB_Data extends SQLiteOpenHelper {
                 +COLUMN_PRODUCT_PRICE_TEMP+" REAL NOT NULL,"
                 +COLUMN_PRODUCT_QUANTITY_TEMP+" INTEGER NOT NULL, "
                 +COLUMN_PRODUCT_VATABLE_TEMP+" REAL, "
-                +COLUMN_PRODUCT_IMEI_TEMP+" INTEGER );");
+                + COLUMN_PRODUCT_IMEI_TEMP + " STRING );");
 
         arg0.execSQL("CREATE TABLE "+TABLE_INVOICE+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -132,7 +132,8 @@ class DB_Data extends SQLiteOpenHelper {
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ZREPORT_TRANSACTION_NUMBER+" INTEGER NOT NULL, "
                 +COLUMN_ZREPORT_CASHSALES+" REAL, "
-                +COLUMN_ZREPORT_CASHCOUNT+" REAL);");
+                + COLUMN_ZREPORT_CASHCOUNT + " REAL, "
+                + COLUMN_ZREPORT_PRINT + " STRING);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TRANSACTION+ "("
                 +_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -140,11 +141,15 @@ class DB_Data extends SQLiteOpenHelper {
                 +COLUMN_TRANSACTION_DATETIME+" TEXT NOT NULL, "
                 +COLUMN_TRANSACTION_CASHIER+" TEXT NOT NULL, "
                 +COLUMN_TRANSACTION_XREPORT+" INTEGER NOT NULL, "
-                +COLUMN_TRANSACTION_ZREPORT+" INTEGER NOT NULL);");
+                + COLUMN_TRANSACTION_ZREPORT + " INTEGER NOT NULL, "
+                + COLUMN_TRANSACTION_PRINT + " STRING);");
 
-        arg0.execSQL("CREATE TABLE "+ TABLE_LOG + " ("
+        arg0.execSQL("CREATE TABLE " + TABLE_LOG + "("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_LOG_STRING + " TEXT NOT NULL);");
+                + COLUMN_LOG_TYPE + " TEXT NOT NULL, "
+                + COLUMN_LOG_DATETIME + " TEXT NOT NULL, "
+                + COLUMN_LOG_CASHIER + " TEXT NOT NULL, "
+                + COLUMN_LOG_PRINT + " STRING);");
 
         arg0.execSQL("CREATE TABLE "+ TABLE_TEMP_INVOICING + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -184,7 +189,7 @@ class DB_Data extends SQLiteOpenHelper {
                 + COLUMN_CASHTRANS_CASHIERNUM + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_DATETIME + " TEXT,"
                 + COLUMN_CASHTRANS_ADDCASH + " REAL,"
-                + COLUMN_CASHTRANS_MINNUSCASH  + " REAL,"
+                + COLUMN_CASHTRANS_MINNUSCASH + " REAL,"
                 + COLUMN_CASHTRANS_REASON + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS1 + " TEXT NOT NULL,"
                 + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
@@ -260,7 +265,7 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-    void addCashInOut(String cashTransNum,String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ){
+    void addCashInOut(String cashTransNum, String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ) {
         cv.clear();
         cv.put(COLUMN_CASH_TRANSNUM, cashTransNum);
         cv.put(COLUMN_CASH_CASHIERNUM, cashCashierNum);
@@ -273,7 +278,7 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_CASH, null, cv);
     }
 
-    void addCashTransaction(CashTransaction ct){
+    void addCashTransaction(CashTransaction ct) {
         cv.clear();
         cv.put(COLUMN_CASHTRANS_TRANSNUM, ct.getCtTransnum());
         cv.put(COLUMN_CASHTRANS_CASHIERNUM, ct.getCtCashNum());
@@ -314,13 +319,13 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
-        void addGrandTotal(double gTotal){
-            cv.clear();
-            cv.put(COLUMN_TOTAL_GRAND, gTotal);
-            dbw.insertOrThrow(TABLE_TOTAL, null, cv);
-        }
+    void addGrandTotal(double gTotal) {
+        cv.clear();
+        cv.put(COLUMN_TOTAL_GRAND, gTotal);
+        dbw.insertOrThrow(TABLE_TOTAL, null, cv);
+    }
 
-        void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp){
+    void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp) {
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
@@ -355,19 +360,24 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
-    void addTransaction(String transactionType, String transactionDatetime, String transactionCashier, int transactionXreport, int transactionZreport){
+    void addTransaction(String transactionType, String transactionDatetime, String transactionCashier, int transactionXreport, int transactionZreport, String transactionPrint) {
         cv.clear();
         cv.put(COLUMN_TRANSACTION_TYPE,transactionType);
         cv.put(COLUMN_TRANSACTION_DATETIME,transactionDatetime);
         cv.put(COLUMN_TRANSACTION_CASHIER,transactionCashier);
         cv.put(COLUMN_TRANSACTION_XREPORT,transactionXreport);
         cv.put(COLUMN_TRANSACTION_ZREPORT,transactionZreport);
+        cv.put(COLUMN_TRANSACTION_PRINT, transactionPrint);
         dbw.insertOrThrow(TABLE_TRANSACTION, null, cv);
     }
 
-    void addLog(String log){
+    void addLog(String logType, String logDatetime, String logCashier, String logPrint) {
         cv.clear();
-        cv.put(COLUMN_LOG_STRING,log);
+        cv.put(COLUMN_LOG_TYPE, logType);
+        cv.put(COLUMN_LOG_DATETIME, logDatetime);
+        cv.put(COLUMN_LOG_CASHIER, logCashier);
+        cv.put(COLUMN_LOG_PRINT, logPrint);
+        dbw.insertOrThrow(TABLE_LOG, null, cv);
     }
 
     List<String> getAllLabels(){
@@ -429,10 +439,12 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         return itemResult;
     }
-     Cursor queryDataRead(String query) {
+
+    Cursor queryDataRead(String query) {
         SQLiteDatabase database = this.getReadableDatabase();
         return database.rawQuery(query,null);
-        }
+    }
+
     void updateAdmin(String A_pass){
         cv.clear();
         String WHERE = _ID+" = ?";
@@ -470,6 +482,14 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.update(TABLE_INVOICE, cv, WHERE_CASH,WHERE_ARGS_CASH);
     }
 
+    void givePrintTransaction(String id, String print) {
+        cv.clear();
+        String WHERE_CASH = _ID + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{id};
+        cv.put(COLUMN_TRANSACTION_PRINT, print);
+        dbw.update(TABLE_TRANSACTION, cv, WHERE_CASH, WHERE_ARGS_CASH);
+    }
+
     void updateTransactions(String name){
         cv.clear();
         String WHERE_CASH;
@@ -489,7 +509,6 @@ class DB_Data extends SQLiteOpenHelper {
             WHERE_CASH = COLUMN_ITEM_ZREPORT + " = ?";
             cv.put(COLUMN_ITEM_ZREPORT,"1");
             dbw.update(TABLE_ITEM,cv,WHERE_CASH,mWHERE_ARGS);
-
         }
         else {
             WHERE_CASH = COLUMN_TRANSACTION_XREPORT+" = ? AND "+COLUMN_TRANSACTION_CASHIER+" = ?";
@@ -684,22 +703,22 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-        int searchDuplicateProduct(String itemID) {
-            SQLiteDatabase database = this.getReadableDatabase();
-            String[] selectionArgs = new String[]{itemID};
-            try {
-                int i;
-                Cursor cursor;
-                cursor = database.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + COLUMN_PRODUCT_ID + "=?",selectionArgs);
-                cursor.moveToFirst();
-                i = cursor.getCount();
-                cursor.close();
-                return i;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return 0;
+    int searchDuplicateProduct(String itemID) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String[] selectionArgs = new String[]{itemID};
+        try {
+            int i;
+            Cursor cursor;
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_PRODUCT + " WHERE " + COLUMN_PRODUCT_ID + "=?", selectionArgs);
+            cursor.moveToFirst();
+            i = cursor.getCount();
+            cursor.close();
+            return i;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return 0;
+    }
 
     void updateInvoiceItem(String code, int newQuantity, double newTotalPrice){
         this.getWritableDatabase().execSQL("UPDATE "+ TABLE_TEMP_INVOICING + " SET "
@@ -745,44 +764,43 @@ class DB_Data extends SQLiteOpenHelper {
             return  discount;
         }
     String pleaseGetTheSalesForMe(String x, String status){
-            String sales;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
-            if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",status};
-            }
-            else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",x,status};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            sales = cursor.getString(0);
-            cursor.close();
-            return sales;
+        String sales;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_VATTABLE + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", status};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", x, status};
         }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        sales = cursor.getString(0);
+        cursor.close();
+        return sales;
+    }
 
     String pleaseGetTheTaxForMe(String x, String status){
-            String tax;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM("+COLUMN_INVOICE_VATTED+")"};
-            if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",status};
-            }
-            else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                mWHERE_ARGS = new String[]{"0",x,status};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            tax = cursor.getString(0);
-            cursor.close();
-            return tax;
+        String tax;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_VATTED + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", status};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", x, status};
         }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        tax = cursor.getString(0);
+        cursor.close();
+        return tax;
+    }
+
     int pleaseGiveMeTheZCount(){
         int z;
         String[] columns = {"COUNT(*)"};
@@ -794,6 +812,7 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         return z;
     }
+
     int[] pleaseGiveMeTheFirstAndLastOfTheTransactions(){
         int[] t = new int[2];
         String[] columns = {_ID};
@@ -807,39 +826,41 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         return t;
     }
+
     int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
-            int[] t = new int[2];
-            String[] columns = {_ID};
-            String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ?";
-            String[] mWHERE_ARGS = new String[]{"0"};
-            Cursor cursor = dbr.query(TABLE_INVOICE,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
-            cursor.moveToFirst();
-            t[0] = cursor.getInt(0);
-            cursor.moveToLast();
-            t[1] = cursor.getInt(0);
-            cursor.close();
-            return t;
-        }
+        int[] t = new int[2];
+        String[] columns = {_ID};
+        String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+        String[] mWHERE_ARGS = new String[]{"0"};
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        t[0] = cursor.getInt(0);
+        cursor.moveToLast();
+        t[1] = cursor.getInt(0);
+        cursor.close();
+        return t;
+    }
+
     String pleaseGiveMeTheSumOfAll20PercentDiscountForXandZreport(String x, String status){
         String discount="";
-                String mWHERE;
-                String[] mWHERE_ARGS;
-                String[] columns = {"SUM("+COLUMN_ITEM_DISCOUNT+")"};
-                if(x.equals("no")){
-                    mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                    mWHERE_ARGS = new String[]{"0",status};
-                }
-                else {
-                    mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+COLUMN_INVOICE_VAT_STATUS+" = ?";
-                    mWHERE_ARGS = new String[]{"0",x,status};
-                }
-                Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-                cursor.moveToFirst();
-                discount = cursor.getString(0);
-                cursor.close();
-            return discount;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_ITEM_DISCOUNT + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", status};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", x, status};
         }
-        //Grand Total is the sum of all accumulated NET SALES.
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        discount = cursor.getString(0);
+        cursor.close();
+        return discount;
+    }
+
+    //Grand Total is the sum of all accumulated NET SALES.
     double getMyOldGross(){
         double gross;
         String[] columns = {"SUM("+COLUMN_TOTAL_GRAND+")"};
@@ -861,6 +882,7 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         return gross;
     }
+
     Cursor getAllItems(String x){
         String mWHERE;
         String[] mWHERE_ARGS;
@@ -875,7 +897,7 @@ class DB_Data extends SQLiteOpenHelper {
             mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
             mWHERE_ARGS = new String[]{"0",x};
         }
-     return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, groupBy, null, null, null);
+        return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, groupBy, null, null, null);
     }
 
     void addXreport(String transNum,double cashSales, double cashCount, double cashShortOver){
@@ -905,178 +927,180 @@ class DB_Data extends SQLiteOpenHelper {
         c.close();
         return sales;
     }
-        String tax(String status, String x){
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] COLUMNS = {"SUM("+COLUMN_INVOICE_VATTED+")"};
-            if(x.equals("no")){
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
-                mWHERE_ARGS = new String[]{"0",status};
-            }
-            else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND "+ COLUMN_INVOICE_VAT_STATUS + " = ?";
-                mWHERE_ARGS = new String[]{"0",x,status};
-            }
 
-            Cursor c = dbr.query(TABLE_INVOICE,COLUMNS,mWHERE,mWHERE_ARGS,null,null,null);
-            c.moveToFirst();
-            String tax = c.getString(0);
-            c.close();
-            return tax;
-        }
-        void copyToProductTemp(){
-            String sql = "DELETE FROM "+TABLE_PRODUCT_TEMP;
-            dbr.execSQL(sql);
-
-            sql = "INSERT INTO "+TABLE_PRODUCT_TEMP+" SELECT * FROM "+TABLE_PRODUCT;
-            dbr.execSQL(sql);
+    String tax(String status, String x) {
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] COLUMNS = {"SUM(" + COLUMN_INVOICE_VATTED + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", status};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_VAT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", x, status};
         }
 
-        int getProdTempCount(){
-            Cursor cursor = dbr.rawQuery("SELECT * FROM "+TABLE_PRODUCT_TEMP,null);
-            cursor.moveToFirst();
-            int a = cursor.getCount();
-            cursor.close();
-            return a;
-        }
+        Cursor c = dbr.query(TABLE_INVOICE, COLUMNS, mWHERE, mWHERE_ARGS, null, null, null);
+        c.moveToFirst();
+        String tax = c.getString(0);
+        c.close();
+        return tax;
+    }
 
-        int getQuantityofProducts(String prodID){
-            int quan = 0;
-            Cursor c;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {COLUMN_PRODUCT_QUANTITY};
-                mWHERE = COLUMN_PRODUCT_ID +" = ?";
-                mWHERE_ARGS = new String[]{prodID};
-            c = dbr.query(TABLE_PRODUCT, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            c.moveToFirst();
-            quan = c.getInt(c.getColumnIndex(COLUMN_PRODUCT_QUANTITY));
-            return quan;
-        }
-        void updateProductQuantity(String prodID, int newQuan){
-            cv.clear();
-            String mWHERE = COLUMN_PRODUCT_ID+" = ?";
-            String[] mWHERE_ARGS = new String[]{prodID};
-            cv.put(COLUMN_PRODUCT_QUANTITY,newQuan);
-            dbw.update(TABLE_PRODUCT,cv,mWHERE,mWHERE_ARGS);
-        }
-        Cursor getAllProductsSample(){
-            String[] columns = {COLUMN_PRODUCT_NAME_TEMP,COLUMN_PRODUCT_DESCRIPTION_TEMP,COLUMN_PRODUCT_QUANTITY_TEMP,COLUMN_PRODUCT_PRICE_TEMP};
-            String groupBy = COLUMN_PRODUCT_NAME_TEMP;
-            return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
-        }
+    void copyToProductTemp() {
+        String sql = "DELETE FROM " + TABLE_PRODUCT_TEMP;
+        dbr.execSQL(sql);
 
-        void updateAddQuantity(String id, int quantity) {
-            cv.clear();
-            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
-            String[] WHERE_ARGS_CASH = new String[]{id};
-            cv.put(COLUMN_PRODUCT_QUANTITY, quantity);
-            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        }
+        sql = "INSERT INTO " + TABLE_PRODUCT_TEMP + " SELECT * FROM " + TABLE_PRODUCT;
+        dbr.execSQL(sql);
+    }
 
-        void modifyItem(String id, String name, String description, double price) {
-            cv.clear();
-            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
-            String[] WHERE_ARGS_CASH = new String[]{id};
-            cv.put(COLUMN_PRODUCT_NAME, name);
-            cv.put(COLUMN_PRODUCT_DESCRIPTION, description);
-            cv.put(COLUMN_PRODUCT_QUANTITY, price);
-            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        }
+    int getProdTempCount() {
+        Cursor cursor = dbr.rawQuery("SELECT * FROM " + TABLE_PRODUCT_TEMP, null);
+        cursor.moveToFirst();
+        int a = cursor.getCount();
+        cursor.close();
+        return a;
+    }
 
-        void minusItemQuantity(String id, int newQuantity) {
-            cv.clear();
-            String WHERE_CASH = COLUMN_PRODUCT_ID+" = ?";
-            String[] WHERE_ARGS_CASH = new String[]{id};
-            cv.put(COLUMN_PRODUCT_QUANTITY, newQuantity);
-            dbw.update(TABLE_PRODUCT, cv, WHERE_CASH,WHERE_ARGS_CASH);
-        }
+    int getQuantityofProducts(String prodID) {
+        int quan = 0;
+        Cursor c;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {COLUMN_PRODUCT_QUANTITY};
+        mWHERE = COLUMN_PRODUCT_ID + " = ?";
+        mWHERE_ARGS = new String[]{prodID};
+        c = dbr.query(TABLE_PRODUCT, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        c.moveToFirst();
+        quan = c.getInt(c.getColumnIndex(COLUMN_PRODUCT_QUANTITY));
+        return quan;
+    }
 
-        void addProductLogs(String prodLogID,String prodLogType,int prodLogValueAdded,int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
-            cv.clear();
-            cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
-            cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
-            cv.put(COLUMN_PRODUCTLOGS_VALUEADDED, prodLogValueAdded);
-            cv.put(COLUMN_PRODUCTLOGS_VALUEMINUS, prodLogValueMinus);
-            cv.put(COLUMN_PRODUCTLOGS_REMARKS, prodLogRemarks);
-            cv.put(COLUMN_PRODUCTLOGS_DATE, prodLogDate);
-            dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
-        }
+    void updateProductQuantity(String prodID, int newQuan) {
+        cv.clear();
+        String mWHERE = COLUMN_PRODUCT_ID + " = ?";
+        String[] mWHERE_ARGS = new String[]{prodID};
+        cv.put(COLUMN_PRODUCT_QUANTITY, newQuan);
+        dbw.update(TABLE_PRODUCT, cv, mWHERE, mWHERE_ARGS);
+    }
 
-        void addCredit(String inTrans, String inCashierNum, String inDateAndTime, double inCreditSale, String inCreditBank, String inCreditCardNum, String inCreditExp) {
-            cv.clear();
-            cv.put(COLUMN_CREDIT_TRANS, inTrans);
-            cv.put(COLUMN_CREDIT_CASHIER, inCashierNum);
-            cv.put(COLUMN_CREDIT_DATE, inDateAndTime);
-            cv.put(COLUMN_CREDIT_PAYMENT, inCreditSale);
-            cv.put(COLUMN_CREDIT_BANK, inDateAndTime);
-            cv.put(COLUMN_CREDITT_NUMBER, inCreditCardNum);
-            cv.put(COLUMN_CREDIT_EXPIRY, inCreditExp);
-            dbw.insertOrThrow(TABLE_CREDIT_CARD, null, cv);
-        }
+    Cursor getAllProductsSample() {
+        String[] columns = {COLUMN_PRODUCT_NAME_TEMP, COLUMN_PRODUCT_DESCRIPTION_TEMP, COLUMN_PRODUCT_QUANTITY_TEMP, COLUMN_PRODUCT_PRICE_TEMP};
+        String groupBy = COLUMN_PRODUCT_NAME_TEMP;
+        return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
+    }
 
-        double[] getHourlyGrossSale(String x) {
-            double[] gross= new double[24];
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-            Date currDate = new Date();
-            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
-            String dateToStr = dateTimeFormat.format(currDate);
-            for(int mHour=0;mHour<24;mHour++){
-                if(x.equals("no")){
-                    mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
-                    if(mHour<12) {
-                        String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ AM"};
-                        Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
-                    }
-                    else {
-                        String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0",dateToStr+" "+time+":__ PM"};
-                        Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
-                    }
+    void updateAddQuantity(String id, int quantity) {
+        cv.clear();
+        String WHERE_CASH = COLUMN_PRODUCT_ID + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{id};
+        cv.put(COLUMN_PRODUCT_QUANTITY, quantity);
+        dbw.update(TABLE_PRODUCT, cv, WHERE_CASH, WHERE_ARGS_CASH);
+    }
+
+    void modifyItem(String id, String name, String description, double price) {
+        cv.clear();
+        String WHERE_CASH = COLUMN_PRODUCT_ID + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{id};
+        cv.put(COLUMN_PRODUCT_NAME, name);
+        cv.put(COLUMN_PRODUCT_DESCRIPTION, description);
+        cv.put(COLUMN_PRODUCT_QUANTITY, price);
+        dbw.update(TABLE_PRODUCT, cv, WHERE_CASH, WHERE_ARGS_CASH);
+    }
+
+    void minusItemQuantity(String id, int newQuantity) {
+        cv.clear();
+        String WHERE_CASH = COLUMN_PRODUCT_ID + " = ?";
+        String[] WHERE_ARGS_CASH = new String[]{id};
+        cv.put(COLUMN_PRODUCT_QUANTITY, newQuantity);
+        dbw.update(TABLE_PRODUCT, cv, WHERE_CASH, WHERE_ARGS_CASH);
+    }
+
+    void addProductLogs(String prodLogID, String prodLogType, int prodLogValueAdded, int prodLogValueMinus, String prodLogRemarks, String prodLogDate) {
+        cv.clear();
+        cv.put(COLUMN_PRODUCTLOGS_BARCODE, prodLogID);
+        cv.put(COLUMN_PRODUCTLOGS_TYPE, prodLogType);
+        cv.put(COLUMN_PRODUCTLOGS_VALUEADDED, prodLogValueAdded);
+        cv.put(COLUMN_PRODUCTLOGS_VALUEMINUS, prodLogValueMinus);
+        cv.put(COLUMN_PRODUCTLOGS_REMARKS, prodLogRemarks);
+        cv.put(COLUMN_PRODUCTLOGS_DATE, prodLogDate);
+        dbw.insertOrThrow(TABLE_PRODUCTLOGS, null, cv);
+    }
+
+    void addCredit(String inTrans, String inCashierNum, String inDateAndTime, double inCreditSale, String inCreditBank, String inCreditCardNum, String inCreditExp) {
+        cv.clear();
+        cv.put(COLUMN_CREDIT_TRANS, inTrans);
+        cv.put(COLUMN_CREDIT_CASHIER, inCashierNum);
+        cv.put(COLUMN_CREDIT_DATE, inDateAndTime);
+        cv.put(COLUMN_CREDIT_PAYMENT, inCreditSale);
+        cv.put(COLUMN_CREDIT_BANK, inDateAndTime);
+        cv.put(COLUMN_CREDITT_NUMBER, inCreditCardNum);
+        cv.put(COLUMN_CREDIT_EXPIRY, inCreditExp);
+        dbw.insertOrThrow(TABLE_CREDIT_CARD, null, cv);
+    }
+
+    double[] getHourlyGrossSale(String x) {
+        double[] gross = new double[24];
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
+        Date currDate = new Date();
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        String dateToStr = dateTimeFormat.format(currDate);
+        for (int mHour = 0; mHour < 24; mHour++) {
+            if (x.equals("no")) {
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
+                if (mHour < 12) {
+                    String time = String.format("%1$02d", mHour);
+                    mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ AM"};
+                    Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
                 }
                 else {
-                    if(mHour<12) {
-                        String time = String.format("%1$02d", mHour);
-                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% AM'"};
-                        Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
-                    }
-                    else {
-                        String time = String.format("%1$02d", mHour-12);
-                        mWHERE_ARGS = new String[]{"0",x, "'"+dateToStr + " " + time + ":_%_% PM'"};
-                        Log.e("mWHERE_ARGS", mWHERE_ARGS[0]+""+mWHERE_ARGS[2]);
-                    }
-                    mWHERE = COLUMN_INVOICE_XREPORT_STATUS+" = ? AND "+COLUMN_INVOICE_CASHIER_NUMBER+" = ? AND " +COLUMN_INVOICE_DATEANDTIME+" LIKE ?";
+                    String time = String.format("%1$02d", mHour - 12);
+                    mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ PM"};
+                    Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
                 }
+            } else {
+                if (mHour < 12) {
+                    String time = String.format("%1$02d", mHour);
+                    mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% AM'"};
+                    Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
+                } else {
+                    String time = String.format("%1$02d", mHour - 12);
+                    mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% PM'"};
+                    Log.e("mWHERE_ARGS", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
+                }
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
+            }
                 Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
                 cursor.moveToFirst();
                 gross[mHour] = cursor.getDouble(0) + cursor.getDouble(1);
                 cursor.close();
                 Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateToStr);
-            }
-            return  gross;
         }
-        double getCreditSales(String x) {
-            double credit;
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {"SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-            if (x.equals("no")) {
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
-                mWHERE_ARGS = new String[]{"0"};
-            } else {
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
-                mWHERE_ARGS = new String[]{"0", x};
-            }
-            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-            cursor.moveToFirst();
-            credit = cursor.getDouble(0);
-            cursor.close();
-            Log.e("Credit sales : ", credit + "");
-            return credit;
+        return gross;
+    }
+
+    double getCreditSales(String x) {
+        double credit;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0"};
+        } else {
+            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
+            mWHERE_ARGS = new String[]{"0", x};
         }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        credit = cursor.getDouble(0);
+        cursor.close();
+        Log.e("Credit sales : ", credit + "");
+        return credit;
+    }
 
     double getNormalSales(String x) {
         double normal;
@@ -1110,38 +1134,30 @@ class DB_Data extends SQLiteOpenHelper {
         return level;
     }
 
-    public String getPrintForTransactionNumber(String a) {
-//        String mWHERE;
-//        String[] mWHERE_ARGS;
-//        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
-//        if (x.equals("no")) {
-//            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
-//            mWHERE_ARGS = new String[]{"0"};
-//        } else {
-//            mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
-//            mWHERE_ARGS = new String[]{"0", x};
-//        }
-//        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-//        cursor.moveToFirst();
-//        normal = cursor.getDouble(0);
-//        cursor.close();
-//        Log.e("Normal sales : ", normal + "");
-//        return normal;
-        return a;
+    String getPrintForTransactionNumber(int position) {
+        String mWHERE = _ID + " = ?";
+        String[] mWHERE_ARGS = new String[]{position + ""};
+        String[] columns = {COLUMN_TRANSACTION_PRINT};
+        Cursor cursor = dbr.query(TABLE_TRANSACTION, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        String print = cursor.getString(0);
+        cursor.close();
+        Log.e("Print", print);
+        return print;
     }
 
-    double getCashinoutForShift(String cashierNum, String date){
-        double currentCashinout = 0.0, minuin, subtrahend ;
+    double getCashinoutForShift(String cashierNum, String date) {
+        double currentCashinout = 0.0, minuin, subtrahend;
 
         String WHERE;
         String[] IS_EQUAL;
-        String[] COLUMNS = { COLUMN_CASHTRANS_ADDCASH, COLUMN_CASHTRANS_MINNUSCASH};
+        String[] COLUMNS = {COLUMN_CASHTRANS_ADDCASH, COLUMN_CASHTRANS_MINNUSCASH};
 
-        WHERE =  COLUMN_CASHTRANS_CASHIERNUM + " = ? AND " + COLUMN_CASHTRANS_DATETIME + " = ?";
+        WHERE = COLUMN_CASHTRANS_CASHIERNUM + " = ? AND " + COLUMN_CASHTRANS_DATETIME + " = ?";
 
-        IS_EQUAL = new String[]{"'"+cashierNum+"'","'"+date+"%'"};
-        Log.e("DB_Data.java ", "cashiernum =" + cashierNum+ " date =" + date);
-        Cursor cursor = dbr.query(TABLE_CASHTRANS,COLUMNS,WHERE,IS_EQUAL,null,null,null,null);
+        IS_EQUAL = new String[]{"'" + cashierNum + "'", "'" + date + "%'"};
+        Log.e("DB_Data.java ", "cashiernum =" + cashierNum + " date =" + date);
+        Cursor cursor = dbr.query(TABLE_CASHTRANS, COLUMNS, WHERE, IS_EQUAL, null, null, null, null);
         cursor.moveToFirst();
         minuin = cursor.getDouble(0);
         subtrahend = cursor.getDouble(1);

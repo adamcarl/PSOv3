@@ -23,8 +23,8 @@
                 android:id="@+id/rgIN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="IN"
-                android:checked="true"/>
+                android:checked="true"
+                android:text="IN" />
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/rgOUT"

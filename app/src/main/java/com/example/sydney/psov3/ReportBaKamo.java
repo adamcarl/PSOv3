@@ -1,12 +1,10 @@
 package com.example.sydney.psov3;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -90,8 +88,8 @@ class ReportBaKamo {
         z = db_data.pleaseGiveMeTheZCount();
         transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
         or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-        if(!x.equals("no")){
-            currentCashInOutEveryShift = db_data.getCashinoutForShift(x,dateToStr);
+        if (!x.equals("no")) {
+            currentCashInOutEveryShift = db_data.getCashinoutForShift(x, dateToStr);
         }
 
         double exemptDiscount;
@@ -116,7 +114,7 @@ catch (Exception e){
         toBePrinted.add("ABZTRAK DEMO STORE");
         toBePrinted.add("VAT REG TIN:000-111-111-001");
         toBePrinted.add("MIN:12345678901234567");
-        toBePrinted.add("670 SGT BUMATAY STREET");
+        toBePrinted.add("2/F 670 SGT BUMATAY ST.");
         toBePrinted.add("PLAINVIEW, MANDALUYONG");
         toBePrinted.add("SERIAL NO. ASDFG1234567890");
         toBePrinted.add("PTU No. FP121234-123-1234567-12345\n");
@@ -170,7 +168,7 @@ catch (Exception e){
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH IN DRAWER\t\t" + gross);
 
-        toBePrinted.add("CASH COUNT\t\t"+moneyCount + currentCashInOutEveryShift);
+        toBePrinted.add("CASH COUNT\t\t" + moneyCount + currentCashInOutEveryShift);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
         toBePrinted.add("TRANSACTION\t\tAMOUNT");

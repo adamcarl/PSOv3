@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/llAdminPriveleges"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/myColorBackgroundOrange"
     android:gravity="center"
-    android:id="@+id/llAdminPriveleges">
+    android:orientation="vertical">
 
 
 
@@ -20,82 +20,82 @@
         app:justifyContent="flex_start">
 
         <com.example.sydney.psov3.CustomButtonForDrawableTop
-            android:layout_margin="5dp"
-            android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_people_black_48px"
-
             android:id="@+id/btnStaff"
             android:layout_width="115dp"
             android:layout_height="115dp"
+
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:elevation="4dp"
+            android:shadowColor="@color/myColorActionBar"
             android:text="Staff"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
-            android:shadowColor="@color/myColorActionBar"
-            android:background="@drawable/custom_button_rounded8"
+            app:drawableTopCompat="@drawable/ic_people_black_48px"
             app:layout_flexBasisPercent="28%"/>
 
         <com.example.sydney.psov3.CustomButtonForDrawableTop
-            android:layout_margin="5dp"
-            android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_shopping_cart_black_48px"
-
             android:id="@+id/btnProduct"
             android:layout_width="115dp"
             android:layout_height="115dp"
+
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:elevation="4dp"
+            android:shadowColor="@color/myColorActionBar"
             android:text="Products"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
-            android:shadowColor="@color/myColorActionBar"
-            android:background="@drawable/custom_button_rounded8"
+            app:drawableTopCompat="@drawable/ic_shopping_cart_black_48px"
             app:layout_flexBasisPercent="28%"/>
 
         <com.example.sydney.psov3.CustomButtonForDrawableTop
-            android:layout_margin="5dp"
-            android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
-
             android:id="@+id/btnJournal"
             android:layout_width="115dp"
             android:layout_height="115dp"
+
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:elevation="4dp"
+            android:shadowColor="@color/myColorActionBar"
             android:text="Journals"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
-            android:shadowColor="@color/myColorActionBar"
-            android:background="@drawable/custom_button_rounded8"
+            app:drawableTopCompat="@drawable/ic_assignment_black_48px"
             app:layout_flexBasisPercent="28%"/>
 
         <com.example.sydney.psov3.CustomButtonForDrawableTop
-            android:layout_margin="5dp"
-            android:drawableTint="@color/myColorIconAdminPriveleges"
-            app:drawableTopCompat = "@drawable/ic_assignment_black_48px"
-
-            android:id="@+id/btnD"
+            android:id="@+id/btnReport"
             android:layout_width="115dp"
             android:layout_height="115dp"
+
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:elevation="4dp"
-            android:text="Placeholder"
+            android:shadowColor="@color/myColorActionBar"
+            android:text="Report Writer"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
-            android:shadowColor="@color/myColorActionBar"
-            android:background="@drawable/custom_button_rounded8"
-            app:layout_flexBasisPercent="28%"/>
+            app:drawableTopCompat="@drawable/ic_assignment_black_48px"
+            app:layout_flexBasisPercent="28%" />
 
         <com.example.sydney.psov3.CustomButtonForDrawableTop
-            app:drawableTopCompat = "@drawable/ic_person_black_48px"
-            android:layout_margin="5dp"
-            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:id="@+id/btnProfile"
             android:layout_width="115dp"
             android:layout_height="115dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
             android:elevation="2dp"
+            android:shadowColor="@color/myColorActionBar"
             android:text="Profile"
             android:textAllCaps="false"
             android:textColor="@color/myColorWhite"
-            android:shadowColor="@color/myColorActionBar"
-            android:background="@drawable/custom_button_rounded8"
+            app:drawableTopCompat="@drawable/ic_person_black_48px"
             app:layout_flexBasisPercent="28%"/>
 
 

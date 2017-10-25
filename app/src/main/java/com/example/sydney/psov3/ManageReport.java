@@ -41,15 +41,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.provider.BaseColumns._ID;
 import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_DATETIME;
+import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
 import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
-import static com.example.sydney.psov3.Constants._ID;
 
-/**
- * Created by PROGRAMMER2 on 6/2/2017.
- */
-
-public class ManageJournal extends AppCompatActivity implements TransactionAdapter.OnRecyclerItemClickListener {
+public class ManageReport extends AppCompatActivity implements TransactionAdapter.OnRecyclerItemClickListener {
 
     //FTP
     final String FTPHost = "files.000webhost.com";
@@ -76,7 +73,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_manage_journal);
+        setContentView(R.layout.activity_manage_report);
 
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
@@ -97,14 +94,13 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
 //        cursor = db_data.getData();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        transAdapter = new TransactionAdapter(getApplication(),transactionList,this);
+        transAdapter = new TransactionAdapter(getApplication(), transactionList, this);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(transAdapter);
 
     }
-
 
 
     private void allOnClickLiteners() {
@@ -124,40 +120,38 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
     }
 
     private void processSelectedSpinner() {
-        if(spinnerSelected == 0){
+        if (spinnerSelected == 0) {
             colWhere = _ID;
             searchTransactions();
-        }
-        else if(spinnerSelected == 1){
+        } else if (spinnerSelected == 1) {
             colWhere = COLUMN_TRANSACTION_DATETIME;
             searchTransactions();
         }
-        if(searchView.getQuery().toString().trim().toLowerCase().equals("")){
+        if (searchView.getQuery().toString().trim().toLowerCase().equals("")) {
             transactionList = fill_with_data();
-            transAdapter = new TransactionAdapter(getApplication(),transactionList,this);
-            recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
+            transAdapter = new TransactionAdapter(getApplication(), transactionList, this);
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(transAdapter);
 
         }
     }
 
-    private List<Transactions> searchTransactions(){
+    private List<Transactions> searchTransactions() {
         transactionList.clear();
         String searchItem = searchView.getQuery().toString().trim().toLowerCase();
-        if(searchItem.equals("")){
+        if (searchItem.equals("")) {
             fill_with_data();
-        }
-        else if(!searchItem.equals("")) {
+        } else if (!searchItem.equals("")) {
             db_data.getReadableDatabase();
-            Cursor c = db_data.searchTransactions(searchItem,colWhere);
+            Cursor c = db_data.searchTransactions(searchItem, colWhere);
 
             while (c.moveToNext()) {
                 int tid = c.getInt(0);
                 String ttype = c.getString(1);
                 String tdateTime = c.getString(2);
 
-                transactionList.add(new Transactions(tid,ttype,tdateTime));
+                transactionList.add(new Transactions(tid, ttype, tdateTime));
             }
             transAdapter.notifyDataSetChanged();
             c.close();
@@ -170,26 +164,26 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         transactionList.clear();
 
         SQLiteDatabase db = db_data.getReadableDatabase();
-
-        String QueryBaKamo  = "SELECT * FROM "+TABLE_TRANSACTION;
-        Cursor cursor = db.rawQuery(QueryBaKamo,null);
-        while (cursor.moveToNext()){
+        String[] mWHERE_ARGS = {"copy", "cancel"};
+        String QueryBaKamo = "SELECT * FROM " + TABLE_TRANSACTION + " WHERE " + COLUMN_TRANSACTION_TYPE + " = ? OR " + COLUMN_TRANSACTION_TYPE + " = ?";
+        Cursor cursor = db.rawQuery(QueryBaKamo, mWHERE_ARGS);
+        while (cursor.moveToNext()) {
             int transNum = cursor.getInt(0);
             String transType = cursor.getString(1);
             String DateTime = cursor.getString(2);
 
-            transactionList.add(new Transactions(transNum,transType,DateTime));
+            transactionList.add(new Transactions(transNum, transType, DateTime));
         }
         cursor.close();
 
-        return  transactionList;
+        return transactionList;
     }
 
     //MENU//MENU//MENU//MENU//MENU
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.admin_priveleges_main_menu,menu);
+        getMenuInflater().inflate(R.menu.admin_priveleges_main_menu, menu);
 
         MenuItem importCSV = menu.findItem(R.id.menu_import_product);
         MenuItem addProduct = menu.findItem(R.id.menu_add_product);
@@ -199,7 +193,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         showLog.setVisible(false);
 
 
-        if(menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
 
@@ -213,10 +207,10 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
                 public boolean onQueryTextSubmit(String s) {
                     spinnerSelected = spinner.getSelectedItemPosition();
 
-                    if(spinnerSelected == 0 || spinnerSelected == 1 && searchView.getQuery().toString().trim().toLowerCase().equals("")){
+                    if (spinnerSelected == 0 || spinnerSelected == 1 && searchView.getQuery().toString().trim().toLowerCase().equals("")) {
                         transactionList = fill_with_data();
-                        transAdapter = new TransactionAdapter(getApplication(),transactionList,ManageJournal.this);
-                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(),1,GridLayoutManager.VERTICAL,false));
+                        transAdapter = new TransactionAdapter(getApplication(), transactionList, ManageReport.this);
+                        recyclerView.setLayoutManager(new GridLayoutManager(getApplication(), 1, GridLayoutManager.VERTICAL, false));
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         recyclerView.setAdapter(transAdapter);
                     }
@@ -238,9 +232,9 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.menu_logout:
-                Intent intent = new Intent(ManageJournal.this, MainActivity.class);
+                Intent intent = new Intent(ManageReport.this, MainActivity.class);
                 startActivity(intent);
                 //Todo Function Here for saving Transaction
                 return true;
@@ -260,7 +254,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         if (requestCode == PICK_FILE && data.getData() != null) {
             filepath = data.getData().getPath();
             filename = data.getData().getLastPathSegment();
-            new UploadFile().execute(filepath,FTPHost, user, pass);
+            new UploadFile().execute(filepath, FTPHost, user, pass);
 
 //            alertDialog.show();
         }
@@ -290,7 +284,7 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
 //                    String consecutive = String.format("%1$06d", position);
 //                    String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
 
-                    db_data.addTransaction("copy", getCurrentDate(), "admin", 0, 0, "");
+//                    db_data.addTransaction("Copy", getCurrentDate(), "admin", 0, 0,"");
 //                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
 //                    cursor1.moveToLast();
 //                    String newConsecutive = cursor1.getString(0); //COLUMN _ID of TABLE_TRANSACTION
@@ -305,14 +299,17 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
         });
+
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialogModify.dismiss();
             }
         });
+
     }
 
     private void printFunction(ArrayList<String> list) {
@@ -330,24 +327,25 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
             db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
 
             if (!retnVale) {
-                Toast.makeText(ManageJournal.this, mPrinter.GetLastPrintErr(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageReport.this, mPrinter.GetLastPrintErr(), Toast.LENGTH_SHORT).show();
             }
         } catch (UnsupportedEncodingException e) {
+
             e.printStackTrace();
         }
     }
 
     String getCurrentDate() {
+        Date strToDate = null;
         try {
             Date currDate = new Date();
             final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
             String dateToStr = dateTimeFormat.format(currDate);
-            Date strToDate = dateTimeFormat.parse(dateToStr);
-            return strToDate.toString();
+            strToDate = dateTimeFormat.parse(dateToStr);
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
         }
+        return strToDate.toString();
     }
 
     private class UploadFile extends AsyncTask<String, Integer, Boolean> {
@@ -376,12 +374,12 @@ public class ManageJournal extends AppCompatActivity implements TransactionAdapt
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            if (success)
-                Toast.makeText(ManageJournal.this, "File Sent", Toast.LENGTH_LONG).show();
+        protected void onPostExecute(Boolean sucess) {
+            if (sucess)
+                Toast.makeText(ManageReport.this, "File Sent", Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(ManageJournal.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(ManageReport.this, "Error", Toast.LENGTH_LONG).show();
         }
+
     }
 }
-//storage/emulated/0/download/updatepos.csv
