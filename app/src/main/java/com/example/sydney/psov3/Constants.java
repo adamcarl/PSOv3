@@ -146,6 +146,11 @@ interface Constants extends BaseColumns {
     String COLUMN_LOG_DATETIME = "LogDateTime";
     String COLUMN_LOG_CASHIER = "LogCashier";
     String COLUMN_LOG_PRINT = "LogPrint";
+
+    String TABLE_TERMINAL = "tbl_Terminal";
+    String COLUMN_TERMINAL_NAME = "terminal_name";
+    String COLUMN_TERMINAL_SERIAL = "terminal_serial";
+
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

@@ -34,6 +34,11 @@ class DB_Data extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase arg0) {
 
+        arg0.execSQL("CREATE TABLE " + TABLE_TERMINAL + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_TERMINAL_NAME + " TEXT NOT NULL UNIQUE, "
+                + COLUMN_TERMINAL_SERIAL + " TEXT NOT NULL UNIQUE );");
+
         arg0.execSQL("CREATE TABLE "+TABLE_ADMIN+" ("
                 +_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +COLUMN_ADMIN_USERNAME+" TEXT NOT NULL UNIQUE, "
@@ -319,6 +324,13 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_ADMIN, null, cv);
     }
 
+    void addTerminal(String mName, String mSerial) {
+        cv.clear();
+        cv.put(COLUMN_TERMINAL_NAME, mName);
+        cv.put(COLUMN_TERMINAL_SERIAL, mSerial);
+        dbw.insertOrThrow(TABLE_TERMINAL, null, cv);
+    }
+
     void addGrandTotal(double gTotal) {
         cv.clear();
         cv.put(COLUMN_TOTAL_GRAND, gTotal);
@@ -406,6 +418,7 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.close();
         return res_staff;
     }
+
     int searchStaffNumber(String staffNum) {
         SQLiteDatabase database = this.getReadableDatabase();
         String[] selectionArgs = new String[]{staffNum};
@@ -596,6 +609,16 @@ class DB_Data extends SQLiteOpenHelper {
         String mWHERE = COLUMN_TRANSACTION_TYPE+" = ?";
         String[] mWHERE_ARGS = new String[]{"cancel"};
         Cursor curse = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        int i = curse.getCount();
+        curse.close();
+        return i;
+    }
+
+    int searchProdForUpdate(String id) {
+        String[] columns = {"COUNT(*)"};
+        String mWHERE = COLUMN_PRODUCT_ID + " = ?";
+        String[] mWHERE_ARGS = new String[]{id};
+        Cursor curse = dbr.query(TABLE_PRODUCT, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         int i = curse.getCount();
         curse.close();
         return i;
@@ -1166,5 +1189,13 @@ class DB_Data extends SQLiteOpenHelper {
         currentCashinout = minuin - subtrahend;
 
         return currentCashinout;
+    }
+
+    int checkSerial() {
+        String[] mCOLUMNS = {"COUNT(*)"};
+        Cursor cursor = dbr.query(TABLE_TERMINAL, mCOLUMNS, null, null, null, null, null, null);
+        int a = cursor.getInt(0);
+        cursor.close();
+        return a;
     }
 }
