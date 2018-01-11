@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,9 @@ import com.example.sydney.psov3.adapter.AdapterOrder;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -73,6 +77,7 @@ import static com.example.sydney.psov3.Constants.COLUMN_TEMP_PRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_TEMP_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_TEMP_TOTALPRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
+import static com.example.sydney.psov3.Constants.HEADER;
 import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
 import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
@@ -98,7 +103,7 @@ public class Cashier extends AppCompatActivity {
     Cursor cursor;
     DB_Data db_data;
     ContentValues cv;
-    EditText txt_search,txt_cash;
+    EditText txt_search, txt_cash, txt_dummy;
     String itemnameCol, itemdescCol, formatted, vat2, vattable2, subTotal2, due2;
     //    ArrayList<Integer>itemQuantityList = new ArrayList<>();
     ArrayList<Double>itemPriceList = new ArrayList<>();
@@ -150,6 +155,13 @@ public class Cashier extends AppCompatActivity {
     AlertDialog alertZreport;
     AlertDialog.Builder xReportBuilder;
     AlertDialog alertXreport;
+
+    AlertDialog.Builder productNotFoundBuilder = null;
+    AlertDialog alertProductNotFound;
+
+    AlertDialog.Builder addProductNotFoundBuilder = null;
+    AlertDialog alertAddProductNotFound;
+
     double mPriceTotal;
     double mVattable;
     double mTax;
@@ -192,7 +204,7 @@ public class Cashier extends AppCompatActivity {
     int tenderDiscountStatus = 0;
     //    int tenderRedeemStatus = 0;
     int tenderGiftStatus = 0;
-    int tenderOthersStatus = 0;
+    int tenderRnEStatus = 0;
 
     double tenderCashAmount = 0.0;
     double tenderCreditAmount = 0.0;
@@ -200,7 +212,7 @@ public class Cashier extends AppCompatActivity {
     double tenderDiscountAmount = 0.0;
     //    double tenderRedeemQuantity = 0.0;
     double tenderGiftAmount = 0.0;
-    double tenderOthersAmount = 0.0;
+    double tenderRnEAmount = 0.0;
 
     AppCompatEditText etTotalCashDrawerZ = null;
     AppCompatEditText etTotalCashDrawerX = null;
@@ -781,7 +793,7 @@ public class Cashier extends AppCompatActivity {
                                 int lengthOfCharToBeAdded = 20 - sizeOfChar;
                                 writeDataToSerial(itemdescCol, itemPriceConverted, String.valueOf(lengthOfCharToBeAdded));
                                 refreshRecyclerView();
-
+                                txt_search.requestFocus();
                             } catch (SQLiteException e) {
                                 e.printStackTrace();
                             }
@@ -797,6 +809,10 @@ public class Cashier extends AppCompatActivity {
                 btnSetQuantity.setText("1");
             } else {
                 Toast.makeText(this, "Product can't be found", Toast.LENGTH_LONG).show();
+                txt_search.setText("");
+                productNotFound();
+                txt_dummy.requestFocus();
+                txt_search.requestFocus();
             }
         }
         catch(Exception ex){
@@ -863,8 +879,8 @@ public class Cashier extends AppCompatActivity {
         if (tenderGiftStatus == 1) {
             mDoubleCustomerCash += tenderGiftAmount;
         }
-        if (tenderOthersStatus == 1) {
-            mDoubleCustomerCash += tenderOthersAmount;
+        if (tenderRnEStatus == 1) {
+            mDoubleCustomerCash += tenderRnEAmount;
         }
         if (tenderDiscountStatus == 1) {
             mPriceTotal -= tenderDiscountAmount;
@@ -931,6 +947,7 @@ public class Cashier extends AppCompatActivity {
             } catch(Exception e){
                 e.printStackTrace();
             }
+
             //db_data.addInvoice(transNumber+"",discount.toString(),totalPrice.toString().replace(",",""),inPrint,userNum,"0","0",vattable2.replaceAll("[$P,]",""),Double.parseDouble(vat2),discType+"", 0.0,"","","");
             String[] SELECT_QUERY = new String[]{_ID};
             Cursor cursor = dbReader.query(TABLE_INVOICE, SELECT_QUERY, null, null, null, null, null);
@@ -940,6 +957,14 @@ public class Cashier extends AppCompatActivity {
             Cursor receivedCursorFromTemp = db_data.selectAllTempInvoice();
             receivedCursorFromTemp.moveToFirst();
 
+            String consecutive = String.format("%1$06d", transNumber);
+
+            products.add(HEADER);
+            products.add("CASH INVOICE");
+            products.add("Date:\t" + getCurrentDate());
+            products.add("TRANS#" + consecutive);
+            products.add("-------------------------------");
+            products.add("Name\t\t" + "Quantity \t\t" + "Price");
             try{
                 while (!receivedCursorFromTemp.isAfterLast()){
                     db_data.addItem(
@@ -951,15 +976,11 @@ public class Cashier extends AppCompatActivity {
                             receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)),
                             receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)),
                             userNum);
-
                     products.add("" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)) +
                             "\t" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY)) +
                             "\t" + receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)) * Double.parseDouble(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY))) + "");
-
                     int quanBaKamo = db_data.getQuantityofProducts(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID))) - receivedCursorFromTemp.getInt(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY));
-
                     db_data.updateProductQuantity(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID)) ,quanBaKamo);
-
                     receivedCursorFromTemp.moveToNext();
                 }
             } catch (Exception e){
@@ -972,22 +993,6 @@ public class Cashier extends AppCompatActivity {
             itemDescList.clear();
             itemPriceList.clear();
 
-
-            String consecutive = String.format("%1$06d", transNumber);
-
-            products.add("ABZTRAK DEMO STORE");
-            products.add("VAT REG TIN:000-111-111-001");
-            products.add("MIN:12345678901234567");
-            products.add("2/F 670 SGT BUMATAY ST.");
-            products.add("PLAINVIEW, MANDALUYONG");
-            products.add("SERIAL NO. ASDFG1234567890");
-            products.add("PTU No. FP121234-123-1234567-12345\n");
-            products.add("==============================================");
-            products.add("CASH INVOICE");
-            products.add("Date:\t" + getCurrentDate());
-            products.add("TRANS#" + consecutive);
-            products.add("-------------------------------");
-            products.add("Name\t\t" + "Quantity \t\t" + "Price");
             products.add("-------------------------------");
             products.add("Invoice Number " + abc + "");
             products.add(quantityCount + " item(s)");
@@ -1020,8 +1025,8 @@ public class Cashier extends AppCompatActivity {
             if (tenderGiftStatus == 1) {
                 products.add("Gift Check\t" + tenderGiftAmount);
             }
-            if (tenderOthersStatus == 1) {
-                products.add("Others\t" + tenderOthersAmount);
+            if (tenderRnEStatus == 1) {
+                products.add("Others\t" + tenderRnEAmount);
             }
             products.add("Change " + mDueConverted.replaceAll("[$()]", ""));
             products.add("\n\n\n\n\n\n");
@@ -1035,10 +1040,12 @@ public class Cashier extends AppCompatActivity {
                 printBaHanapMo = printBaHanapMo +"\n"+ printBaKamo[p];
             }
             db_data.updateInvoice(abc,printBaHanapMo);
+            //TODO create journar trail 1/9/2018
+            writeJournalTrail(printBaHanapMo);
 
             if (invoiceAdapter.getItemCount() > 0 && totalPayment >= mDue) {
                 //JOLLIMARK PRINTER
-//                    unLockCashBox();
+                unLockCashBox();
                 printFunction(products);
                 btn_print.setEnabled(false);
                 products.clear();
@@ -1055,7 +1062,7 @@ public class Cashier extends AppCompatActivity {
         }
         cancelna();
         btn_print.setEnabled(false);
-        writeDataToSerial("SALAMAT PO!","PAWIL KINI!","");
+        writeDataToSerial("THANK YOU!", "COME AGAIN!", "");
     }
 
     private void printFunction(ArrayList<String> list) {
@@ -1077,7 +1084,6 @@ public class Cashier extends AppCompatActivity {
                 Toast.makeText(Cashier.this, mPrinter.GetLastPrintErr() , Toast.LENGTH_SHORT).show();
             }
         } catch (UnsupportedEncodingException e) {
-
             e.printStackTrace();
         }
     }
@@ -1159,7 +1165,6 @@ public class Cashier extends AppCompatActivity {
     public void onBackPressed(){
         tab_host.setCurrentTab(0);
     }
-
     //On Options Menu Cancel Item
     public void cancelna(){
         txt_cash.setText(""+"P0.00"+"");
@@ -1196,16 +1201,15 @@ public class Cashier extends AppCompatActivity {
         tenderDebitAmount = 0.0;
         tenderDiscountAmount = 0.0;
         tenderGiftAmount = 0.0;
-        tenderOthersAmount = 0.0;
+        tenderRnEAmount = 0.0;
 
         tenderCreditStatus = 0;
         tenderDebitStatus = 0;
         tenderDiscountStatus = 0;
         tenderGiftStatus = 0;
-        tenderOthersStatus = 0;
+        tenderRnEStatus = 0;
 
         db_data.deleteAllTempItemInvoice();
-
     }
 
 //    public void cashierLogOut(View view){
@@ -1276,6 +1280,84 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
+    //TODO 1/3/2018 Create this for product not found exception
+    public void productNotFound() {
+        productNotFoundBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_not_found, null);
+        productNotFoundBuilder.setView(alertLayout);
+
+        final AppCompatButton btnProductNotFoundAdd = (AppCompatButton) alertLayout.findViewById(R.id.btnProductNotFoundAdd);
+        final AppCompatButton btnProductNotFoundIgnore = (AppCompatButton) alertLayout.findViewById(R.id.btnProductNotFoundIgnore);
+
+        alertProductNotFound = productNotFoundBuilder.create();
+        alertProductNotFound.show();
+        btnProductNotFoundAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO 1/4/2018 Add AlertDialog for AddProduct
+                addProductNotFound();
+                alertProductNotFound.dismiss();
+            }
+        });
+        btnProductNotFoundIgnore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertProductNotFound.dismiss();
+            }
+        });
+    }
+
+    private void addProductNotFound() {
+        addProductNotFoundBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_addproduct, null);
+        addProductNotFoundBuilder.setView(alertLayout);
+        final EditText productName = (EditText) alertLayout.findViewById(R.id.etProductName);
+        final EditText productId = (EditText) alertLayout.findViewById(R.id.etProductId);
+        final EditText productDes = (EditText) alertLayout.findViewById(R.id.etProductDes);
+        final EditText productQuantity = (EditText) alertLayout.findViewById(R.id.etProductQuantity);
+        final EditText productPrice = (EditText) alertLayout.findViewById(R.id.etProductPrice);
+        final Button btnSaveAddProductNotFound = (Button) alertLayout.findViewById(R.id.btnSaveAddProduct);
+        final Button btnCancelAddProductNotFound = (Button) alertLayout.findViewById(R.id.btnCancelAddProduct);
+
+        alertAddProductNotFound = addProductNotFoundBuilder.create();
+        alertAddProductNotFound.show();
+
+        btnSaveAddProductNotFound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mProductName = productName.getText().toString();
+                String mProductPrice = productPrice.getText().toString();
+                String mProductDes = productDes.getText().toString();
+                String mProductQuantity = productQuantity.getText().toString();
+                String mProductId = productId.getText().toString();
+                int result = db_data.searchDuplicateProduct(mProductId);
+
+                if (mProductName.isEmpty() || mProductId.isEmpty() || mProductDes.isEmpty() || mProductPrice.isEmpty() || mProductQuantity.isEmpty()) {
+                    Toast.makeText(Cashier.this, "Fill all fields!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (result > 0) {
+                        productId.setText("");
+                        Toast.makeText(Cashier.this, "Duplicate PRODUCT ID!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        db_data.addProduct(mProductId, mProductName, mProductDes, mProductPrice, mProductQuantity);
+                        Toast.makeText(Cashier.this, "Added Successfully!", Toast.LENGTH_SHORT).show();
+                        alertAddProductNotFound.dismiss();
+                        txt_search.requestFocus();
+                    }
+                }
+            }
+        });
+
+        btnCancelAddProductNotFound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertAddProductNotFound.dismiss();
+            }
+        });
+    }
+
 //    public void tenderRedeem(View view) {
 //        if (getTxtCashDouble() == 0.0) {
 //            Toast.makeText(getApplicationContext(), "Please enter quantity", Toast.LENGTH_SHORT).show();
@@ -1283,7 +1365,7 @@ public class Cashier extends AppCompatActivity {
 //            tenderRedeemQuantity += getTxtCashDouble();
 //            tenderRedeemStatus = 1;
 //            refreshPaymentInformation();
-//            txt_cash.setText("" + "P0.00" + "");
+//                txt_cash.setText("" + "P0.00" + "");
 //        }
 //
 //    }
@@ -1299,15 +1381,12 @@ public class Cashier extends AppCompatActivity {
         }
     }
 
-    public void tenderOthers(View view) {
-        if (getTxtCashDouble() == 0.0) {
-            Toast.makeText(getApplicationContext(), "Please fill all fields.", Toast.LENGTH_SHORT).show();
-        } else {
-            tenderOthersAmount = getTxtCashDouble();
-            tenderOthersStatus = 1;
+    public void tenderRnE(View view) {
+
+        tenderRnEAmount = getTxtCashDouble();
+        tenderRnEStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
-        }
     }
 
     public void cashierLogOut(View view) {
@@ -1344,6 +1423,7 @@ public class Cashier extends AppCompatActivity {
                             showDialogCashInOut();
                         } else {
                             Toast.makeText(getApplicationContext(), "Unauthorized account.", Toast.LENGTH_SHORT).show();
+
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -1359,6 +1439,7 @@ public class Cashier extends AppCompatActivity {
     public void xreport(View view) {
         //FOR SAVING X REPORT
         xReportBaKamo();
+        unLockCashBox();
     }
 
     public void zreport(View view) {
@@ -1368,6 +1449,7 @@ public class Cashier extends AppCompatActivity {
                 userAuthZreport();
             } else {
                 zReportBaKamo();
+                unLockCashBox();
             }
 
         } catch (Exception e) {
@@ -1396,6 +1478,7 @@ public class Cashier extends AppCompatActivity {
                         if (db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Manager") || db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Supervisor")) {
                             alertAuthenticate.dismiss();
                             zReportBaKamo();
+                            unLockCashBox();
                         } else {
                             Toast.makeText(getApplicationContext(), "Unauthorized account.", Toast.LENGTH_SHORT).show();
                         }
@@ -1418,10 +1501,10 @@ public class Cashier extends AppCompatActivity {
         final AppCompatRadioButton rbIN = (AppCompatRadioButton) alertLayout.findViewById(R.id.rgIN);
         final AppCompatRadioButton rbOUT = (AppCompatRadioButton) alertLayout.findViewById(R.id.rgOUT);
         final AppCompatEditText cashValue = (AppCompatEditText) alertLayout.findViewById(R.id.etValueCashinOut);
+        final AppCompatEditText referenceNumber = (AppCompatEditText) alertLayout.findViewById(R.id.etReferenceNumber);
         final AppCompatEditText remarks1 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks1);
         final AppCompatEditText remarks2 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks2);
         final AppCompatEditText remarks3 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks3);
-        final AppCompatEditText remarks4 = (AppCompatEditText) alertLayout.findViewById(R.id.etRemarks4);
         final Spinner cashinoutSpinner = (Spinner) alertLayout.findViewById(R.id.spinnerCashinout);
         AppCompatButton btnSubmitCashinout = (AppCompatButton) alertLayout.findViewById(R.id.btnSubmitCashinout);
         AppCompatButton btnCancelCashinout = (AppCompatButton) alertLayout.findViewById(R.id.btnCancelCashinout);
@@ -1453,15 +1536,15 @@ public class Cashier extends AppCompatActivity {
             public void onClick(View view) {
                 int count = 0;
 
-                if (count == 1 && remarks4.getVisibility() != View.VISIBLE) {
-                    remarks4.setVisibility(View.VISIBLE);
+                if (count == 1 && remarks3.getVisibility() != View.VISIBLE) {
+                    remarks3.setVisibility(View.VISIBLE);
                     count = 0;
                     btnAddremarksCashinout.setVisibility(View.GONE);
 
                 }
 
-                if (remarks3.getVisibility() != View.VISIBLE) {
-                    remarks3.setVisibility(View.VISIBLE);
+                if (remarks2.getVisibility() != View.VISIBLE) {
+                    remarks2.setVisibility(View.VISIBLE);
                     count = 1;
                 }
 
@@ -1517,10 +1600,10 @@ public class Cashier extends AppCompatActivity {
                     ct.setCtCashAdd(ctCashAdd);
                     ct.setCtCashMinus(ctCashMinus);
                     ct.setCtReason(cashinoutSpinner.getSelectedItem().toString());
-                    ct.setCtRemarks1(remarks1.getText().toString());
-                    ct.setCtRemarks2(remarks2.getText().toString());
-                    ct.setCtRemarks3(remarks3.getText().toString());
-                    ct.setCtRemarks4(remarks4.getText().toString());
+                    ct.setCtRemarks1(referenceNumber.getText().toString());
+                    ct.setCtRemarks2(remarks1.getText().toString());
+                    ct.setCtRemarks3(remarks2.getText().toString());
+                    ct.setCtRemarks4(remarks3.getText().toString());
                     db_data.addCashTransaction(ct);
                 }
                 alertCashinout.dismiss();
@@ -1694,16 +1777,19 @@ public class Cashier extends AppCompatActivity {
     }
 
     String getCurrentDate() {
-        Date strToDate = null;
-        try {
-            Date currDate = new Date();
+        String currentDay = "";
+        Calendar c = Calendar.getInstance();
             final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-            String dateToStr = dateTimeFormat.format(currDate);
-            strToDate = dateTimeFormat.parse(dateToStr);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return strToDate.toString();
+        currentDay = dateTimeFormat.format(c.getTime());
+        return currentDay;
+    }
+
+    String getCurrentDay() {
+        String currentDay = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yy");
+        currentDay = dateformat.format(c.getTime());
+        return currentDay;
     }
     private void sleep(int ms) {
         try {
@@ -1720,6 +1806,7 @@ public class Cashier extends AppCompatActivity {
         rb_ddisc = (RadioButton)findViewById(R.id.rb_ddisc);
         txt_search =(EditText) findViewById(R.id.txt_cashier_search);
         txt_cash = (EditText)findViewById(R.id.txt_cash);
+        txt_dummy = (EditText) findViewById(R.id.dummy_ba_kamo);
         layout = (RelativeLayout)findViewById(R.id.rl_cashier);
         tab_host = (TabHost)findViewById(R.id.tabHost);
         lbl_sub=(TextView)findViewById(R.id.lbl_subtotal);
@@ -1885,6 +1972,38 @@ public class Cashier extends AppCompatActivity {
 
         Log.d(TAG, "Leave writeDataToSerial");
     }//writeDataToSerial
+
+    void writeJournalTrail(String journalEntry) {
+        //WRITE JOURNAL ENTRY TO EXTERNAL STORAGE
+        try {
+            File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/Journals");
+
+            if (!sdCardDir.exists()) {
+                sdCardDir.mkdirs();
+            }
+
+            String filename = getCurrentDay() + ".jnl"; // the name of the file to export with
+            File saveFile = new File(sdCardDir, filename);
+            FileWriter fw = new FileWriter(saveFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            try {
+                bw.append(journalEntry);
+                bw.newLine();
+                bw.flush();
+                bw.close();
+//                    Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
+//                    delayDialogClose();
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+//                    delayDialogClose();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+//                progressDialog.dismiss();
+//                delayDialogClose();
+        }
+        //END WRITE JOURNAL ENTRY TO EXTERNAL STORAGE
+    }
 
     public static class FirstFragment extends Fragment {
         @Override

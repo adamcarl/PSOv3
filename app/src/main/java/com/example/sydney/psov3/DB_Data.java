@@ -1194,6 +1194,7 @@ class DB_Data extends SQLiteOpenHelper {
     int checkSerial() {
         String[] mCOLUMNS = {"COUNT(*)"};
         Cursor cursor = dbr.query(TABLE_TERMINAL, mCOLUMNS, null, null, null, null, null, null);
+        cursor.moveToFirst();
         int a = cursor.getInt(0);
         cursor.close();
         return a;

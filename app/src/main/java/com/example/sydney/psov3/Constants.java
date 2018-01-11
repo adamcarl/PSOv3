@@ -151,6 +151,14 @@ interface Constants extends BaseColumns {
     String COLUMN_TERMINAL_NAME = "terminal_name";
     String COLUMN_TERMINAL_SERIAL = "terminal_serial";
 
+    String HEADER = "ABZTRAK DEMO STORE\n" +
+            "VAT REG TIN:000-111-111-001\n" +
+            "MIN:12345678901234567\n" +
+            "2/F 670 SGT BUMATAY ST.\n" +
+            "PLAINVIEW, MANDALUYONG\n" +
+            "SERIAL NO. ASDFG1234567890\n" +
+            "PTU No. FP121234-123-1234567-12345\n\n" +
+            "==============================================\n";
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

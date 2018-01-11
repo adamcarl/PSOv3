@@ -11,6 +11,8 @@ import android.widget.Toast;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by PROGRAMMER2 on 8/1/2017.
@@ -46,7 +48,7 @@ public class ZreportExportFunction extends AppCompatActivity{
             int rowcount = 0;
             int colcount = 0;
             File sdCardDir = Environment.getExternalStorageDirectory();
-            String filename = "ExportedFile"+fileName+".txt"; // the name of the file to export with
+            String filename = "ExportedFile" + fileName + "_" + getCurrentDate() + ".txt"; // the name of the file to export with
             File saveFile = new File(sdCardDir, filename);
             FileWriter fw = new FileWriter(saveFile);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -91,6 +93,19 @@ public class ZreportExportFunction extends AppCompatActivity{
         //END
         db_data.copyToProductTemp();
 
+    }
+
+    String getCurrentDate() {
+        Date strToDate = null;
+        try {
+            Date currDate = new Date();
+            final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yy");
+            String dateToStr = dateTimeFormat.format(currDate);
+            strToDate = dateTimeFormat.parse(dateToStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strToDate.toString();
     }
 
     void delayDialogClose(){

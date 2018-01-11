@@ -51,6 +51,16 @@
             android:layout_marginTop="10dp"
             android:entries="@array/cashin" />
 
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/etReferenceNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_dialog"
+            android:elevation="2dp"
+            android:hint="REFERENCE NUMBER"
+            android:textColor="@color/myColorBackgroundWhite"
+            android:textColorHint="@color/myColorDialogBG" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etRemarks1"
@@ -72,7 +82,8 @@
             android:elevation="2dp"
             android:hint="REMARKS 2"
             android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG" />
+            android:textColorHint="@color/myColorDialogBG"
+            android:visibility="gone" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/etRemarks3"
@@ -82,18 +93,6 @@
             android:background="@drawable/custom_edittext_dialog"
             android:elevation="2dp"
             android:hint="REMARKS 3"
-            android:textColor="@color/myColorBackgroundWhite"
-            android:textColorHint="@color/myColorDialogBG"
-            android:visibility="gone" />
-
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/etRemarks4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_edittext_dialog"
-            android:elevation="2dp"
-            android:hint="REMARKS 4"
             android:textColor="@color/myColorBackgroundWhite"
             android:textColorHint="@color/myColorDialogBG"
             android:visibility="gone" />
@@ -108,7 +107,6 @@
             android:text="+ REMARKS"
             android:textColor="@color/myColorBackgroundWhite"
             android:textStyle="bold" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
