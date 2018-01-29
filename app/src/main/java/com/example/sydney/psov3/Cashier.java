@@ -7,6 +7,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +39,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -47,6 +54,7 @@ import com.jolimark.UsbPrinter;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
@@ -78,6 +86,7 @@ import static com.example.sydney.psov3.Constants.COLUMN_TEMP_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_TEMP_TOTALPRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_TRANSACTION_TYPE;
 import static com.example.sydney.psov3.Constants.HEADER;
+import static com.example.sydney.psov3.Constants.SPACES;
 import static com.example.sydney.psov3.Constants.TABLE_INVOICE;
 import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
@@ -111,13 +120,19 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String>itemDescList = new ArrayList<>();
     ArrayList<Double> total = new ArrayList<>();
     RelativeLayout layout;
+
+    ArrayList<String> productsHeader = new ArrayList<>();
     ArrayList<String> products = new ArrayList<>();
+    ArrayList<String> productsFooter = new ArrayList<>();
+    ArrayList<String> productsSpace = new ArrayList<>();
+
     SQLiteDatabase dbReader;
     SQLiteDatabase dbWriter;
     TabHost tab_host;
     TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
     Button btn_print, btn_cashier_confirmDelete, btnCreditCard, btnSetQuantity;
     ImageButton btn_cashier_delete;
+    ImageView img_receipt;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
     List<List<String>> t2Rows = new ArrayList<>();
@@ -360,7 +375,13 @@ public class Cashier extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        writeDataToSerial("ABZTRAK INC.","Tinda-PoS Android","");
+
+        for (int a = 0; a < HEADER.length; a++) {
+            productsHeader.add(HEADER[a]);
+        }
+        productsSpace.add(SPACES);
+
+        writeDataToSerial("ABZTRAK INC.", "Tinda-PoS Android", "");
 //        writeDataToSerial("ABZTRAK INC.");
         discount = 0.0;
         mTaxPercent = .12;
@@ -725,7 +746,6 @@ public class Cashier extends AppCompatActivity {
 
     public void searchProduct() {
         try {
-
             code = txt_search.getText().toString();
             final String[] itemcode = {code};
             itemCode123.add(code);
@@ -923,7 +943,6 @@ public class Cashier extends AppCompatActivity {
 
     //BUTTON PRINT
     public void print(View view) throws ParseException {
-
         try {
             //// TODO: 9/27/2017
             transType = "invoice";
@@ -959,7 +978,6 @@ public class Cashier extends AppCompatActivity {
 
             String consecutive = String.format("%1$06d", transNumber);
 
-            products.add(HEADER);
             products.add("CASH INVOICE");
             products.add("Date:\t" + getCurrentDate());
             products.add("TRANS#" + consecutive);
@@ -1029,24 +1047,32 @@ public class Cashier extends AppCompatActivity {
                 products.add("Others\t" + tenderRnEAmount);
             }
             products.add("Change " + mDueConverted.replaceAll("[$()]", ""));
-            products.add("\n\n\n\n\n\n");
+
 
             //CHECK IF PRINTERS ARE OPEN
 //            boolean ret = marksPrinter.Open();
 
+            String[] printHeadBaKamo = productsHeader.toArray(new String[products.size()]);
             String[] printBaKamo = products.toArray(new String[products.size()]);
             String printBaHanapMo="";
+            String mLine = "-------------------------------";
+            String mStoreCopy = "STORE COPY";
             for (int p=0; p<products.size();p++){
                 printBaHanapMo = printBaHanapMo +"\n"+ printBaKamo[p];
             }
             db_data.updateInvoice(abc,printBaHanapMo);
             //TODO create journar trail 1/9/2018
-            writeJournalTrail(printBaHanapMo);
+            writeJournalTrail(mStoreCopy + "\n" + printBaHanapMo + "\n" + mStoreCopy + "\n" + mLine);
+            //TODO create image version of the receipt 1/15/2018
+            createReceiptImage(abc, printHeadBaKamo, printBaKamo);
 
             if (invoiceAdapter.getItemCount() > 0 && totalPayment >= mDue) {
                 //JOLLIMARK PRINTER
                 unLockCashBox();
+                printFunction(productsHeader);
                 printFunction(products);
+                printFunction(productsSpace);
+//                printFunction(productsFooter);
                 btn_print.setEnabled(false);
                 products.clear();
             }
@@ -1149,6 +1175,8 @@ public class Cashier extends AppCompatActivity {
                         cancelna();
                         t2Rows.clear();
                         products.clear();
+                        productsHeader.clear();
+//                        productsFooter.clear();
                     }
 
                 } catch (Exception e) {
@@ -1227,6 +1255,7 @@ public class Cashier extends AppCompatActivity {
             tenderCashStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
+
         }
     }
 
@@ -1817,6 +1846,7 @@ public class Cashier extends AppCompatActivity {
         rg_discount = (RadioGroup)findViewById(R.id.rg_discount);
         lbl_discount = (TextView)findViewById(R.id.lbl_discount);
         btn_print = (Button)findViewById(R.id.btn_printBaKamo);
+        img_receipt = (ImageView) findViewById(R.id.img_receipt);
         btnSetQuantity = (Button) findViewById(R.id.btnRegisterQuantity);
 
         //Mark's Initialization
@@ -1928,11 +1958,11 @@ public class Cashier extends AppCompatActivity {
                     Toast.makeText(this, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "cannot open, maybe this chip has no support, please use PL2303HXD / RA / EA chip.");
                 }
-            } else {
-
-                Toast.makeText(this, "connected : OK" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "connected : OK", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "connected : OK");
                 Log.d(TAG, "Exit  openUsbSerial");
+
+            } else {
 
 
             }
@@ -2003,6 +2033,44 @@ public class Cashier extends AppCompatActivity {
 //                delayDialogClose();
         }
         //END WRITE JOURNAL ENTRY TO EXTERNAL STORAGE
+    }
+
+    void createReceiptImage(String orNum, String[] orCopyHead, String[] orCopy) {
+        File mSdCardDir = new File(Environment.getExternalStorageDirectory() + "/Receipt");
+        if (!mSdCardDir.exists()) {
+            mSdCardDir.mkdirs();
+        }
+        String mFilename = orNum + "_" + getCurrentDay() + ".jpg";
+        File mSaveFile = new File(mSdCardDir, mFilename);
+
+        try {
+            FileOutputStream out = new FileOutputStream(mSaveFile);
+
+            // NEWLY ADDED CODE STARTS HERE [
+            Bitmap mBitmap = Bitmap.createBitmap(480, orCopyHead.length * 25 + orCopy.length * 25, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mBitmap);
+
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK); // Text Color
+            paint.setStrokeWidth(20); // Text Size
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
+            // some more settings...
+
+            canvas.drawColor(0xFFFFFFFF);
+            for (int a = 1; a < orCopyHead.length; a++) {
+                canvas.drawText(orCopyHead[a], 10, a * 25, paint);
+            }
+            for (int a = 1; a < orCopy.length; a++) {
+                canvas.drawText(orCopy[a], 10, a * 25, paint);
+            }
+            // NEWLY ADDED CODE ENDS HERE ]
+
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static class FirstFragment extends Fragment {
