@@ -13,124 +13,82 @@ import android.widget.Button;
 public class AdminActivity extends AppCompatActivity{
     //For Database
 
-
     //For Admin Privilege
 
+    //TO SUPPORT VECTOR DRAWABLES
     static {
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-
     }
 
-
-    //TO SUPPORT VECTOR DRAWABLES
-
-    Button btn_adminManStaff, btn_adminManProd, btn_adminManJournal, btn_adminManReport, btn_adminManProfile;
+    Button btn_adminManStaff, btn_adminManProd, btn_adminManJournal, btn_adminManReport, btn_adminManProfile, btn_adminManRestore;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_admin_priveleges);
 
-
-
         init(); //cast views to java class variables
-
         allButtonClickListener(); //al button click listener
-
-
-
-
-
     }
 
-
-
     private void allButtonClickListener() {
-
         btn_adminManStaff.setOnClickListener(new View.OnClickListener() {
 
             @Override
 
             public void onClick(View view) {
-
-                Intent intent = new Intent(AdminActivity.this,ManageStaff.class);
-
+                Intent intent = new Intent(AdminActivity.this, ManageStaff.class);
                 startActivity(intent);
-
             }
 
         });
-
-
 
         btn_adminManProd.setOnClickListener(new View.OnClickListener() {
 
             @Override
 
             public void onClick(View view) {
-
-                Intent intent = new Intent(AdminActivity.this,ManageProduct.class);
-
+                Intent intent = new Intent(AdminActivity.this, ManageProduct.class);
                 startActivity(intent);
-
             }
 
         });
-
-
 
         btn_adminManJournal.setOnClickListener(new View.OnClickListener() {
 
             @Override
 
             public void onClick(View view) {
-
-                Intent intent = new Intent(AdminActivity.this,ManageJournal.class);
-
+                Intent intent = new Intent(AdminActivity.this, ManageJournal.class);
                 startActivity(intent);
-
             }
 
         });
-
 
         btn_adminManReport.setOnClickListener(new View.OnClickListener() {
-
             @Override
-
             public void onClick(View view) {
-
                 Intent intent = new Intent(AdminActivity.this, ManageReport.class);
-
                 startActivity(intent);
-
             }
-
         });
-
-
 
         btn_adminManProfile.setOnClickListener(new View.OnClickListener() {
-
             @Override
-
             public void onClick(View view) {
-
-                Intent intent = new Intent(AdminActivity.this,ManageProfile.class);
-
+                Intent intent = new Intent(AdminActivity.this, ManageProfile.class);
                 startActivity(intent);
-
             }
 
         });
-
+        btn_adminManRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminActivity.this, ManageRestore.class);
+                startActivity(intent);
+            }
+        });
     }
-
-
 
     private void init(){
         //For Admin Privilege Screen
@@ -139,16 +97,13 @@ public class AdminActivity extends AppCompatActivity{
         btn_adminManJournal=(Button)findViewById(R.id.btnJournal);
         btn_adminManReport = (Button) findViewById(R.id.btnReport);
         btn_adminManProfile =(Button)findViewById(R.id.btnProfile);
+        btn_adminManRestore = (Button) findViewById(R.id.btnRestore);
     }
+
     //MENU//MENU//MENU//MENU//MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.admin_priveleges_main_menu,menu);
-
-        MenuItem importCSV = menu.findItem(R.id.menu_import_product);
-        MenuItem addProduct = menu.findItem(R.id.menu_add_product);
-        importCSV.setVisible(false);
-        addProduct.setVisible(false);
 
         if(menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
@@ -156,6 +111,7 @@ public class AdminActivity extends AppCompatActivity{
         }
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -164,23 +120,9 @@ public class AdminActivity extends AppCompatActivity{
                 this.finish();
                 Intent intent = new Intent(AdminActivity.this, MainActivity.class);
                 startActivity(intent);
-
-
-
-                //Todo Function Here for saving Transaction
-
-
-
                 return true;
-
-
-
             default:
-
                 return super.onOptionsItemSelected(item);
-
         }
-
     }
-
 }

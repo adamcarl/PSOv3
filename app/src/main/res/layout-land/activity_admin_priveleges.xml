@@ -98,6 +98,21 @@
             app:drawableTopCompat="@drawable/ic_person_black_48px"
             app:layout_flexBasisPercent="28%"/>
 
+        <com.example.sydney.psov3.CustomButtonForDrawableTop
+            android:id="@+id/btnRestore"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+
+            android:layout_margin="5dp"
+            android:background="@drawable/custom_button_rounded8"
+            android:drawableTint="@color/myColorIconAdminPriveleges"
+            android:elevation="4dp"
+            android:shadowColor="@color/myColorActionBar"
+            android:text="Restore Database"
+            android:textAllCaps="false"
+            android:textColor="@color/myColorWhite"
+            app:drawableTopCompat="@drawable/ic_assignment_black_48px"
+            app:layout_flexBasisPercent="28%" />
 
     </com.google.android.flexbox.FlexboxLayout>
 

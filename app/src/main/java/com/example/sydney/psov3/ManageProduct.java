@@ -51,7 +51,6 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
     AlertDialog alertDialog = null;
     DB_Data db_data;
     ProductAdapter productAdapter = null;
-//    SearchView search_prod;
     Spinner spinner;
     String colWhere;
     List<Product> productsList;
@@ -81,25 +80,15 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
         //CREATE DIALOG
         createMyDialog();
         alertDialog = builder.create();
 
         //ALL ONCLICKLISTENERS
         allOnListeners();
-
     }
 
     private void allOnListeners() {
-        //LISTVIEW LISTENER
-//        lv_admin_prod.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(ManageProduct.this, "Clicked!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         //SEARCHVIEW LISTENER
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -113,55 +102,6 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
 
             }
         });
-//        search_prod.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                spinnerSelected = spinner.getSelectedItemPosition();
-//
-//                if(spinnerSelected == 0 || spinnerSelected == 1 || spinnerSelected == 2 || spinnerSelected == 3 || spinnerSelected == 4 && search_prod.getQuery().toString().trim().toLowerCase().equals("")){
-//                    productsList = listGo();
-//                    productAdapter = new ProductAdapter(getApplication(),productsList);
-//                    recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));
-//                    recyclerView.setAdapter(productAdapter);
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String query) {
-//                spinnerSelected = spinner.getSelectedItemPosition();
-//                if(spinnerSelected == 0){
-//                    colWhere = COLUMN_PRODUCT_ID;
-//                    searchProd();
-//                }
-//                else if(spinnerSelected == 1){
-//                     colWhere = COLUMN_PRODUCT_NAME;
-//                    searchProd();
-//                }
-//                else if(spinnerSelected == 2){
-//                     colWhere = COLUMN_PRODUCT_DESCRIPTION;
-//                    searchProd();
-//                }
-//                else if(spinnerSelected == 4){
-//                     colWhere = COLUMN_PRODUCT_PRICE;
-//                    searchProd();
-//                }
-//                else if(spinnerSelected == 3){
-//                     colWhere = COLUMN_PRODUCT_QUANTITY;
-//                    searchProd();
-//                }
-//                if(search_prod.getQuery().toString().trim().toLowerCase().equals("")){
-//                    productsList = listGo();
-//                    productAdapter = new ProductAdapter(getApplication(),productsList);
-//                    recyclerView.setLayoutManager(new LinearLayoutManager(ManageProduct.this));
-//                    recyclerView.setAdapter(productAdapter);
-//
-//                }
-//                return false;
-//            }
-//        });
-
-
     }
 
     private void processSelectedSpinner() {
@@ -323,7 +263,7 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
         String logProductQuery = "SELECT * FROM " + TABLE_PRODUCTLOGS;
         retrievedCursorFromProductLog = dbReader.rawQuery(logProductQuery,null);
 
-        zreportExportFunction.showDialogLoading(ManageProduct.this,cursorDummy,retrievedCursorFromProductLog);
+        zreportExportFunction.showDialogLoading(ManageProduct.this, null, retrievedCursorFromProductLog);
     }
 
     private void createMyDialog(){
@@ -372,11 +312,7 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
             }
         });
     }
-//    @Override
-//    protected void onDestroy() {
-//        alertDialog.dismiss();
-//        super.onDestroy();
-//    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null)
             return;
@@ -392,10 +328,9 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                             FileReader file = new FileReader(filepath);
                             BufferedReader buffer = new BufferedReader(file);
                             ContentValues contentValues = new ContentValues();
-                            String line = "";
                             db.beginTransaction();
-                            while ((line = buffer.readLine()) != null) {
-                                String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
+                            while (buffer.readLine() != null) {
+                                String[] str = buffer.readLine().split(",", 5);  // defining 3 columns with null or blank field //values acceptance
                                 //Id, Company,Name,Price
                                 String pId = str[0];
                                 String pName = str[1];
@@ -507,7 +442,6 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                 intent.putExtra("QUANTITY",productsList.get(position).getP_quan());
                 startActivity(intent);
                 alertDialogModify.dismiss();
-
             }
         });
     }

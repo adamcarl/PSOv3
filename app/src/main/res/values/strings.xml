@@ -37,4 +37,5 @@
         <item>TRANSACTION NUMBER</item>
         <item>DATE AND TIME</item>
     </string-array>
+    <string name="title_activity_manage_restore">ManageRestore</string>
 </resources>

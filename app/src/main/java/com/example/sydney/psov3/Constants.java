@@ -160,7 +160,6 @@ interface Constants extends BaseColumns {
             "PTU No. FP121234-123-1234567-12345",
             "=============================================="};
 
-    String SPACES = "\n\n\n\n";
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

@@ -6,50 +6,29 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Locale;
 
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_CASHIER;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DESC;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DISCOUNT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_NAME;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_XREPORT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
 
 /**
  * Created by Poging Adam on 6/28/2017.
  */
 
 class ReportBaKamo {
-    private String zsale;
-    private String vtax;
-    private String xtax;
-    private String ztax;
-    private String t1;
-    private String t2;
-    private String or1;
-    private String or2;
-    private String trans;
-    private double net_discount;
-    private double net;
-    private double dogt;
-    private double dngt;
-    private double over;
     private double currentCashInOutEveryShift;
     private double totalGross = 0.0;
     private double totalDeduction = 0.0;
-    private double totalItemSales = 0.0;
-    private int z, t3, totalQty = 0;
-    private int[] or = new int[1], transArray = new int[1];
-    private double[] hourlyGrossSale = new double[24];
+    private int totalQty = 0;
     private DB_Data db_data;
     private ArrayList<String> toBePrinted = new ArrayList<>();
-    private Cursor cProd = null;
 
     void main(String x, String date, int transNum, double moneyCount) throws ParseException {
         Date currDate = new Date();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yy");
         String dateToStr = dateTimeFormat.format(currDate);
 //        Date strToDate = null;
 //        strToDate = dateTimeFormat.parse(dateToStr);
@@ -74,20 +53,20 @@ class ReportBaKamo {
         else {
             report = "X";
         }
-        hourlyGrossSale = db_data.getHourlyGrossSale(x);
+        double[] hourlyGrossSale = db_data.getHourlyGrossSale(x);
         double ogt = db_data.getMyOldGross();
         double gross = db_data.getNormalSales(x);
         double credit = db_data.getCreditSales(x);
         String discount = db_data.getDiscountSales(x);
         String vsale = db_data.sales("0", x);
         String xsale = db_data.sales("1", x);
-        zsale = db_data.sales("2",x);
-        vtax = db_data.tax("0",x);
-        xtax = db_data.tax("1",x);
-        ztax = db_data.tax("2",x);
-        z = db_data.pleaseGiveMeTheZCount();
-        transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
-        or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
+        String zsale = db_data.sales("2", x);
+        String vtax = db_data.tax("0", x);
+        String xtax = db_data.tax("1", x);
+        String ztax = db_data.tax("2", x);
+        int z = db_data.pleaseGiveMeTheZCount();
+        int[] transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
+        int[] or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
         if (!x.equals("no")) {
             currentCashInOutEveryShift = db_data.getCashinoutForShift(x, dateToStr);
         }
@@ -103,12 +82,12 @@ catch (Exception e){
     exemptDiscount1 = exemptDiscount * .12;
 }
         double net_gross = gross + credit;
-        net_discount = Double.parseDouble(discount)+exemptDiscount1;
-        net = net_gross - net_discount;
-        or1 = String.format("%1$06d", or[0]);
-        or2 = String.format("%1$06d", or[1]);
-        trans = String.format("%1$06d", transNum);
-        over = moneyCount - gross;
+        double net_discount = Double.parseDouble(discount) + exemptDiscount1;
+        double net = net_gross - net_discount;
+        String or1 = String.format(Locale.ENGLISH, "%1$06d", or[0]);
+        String or2 = String.format(Locale.ENGLISH, "%1$06d", or[1]);
+        String trans = String.format(Locale.ENGLISH, "%1$06d", transNum);
+        double over = moneyCount - gross;
         // Pad with zeros and a width of 6 chars.
 
         toBePrinted.add("ABZTRAK DEMO STORE");
@@ -125,17 +104,17 @@ catch (Exception e){
             toBePrinted.add("==============================================");
             toBePrinted.add("BIZDATE : "+date);
             toBePrinted.add("BRANCH : HEAD OFFICE");
-            toBePrinted.add("SHIFT : ALL\t\tTRANS#"+trans+"\n");
+            toBePrinted.add("SHIFT : ALL\t\tTRANS#" + trans + "\n");
         }else {
             toBePrinted.add("CASHIER REPORT");
             toBePrinted.add("==============================================");
             toBePrinted.add("BIZDATE : " + dateToStr + " " + currentTime);
             toBePrinted.add("CASHIER : "+x);
-            toBePrinted.add("SHIFT : 1\t\tTRANS#"+trans+"\n");
+            toBePrinted.add("SHIFT : 1\t\tTRANS#" + trans + "\n");
         }
         double mGrossBaKamo = gross + credit;
         toBePrinted.add("GROSS SALES\t\t" + mGrossBaKamo);
-        toBePrinted.add(" SALES DISCOUNT\t\t-"+net_discount);
+        toBePrinted.add(" SALES DISCOUNT\t\t-" + net_discount);
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NET SALES\t\t"+ net +"\n");
 
@@ -144,25 +123,24 @@ catch (Exception e){
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
         toBePrinted.add("[v] V-Sal\t" + vsale + "\t" + vtax);
         toBePrinted.add("[x] E-Sal\t" + xsale + "\t" + xtax);
-        toBePrinted.add("[z] Z-Rat\t"+zsale+"\t"+ztax+"\n");
+        toBePrinted.add("[z] Z-Rat\t" + zsale + "\t" + ztax + "\n");
 
         if(x.equals("no")){
-            dogt = ogt;
-            dngt = dogt + net;
-            String zf = String.format("%1$05d", z);
+            double dngt = ogt + net;
+            String zf = String.format(Locale.ENGLISH, "%1$05d", z);
 
-            t1 = String.format("%1$06d", transArray[0]);
-            t2 = String.format("%1$06d", transArray[1]);
-            t3 = transArray[1] - transArray[0];
+            String t1 = String.format(Locale.ENGLISH, "%1$06d", transArray[0]);
+            String t2 = String.format(Locale.ENGLISH, "%1$06d", transArray[1]);
+            int t3 = transArray[1] - transArray[0];
 
-            toBePrinted.add("OLD GT\t000-"+dogt);
-            toBePrinted.add("NEW GT\t000-"+dngt+"\n");
+            toBePrinted.add("OLD GT\t000-" + ogt);
+            toBePrinted.add("NEW GT\t000-" + dngt + "\n");
 
             toBePrinted.add("Z Count\t\t" + zf + "\n");
             toBePrinted.add("Trans #\t\t" + t1 + " - " + t2);
-            toBePrinted.add("\t\t\t"+t3+"\n");
+            toBePrinted.add("\t\t\t" + t3 + "\n");
 
-            toBePrinted.add("OR #\t\t"+or1+ " - "+or2);
+            toBePrinted.add("OR #\t\t" + or1 + " - " + or2);
         }
         toBePrinted.add("CASH SALES\t\t" + gross);
         toBePrinted.add("----------------------------------------------");
@@ -170,7 +148,7 @@ catch (Exception e){
 
         toBePrinted.add("CASH COUNT\t\t" + moneyCount + currentCashInOutEveryShift);
         toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH SHORT/OVER\t\t"+over+"\n");
+        toBePrinted.add("CASH SHORT/OVER\t\t" + over + "\n");
         toBePrinted.add("TRANSACTION\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
@@ -184,23 +162,11 @@ catch (Exception e){
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("SCD 20%\t\t-" + discount);
         toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
-        toBePrinted.add("TOTAL DEDUCTION\t\t-"+net_discount+"\n");
+        toBePrinted.add("TOTAL DEDUCTION\t\t-" + net_discount + "\n");
 
         toBePrinted.add("ITEM SALES\t\tAMOUNT");
         toBePrinted.add("----------------------------------------------");
-            List<List<String>> items = new ArrayList<>();
-            ArrayList<String> temp = new ArrayList<>();
-            String mWHERE;
-            String[] mWHERE_ARGS;
-            String[] columns = {COLUMN_ITEM_NAME,COLUMN_ITEM_DESC,COLUMN_ITEM_QUANTITY,COLUMN_ITEM_DISCOUNT,COLUMN_ITEM_PRICE};
-            if(x.equals("no")) {
-                mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
-                mWHERE_ARGS = new String[]{"0"};
-            }
-            else {
-                mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
-                mWHERE_ARGS = new String[]{"0"};
-            }
+
             Cursor c = db_data.getAllItems(x);//// TODO: 8/2/2017  
             c.moveToFirst();
 
@@ -216,7 +182,6 @@ catch (Exception e){
         }
             c.close();
 
-    totalItemSales = totalGross - totalDeduction;
         toBePrinted.add("----------------------------------------------");
         toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
         toBePrinted.add("GROSS SALES\t\t"+totalGross);
@@ -227,12 +192,12 @@ catch (Exception e){
         toBePrinted.add("HOURLY SALES\t\t\t\t\tAMOUNT");
         for(int mHour=0;mHour<24;mHour++){
             if(mHour<12) {
-                String time = String.format("%1$02d", mHour);
-                toBePrinted.add(time+":00AM - "+time+":59AM\t\t"+hourlyGrossSale[mHour]);
+                String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
+                toBePrinted.add(time + ":00AM - " + time + ":59AM\t\t" + hourlyGrossSale[mHour]);
             }
             else {
-                String time = String.format("%1$02d", mHour-12);
-                toBePrinted.add(time+":00PM - "+time+":59PM\t\t"+hourlyGrossSale[mHour]);
+                String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
+                toBePrinted.add(time + ":00PM - " + time + ":59PM\t\t" + hourlyGrossSale[mHour]);
             }
         }
 
@@ -358,8 +323,8 @@ catch (Exception e){
 //        }
 
 
-        cProd = db_data.getAllProductsSample();
-        cProd.moveToFirst();
+//        Cursor cProd = db_data.getAllProductsSample();
+//        cProd.moveToFirst();
 
 //        while(cProd.moveToNext()){
 //            toBePrinted.add(cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_NAME_TEMP))+"\n"+cProd.getString(cProd.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION_TEMP)));//example I don't know the order you need
@@ -382,9 +347,6 @@ catch (Exception e){
 //            }
 //        }
 //    }
-    Cursor getCursorInReportBaKamo(){
-        return cProd;
-    }
 
     ArrayList<String> getToBePrinted(){
         return toBePrinted;

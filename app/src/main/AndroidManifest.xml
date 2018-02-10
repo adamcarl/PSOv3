@@ -86,7 +86,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ManageReport"></activity>
+        <activity android:name=".ManageReport" />
+        <activity
+            android:name=".ManageRestore"
+            android:label="@string/title_activity_manage_restore"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

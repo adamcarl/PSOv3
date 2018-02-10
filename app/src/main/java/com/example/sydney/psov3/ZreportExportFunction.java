@@ -48,7 +48,7 @@ public class ZreportExportFunction extends AppCompatActivity{
             int rowcount = 0;
             int colcount = 0;
             File sdCardDir = Environment.getExternalStorageDirectory();
-            String filename = "ExportedFile" + fileName + "_" + getCurrentDate() + ".txt"; // the name of the file to export with
+            String filename = fileName + "_" + getCurrentDate() + ".txt"; // the name of the file to export with
             File saveFile = new File(sdCardDir, filename);
             FileWriter fw = new FileWriter(saveFile);
             BufferedWriter bw = new BufferedWriter(fw);
