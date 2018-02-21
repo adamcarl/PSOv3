@@ -36,7 +36,6 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_VATTABLE = "InVattable"; //FROM VATTABLE IF CUSTOMER HAS NO DISCOUNT!
     String COLUMN_INVOICE_VATTED = "InVatted"; //TAX OF VATTABLED ITEMS
     String COLUMN_INVOICE_VAT_STATUS = "InVatStatus"; //V,X,Z
-    String COLUMN_INVOICE_TOTALPRICE = "InTotalPrice";
     String COLUMN_INVOICE_CREDITSALE = "InCreditSale";
     String COLUMN_INVOICE_DATEANDTIME = "InDateTime";
     String COLUMN_INVOICE_CREDITCARDNUMBER = "InCreditNumber";
@@ -160,6 +159,46 @@ interface Constants extends BaseColumns {
             "PTU No. FP121234-123-1234567-12345",
             "=============================================="};
 
+    String[] TAB_TERMINAL = {"terminal_name", "terminal_serial"};
+    String[] TAB_ADMIN = {"Username", "Password"};
+    String[] TAB_CASHIER = {"Cashiernum", "Name", "Position", "Password"};
+    String[] TAB_PRODUCT = {"ProdId", "ProdName", "ProdDesc", "ProdPrice", "ProdQuan", "Vatable",
+            "ProdIMEI"};
+    String[] TAB_PRODUCT_TEMP = {"ProdId_temp", "ProdName_temp", "ProdDesc_temp", "ProdPrice_temp",
+            "ProdQuan_temp", "Vatable_temp", "ProdIMEI_temp"};
+    String[] TAB_INVOICE = {"InTrans", "InDisc", "InCustomer", "InPrint", "InCashierNum", "InZreport",
+            "InXreport", "InVattable", "InVatted", "InVatStatus", "InCreditSale", "InDateTime",
+            "InCreditNumber", "InCreditExpiration"};
+    String[] TAB_ITEM = {"ItemIn", "ItemName", "ItemDesc", "ItemTotalPrice", "ItemProd", "ItemQuan",
+            "ItemStatus", "ItemDiscount", "ItemZ", "ItemX", "ItemCashier"};
+    String[] TAB_PRODUCTLOGS = {"CODE", "TYPE", "ADDED", "SUBTRACT", "REMARKS", "DATE"};
+    String[] TAB_CREDIT_CARD = {"creditTrans", "creditCashier", "creditDate", "creditPayment",
+            "creditBank", "creditNumber", "creditExpiry"};
+    String[] TAB_XREPORT = {"xreportTransNum", "xreportCashsales", "xreportCashcount",
+            "xreportCashShort"};
+    String[] TAB_ZREPORT = {"zreportTransNum", "zreportCashsales", "zreportCashcount",
+            "zreportPrint"};
+    String[] TAB_TRANSACTION = {"TransType", "TransDateTime", "TransCashier", "TransZreport",
+            "TransXreport", "TransPrint"};
+    String[] TAB_LOG = {"LogType", "LogDateTime", "LogCashier", "LogPrint"};
+    String[] TAB_TOTAL = {"total_grand"};
+    String[] TAB_CASH = {"cash_num", "cash_transnum", "cash_datetime", "cash_added", "cash_subtract",
+            "cash_current", "cash_z", "cash_x"};
+    String[] TAB_CASHTRANS = {"cashtrans_transnum", "cashtrans_num", "cashtrans_datetime",
+            "cash_added", "cash_subtract", "cashtrans_reason", "cashtrans_remarks1",
+            "cashtrans_remarks2", "cashtrans_remarks3", "cashtrans_remarks4"};
+    String[] TAB_RETRIEVED_JOINTAB = {};
+    String[] TAB_TEMP_INVOICING = {};
+
+    String[] tableArray = {TABLE_TERMINAL, TABLE_ADMIN, TABLE_CASHIER, TABLE_PRODUCT,
+            TABLE_PRODUCT_TEMP, TABLE_INVOICE, TABLE_ITEM, TABLE_PRODUCTLOGS, TABLE_CREDIT_CARD,
+            TABLE_XREPORT, TABLE_ZREPORT, TABLE_TRANSACTION, TABLE_LOG, TABLE_TOTAL, TABLE_CASH,
+            TABLE_CASHTRANS, TABLE_RETRIEVED_JOINTABLE, TABLE_TEMP_INVOICING};
+
+    String[][] columnArray = {TAB_TERMINAL, TAB_ADMIN, TAB_CASHIER, TAB_PRODUCT,
+            TAB_PRODUCT_TEMP, TAB_INVOICE, TAB_ITEM, TAB_PRODUCTLOGS, TAB_CREDIT_CARD,
+            TAB_XREPORT, TAB_ZREPORT, TAB_TRANSACTION, TAB_LOG, TAB_TOTAL, TAB_CASH,
+            TAB_CASHTRANS, TAB_RETRIEVED_JOINTAB, TAB_TEMP_INVOICING};
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +

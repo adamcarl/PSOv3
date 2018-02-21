@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.provider.BaseColumns._ID;
 import static com.example.sydney.psov3.Constants.*;
@@ -865,7 +866,6 @@ class DB_Data extends SQLiteOpenHelper {
     }
 
     String pleaseGiveMeTheSumOfAll20PercentDiscountForXandZreport(String x, String status){
-        String discount="";
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM(" + COLUMN_ITEM_DISCOUNT + ")"};
@@ -878,7 +878,7 @@ class DB_Data extends SQLiteOpenHelper {
         }
         Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
-        discount = cursor.getString(0);
+        String discount = cursor.getString(0);
         cursor.close();
         return discount;
     }
@@ -892,8 +892,6 @@ class DB_Data extends SQLiteOpenHelper {
         try {
             gross = cursor.getDouble(0);
             double sale = getCreditSales("no");
-
-//            float s = Float.parseFloat(sale);
             // TODO
             cv.clear();
             cv.put(COLUMN_TOTAL_GRAND,sale);
@@ -910,7 +908,6 @@ class DB_Data extends SQLiteOpenHelper {
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {COLUMN_ITEM_NAME,COLUMN_ITEM_DESC,COLUMN_ITEM_QUANTITY,COLUMN_ITEM_DISCOUNT,COLUMN_ITEM_PRICE};
-        String groupBy = COLUMN_ITEM_NAME;
 
         if(x.equals("no")) {
             mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
@@ -920,16 +917,7 @@ class DB_Data extends SQLiteOpenHelper {
             mWHERE = COLUMN_ITEM_XREPORT+" = ? AND "+COLUMN_ITEM_CASHIER+" = ?";
             mWHERE_ARGS = new String[]{"0",x};
         }
-        return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, groupBy, null, null, null);
-    }
-
-    void addXreport(String transNum,double cashSales, double cashCount, double cashShortOver){
-        cv.clear();
-        cv.put(COLUMN_XREPORT_TRANSACTION_NUMBER, transNum);
-        cv.put(COLUMN_XREPORT_CASHSALES, cashSales);
-        cv.put(COLUMN_XREPORT_CASHCOUNT, cashCount);
-        cv.put(COLUMN_XREPORT_CASHSHORTOVER, cashShortOver);
-        dbw.insertOrThrow(TABLE_XREPORT, null, cv);
+        return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, COLUMN_ITEM_NAME, null, null, null);
     }
 
     String sales(String status, String x){
@@ -987,7 +975,6 @@ class DB_Data extends SQLiteOpenHelper {
     }
 
     int getQuantityofProducts(String prodID) {
-        int quan = 0;
         Cursor c;
         String mWHERE;
         String[] mWHERE_ARGS;
@@ -996,7 +983,8 @@ class DB_Data extends SQLiteOpenHelper {
         mWHERE_ARGS = new String[]{prodID};
         c = dbr.query(TABLE_PRODUCT, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         c.moveToFirst();
-        quan = c.getInt(c.getColumnIndex(COLUMN_PRODUCT_QUANTITY));
+        int quan = c.getInt(c.getColumnIndex(COLUMN_PRODUCT_QUANTITY));
+        c.close();
         return quan;
     }
 
@@ -1006,12 +994,6 @@ class DB_Data extends SQLiteOpenHelper {
         String[] mWHERE_ARGS = new String[]{prodID};
         cv.put(COLUMN_PRODUCT_QUANTITY, newQuan);
         dbw.update(TABLE_PRODUCT, cv, mWHERE, mWHERE_ARGS);
-    }
-
-    Cursor getAllProductsSample() {
-        String[] columns = {COLUMN_PRODUCT_NAME_TEMP, COLUMN_PRODUCT_DESCRIPTION_TEMP, COLUMN_PRODUCT_QUANTITY_TEMP, COLUMN_PRODUCT_PRICE_TEMP};
-        String groupBy = COLUMN_PRODUCT_NAME_TEMP;
-        return dbr.query(TABLE_PRODUCT_TEMP, columns, null, null, null, null, null, null);
     }
 
     void updateAddQuantity(String id, int quantity) {
@@ -1069,28 +1051,28 @@ class DB_Data extends SQLiteOpenHelper {
         String[] mWHERE_ARGS;
         String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
         Date currDate = new Date();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy", Locale.ENGLISH);
         String dateToStr = dateTimeFormat.format(currDate);
         for (int mHour = 0; mHour < 24; mHour++) {
             if (x.equals("no")) {
                 mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
                 if (mHour < 12) {
-                    String time = String.format("%1$02d", mHour);
+                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
                     mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ AM"};
                     Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
                 }
                 else {
-                    String time = String.format("%1$02d", mHour - 12);
+                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
                     mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ PM"};
                     Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
                 }
             } else {
                 if (mHour < 12) {
-                    String time = String.format("%1$02d", mHour);
+                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
                     mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% AM'"};
                     Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
                 } else {
-                    String time = String.format("%1$02d", mHour - 12);
+                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
                     mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% PM'"};
                     Log.e("mWHERE_ARGS", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
                 }

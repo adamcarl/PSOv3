@@ -8,4 +8,523 @@
     tools:context="com.example.sydney.psov3.ManageRestore"
     tools:showIn="@layout/activity_manage_restore">
 
+    <ScrollView
+        android:layout_width="946dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="70dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="7dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_weight=".5"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteX="328dp"
+                tools:layout_editor_absoluteY="7dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathTerminal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Terminal"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathAdmin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Admin"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathCashier"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Cashier"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathProduct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Product"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathProdTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Product_temp"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathInvoice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Invoice"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_weight=".5"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="7dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Item"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathProdLogs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Product_logs"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathCreditCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Credit_card"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathXreport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Xreport"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathZreport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Zreport"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathTransaction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Transaction"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathLog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Log"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathCash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Cash"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathCashTrans"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Cash_trans"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathRetrievedJoin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Retrieved_Join"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="8dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPathTempInvoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        app:backgroundTint="@color/myColorActionBar"
+                        app:srcCompat="@android:drawable/ic_menu_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Temp_Invoicing"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="33dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

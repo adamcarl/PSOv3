@@ -35,8 +35,8 @@ import static com.example.sydney.psov3.Constants.TABLE_ZREPORT;
 
 /**
  * Created by Marky on 2/3/2018.
+ * ABZTRAK INC.
  */
-
 
 class BackUpDatabase {
     private DB_Data db_data;
@@ -70,7 +70,7 @@ class BackUpDatabase {
                 curSV.moveToFirst();
                 while (!curSV.isAfterLast()) {
                     ArrayList<String> listRows = new ArrayList<>();
-                    for (int i = 0; i < cursorColumnCount; i++) {
+                    for (int i = 1; i < cursorColumnCount; i++) {
                         listRows.add(curSV.getString(i));
                     }
                     String[] arrStr = listRows.toArray(new String[listRows.size()]);
