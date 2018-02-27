@@ -95,7 +95,8 @@ import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
 import static com.example.sydney.psov3.Constants._ID;
 
 public class Cashier extends AppCompatActivity {
-    private static final String ACTION_USB_PERMISSION = "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION =
+            "com.prolific.pl2303hxdsimpletest.USB_PERMISSION";
     private static final boolean SHOW_DEBUG = true;
 
     //TO SUPPORT VECTOR DRAWABLES
@@ -268,6 +269,7 @@ public class Cashier extends AppCompatActivity {
         printerDetection();
 
         super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
 
@@ -336,7 +338,9 @@ public class Cashier extends AppCompatActivity {
         spec.setIndicator("Shift");
         tab_host.addTab(spec);
 
-        dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'"+ userNum +"') ");
+        dbWriter.execSQL(
+                "INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'" +
+                        userNum + "') ");
 
         txt_cash.addTextChangedListener(new TextWatcher() {
             private String current = "";
@@ -479,7 +483,8 @@ public class Cashier extends AppCompatActivity {
                         if(invoiceAdapter.getItemCount() > 0){
                             //START OF COMPUTATION UPPER
                             refreshPaymentInformation();
-                            Toast.makeText(Cashier.this, "ITEM DELETED!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Cashier.this, "ITEM DELETED!",
+                                    Toast.LENGTH_SHORT).show();
                         } else {
                             isOn = false;
                             total.clear();
@@ -545,7 +550,9 @@ public class Cashier extends AppCompatActivity {
             invoiceItemQuantity = cursor.getInt(4);
             invoiceItemID = cursor.getString(5);
             invoiceItemTotal = cursor.getDouble(6);
-            invoiceItemList.add(new InvoiceItem(invoiceItemName,invoiceItemDescription,invoiceItemPrice,dummyVattable,invoiceItemQuantity,invoiceItemID,invoiceItemTotal));
+            invoiceItemList.add(new InvoiceItem(invoiceItemName, invoiceItemDescription,
+                    invoiceItemPrice, dummyVattable, invoiceItemQuantity, invoiceItemID,
+                    invoiceItemTotal));
         }
         cursor.close();
         return invoiceItemList;
@@ -567,7 +574,8 @@ public class Cashier extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (etQuan.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please Enter Quantity.",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     btnSetQuantity.setText(etQuan.getText().toString());
                     alertQuantity.dismiss();
@@ -581,8 +589,10 @@ public class Cashier extends AppCompatActivity {
             code = txt_search.getText().toString();
             final String[] itemcode = {code};
             itemCode123.add(code);
-            String[] WHERE = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION,COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_PRICE};
-            cursor = dbReader.query(TABLE_PRODUCT, WHERE, COLUMN_PRODUCT_ID+ " LIKE ?", itemcode, null, null, null);
+            String[] WHERE = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION,
+                    COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_PRICE};
+            cursor = dbReader.query(TABLE_PRODUCT, WHERE, COLUMN_PRODUCT_ID + " LIKE ?", itemcode,
+                    null, null, null);
             cursor.moveToFirst();
             int rows = cursor.getCount();
             if (rows > 0) {
@@ -594,7 +604,8 @@ public class Cashier extends AppCompatActivity {
 //                    public void onClick(View view) {
                 try {
                     if (btnSetQuantity.getText().toString().equals("")) {
-                        Toast.makeText(getApplicationContext(), "Please Enter Quantity.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please Enter Quantity.",
+                                Toast.LENGTH_SHORT).show();
                     } else {
                         dialogVar = Integer.parseInt(btnSetQuantity.getText().toString());
 
@@ -607,33 +618,43 @@ public class Cashier extends AppCompatActivity {
                                 InvoiceItem invoiceItem = new InvoiceItem();
 
                                 String convertedCode = code.trim();
-                                Double prodPrice = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE));
-                                String prodName = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
-                                String prodDes = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_DESCRIPTION));
-                                String prodId = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+                                Double prodPrice = cursor.getDouble(cursor.getColumnIndex(
+                                        COLUMN_PRODUCT_PRICE));
+                                String prodName = cursor.getString(cursor.getColumnIndex(
+                                        COLUMN_PRODUCT_NAME));
+                                String prodDes = cursor.getString(cursor.getColumnIndex(
+                                        COLUMN_PRODUCT_DESCRIPTION));
+                                String prodId = cursor.getString(cursor.getColumnIndex(
+                                        COLUMN_PRODUCT_ID));
 
                                 int result = db_data.searchDuplicateInvoice(convertedCode);
                                 if (result > 0) {
                                     SQLiteDatabase db = db_data.getReadableDatabase();
-                                    String SELECT_QUERY = "SELECT " + COLUMN_TEMP_QUANTITY + " , " + COLUMN_TEMP_TOTALPRICE + " , " + COLUMN_TEMP_PRICE + " FROM " + TABLE_TEMP_INVOICING + " WHERE " + COLUMN_TEMP_ID + "='" + convertedCode + "'";
+                                    String SELECT_QUERY = "SELECT " + COLUMN_TEMP_QUANTITY +
+                                            " , " + COLUMN_TEMP_TOTALPRICE + " , " +
+                                            COLUMN_TEMP_PRICE + " FROM " + TABLE_TEMP_INVOICING +
+                                            " WHERE " + COLUMN_TEMP_ID + "='" + convertedCode + "'";
                                     Cursor cursor = db.rawQuery(SELECT_QUERY, null);
                                     cursor.moveToFirst();
                                     int retrievedQuantity = cursor.getInt(0);
                                     double retrievedTotalPrice = cursor.getDouble(1);
                                     double retrievedProce = cursor.getDouble(2);
-                                    double totalNaTalaga = retrievedTotalPrice + (retrievedProce * dialogVar);
+                                    double totalNaTalaga = retrievedTotalPrice + (retrievedProce *
+                                            dialogVar);
                                     cursor.close();
 
 //                                            double marksTotal = db_data.totalPr   ice();
-                                    db_data.updateInvoiceItem(convertedCode, retrievedQuantity + dialogVar, totalNaTalaga);
-                                    Toast.makeText(Cashier.this, "Quantity Updated!", Toast.LENGTH_SHORT).show();
+                                    db_data.updateInvoiceItem(convertedCode, retrievedQuantity +
+                                            dialogVar, totalNaTalaga);
+                                    Toast.makeText(Cashier.this, "Quantity Updated!",
+                                            Toast.LENGTH_SHORT).show();
                                 } else if (result == 0) { //IF DOESN'T HAVE DUPLICATE
                                     invoiceItem.setInvoiceProductName(prodName);
                                     invoiceItem.setInvoiceProductDescription(prodDes);
                                     invoiceItem.setInvoiceProductPrice(prodPrice);//toAdd item
                                     invoiceItem.setInvoiceProductQuantity(dialogVar);//toAdd item
                                     invoiceItem.setInvoiceProductID(prodId);//toAdd item
-                                    invoiceItem.setInvoiceProductTotal(prodPrice * dialogVar);//toAdd item
+                                    invoiceItem.setInvoiceProductTotal(prodPrice * dialogVar);
 
                                     db_data.insertTempInvoice(invoiceItem);
                                 }
@@ -643,7 +664,8 @@ public class Cashier extends AppCompatActivity {
                                 String itemPriceConverted = String.valueOf(itempriceCol);
                                 int sizeOfChar = itemPriceConverted.trim().length();
                                 int lengthOfCharToBeAdded = 20 - sizeOfChar;
-                                writeDataToSerial(itemdescCol, itemPriceConverted, String.valueOf(lengthOfCharToBeAdded));
+                                writeDataToSerial(itemdescCol, itemPriceConverted,
+                                        String.valueOf(lengthOfCharToBeAdded));
                                 refreshRecyclerView();
                                 txt_search.requestFocus();
                             } catch (SQLiteException e) {
@@ -678,7 +700,8 @@ public class Cashier extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_creditcard, null);
             creditBuilder.setView(alertLayout);
-            final AppCompatButton btnEnterCredit = (AppCompatButton) alertLayout.findViewById(R.id.btnEnterCredit);
+            final AppCompatButton btnEnterCredit = (AppCompatButton)
+                    alertLayout.findViewById(R.id.btnEnterCredit);
             etCreditBank = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditBank);
             etCreditNumber = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditNumber);
             etCreditExpiry = (AppCompatEditText) alertLayout.findViewById(R.id.etCreditExpiry);
@@ -690,8 +713,11 @@ public class Cashier extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     try {
-                        if (etCreditBank.getText().toString().equals("") || etCreditNumber.getText().toString().equals("") || etCreditExpiry.getText().toString().equals("")) {
-                            Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
+                        if (etCreditBank.getText().toString().equals("") ||
+                                etCreditNumber.getText().toString().equals("") ||
+                                etCreditExpiry.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(), "Please Fill all Fields.",
+                                    Toast.LENGTH_SHORT).show();
                         } else {
                             tenderCreditAmount = getTxtCashDouble();
                             creditBank = etCreditBank.getText().toString();

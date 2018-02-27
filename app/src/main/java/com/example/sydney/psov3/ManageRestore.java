@@ -4,11 +4,9 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -32,11 +30,11 @@ public class ManageRestore extends AppCompatActivity {
 
     FloatingActionButton[] fabArray = new FloatingActionButton[18];
 
-    int[] fabInt = {R.id.fabPathTerminal, R.id.fabPathAdmin, R.id.fabPathCashier, R.id.fabPathProduct,
-            R.id.fabPathProdTemp, R.id.fabPathInvoice, R.id.fabPathItem, R.id.fabPathProdLogs,
-            R.id.fabPathCreditCard, R.id.fabPathXreport, R.id.fabPathZreport, R.id.fabPathTransaction,
-            R.id.fabPathLog, R.id.fabPathTotal, R.id.fabPathCash, R.id.fabPathCashTrans,
-            R.id.fabPathRetrievedJoin, R.id.fabPathTempInvoice};
+    int[] fabInt = {R.id.fabPathTerminal, R.id.fabPathAdmin, R.id.fabPathCashier,
+            R.id.fabPathProduct, R.id.fabPathProdTemp, R.id.fabPathInvoice, R.id.fabPathItem,
+            R.id.fabPathProdLogs, R.id.fabPathCreditCard, R.id.fabPathXreport, R.id.fabPathZreport,
+            R.id.fabPathTransaction, R.id.fabPathLog, R.id.fabPathTotal, R.id.fabPathCash,
+            R.id.fabPathCashTrans, R.id.fabPathRetrievedJoin, R.id.fabPathTempInvoice};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +44,7 @@ public class ManageRestore extends AppCompatActivity {
         setSupportActionBar(toolbar);
         db_data = new DB_Data(this);
         dbReader = db_data.getReadableDatabase();
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                importProduct();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
         listeners();
-
     }
 
     private void importProduct() {
@@ -78,10 +65,6 @@ public class ManageRestore extends AppCompatActivity {
             case requestcode:
                 String filepath = data.getData().getPath();
                 SQLiteDatabase db = db_data.getWritableDatabase();
-                String tableQuery = "SELECT * FROM " + tableName + ";";
-                Cursor cursorTable = dbReader.rawQuery(tableQuery, null);
-                int cursorColumnCount = cursorTable.getColumnCount();
-                cursorTable.close();
                 db.execSQL("delete from " + tableName);
                 try {
                     if (resultCode == RESULT_OK) {
@@ -91,14 +74,15 @@ public class ManageRestore extends AppCompatActivity {
                             ContentValues contentValues = new ContentValues();
                             db.beginTransaction();
                             while (buffer.readLine() != null) {
-                                String[] str = buffer.readLine().split(",", cursorColumnCount - 1);  // defining 3 columns with null or blank field //values acceptance
-                                for (int counter = 0; counter < cursorColumnCount; counter++) {
+                                String[] str = buffer.readLine().split(",");
+                                for (int counter = 0; counter < tableColumns.length; counter++) {
                                     contentValues.put(tableColumns[counter], str[counter]);
                                 }
                                 db.insert(tableName, null, contentValues);
                             }
 
-                            Toast.makeText(this, "Successfully restored database.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Successfully restored database.",
+                                    Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
                             int quer = db_data.getProdTempCount();
@@ -126,13 +110,13 @@ public class ManageRestore extends AppCompatActivity {
                     Dialog d = new Dialog(this);
                     d.setTitle(ex.getMessage() + "second");
                     d.show();
+                    ex.printStackTrace();
                     // db.endTransaction();
                 }
         }
     }
 
     void listeners() {
-
         for (int index = 0; index < fabInt.length; index++) {
             fabArray[index] = (FloatingActionButton) findViewById(fabInt[index]);
             final int mIndex = index;
@@ -142,8 +126,6 @@ public class ManageRestore extends AppCompatActivity {
                     tableName = tableArray[mIndex];
                     tableColumns = columnArray[mIndex];
                     importProduct();
-                    Snackbar.make(view, "Table " + tableName + " has been retored.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
                 }
             });
         }

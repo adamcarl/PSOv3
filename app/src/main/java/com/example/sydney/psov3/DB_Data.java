@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -271,7 +272,9 @@ class DB_Data extends SQLiteOpenHelper {
         return 0;
     }
 
-    void addCashInOut(String cashTransNum, String cashCashierNum, String cashDateTime, double cashAdd, double cashMinus, double cashCurrent, String cashX, String cashZ) {
+    void addCashInOut(String cashTransNum, String cashCashierNum, String cashDateTime,
+                      double cashAdd, double cashMinus, double cashCurrent, String cashX,
+                      String cashZ) {
         cv.clear();
         cv.put(COLUMN_CASH_TRANSNUM, cashTransNum);
         cv.put(COLUMN_CASH_CASHIERNUM, cashCashierNum);
@@ -308,7 +311,8 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_CASHIER, null, cv);
     }
 
-    void addProduct(String ProdId,String ProdName,String ProdDesc, String ProdPrice, String ProdQuan){
+    void addProduct(String ProdId, String ProdName, String ProdDesc, String ProdPrice,
+                    String ProdQuan) {
         cv.clear();
         cv.put(COLUMN_PRODUCT_ID, ProdId);
         cv.put(COLUMN_PRODUCT_NAME, ProdName);
@@ -338,7 +342,10 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_TOTAL, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint, String inCashierNum, String inZreport, String inXreport, String inVattable, double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime, String inCreditCardNum, String inCreditExp) {
+    void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint,
+                    String inCashierNum, String inZreport, String inXreport, String inVattable,
+                    double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime,
+                    String inCreditCardNum, String inCreditExp) {
         cv.clear();
         cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
         cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
@@ -357,7 +364,8 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
-    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName, String itemDesc, double itemPrice, String itemCashier){
+    void addItem(String itemIn, String itemProd, String itemQuan, int itemStatus, String itemName,
+                 String itemDesc, double itemPrice, String itemCashier) {
         cv.clear();
         cv.put(COLUMN_ITEM_INVOICE,itemIn);
         cv.put(COLUMN_ITEM_PRODUCT,itemProd);
@@ -373,7 +381,9 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_ITEM, null, cv);
     }
 
-    void addTransaction(String transactionType, String transactionDatetime, String transactionCashier, int transactionXreport, int transactionZreport, String transactionPrint) {
+    void addTransaction(String transactionType, String transactionDatetime,
+                        String transactionCashier, int transactionXreport, int transactionZreport,
+                        String transactionPrint) {
         cv.clear();
         cv.put(COLUMN_TRANSACTION_TYPE,transactionType);
         cv.put(COLUMN_TRANSACTION_DATETIME,transactionDatetime);
@@ -426,7 +436,8 @@ class DB_Data extends SQLiteOpenHelper {
         try {
             int i;
             Cursor cursor;
-            cursor = database.rawQuery("SELECT * FROM "+TABLE_CASHIER+" where "+COLUMN_CASHIER_NUMBER+"=?", selectionArgs );
+            cursor = database.rawQuery("SELECT * FROM " + TABLE_CASHIER + " where " +
+                    COLUMN_CASHIER_NUMBER + "=?", selectionArgs);
             cursor.moveToFirst();
             i = cursor.getCount();
             cursor.close();
@@ -438,7 +449,8 @@ class DB_Data extends SQLiteOpenHelper {
     }
 
     String[] searchProduct(String id){
-        String[] mALL = {COLUMN_PRODUCT_ID,COLUMN_PRODUCT_NAME,COLUMN_PRODUCT_DESCRIPTION,COLUMN_PRODUCT_PRICE,COLUMN_PRODUCT_QUANTITY,COLUMN_PRODUCT_VATABLE};
+        String[] mALL = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_DESCRIPTION,
+                COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_QUANTITY, COLUMN_PRODUCT_VATABLE};
         String mWHERE = COLUMN_PRODUCT_ID+" = ?";
         String[] mWHERE_ARGS = new String[]{id};
         String[] itemResult = new String[5];
@@ -1180,5 +1192,26 @@ class DB_Data extends SQLiteOpenHelper {
         int a = cursor.getInt(0);
         cursor.close();
         return a;
+    }
+
+    int checkForPendingZRead() {
+        String[] mCOLUMNS = {"COUNT(*)"};
+        String dayWHERE = COLUMN_TRANSACTION_ZREPORT + " = ? AND " + COLUMN_TRANSACTION_DATETIME + " NOT LIKE ?";
+        String[] dayWHERE_ARGS = new String[]{"'0'", "'" + getYesterDay() + "%'"};
+
+        Cursor cursor = dbr.query(TABLE_TRANSACTION, mCOLUMNS, dayWHERE, dayWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        int mCount = cursor.getInt(0);
+        cursor.close();
+        if (mCount != 0)
+            return 1;
+        else
+            return 0;
+    }
+
+    String getYesterDay() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy");
+        return dateFormat.format(c.getTime());
     }
 }
