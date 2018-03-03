@@ -202,7 +202,6 @@ class DB_Data extends SQLiteOpenHelper {
                 + COLUMN_CASHTRANS_REMARKS2 + " TEXT,"
                 + COLUMN_CASHTRANS_REMARKS3 + " TEXT,"
                 + COLUMN_CASHTRANS_REMARKS4 + " TEXT);");
-
     }
 
     @Override

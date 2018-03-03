@@ -50,7 +50,10 @@ class BackUpDatabase {
 
         SQLiteDatabase dbReader = db_data.getReadableDatabase();
 
-        String[] tables = {TABLE_TERMINAL, TABLE_ADMIN, TABLE_CASHIER, TABLE_PRODUCT, TABLE_PRODUCT_TEMP, TABLE_INVOICE, TABLE_ITEM, TABLE_PRODUCTLOGS, TABLE_CREDIT_CARD, TABLE_XREPORT, TABLE_ZREPORT, TABLE_TRANSACTION, TABLE_LOG, TABLE_TEMP_INVOICING, TABLE_TOTAL, TABLE_RETRIEVED_JOINTABLE, TABLE_CASH, TABLE_CASHTRANS};
+        String[] tables = {TABLE_TERMINAL, TABLE_ADMIN, TABLE_CASHIER, TABLE_PRODUCT,
+                TABLE_PRODUCT_TEMP, TABLE_INVOICE, TABLE_ITEM, TABLE_PRODUCTLOGS, TABLE_CREDIT_CARD,
+                TABLE_XREPORT, TABLE_ZREPORT, TABLE_TRANSACTION, TABLE_LOG, TABLE_TEMP_INVOICING,
+                TABLE_TOTAL, TABLE_RETRIEVED_JOINTABLE, TABLE_CASH, TABLE_CASHTRANS};
 
         for (String table : tables) {
             String tableQuery = "SELECT * FROM " + table + ";";
@@ -81,7 +84,6 @@ class BackUpDatabase {
                 csvWrite.close();
                 curSV.close();
             }
-
         } catch (Exception sqlEx) {
             Log.e("BackUpDatabase", sqlEx.getMessage(), sqlEx);
         }

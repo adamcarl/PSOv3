@@ -73,8 +73,10 @@ public class ManageRestore extends AppCompatActivity {
                             BufferedReader buffer = new BufferedReader(file);
                             ContentValues contentValues = new ContentValues();
                             db.beginTransaction();
-                            while (buffer.readLine() != null) {
-                                String[] str = buffer.readLine().split(",");
+                            String[] str;
+                            String line;
+                            while ((line = buffer.readLine()) != null) {
+                                str = line.split(",");
                                 for (int counter = 0; counter < tableColumns.length; counter++) {
                                     contentValues.put(tableColumns[counter], str[counter]);
                                 }
@@ -85,10 +87,6 @@ public class ManageRestore extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
-                            int quer = db_data.getProdTempCount();
-                            if (quer <= 0) {
-                                db_data.copyToProductTemp();
-                            }
                         } catch (IOException e) {
                             if (db.inTransaction())
                                 db.endTransaction();
@@ -96,6 +94,8 @@ public class ManageRestore extends AppCompatActivity {
                             d.setTitle(e.getMessage() + "first");
                             d.show();
                             // db.endTransaction();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     } else {
                         if (db.inTransaction())
@@ -111,7 +111,6 @@ public class ManageRestore extends AppCompatActivity {
                     d.setTitle(ex.getMessage() + "second");
                     d.show();
                     ex.printStackTrace();
-                    // db.endTransaction();
                 }
         }
     }
@@ -125,6 +124,7 @@ public class ManageRestore extends AppCompatActivity {
                 public void onClick(View view) {
                     tableName = tableArray[mIndex];
                     tableColumns = columnArray[mIndex];
+                    Toast.makeText(ManageRestore.this, tableName, Toast.LENGTH_SHORT).show();
                     importProduct();
                 }
             });

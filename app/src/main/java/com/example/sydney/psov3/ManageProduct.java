@@ -329,9 +329,9 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                             BufferedReader buffer = new BufferedReader(file);
                             ContentValues contentValues = new ContentValues();
                             db.beginTransaction();
-                            while (buffer.readLine() != null) {
-                                String[] str = buffer.readLine().split(",", 5);  // defining 3 columns with null or blank field //values acceptance
-                                //Id, Company,Name,Price
+                            String line;
+                            while ((line = buffer.readLine()) != null) {
+                                String[] str = line.split(",", 5);  // defining 3 columns with null or blank field //values acceptance
                                 String pId = str[0];
                                 String pName = str[1];
                                 String pDesc = str[2];
@@ -346,13 +346,16 @@ public class ManageProduct extends AppCompatActivity  implements ProductAdapter.
                             }
                             //INITIALIZE DATA SET
                             productsList = listGo();
-                            productAdapter = new ProductAdapter(getApplication(),productsList,ManageProduct.this);
+                            productAdapter = new ProductAdapter(getApplication(), productsList,
+                                    ManageProduct.this);
                             recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                            recyclerView.setLayoutManager(new GridLayoutManager(this,1,GridLayoutManager.VERTICAL,false));
+                            recyclerView.setLayoutManager(new GridLayoutManager(this, 1,
+                                    GridLayoutManager.VERTICAL, false));
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
                             recyclerView.setAdapter(productAdapter);//recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-                            Toast.makeText(this, "Successfully Updated Database", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Successfully Updated Database",
+                                    Toast.LENGTH_LONG).show();
                             db.setTransactionSuccessful();
                             db.endTransaction();
                             int quer = db_data.getProdTempCount();

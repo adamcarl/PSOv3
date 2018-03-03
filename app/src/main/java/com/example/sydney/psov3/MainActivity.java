@@ -52,8 +52,6 @@ import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
 
 public class MainActivity extends AppCompatActivity {
-    //For Update
-    public static final int requestcode = 1;
     //For Database
     DB_Data db_data;
     //For ActivityLogin
@@ -99,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
 
-        //Todo DIALOG LOADING
         getSupportActionBar().hide();
 
         if (db_data.checkSerial() > 0) {
@@ -123,8 +120,10 @@ public class MainActivity extends AppCompatActivity {
             btn_login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (chk_admin.isChecked())
+                        loginBaKamo();
+                    else
                     checkZReadPending();
-
                 }
             });
             //For SignUp
@@ -156,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         spn_regPosition.setSelection(0);
 
                         db_data.addCashier(mname, mnum, mpass, mpos);
-                        Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Registration successful!",
+                                Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -264,9 +264,12 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_terminal, null);
         builder.setView(alertLayout);
-        final AppCompatButton btnEnter = (AppCompatButton) alertLayout.findViewById(R.id.btnTerminalSubmit);
-        final EditText etName = (AppCompatEditText) alertLayout.findViewById(R.id.etTerminalName);
-        final EditText etSerial = (AppCompatEditText) alertLayout.findViewById(R.id.etTerminalSerial);
+        final AppCompatButton btnEnter = (AppCompatButton)
+                alertLayout.findViewById(R.id.btnTerminalSubmit);
+        final EditText etName = (AppCompatEditText)
+                alertLayout.findViewById(R.id.etTerminalName);
+        final EditText etSerial = (AppCompatEditText)
+                alertLayout.findViewById(R.id.etTerminalSerial);
 
         alertTerminal = builder.create();
         alertTerminal.show();
@@ -274,11 +277,14 @@ public class MainActivity extends AppCompatActivity {
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etName.getText().toString().equals("") || etSerial.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please fill all fields.", Toast.LENGTH_SHORT).show();
+                if (etName.getText().toString().equals("") ||
+                        etSerial.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Please fill all fields.",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     db_data.addTerminal(etName.getText().toString(), etSerial.getText().toString());
                     alertTerminal.dismiss();
+                    finish();
                 }
             }
         });
@@ -308,7 +314,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
                 Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Incorrect ID number/Password!",
+                        Toast.LENGTH_SHORT).show();
                 et_pass.setText("");
             }
         } else {
@@ -322,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                 startActivity(myIntent);
             } else {
-                Toast.makeText(MainActivity.this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
                 et_pass.setText("");
             }
         }
@@ -334,9 +341,12 @@ public class MainActivity extends AppCompatActivity {
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_login, null);
         authenticateBuilder.setView(alertLayout);
 
-        final AppCompatButton btnEnterAuthenticate = (AppCompatButton) alertLayout.findViewById(R.id.btnEnterAuthentication);
-        final AppCompatEditText etUsername = (AppCompatEditText) alertLayout.findViewById(R.id.etUsername);
-        final AppCompatEditText etPassword = (AppCompatEditText) alertLayout.findViewById(R.id.etPassword);
+        final AppCompatButton btnEnterAuthenticate = (AppCompatButton)
+                alertLayout.findViewById(R.id.btnEnterAuthentication);
+        final AppCompatEditText etUsername = (AppCompatEditText)
+                alertLayout.findViewById(R.id.etUsername);
+        final AppCompatEditText etPassword = (AppCompatEditText)
+                alertLayout.findViewById(R.id.etPassword);
 
         final AlertDialog alertAuthenticate = authenticateBuilder.create();
         alertAuthenticate.show();
@@ -344,17 +354,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    int authen = db_data.cashierLogin(etUsername.getText().toString(), etPassword.getText().toString());
+                    int authen = db_data.cashierLogin(etUsername.getText().toString(),
+                            etPassword.getText().toString());
                     if (authen >= 1) {
-                        if (db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Manager") || db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Supervisor")) {
+                        if (db_data.getTheCashierLevel(
+                                etUsername.getText().toString()).equals("Manager") ||
+                                db_data.getTheCashierLevel(
+                                        etUsername.getText().toString()).equals("Supervisor")) {
                             alertAuthenticate.dismiss();
                             zReportBaKamo(etUsername.getText().toString());
                             unLockCashBox();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Unauthorized account.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Unauthorized account.",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
                         alertAuthenticate.dismiss();
                     }
                 } catch (Exception e) {
@@ -374,8 +390,10 @@ public class MainActivity extends AppCompatActivity {
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_zreport, null);
         zReportBuilder.setView(alertLayout);
 
-        final AppCompatButton btnEnterZreport = (AppCompatButton) alertLayout.findViewById(R.id.btnCashDrawerSubmitZ);
-        final AppCompatEditText etTotalCashDrawerZ = (AppCompatEditText) alertLayout.findViewById(R.id.etTotalCashDrawerZ);
+        final AppCompatButton btnEnterZreport = (AppCompatButton)
+                alertLayout.findViewById(R.id.btnCashDrawerSubmitZ);
+        final AppCompatEditText etTotalCashDrawerZ = (AppCompatEditText)
+                alertLayout.findViewById(R.id.etTotalCashDrawerZ);
 
         final AlertDialog alertZreport = zReportBuilder.create();
         alertZreport.show();
@@ -386,9 +404,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Double enteredCashDrawer = 0.0;
                     if (etTotalCashDrawerZ.getText().toString().equals("")) {
-                        Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please Fill all Fields.",
+                                Toast.LENGTH_SHORT).show();
                     } else {
-                        enteredCashDrawer = Double.parseDouble(etTotalCashDrawerZ.getText().toString());
+                        enteredCashDrawer = Double.parseDouble(etTotalCashDrawerZ.getText()
+                                .toString());
                         alertZreport.dismiss();
                     }
 
@@ -397,7 +417,8 @@ public class MainActivity extends AppCompatActivity {
                     int bcd;
                     db_data.addTransaction(mTransType, getCurrentDate(), userNum, 0, 0, "");
                     String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
-                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
+                    Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null,
+                            null, null);
                     cursor1.moveToLast();
                     bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
                     cursor1.close();
@@ -435,7 +456,8 @@ public class MainActivity extends AppCompatActivity {
                             " GROUP BY " + COLUMN_PRODUCT_ID + ";";
                     retrievedCursorFromJoinTable = dbReader.rawQuery(joinTableQuery, null);
                     ZreportExportFunction zreportExportFunction = new ZreportExportFunction();
-                    zreportExportFunction.showDialogLoading(MainActivity.this, retrievedCursorFromJoinTable, cursorDummy);
+                    zreportExportFunction.showDialogLoading(MainActivity.this,
+                            retrievedCursorFromJoinTable, cursorDummy);
                     BackUpDatabase backUpDatabase = new BackUpDatabase();
                     backUpDatabase.setDb_data(db_data);
                     backUpDatabase.main(MainActivity.this);
@@ -478,7 +500,8 @@ public class MainActivity extends AppCompatActivity {
             boolean retnVale = mPrinter.PrintText(SData);
 
             if (!retnVale) {
-                Toast.makeText(MainActivity.this, mPrinter.GetLastPrintErr(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, mPrinter.GetLastPrintErr(),
+                        Toast.LENGTH_SHORT).show();
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -488,15 +511,15 @@ public class MainActivity extends AppCompatActivity {
     String getCurrentDate() {
         Calendar c = Calendar.getInstance();
         final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-        c.getTime();
         c.add(Calendar.DATE, -1);
-        return dateTimeFormat.format(c);
+        return dateTimeFormat.format(c.getTime());
     }
 
     //Fragments
     public static class FragmentSignUp extends Fragment {
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_signup, container, false);
         }
     }
