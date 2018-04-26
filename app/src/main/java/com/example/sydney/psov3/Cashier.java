@@ -1,21 +1,13 @@
 package com.example.sydney.psov3;
 
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -48,16 +40,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sydney.psov3.POJO.FunctionCall;
+import com.example.sydney.psov3.POJO.Invoice;
 import com.example.sydney.psov3.adapter.AdapterOrder;
 import com.jolimark.JmPrinter;
 import com.jolimark.UsbPrinter;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +83,7 @@ import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 import static com.example.sydney.psov3.Constants.TABLE_TEMP_INVOICING;
 import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
 import static com.example.sydney.psov3.Constants._ID;
+import static com.example.sydney.psov3.POJO.FunctionCall.unLockCashBox;
 
 public class Cashier extends AppCompatActivity {
     private static final String ACTION_USB_PERMISSION =
@@ -106,9 +97,6 @@ public class Cashier extends AppCompatActivity {
 
     ArrayList<String> itemCode123 = new ArrayList<>();
     ArrayList<String> itemQuan123 = new ArrayList<>();
-    String userNum;
-    Double vattable, vat, subTotal = 0.0, itempriceCol, itempricetotalCol = 0.0, discount = 0.0;
-    Double due;
     Cursor cursor;
     DB_Data db_data;
     BackUpDatabase backUpDatabase;
@@ -126,106 +114,49 @@ public class Cashier extends AppCompatActivity {
     ArrayList<String> productsFooter = new ArrayList<>();
     ArrayList<String> productsSpace = new ArrayList<>();
 
-    SQLiteDatabase dbReader;
-    SQLiteDatabase dbWriter;
+    SQLiteDatabase dbReader, dbWriter;
     TabHost tab_host;
     TextView lbl_sub,lbl_tax,lbl_total,lbl_due,lbl_dc,lbl_discount;
-    Button btn_print, btn_cashier_confirmDelete, btnCreditCard, btnSetQuantity;
-    ImageButton btn_cashier_delete;
+    Button btn_print, btn_cashier_confirmDelete, btn_cashier_cancelRefund, btnCreditCard, btnSetQuantity;
+    ImageButton btn_cashier_delete, btn_cashier_refund;
     ImageView img_receipt;
     RadioButton rb_ndisc,rb_spdisc,rb_ddisc;
     RadioGroup rg_discount;
     List<List<String>> t2Rows = new ArrayList<>();
     ArrayList<Order> orderArrayList;
     AdapterOrder adapterOrder=null;
-    String dateformatted;
-    String transType;
+    String dateformatted, transType;
     ReportBaKamo reportBaKamo;
-    double enteredCashDrawer;
-    int transNumber;
-    boolean isOn = false, cashIn = false;
+    boolean isOn, cashIn, refund_status;
     //Dialog for Enter the Quantity
-    AlertDialog.Builder builder;
-    AlertDialog alertQuantity;
-    //Dialog for Enter the Credit Card
-    AlertDialog.Builder creditBuilder;
-    AlertDialog alertCredit;
+    AlertDialog.Builder builder, creditBuilder, debitBuilder, authenticateBuilder,
+            cashinoutBuilder, zReportBuilder, xReportBuilder, productNotFoundBuilder,
+            addProductNotFoundBuilder;
 
-    AlertDialog.Builder debitBuilder;
-    AlertDialog alertDebit;
+    AlertDialog alertQuantity, alertCredit, alertDebit, alertAuthenticate, alertCashinout,
+            alertZreport, alertXreport, alertProductNotFound, alertAddProductNotFound;
 
-    AlertDialog.Builder authenticateBuilder;
-    AlertDialog alertAuthenticate;
-
-    //Dialog for Enter the Cash IN OUT
-    AlertDialog.Builder cashinoutBuilder = null;
-    AlertDialog alertCashinout = null;
-
-    AlertDialog.Builder zReportBuilder;
-    AlertDialog alertZreport;
-    AlertDialog.Builder xReportBuilder;
-    AlertDialog alertXreport;
-
-    AlertDialog.Builder productNotFoundBuilder = null;
-    AlertDialog alertProductNotFound;
-
-    AlertDialog.Builder addProductNotFoundBuilder = null;
-    AlertDialog alertAddProductNotFound;
-
-    double mPriceTotal;
-    double mVattable;
-    double mTax;
-    double mTotalDiscount;
-    double mTotal;
-    double mDue;
-    double mTaxPercent;
-    double totalPayment = 0;
-    String mVattableConverted = "";
-    String mTaxConverted = "";
-    String mSubTotalConverted = "";
-    String mTotalDiscountConverted = "";
-    String mDueConverted = "";
-    String cleanSubtotal = "";
-    String cleanVattable = "";
-    String cleanTax = "";
-    double parsed = 0.0;
+    double mPriceTotal, mVattable, mTax, mTotalDiscount, mTotal, mDue, mTaxPercent, totalPayment,
+            parsed, enteredCashDrawer;
+    String userNum;
     String TAG = "PL2303HXD_APLog";
     PL2303Driver mSerial;
     //Variables for txt in Payment Info
     ZreportExportFunction zreportExportFunction;
     InvoiceAdapter invoiceAdapter = null;
-    AppCompatEditText etQuan = null;
-    AppCompatEditText etCreditBank = null;
-    AppCompatEditText etCreditNumber = null;
-    AppCompatEditText etCreditExpiry = null;
-    String creditBank, creditNumber, creditExpiry;
+    AppCompatEditText etQuan, etCreditBank, etCreditNumber, etCreditExpiry, etPassword, etUsername, etDebitBank, etDebitNumber, etDebitExpiry;
+    String creditBank, creditNumber, creditExpiry, debitBank, debitNumber, debitExpiry;
 
-    AppCompatEditText etUsername = null;
-    AppCompatEditText etPassword = null;
+    int transNumber, tenderCashStatus, tenderCreditStatus, tenderDebitStatus, tenderDiscountStatus,
+            tenderGiftStatus, tenderRnEStatus;
 
-    AppCompatEditText etDebitBank = null;
-    AppCompatEditText etDebitNumber = null;
-    AppCompatEditText etDebitExpiry = null;
-    String debitBank, debitNumber, debitExpiry;
-
-    int tenderCashStatus = 0;
-    int tenderCreditStatus = 0;
-    int tenderDebitStatus = 0;
-    int tenderDiscountStatus = 0;
-    //    int tenderRedeemStatus = 0;
-    int tenderGiftStatus = 0;
-    int tenderRnEStatus = 0;
-
-    double tenderCashAmount = 0.0;
-    double tenderCreditAmount = 0.0;
-    double tenderDebitAmount = 0.0;
-    double tenderDiscountAmount = 0.0;
-    //    double tenderRedeemQuantity = 0.0;
-    double tenderGiftAmount = 0.0;
-    double tenderRnEAmount = 0.0;
+    double tenderCashAmount, tenderCreditAmount, tenderDebitAmount, tenderDiscountAmount,
+            tenderGiftAmount, tenderRnEAmount, vattable, vat, subTotal, itempriceCol,
+            itempricetotalCol, discount, due;
 
     AppCompatEditText etTotalCashDrawerZ = null;
     AppCompatEditText etTotalCashDrawerX = null;
+    DecimalFormat moneyDecimal = new DecimalFormat("0.00");
     private int quantityCount = 0, discType = 0, dialogVar;
     private String code = "";
     private List<InvoiceItem> invoiceItemList;
@@ -248,14 +179,7 @@ public class Cashier extends AppCompatActivity {
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
-
-    public static boolean unLockCashBox() {
-        boolean retnValue = false;
-        UsbPrinter tmpUsbDev = new UsbPrinter();
-        retnValue = tmpUsbDev.UnLockOfCashBox();
-
-        return retnValue;
-    }
+    private FunctionCall fuc = new FunctionCall();
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -269,7 +193,6 @@ public class Cashier extends AppCompatActivity {
         printerDetection();
 
         super.onCreate(savedInstanceState);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashier);
         init(); //INITALIZATION OF VIEWS
 
@@ -282,13 +205,9 @@ public class Cashier extends AppCompatActivity {
                 this, ACTION_USB_PERMISSION);
         mBaudrate =PL2303Driver.BaudRate.B19200;
         if (!mSerial.PL2303USBFeatureSupported()) {
-
             Toast.makeText(this, "No Support USB host API", Toast.LENGTH_SHORT).show();
-
             Log.d(TAG, "No Support USB host API");
-
             mSerial = null;
-
         }
 
         if( !mSerial.enumerate() ) {
@@ -296,7 +215,7 @@ public class Cashier extends AppCompatActivity {
         }
 
         try {
-            Thread.sleep(1500);
+//            Thread.sleep(1500);
             openUsbSerial();
         } catch (Exception e) {
             e.printStackTrace();
@@ -306,7 +225,7 @@ public class Cashier extends AppCompatActivity {
             productsHeader.add(HEADER[a]);
         }
         for (int a = 0; a < 6; a++) {
-            productsSpace.add("");
+            productsSpace.add(" ");
         }
 
         writeDataToSerial("ABZTRAK INC.", "Tinda-PoS Android", "");
@@ -362,9 +281,9 @@ public class Cashier extends AppCompatActivity {
                         String cleanString = s.toString().replaceAll("[P,.]", "");
 
                         parsed = Double.parseDouble(cleanString);
-                        formatted = NumberFormat.getCurrencyInstance().format((parsed / 100));
+                        formatted = moneyDecimal.format(parsed / 100);
                         current = formatted;
-                        txt_cash.setText(formatted.replace("$", "P"));
+                        txt_cash.setText(formatted);
                         txt_cash.setSelection(formatted.length());
 
                         txt_cash.addTextChangedListener(this);
@@ -395,12 +314,12 @@ public class Cashier extends AppCompatActivity {
                     discType = 1;
 
                     //SUPPLIER FOR addInvoice(. . .)
-                    inVattable = 0.0;
+                    inVattable = vattable;
                     inVatted = 0.0;
                     inVatStatus = "x";
                     inSeniorDiscount = discount;
                     inVatExempt = 0.0;
-                    inZeroRated = mVattable;
+                    inZeroRated = 0.0;
 
                     discount = 0.20;
                     mTaxPercent = 0;
@@ -415,12 +334,12 @@ public class Cashier extends AppCompatActivity {
                     mTaxPercent = 0;
 
                     //SUPPLIER FOR addInvoice(. . .)
-                    inVattable = 0.0;
+                    inVattable = vattable;
                     inVatted = 0.0;
                     inVatStatus = "z";
                     inSeniorDiscount = 0.0;
                     inVatExempt = 0.0;
-                    inZeroRated = vattable;
+                    inZeroRated = 0.0;
 
                     mTaxPercent = 0;
                     discount = 0.0;
@@ -467,6 +386,15 @@ public class Cashier extends AppCompatActivity {
             }
         });
 
+        btn_cashier_refund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_cashier_refund.setVisibility(View.INVISIBLE);
+                btn_cashier_cancelRefund.setVisibility(View.VISIBLE);
+                refund_status = true;
+            }
+        });
+
         btn_cashier_confirmDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -493,6 +421,15 @@ public class Cashier extends AppCompatActivity {
                         //END
                     }
                 }
+            }
+        });
+
+        btn_cashier_cancelRefund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_cashier_cancelRefund.setVisibility(View.INVISIBLE);
+                btn_cashier_refund.setVisibility(View.VISIBLE);
+                refund_status = false;
             }
         });
 
@@ -719,7 +656,7 @@ public class Cashier extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Please Fill all Fields.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            tenderCreditAmount = getTxtCashDouble();
+                            tenderCreditAmount = fuc.getTxtCashDouble(txt_cash);
                             creditBank = etCreditBank.getText().toString();
                             creditNumber = etCreditNumber.getText().toString();
                             creditExpiry = etCreditExpiry.getText().toString();
@@ -771,21 +708,17 @@ public class Cashier extends AppCompatActivity {
         mTotal = mVattable + mTax - mTotalDiscount;
         mDue = mDoubleCustomerCash - mTotal;
 
-        mVattableConverted = NumberFormat.getCurrencyInstance().format((mVattable / 1));
-        mTaxConverted = NumberFormat.getCurrencyInstance().format((mTax / 1));
-        mSubTotalConverted = NumberFormat.getCurrencyInstance().format((mTotal / 1));
-        mTotalDiscountConverted = NumberFormat.getCurrencyInstance().format((mTotalDiscount / 1));
-        mDueConverted = NumberFormat.getCurrencyInstance().format((mDue / 1));
+//            mVattableConverted = NumberFormat.getCurrencyInstance().format(mVattable).replace("$","P");
+//            mTaxConverted = NumberFormat.getCurrencyInstance().format(mTax).replace("$","P");
+//            mSubTotalConverted = NumberFormat.getCurrencyInstance().format(mTotal).replace("$","P");
+//            mTotalDiscountConverted = NumberFormat.getCurrencyInstance().format(mTotalDiscount).replace("$","P");
+//            mDueConverted = NumberFormat.getCurrencyInstance().format(mDue).replace("$","P");
 
-        lbl_sub.setText("" + mVattableConverted.replace("$","P") + "");
-        lbl_tax.setText("" + mTaxConverted.replace("$","P") + "");
-        lbl_total.setText("" + mSubTotalConverted.replace("$","P") + "");
-        lbl_discount.setText("" + mTotalDiscountConverted.replace("$","P") + "");
-        lbl_due.setText("P" + mDueConverted.replaceAll("[$()]","") + "");
-
-        cleanVattable = mVattableConverted.replaceAll("[$,]","");
-        cleanSubtotal = mSubTotalConverted.replaceAll("[$,]","");
-        cleanTax = mTotalDiscountConverted.replaceAll("[$,]","");
+        lbl_sub.setText("" + moneyDecimal.format(mVattable) + "");
+        lbl_tax.setText("" + moneyDecimal.format(mTax) + "");
+        lbl_total.setText("" + moneyDecimal.format(mTotal) + "");
+        lbl_discount.setText("-" + moneyDecimal.format(mTotalDiscount) + "");
+        lbl_due.setText("" + moneyDecimal.format(mDue) + "");
 
         if (mDue < 0) {
             btn_print.setEnabled(false);
@@ -802,25 +735,54 @@ public class Cashier extends AppCompatActivity {
     //BUTTON PRINT
     public void print(View view) throws ParseException {
         try {
-            //// TODO: 9/27/2017
-            transType = "invoice";
-            db_data.addTransaction(transType, getCurrentDate(), userNum, 0, 0, "");
-            String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
+            if (refund_status) transType = "refund";
+            else transType = "invoice";
+            db_data.addTransaction(transType, fuc.getCurrentDate(), userNum, 0, 0, "");
+            String[] itemID = new String[]{_ID};
             Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
             cursor1.moveToLast();
             transNumber = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
             cursor1.close();
 
             //MARK : I UPDATED THIS PART FOR addInvoice discounted and so on---
-            //--END
-            //// TODO: 7/15/2017
             try{
-                db_data.addInvoice(transNumber + "", cleanTax, cleanSubtotal, inPrint, userNum, "0", "0", cleanVattable, mTax, discType + "", tenderCreditAmount, getCurrentDate(), creditNumber, creditExpiry);
+
+                Invoice in = new Invoice();
+
+                in.setInTrans(transNumber + "");
+                in.setInPrint(inPrint);
+                in.setInCashierNum(userNum);
+                in.setInZreport("0");
+                in.setInXreport("0");
+                in.setInVatStatus(discType + "");
+                in.setInDateAndTime(fuc.getCurrentDate());
+                in.setInCreditCardNum(creditNumber);
+                in.setInCreditExp(creditExpiry);
+
+                if (refund_status) {
+                    in.setInDisc("-" + moneyDecimal.format(mTotalDiscount));
+                    in.setInCustomer("-" + moneyDecimal.format(mTotal));
+                    in.setInVattable("-" + moneyDecimal.format(mVattable));
+                    in.setInVatted(-mTax);
+                    in.setInCreditSale(-tenderCreditAmount);
+                } else {
+                    in.setInDisc(moneyDecimal.format(mTotalDiscount));
+                    in.setInCustomer(moneyDecimal.format(mTotal));
+                    in.setInVattable(moneyDecimal.format(mVattable));
+                    in.setInVatted(mTax);
+                    in.setInCreditSale(tenderCreditAmount);
+                }
                 if (tenderCreditStatus == 1) {
-                    db_data.addCredit(transNumber + "", userNum, getCurrentDate(), tenderCreditAmount, creditBank, creditNumber, creditExpiry);
+                    db_data.addCredit(transNumber + "", userNum, fuc.getCurrentDate(),
+                            tenderCreditAmount, creditBank, creditNumber, creditExpiry);
                 }
 
-                Log.e("AddInvoice : ", "trans#" + transNumber + "|disc" + discount.toString() + "|subtotyal" + cleanSubtotal + "|print" + inPrint + "|cashier" + userNum + "|clean vattable: " + cleanVattable + "|tax: " + mTax + "|disc typee" + discType + "|Date:" + getCurrentDate() + "");
+                db_data.addInvoice(in);
+
+                Log.e("AddInvoice : ", "trans#:" + transNumber + "|disc:" + moneyDecimal.format(mTotalDiscount) + "|subtotal:" +
+                        moneyDecimal.format(mTotal) + "|print:" + inPrint + "|cashier:" + userNum +
+                        "|vattable: " + moneyDecimal.format(mVattable) + "|getTax: " + moneyDecimal.format(mTax) + "|disc type:" +
+                        discType + "|Date:" + fuc.getCurrentDate() + "");
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -835,12 +797,12 @@ public class Cashier extends AppCompatActivity {
             receivedCursorFromTemp.moveToFirst();
 
             String consecutive = String.format("%1$06d", transNumber);
-
-            products.add("CASH INVOICE");
-            products.add("Date:\t" + getCurrentDate());
+            if (refund_status) products.add("ITEM REFUND");
+            else products.add("CASH INVOICE");
+            products.add("Date:\t" + fuc.getCurrentDate());
             products.add("TRANS#" + consecutive);
             products.add("-------------------------------");
-            products.add("Name\t\t" + "Quantity \t\t" + "Price");
+            products.add("Quantity \t\t" + "Name\t\t" + "Price");
             try{
                 while (!receivedCursorFromTemp.isAfterLast()){
                     db_data.addItem(
@@ -852,8 +814,8 @@ public class Cashier extends AppCompatActivity {
                             receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)),
                             receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)),
                             userNum);
-                    products.add("" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_DESCRIPTION)) +
-                            "\t" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY)) +
+                    products.add("" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY)) +
+                            "\t" + receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_NAME)) +
                             "\t" + receivedCursorFromTemp.getDouble(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_PRICE)) * Double.parseDouble(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY))) + "");
                     int quanBaKamo = db_data.getQuantityofProducts(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID))) - receivedCursorFromTemp.getInt(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_QUANTITY));
                     db_data.updateProductQuantity(receivedCursorFromTemp.getString(receivedCursorFromTemp.getColumnIndex(COLUMN_TEMP_ID)) ,quanBaKamo);
@@ -870,22 +832,45 @@ public class Cashier extends AppCompatActivity {
             itemPriceList.clear();
 
             products.add("-------------------------------");
+            if (!refund_status)
             products.add("Invoice Number " + abc + "");
             products.add(quantityCount + " item(s)");
-            products.add("Vatable" + "" + "\t\t" + mVattableConverted.replace("$","P"));
-            products.add("Vat" + "" + "\t\t" + mTaxConverted.replace("$","P"));
-            products.add("Total" + "\t\t" + mSubTotalConverted.replace("$","P"));
 
+            products.add("Subtotal" + "" + "\t\t " + mPriceTotal);
+            if (rb_spdisc.isChecked()) {
+                products.add("Vat Exempt" + "" + "\t\t " + moneyDecimal.format(mPriceTotal - (mPriceTotal / 1.12)));
+                products.add("Discount" + "" + "\t\t-" + moneyDecimal.format(mTotalDiscount));
+                products.add("Amount Due:" + "" + "\t\t " + moneyDecimal.format((mPriceTotal / 1.12) - mTotalDiscount) + "\n");
+                products.add("VAT Sales" + "" + "\t\t " + "0.00");
+                products.add("VAT Exempt Sales" + "" + "\t\t " + moneyDecimal.format((mPriceTotal / 1.12) - mTotalDiscount));
+                products.add("VAT Zero-rated Sales" + "" + "\t\t " + "00.0");
+                products.add("12% VAT" + "\t\t " + "00.0");
+            } else if (rb_ddisc.isChecked()) {
+                products.add("Vat Exempt" + "" + "\t\t-" + moneyDecimal.format(mPriceTotal - (mPriceTotal / 1.12)));
+                products.add("Discount" + "" + "\t\t-" + "0.00");
+                products.add("Amount Due:" + "" + "\t\t " + moneyDecimal.format(mVattable) + "\n");
+                products.add("VAT Sales" + "" + "\t\t " + "0.00");
+                products.add("VAT Exempt Sales" + "" + "\t\t " + "0.00");
+                products.add("VAT Zero-rated Sales" + " " + "\t\t" + moneyDecimal.format(mVattable));
+                products.add("12% VAT" + "\t\t " + "0.00");
+            } else {
+                products.add("Vat Exempt" + "" + "\t\t-" + "0.00");
+                products.add("Discount" + "" + "\t\t " + "0.00");
+                products.add("Amount Due:" + "" + "\t\t " + mPriceTotal + "\n");
+                products.add("VAT Sales" + "" + "\t\t " + moneyDecimal.format(mVattable));
+                products.add("VAT Exempt Sales" + "" + "\t\t " + "0.00");
+                products.add("VAT Zero-rated Sales" + "" + "\t\t " + "0.00");
+                products.add("12% VAT" + "\t\t " + moneyDecimal.format(mTax));
+            }
             //customerCash = txt_cash.getText().toString().replace(",", "");
 //            double change = dCustomerCash - totalPrice;
 
 //            products.add("\t\t\t\tCash" + "\t\t\t\t" + txt_cash.getText().toString());
 //            products.add("\t\t\t\tCredit" + "\t\t\t\t" + creditPayment);
 //            products.add("\n\n\n\n\n\n");
-
-            if (tenderDiscountStatus == 1) {
+            if (tenderDiscountStatus == 1)
                 products.add("Discount\t" + tenderDiscountAmount);
-            }
+
             if (tenderCashStatus == 1) {
                 products.add("Cash\t" + tenderCashAmount);
             }
@@ -904,8 +889,8 @@ public class Cashier extends AppCompatActivity {
             if (tenderRnEStatus == 1) {
                 products.add("Others\t" + tenderRnEAmount);
             }
-            products.add("Change " + mDueConverted.replaceAll("[$()]", ""));
-
+            if (!refund_status)
+                products.add("Change " + moneyDecimal.format(mDue));
 
             //CHECK IF PRINTERS ARE OPEN
 //            boolean ret = marksPrinter.Open();
@@ -920,9 +905,9 @@ public class Cashier extends AppCompatActivity {
             }
             db_data.updateInvoice(abc,printBaHanapMo);
             //TODO create journar trail 1/9/2018
-            writeJournalTrail(mStoreCopy + "\n" + printBaHanapMo + "\n" + mStoreCopy + "\n" + mLine);
+            fuc.writeJournalTrail(mStoreCopy + "\n" + printBaHanapMo + "\n" + mStoreCopy + "\n" + mLine);
             //TODO create image version of the receipt 1/15/2018
-            createReceiptImage(abc, printHeadBaKamo, printBaKamo);
+            fuc.createReceiptImage(abc, printHeadBaKamo, printBaKamo);
 
             if (invoiceAdapter.getItemCount() > 0 && totalPayment >= mDue) {
                 //JOLLIMARK PRINTER
@@ -942,6 +927,9 @@ public class Cashier extends AppCompatActivity {
 //                itemQuantityList.clear();
             itemPriceList.clear();
             itemNameList.clear();
+            btn_cashier_cancelRefund.setVisibility(View.INVISIBLE);
+            btn_cashier_refund.setVisibility(View.VISIBLE);
+            refund_status = false;
 //                itemCodeList.clear();
         }
         cancelna();
@@ -1006,7 +994,7 @@ public class Cashier extends AppCompatActivity {
                                         if (db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Manager") || db_data.getTheCashierLevel(etUsername.getText().toString()).equals("Supervisor")) {
                                             alertAuthenticate.dismiss();
                                             transType = "cancel";
-                                            db_data.addTransaction(transType, getCurrentDate(), userNum, 0, 0, "");
+                                            db_data.addTransaction(transType, fuc.getCurrentDate(), userNum, 0, 0, "");
 
                                             cancelna();
                                             db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
@@ -1027,7 +1015,7 @@ public class Cashier extends AppCompatActivity {
                         });
                     } else {
                         transType = "cancel";
-                        db_data.addTransaction(transType, getCurrentDate(), userNum, 0, 0, "");
+                        db_data.addTransaction(transType, fuc.getCurrentDate(), userNum, 0, 0, "");
                         db_data.deleteAllTempItemInvoice(); //DELETE ALL TEMP ITEMS
                         refreshRecyclerView();
                         cancelna();
@@ -1050,6 +1038,7 @@ public class Cashier extends AppCompatActivity {
 
     public void onBackPressed(){
         tab_host.setCurrentTab(0);
+        txt_search.requestFocus();
     }
     //On Options Menu Cancel Item
     public void cancelna(){
@@ -1105,10 +1094,10 @@ public class Cashier extends AppCompatActivity {
 //    }
 
     public void tenderCash(View view) {
-        if (getTxtCashDouble() == 0.0) {
+        if (fuc.getTxtCashDouble(txt_cash) == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
-            tenderCashAmount = getTxtCashDouble();
+            tenderCashAmount = fuc.getTxtCashDouble(txt_cash);
             tenderCashStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
@@ -1135,10 +1124,10 @@ public class Cashier extends AppCompatActivity {
                 public void onClick(View view) {
                     if (etDebitBank.getText().toString().equals("") || etDebitNumber.getText().toString().equals("") || etDebitExpiry.getText().toString().equals("")) {
                         Toast.makeText(getApplicationContext(), "Please Fill all Fields.", Toast.LENGTH_SHORT).show();
-                    } else if (getTxtCashDouble() == 0.0) {
+                    } else if (fuc.getTxtCashDouble(txt_cash) == 0.0) {
                         Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
                     } else {
-                        tenderDebitAmount = getTxtCashDouble();
+                        tenderDebitAmount = fuc.getTxtCashDouble(txt_cash);
                         debitBank = etDebitBank.getText().toString();
                         debitNumber = etDebitNumber.getText().toString();
                         debitExpiry = etDebitExpiry.getText().toString();
@@ -1156,10 +1145,10 @@ public class Cashier extends AppCompatActivity {
     }
 
     public void tenderDiscount(View view) {
-        if (getTxtCashDouble() == 0.0) {
+        if (fuc.getTxtCashDouble(txt_cash) == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
-            tenderDiscountAmount = getTxtCashDouble();
+            tenderDiscountAmount = fuc.getTxtCashDouble(txt_cash);
             tenderDiscountStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
@@ -1257,10 +1246,10 @@ public class Cashier extends AppCompatActivity {
 //    }
 
     public void tenderGift(View view) {
-        if (getTxtCashDouble() == 0.0) {
+        if (fuc.getTxtCashDouble(txt_cash) == 0.0) {
             Toast.makeText(getApplicationContext(), "Please enter amount", Toast.LENGTH_SHORT).show();
         } else {
-            tenderGiftAmount = getTxtCashDouble();
+            tenderGiftAmount = fuc.getTxtCashDouble(txt_cash);
             tenderGiftStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
@@ -1278,7 +1267,7 @@ public class Cashier extends AppCompatActivity {
     public void cashierLogOut(View view) {
         cancelna();
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.SIMPLIFIED_CHINESE);
+        SimpleDateFormat dateformat = new SimpleDateFormat("MMM-dd-yyyy HH:mm", Locale.SIMPLIFIED_CHINESE);
         dateformatted = dateformat.format(c.getTime());
         dbWriter.execSQL("INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'" + userNum + "') ");
         finish();
@@ -1455,7 +1444,6 @@ public class Cashier extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 //                String dateToString = strToDate.toString();
-                CashTransaction ct = new CashTransaction();
 
                 if (!rbIN.isChecked() && !rbOUT.isChecked()) {
                     Toast.makeText(Cashier.this, "Select IN or OUT!", Toast.LENGTH_SHORT).show();
@@ -1472,7 +1460,6 @@ public class Cashier extends AppCompatActivity {
                             ctCashAdd = 0.0;
                             ctCashMinus = Double.parseDouble(cashValue.getText().toString());
                         }
-
                     } else if (cashIn && cashValue.getText().toString() != "") {
                         if (cashValue.getText().toString().equals("")) {
                             ctCashAdd = 0.0;
@@ -1480,8 +1467,10 @@ public class Cashier extends AppCompatActivity {
                             ctCashAdd = Double.parseDouble(cashValue.getText().toString());
                             ctCashMinus = 0.0;
                         }
-
                     }
+
+                    CashTransaction ct = new CashTransaction();
+
                     ct.setCtTransnum(transNumber + "");
                     ct.setCtCashNum(userNum);
                     ct.setCtDateTime(dateToStr);
@@ -1492,6 +1481,9 @@ public class Cashier extends AppCompatActivity {
                     ct.setCtRemarks2(remarks1.getText().toString());
                     ct.setCtRemarks3(remarks2.getText().toString());
                     ct.setCtRemarks4(remarks3.getText().toString());
+                    ct.setCtX("0");
+                    ct.setCtZ("0");
+
                     db_data.addCashTransaction(ct);
                 }
                 alertCashinout.dismiss();
@@ -1546,7 +1538,7 @@ public class Cashier extends AppCompatActivity {
                     transType = "xreport";
 
                     int bcd;
-                    db_data.addTransaction(transType, getCurrentDate(), userNum, 0, 0, "");
+                    db_data.addTransaction(transType, fuc.getCurrentDate(), userNum, 0, 0, "");
                     String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
                     Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
                     cursor1.moveToLast();
@@ -1555,11 +1547,13 @@ public class Cashier extends AppCompatActivity {
 
                     reportBaKamo.setDb_data(db_data);
 
-                    reportBaKamo.main(userNum, getCurrentDate(), bcd, enteredCashDrawer);
+                    reportBaKamo.main(userNum, fuc.getCurrentDate(), bcd, enteredCashDrawer);
                     ArrayList<String> paPrintNaman;
-                    paPrintNaman = reportBaKamo.getToBePrinted();
+                    paPrintNaman = reportBaKamo.getPrintArray();
                     printFunction(paPrintNaman);
                     paPrintNaman.clear();
+
+                    db_data.updateTransactions(userNum);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1592,16 +1586,16 @@ public class Cashier extends AppCompatActivity {
                     transType = "zreport";
 
                     int bcd;
-                    db_data.addTransaction(transType, getCurrentDate(), userNum, 0, 0, "");
+                    db_data.addTransaction(transType, fuc.getCurrentDate(), userNum, 0, 0, "");
                     String[] itemID = new String[]{_ID, COLUMN_TRANSACTION_TYPE};
                     Cursor cursor1 = dbReader.query(TABLE_TRANSACTION, itemID, null, null, null, null, null);
                     cursor1.moveToLast();
                     bcd = cursor1.getInt(0); //COLUMN _ID of TABLE_TRANSACTION
                     cursor1.close();
                     reportBaKamo.setDb_data(db_data);
-                    reportBaKamo.main("no", getCurrentDate(), bcd, enteredCashDrawer);
+                    reportBaKamo.main("no", fuc.getCurrentDate(), bcd, enteredCashDrawer);
                     ArrayList<String> paPrintNaman;
-                    paPrintNaman = reportBaKamo.getToBePrinted();
+                    paPrintNaman = reportBaKamo.getPrintArray();
                     printFunction(paPrintNaman);
                     String[] printBaKamo = paPrintNaman.toArray(new String[paPrintNaman.size()]);
                     String printBaHanapMo = "";
@@ -1640,15 +1634,15 @@ public class Cashier extends AppCompatActivity {
 //            }
                     //END OF EXPORT CSV
 
-                    db_data.updateTransactions(userNum);
+                    db_data.updateTransactions("no");
 
-                    //GETTING QUANTITY SALES
-                    ContentValues cv = new ContentValues();
-                    cv.put(COLUMN_ITEM_ZREPORT, 1);
-                    String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
-                    String[] WhereArgBaKamo = {"0"};
-                    dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
-                    //END OF QUANTITY SALES
+//                    //GETTING QUANTITY SALES
+//                    ContentValues cv = new ContentValues();
+//                    cv.put(COLUMN_ITEM_ZREPORT, 1);
+//                    String whereBaKamo = COLUMN_ITEM_ZREPORT + "= ?";
+//                    String[] WhereArgBaKamo = {"0"};
+//                    dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
+//                    //END OF QUANTITY SALES
 
                     paPrintNaman.clear();
                 } catch (Exception ex) {
@@ -1658,24 +1652,7 @@ public class Cashier extends AppCompatActivity {
         });
     }
 
-    //// TODO: 9/26/2017
-    double getTxtCashDouble() {
-        String mCash = txt_cash.getText().toString().replaceAll("[P,$]", "");
-        if (mCash.equals(null) || mCash.equals("")) return 0.0;
-        else return Double.parseDouble(mCash);
-    }
 
-    String getCurrentDate() {
-        Calendar c = Calendar.getInstance();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
-        return dateTimeFormat.format(c.getTime());
-    }
-
-    String getCurrentDay() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yy");
-        return dateFormat.format(c.getTime());
-    }
     private void sleep(int ms) {
         try {
             java.lang.Thread.sleep(ms);
@@ -1709,6 +1686,8 @@ public class Cashier extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_invoice);
 
         btn_cashier_delete = (ImageButton) findViewById(R.id.btn_cashier_delete);
+        btn_cashier_refund = (ImageButton) findViewById(R.id.btn_cashier_refund);
+        btn_cashier_cancelRefund = (Button) findViewById(R.id.btn_cashier_cancelRefund);
         btn_cashier_confirmDelete = (Button) findViewById(R.id.btn_cashier_confirmDelete);
 
         btnCreditCard = (Button)findViewById(R.id.btnCredit);
@@ -1859,75 +1838,9 @@ public class Cashier extends AppCompatActivity {
         Log.d(TAG, "Leave writeDataToSerial");
     }//writeDataToSerial
 
-    void writeJournalTrail(String journalEntry) {
-        //WRITE JOURNAL ENTRY TO EXTERNAL STORAGE
-        try {
-            File sdCardDir = new File(Environment.getExternalStorageDirectory() + "/Journals");
 
-            if (!sdCardDir.exists()) {
-                sdCardDir.mkdirs();
-            }
 
-            String filename = getCurrentDay() + ".jnl"; // the name of the file to export with
-            File saveFile = new File(sdCardDir, filename);
-            FileWriter fw = new FileWriter(saveFile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            try {
-                bw.append(journalEntry);
-                bw.newLine();
-                bw.flush();
-                bw.close();
-//                    Toast.makeText(receivedCtx, "Successfully Exported CSV File", Toast.LENGTH_SHORT).show();
-//                    delayDialogClose();
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
-//                    delayDialogClose();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-//                progressDialog.dismiss();
-//                delayDialogClose();
-        }
-        //END WRITE JOURNAL ENTRY TO EXTERNAL STORAGE
-    }
 
-    void createReceiptImage(String orNum, String[] orCopyHead, String[] orCopy) {
-        File mSdCardDir = new File(Environment.getExternalStorageDirectory() + "/Receipt");
-        if (!mSdCardDir.exists()) {
-            mSdCardDir.mkdirs();
-        }
-        String mFilename = orNum + "_" + getCurrentDay() + ".jpg";
-        File mSaveFile = new File(mSdCardDir, mFilename);
-
-        try {
-            FileOutputStream out = new FileOutputStream(mSaveFile);
-
-            // NEWLY ADDED CODE STARTS HERE [
-            Bitmap mBitmap = Bitmap.createBitmap(480, orCopyHead.length * 35 + orCopy.length * 35, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mBitmap);
-
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK); // Text Color
-            paint.setStrokeWidth(30); // Text Size
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
-            // some more settings...
-
-            canvas.drawColor(0xFFFFFFFF);
-            for (int a = 1; a <= orCopyHead.length; a++) {
-                canvas.drawText(orCopyHead[a - 1], 10, a * 35, paint);
-            }
-            for (int a = 1 + orCopyHead.length; a <= orCopy.length + orCopyHead.length; a++) {
-                canvas.drawText(orCopy[(a - orCopyHead.length) - 1], 10, a * 35, paint);
-            }
-            // NEWLY ADDED CODE ENDS HERE ]
-
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static class FirstFragment extends Fragment {
         @Override

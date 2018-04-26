@@ -1,110 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/myColorBackgroundOrange"
     android:animateLayoutChanges="true"
-    android:gravity="center_vertical">
+    android:background="@color/myColorBackgroundOrange"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/flexNiLogin"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:alignItems="center"
-        app:flexWrap="wrap"
         app:flexDirection="row"
-        app:justifyContent="space_around">
+        app:flexWrap="wrap"
+        app:justifyContent="space_around"
+        app:layout_flexBasisPercent="@fraction/fraction80percent">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_lock_black_48px"
                 android:tint="@color/myColorIconLock"
-                app:layout_flexBasisPercent="@fraction/fraction80percent"/>
+                app:layout_flexBasisPercent="@fraction/fraction80percent"
+                app:srcCompat="@drawable/ic_lock_black_48px" />
 
             <android.support.v7.widget.AppCompatEditText
-                android:maxLines="1"
-                android:layout_marginTop="20dp"
                 android:id="@+id/etUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/custom_edittext_login"
                 android:elevation="2dp"
                 android:hint="User Number"
-                android:textColor="@color/myColorWhite"
-                android:textColorHint="@color/myColorBackgroundOrange"
+                android:maxLines="1"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
+                android:textColor="@color/myColorWhite"
+                android:textColorHint="@color/myColorBackgroundOrange" />
 
             <android.support.v7.widget.AppCompatEditText
-                android:maxLines="1"
-                android:inputType="textPassword"
-                android:layout_marginTop="20dp"
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/custom_edittext_login"
                 android:elevation="2dp"
                 android:hint="Password"
-                android:textColor="@color/myColorWhite"
-                android:textColorHint="@color/myColorBackgroundOrange"
+                android:inputType="textPassword"
+                android:maxLines="1"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
+                android:textColor="@color/myColorWhite"
+                android:textColorHint="@color/myColorBackgroundOrange" />
 
             <android.support.v7.widget.AppCompatCheckBox
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
                 android:id="@+id/spinnerAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Admin"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
                 android:buttonTint="@color/myColorLoginEditText"
+                android:text="Admin"
                 android:textColor="@color/myColorIconLock"/>
 
             <android.support.v7.widget.AppCompatButton
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_button_login"
                 android:elevation="2dp"
+                android:shadowColor="@color/myColorActionBar"
                 android:text="LOGIN"
                 android:textColor="@color/myColorWhite"
-                android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_button_login"/>
+                android:textStyle="bold" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:layout_marginTop="20dp"
                 android:id="@+id/txtSignup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"
                 android:text="Don't have an account? Sign up."
-                android:textColor="@color/myColorIconLock"
-                android:gravity="center_horizontal"/>
+                android:textColor="@color/myColorIconLock" />
 
         </LinearLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
     <LinearLayout
         android:id="@+id/ll_signup"
-        android:baselineAligned="false"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="4dip">
 
         <fragment
             android:id="@+id/fragment_signup"
             android:name="com.example.sydney.psov3.MainActivity$FragmentSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_keys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="4dip">
+
+        <fragment
+            android:id="@+id/fragment_keys"
+            android:name="com.example.sydney.psov3.MainActivity$FragmentFunctionKeys"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />

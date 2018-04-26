@@ -15,8 +15,26 @@ public class CashTransaction {
     private String ctRemarks2;
     private String ctRemarks3;
     private String ctRemarks4;
+    private String ctX;
+    private String ctZ;
 
     public CashTransaction() {
+    }
+
+    public String getCtX() {
+        return ctX;
+    }
+
+    public void setCtX(String ctX) {
+        this.ctX = ctX;
+    }
+
+    public String getCtZ() {
+        return ctZ;
+    }
+
+    public void setCtZ(String ctZ) {
+        this.ctZ = ctZ;
     }
 
     public String getCtTransnum() {

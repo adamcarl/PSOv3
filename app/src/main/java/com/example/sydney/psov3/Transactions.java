@@ -13,33 +13,21 @@ public class Transactions {
 
     }
 
-    public int getTransId() {
-        return transId;
+    public Transactions(int transId, String transType, String transDateTime) {
+        this.transId = transId;
+        this.transType = transType;
+        this.transDateTime = transDateTime;
     }
 
-    public void setTransId(int transId) {
-        this.transId = transId;
+    public int getTransId() {
+        return transId;
     }
 
     public String getTransType() {
         return transType;
     }
 
-    public void setTransType(String transType) {
-        this.transType = transType;
-    }
-
     public String getTransDateTime() {
         return transDateTime;
-    }
-
-    public void setTransDateTime(String transDateTime) {
-        this.transDateTime = transDateTime;
-    }
-
-    public Transactions(int transId , String transType, String transDateTime) {
-        this.transId = transId;
-        this.transType = transType;
-        this.transDateTime = transDateTime;
     }
 }

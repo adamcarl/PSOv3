@@ -3,15 +3,16 @@ package com.example.sydney.psov3;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
+import com.example.sydney.psov3.POJO.FunctionCall;
+import com.example.sydney.psov3.POJO.Invoice;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,6 +29,7 @@ class DB_Data extends SQLiteOpenHelper {
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
+    private FunctionCall fuc = new FunctionCall();
 
     DB_Data(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
@@ -298,6 +300,7 @@ class DB_Data extends SQLiteOpenHelper {
         cv.put(COLUMN_CASHTRANS_REMARKS2, ct.getCtRemarks2());
         cv.put(COLUMN_CASHTRANS_REMARKS3, ct.getCtRemarks3());
         cv.put(COLUMN_CASHTRANS_REMARKS4, ct.getCtRemarks4());
+
         dbw.insertOrThrow(TABLE_CASHTRANS, null, cv);
     }
 
@@ -341,25 +344,22 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_TOTAL, null, cv);
     }
 
-    void addInvoice(String inTrans, String inDisc, String inCustomer, String inPrint,
-                    String inCashierNum, String inZreport, String inXreport, String inVattable,
-                    double inVatted, String inVatStatus, double inCreditSale, String inDateAndTime,
-                    String inCreditCardNum, String inCreditExp) {
+    void addInvoice(Invoice in) {
         cv.clear();
-        cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER,inTrans);
-        cv.put(COLUMN_INVOICE_DISCOUNT,inDisc);
-        cv.put(COLUMN_INVOICE_NORMALSALE,inCustomer);
-        cv.put(COLUMN_INVOICE_PRINT,inPrint);
-        cv.put(COLUMN_INVOICE_CASHIER_NUMBER,inCashierNum);
-        cv.put(COLUMN_INVOICE_ZREPORT_STATUS,inZreport);
-        cv.put(COLUMN_INVOICE_XREPORT_STATUS,inXreport);
-        cv.put(COLUMN_INVOICE_VATTABLE,inVattable);
-        cv.put(COLUMN_INVOICE_VATTED,inVatted);
-        cv.put(COLUMN_INVOICE_VAT_STATUS,inVatStatus);
-        cv.put(COLUMN_INVOICE_CREDITSALE, inCreditSale);
-        cv.put(COLUMN_INVOICE_DATEANDTIME, inDateAndTime);
-        cv.put(COLUMN_INVOICE_CREDITCARDNUMBER, inCreditCardNum);
-        cv.put(COLUMN_INVOICE_CREDITDATEOFEXPIRATION,inCreditExp);
+        cv.put(COLUMN_INVOICE_TRANSACTION_NUMBER, in.getInTrans());
+        cv.put(COLUMN_INVOICE_DISCOUNT, in.getInDisc());
+        cv.put(COLUMN_INVOICE_NORMALSALE, in.getInCustomer());
+        cv.put(COLUMN_INVOICE_PRINT, in.getInPrint());
+        cv.put(COLUMN_INVOICE_CASHIER_NUMBER, in.getInCashierNum());
+        cv.put(COLUMN_INVOICE_ZREPORT_STATUS, in.getInZreport());
+        cv.put(COLUMN_INVOICE_XREPORT_STATUS, in.getInXreport());
+        cv.put(COLUMN_INVOICE_VATTABLE, in.getInVattable());
+        cv.put(COLUMN_INVOICE_VATTED, in.getInVatted());
+        cv.put(COLUMN_INVOICE_VAT_STATUS, in.getInVatStatus());
+        cv.put(COLUMN_INVOICE_CREDITSALE, in.getInCreditSale());
+        cv.put(COLUMN_INVOICE_DATEANDTIME, in.getInDateAndTime());
+        cv.put(COLUMN_INVOICE_CREDITCARDNUMBER, in.getInCreditCardNum());
+        cv.put(COLUMN_INVOICE_CREDITDATEOFEXPIRATION, in.getInCreditExp());
         dbw.insertOrThrow(TABLE_INVOICE, null, cv);
     }
 
@@ -522,6 +522,7 @@ class DB_Data extends SQLiteOpenHelper {
         if(name.equals("no")){
             WHERE_CASH = COLUMN_TRANSACTION_ZREPORT + " = ?";
             mWHERE_ARGS = new String[]{"0"};
+
             cv.put(COLUMN_TRANSACTION_ZREPORT,"1");
             dbw.update(TABLE_TRANSACTION,cv,WHERE_CASH,mWHERE_ARGS);
 
@@ -776,7 +777,7 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.moveToFirst();
         gross = cursor.getDouble(0);
         cursor.close();
-        Log.e("Gross sales : ", gross+"");
+        Log.e("Gross getSale : ", gross + "");
         return  gross;
     }
     String getDiscountSales(String x){
@@ -796,6 +797,9 @@ class DB_Data extends SQLiteOpenHelper {
             cursor.moveToFirst();
             discount = cursor.getString(0);
             cursor.close();
+        if (discount == null)
+            return "0";
+        else
             return  discount;
         }
     String pleaseGetTheSalesForMe(String x, String status){
@@ -836,7 +840,7 @@ class DB_Data extends SQLiteOpenHelper {
         return tax;
     }
 
-    int pleaseGiveMeTheZCount(){
+    int getZCount() {
         int z;
         String[] columns = {"COUNT(*)"};
         String mWHERE = COLUMN_TRANSACTION_TYPE+" = ?";
@@ -848,12 +852,50 @@ class DB_Data extends SQLiteOpenHelper {
         return z;
     }
 
-    int[] pleaseGiveMeTheFirstAndLastOfTheTransactions(){
+    int getRefundCount(String x) {
+        int refund;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"COUNT(*)"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_NORMALSALE + " < ? AND " + COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", "0"};
+        } else {
+            mWHERE = COLUMN_INVOICE_NORMALSALE + " < ? AND " + COLUMN_INVOICE_XREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", "0"};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        refund = cursor.getInt(0);
+        cursor.close();
+        return refund;
+    }
+
+    int getTotalRefund(String x) {
+        int refund;
+        String mWHERE;
+        String[] mWHERE_ARGS;
+        String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
+        if (x.equals("no")) {
+            mWHERE = COLUMN_INVOICE_NORMALSALE + " < ? AND " + COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", "0"};
+        } else {
+            mWHERE = COLUMN_INVOICE_NORMALSALE + " < ? AND " + COLUMN_INVOICE_XREPORT_STATUS + " = ?";
+            mWHERE_ARGS = new String[]{"0", "0"};
+        }
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        cursor.moveToFirst();
+        refund = cursor.getInt(0);
+        cursor.close();
+        return refund;
+    }
+
+    int[] getFirstAndLastTransaction() {
         int[] t = new int[2];
         String[] columns = {_ID};
-        String mWHERE = COLUMN_TRANSACTION_ZREPORT+" = ?";
+        String mWHERE = COLUMN_TRANSACTION_ZREPORT + " = ?";
         String[] mWHERE_ARGS = new String[]{"0"};
-        Cursor cursor = dbr.query(TABLE_TRANSACTION,columns,mWHERE,mWHERE_ARGS,null,null,null,null);
+        Cursor cursor = dbr.query(TABLE_TRANSACTION, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
         t[0] = cursor.getInt(0);
         cursor.moveToLast();
@@ -862,18 +904,22 @@ class DB_Data extends SQLiteOpenHelper {
         return t;
     }
 
-    int[] pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt(){
-        int[] t = new int[2];
-        String[] columns = {_ID};
-        String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
-        String[] mWHERE_ARGS = new String[]{"0"};
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
-        cursor.moveToFirst();
-        t[0] = cursor.getInt(0);
-        cursor.moveToLast();
-        t[1] = cursor.getInt(0);
-        cursor.close();
-        return t;
+    int[] getFirstAndLastReceipt() {
+        try {
+            int[] t = new int[2];
+            String[] columns = {_ID};
+            String mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            String[] mWHERE_ARGS = new String[]{"0"};
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            cursor.moveToFirst();
+            t[0] = cursor.getInt(0);
+            cursor.moveToLast();
+            t[1] = cursor.getInt(0);
+            cursor.close();
+            return t;
+        } catch (CursorIndexOutOfBoundsException ce) {
+            return new int[]{0, 0};
+        }
     }
 
     String pleaseGiveMeTheSumOfAll20PercentDiscountForXandZreport(String x, String status){
@@ -895,14 +941,15 @@ class DB_Data extends SQLiteOpenHelper {
     }
 
     //Grand Total is the sum of all accumulated NET SALES.
-    double getMyOldGross(){
+    double getGrandTotalOld() {
         double gross;
         String[] columns = {"SUM("+COLUMN_TOTAL_GRAND+")"};
         Cursor cursor = dbr.query(TABLE_TOTAL, columns, null, null, null, null, null, null);
         cursor.moveToFirst();
         try {
             gross = cursor.getDouble(0);
-            double sale = getCreditSales("no");
+            cursor.close();
+            double sale = getNormalSales("no") + getCreditSales("no");
             // TODO
             cv.clear();
             cv.put(COLUMN_TOTAL_GRAND,sale);
@@ -915,10 +962,10 @@ class DB_Data extends SQLiteOpenHelper {
         return gross;
     }
 
-    Cursor getAllItems(String x){
+    Cursor getItems(String x) {
         String mWHERE;
         String[] mWHERE_ARGS;
-        String[] columns = {COLUMN_ITEM_NAME,COLUMN_ITEM_DESC,COLUMN_ITEM_QUANTITY,COLUMN_ITEM_DISCOUNT,COLUMN_ITEM_PRICE};
+        String[] columns = {COLUMN_ITEM_NAME, COLUMN_ITEM_DESC, "SUM(" + COLUMN_ITEM_QUANTITY + ")", "SUM(" + COLUMN_ITEM_DISCOUNT + ")", COLUMN_ITEM_PRICE};
 
         if(x.equals("no")) {
             mWHERE = COLUMN_ITEM_ZREPORT+" = ?";
@@ -931,7 +978,13 @@ class DB_Data extends SQLiteOpenHelper {
         return dbr.query(TABLE_ITEM, columns, mWHERE, mWHERE_ARGS, COLUMN_ITEM_NAME, null, null, null);
     }
 
-    String sales(String status, String x){
+    Cursor testTransaction() {
+        String[] columns = {_ID, COLUMN_TRANSACTION_ZREPORT};
+
+        return dbr.query(TABLE_TRANSACTION, columns, null, null, null, null, null);
+    }
+
+    String getSale(String status, String x) {
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM("+COLUMN_INVOICE_VATTABLE+")"};
@@ -947,10 +1000,12 @@ class DB_Data extends SQLiteOpenHelper {
         c.moveToFirst();
         String sales = c.getString(0);
         c.close();
+        if (sales == null)
+            sales = "0";
         return sales;
     }
 
-    String tax(String status, String x) {
+    String getTax(String status, String x) {
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] COLUMNS = {"SUM(" + COLUMN_INVOICE_VATTED + ")"};
@@ -966,6 +1021,8 @@ class DB_Data extends SQLiteOpenHelper {
         c.moveToFirst();
         String tax = c.getString(0);
         c.close();
+        if (tax == null)
+            tax = "0";
         return tax;
     }
 
@@ -1056,44 +1113,32 @@ class DB_Data extends SQLiteOpenHelper {
         dbw.insertOrThrow(TABLE_CREDIT_CARD, null, cv);
     }
 
-    double[] getHourlyGrossSale(String x) {
+    double[] getHourlyGross(String x) {
         double[] gross = new double[24];
         String mWHERE;
         String[] mWHERE_ARGS;
         String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")", "SUM(" + COLUMN_INVOICE_CREDITSALE + ")"};
-        Date currDate = new Date();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy", Locale.ENGLISH);
-        String dateToStr = dateTimeFormat.format(currDate);
         for (int mHour = 0; mHour < 24; mHour++) {
             if (x.equals("no")) {
-                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
-                if (mHour < 12) {
-                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
-                    mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ AM"};
-                    Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z AM");
-                }
-                else {
-                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
-                    mWHERE_ARGS = new String[]{"0", dateToStr + " " + time + ":__ PM"};
-                    Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + "Z PM");
-                }
+                mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " = ?";
+                String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
+                mWHERE_ARGS = new String[]{"0", fuc.getYesterDay() + " " + time + ":__"};
+                Log.e("mWHERE_ARGS", mWHERE_ARGS[1] + " Z");
             } else {
-                if (mHour < 12) {
-                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
-                    mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% AM'"};
-                    Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
-                } else {
-                    String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
-                    mWHERE_ARGS = new String[]{"0", x, "'" + dateToStr + " " + time + ":_%_% PM'"};
-                    Log.e("mWHERE_ARGS", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
-                }
-                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " + COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
+                mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " +
+                        COLUMN_INVOICE_CASHIER_NUMBER + " = ? AND " +
+                        COLUMN_INVOICE_DATEANDTIME + " LIKE ?";
+                String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
+                mWHERE_ARGS = new String[]{"0", x, "'" + fuc.getYesterDay() + " " + time + ":_%_%'"};
+                Log.e("mWHERE_ARGS : ", mWHERE_ARGS[0] + "" + mWHERE_ARGS[2]);
             }
-                Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+            Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null,
+                    null, null);
                 cursor.moveToFirst();
                 gross[mHour] = cursor.getDouble(0) + cursor.getDouble(1);
                 cursor.close();
-                Log.e("Hourly Gross sales", gross[mHour] + " | Date from INVOICE:" + COLUMN_INVOICE_DATEANDTIME + "|date presses z" + dateToStr);
+            Log.e("Hourly Gross getSale", gross[mHour] + " | Date from INVOICE:" +
+                    COLUMN_INVOICE_DATEANDTIME + "|date presses z" + fuc.getYesterDay());
         }
         return gross;
     }
@@ -1114,7 +1159,7 @@ class DB_Data extends SQLiteOpenHelper {
         cursor.moveToFirst();
         credit = cursor.getDouble(0);
         cursor.close();
-        Log.e("Credit sales : ", credit + "");
+        Log.e("Credit getSale : ", credit + "");
         return credit;
     }
 
@@ -1124,17 +1169,17 @@ class DB_Data extends SQLiteOpenHelper {
         String[] mWHERE_ARGS;
         String[] columns = {"SUM(" + COLUMN_INVOICE_NORMALSALE + ")"};
         if (x.equals("no")) {
-            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + " = ?";
+            mWHERE = COLUMN_INVOICE_ZREPORT_STATUS + "=?";
             mWHERE_ARGS = new String[]{"0"};
         } else {
             mWHERE = COLUMN_INVOICE_XREPORT_STATUS + " = ? AND " + COLUMN_INVOICE_CASHIER_NUMBER + " = ?";
             mWHERE_ARGS = new String[]{"0", x};
         }
-        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null, null);
+        Cursor cursor = dbr.query(TABLE_INVOICE, columns, mWHERE, mWHERE_ARGS, null, null, null);
         cursor.moveToFirst();
         normal = cursor.getDouble(0);
         cursor.close();
-        Log.e("Normal sales : ", normal + "");
+        Log.e("Normal getSale : ", normal + "");
         return normal;
     }
 
@@ -1162,8 +1207,8 @@ class DB_Data extends SQLiteOpenHelper {
         return print;
     }
 
-    double getCashinoutForShift(String cashierNum, String date) {
-        double currentCashinout = 0.0, minuin, subtrahend;
+    double getCashFlow(String cashierNum, String date) {
+        double currentCashinout, minuin, subtrahend;
 
         String WHERE;
         String[] IS_EQUAL;
@@ -1175,12 +1220,16 @@ class DB_Data extends SQLiteOpenHelper {
         Log.e("DB_Data.java ", "cashiernum =" + cashierNum + " date =" + date);
         Cursor cursor = dbr.query(TABLE_CASHTRANS, COLUMNS, WHERE, IS_EQUAL, null, null, null, null);
         cursor.moveToFirst();
-        minuin = cursor.getDouble(0);
-        subtrahend = cursor.getDouble(1);
+        try {
+            minuin = cursor.getDouble(0);
+            subtrahend = cursor.getDouble(1);
+        } catch (Exception e) {
+            minuin = 0;
+            subtrahend = 0;
+            e.printStackTrace();
+        }
         cursor.close();
-
         currentCashinout = minuin - subtrahend;
-
         return currentCashinout;
     }
 
@@ -1196,7 +1245,7 @@ class DB_Data extends SQLiteOpenHelper {
     int checkForPendingZRead() {
         String[] mCOLUMNS = {"COUNT(*)"};
         String dayWHERE = COLUMN_TRANSACTION_ZREPORT + " = ? AND " + COLUMN_TRANSACTION_DATETIME + " NOT LIKE ?";
-        String[] dayWHERE_ARGS = new String[]{"'0'", "'" + getYesterDay() + "%'"};
+        String[] dayWHERE_ARGS = new String[]{"'0'", "'" + fuc.getYesterDay() + "%'"};
 
         Cursor cursor = dbr.query(TABLE_TRANSACTION, mCOLUMNS, dayWHERE, dayWHERE_ARGS, null, null, null, null);
         cursor.moveToFirst();
@@ -1206,11 +1255,5 @@ class DB_Data extends SQLiteOpenHelper {
             return 1;
         else
             return 0;
-    }
-
-    String getYesterDay() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy");
-        return dateFormat.format(c.getTime());
     }
 }

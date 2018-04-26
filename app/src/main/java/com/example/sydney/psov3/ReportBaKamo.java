@@ -2,40 +2,37 @@ package com.example.sydney.psov3;
 
 import android.database.Cursor;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DESC;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_DISCOUNT;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_NAME;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRICE;
-import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
-
 /**
- * Created by Poging Adam on 6/28/2017.
+ * Created by Adam on 6/28/2017.
  */
 
 class ReportBaKamo {
-    private double currentCashInOutEveryShift;
-    private double totalGross = 0.0;
-    private double totalDeduction = 0.0;
-    private int totalQty = 0;
+    private double cashFlow;
+    private double grossTotal;
+    private double deductionTotal;
+    private int quantityTotal;
     private DB_Data db_data;
-    private ArrayList<String> toBePrinted = new ArrayList<>();
+    private ArrayList<String> printArray = new ArrayList<>();
+    private DecimalFormat moneyDecimal = new DecimalFormat("0.00");
 
-    void main(String x, String date, int transNum, double moneyCount) throws ParseException {
+    void main(String reportType, String date, int transactionNumber,
+              double moneyCount) throws ParseException {
         Date currDate = new Date();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MM-dd-yy");
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yy");
         String dateToStr = dateTimeFormat.format(currDate);
 //        Date strToDate = null;
 //        strToDate = dateTimeFormat.parse(dateToStr);
 //        String dateToString = strToDate.toString();
 //        Log.e("main in ReportBakamo ", dateToStr);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String currentTime = sdf.format(new Date());
 
 //        SerialPrinter mSerialPrinter = SerialPrinter.GetSerialPrinter();
@@ -46,172 +43,181 @@ class ReportBaKamo {
 //        catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        String report;
-        if(x.equals("no")){
-            report = "Z";
+        String reportLetter;
+        if (reportType.equals("no")) {
+            reportLetter = "Z";
         }
         else {
-            report = "X";
+            reportLetter = "X";
         }
-        double[] hourlyGrossSale = db_data.getHourlyGrossSale(x);
-        double ogt = db_data.getMyOldGross();
-        double gross = db_data.getNormalSales(x);
-        double credit = db_data.getCreditSales(x);
-        String discount = db_data.getDiscountSales(x);
-        String vsale = db_data.sales("0", x);
-        String xsale = db_data.sales("1", x);
-        String zsale = db_data.sales("2", x);
-        String vtax = db_data.tax("0", x);
-        String xtax = db_data.tax("1", x);
-        String ztax = db_data.tax("2", x);
-        int z = db_data.pleaseGiveMeTheZCount();
-        int[] transArray = db_data.pleaseGiveMeTheFirstAndLastOfTheTransactions();
-        int[] or = db_data.pleaseGiveMeTheFirstAndLastOfTheOfficialReceipt();
-        if (!x.equals("no")) {
-            currentCashInOutEveryShift = db_data.getCashinoutForShift(x, dateToStr);
+        double[] grossHourly = db_data.getHourlyGross(reportType);
+        double grandTotalOld = db_data.getGrandTotalOld();
+        double grossNormal = db_data.getNormalSales(reportType);
+        double creditSales = db_data.getCreditSales(reportType);
+        String discountSales = db_data.getDiscountSales(reportType);
+        String saleVatted = db_data.getSale("0", reportType);
+        String saleExempt = db_data.getSale("1", reportType);
+        String saleZero = db_data.getSale("2", reportType);
+        String tax = db_data.getTax("0", reportType);
+        int zCount = db_data.getZCount();
+        int refundCount = db_data.getRefundCount(reportType);
+        double refundTotal = db_data.getTotalRefund(reportType);
+        int[] transactionExtent = db_data.getFirstAndLastTransaction();
+        int[] invoiceExtent = db_data.getFirstAndLastReceipt();
+        if (!reportType.equals("no")) {
+            cashFlow = db_data.getCashFlow(reportType, dateToStr);
         }
 
+        double lessVat;
         double exemptDiscount;
-        double exemptDiscount1;
-try{
-    exemptDiscount = Double.parseDouble(zsale);
-    exemptDiscount1 = exemptDiscount * .12;
-}
-catch (Exception e){
-    exemptDiscount = 0.0;
-    exemptDiscount1 = exemptDiscount * .12;
-}
-        double net_gross = gross + credit;
-        double net_discount = Double.parseDouble(discount) + exemptDiscount1;
-        double net = net_gross - net_discount;
-        String or1 = String.format(Locale.ENGLISH, "%1$06d", or[0]);
-        String or2 = String.format(Locale.ENGLISH, "%1$06d", or[1]);
-        String trans = String.format(Locale.ENGLISH, "%1$06d", transNum);
-        double over = moneyCount - gross;
+        double exemptDiscountFinal;
+
+        try {
+            exemptDiscount = Double.parseDouble(saleZero);
+            lessVat = (Double.parseDouble(saleExempt) / 1.12) * .20;
+            exemptDiscountFinal = exemptDiscount * .12;
+        } catch (Exception e) {
+            exemptDiscount = 0.0;
+            lessVat = 0.0;
+            exemptDiscountFinal = exemptDiscount * .12;
+        }
+
+        double discountTotal = Double.parseDouble(discountSales) + exemptDiscountFinal;
+        double saleNet = (grossNormal + creditSales) - discountTotal;
+        String invoiceStart = String.format(Locale.ENGLISH, "%1$06d", invoiceExtent[0]);
+        String invoiceEnd = String.format(Locale.ENGLISH, "%1$06d", invoiceExtent[1]);
+        String transactionString = String.format(Locale.ENGLISH, "%1$06d", transactionNumber);
+        double cashDifference = moneyCount - (grossNormal + cashFlow);
         // Pad with zeros and a width of 6 chars.
 
-        toBePrinted.add("ABZTRAK DEMO STORE");
-        toBePrinted.add("VAT REG TIN:000-111-111-001");
-        toBePrinted.add("MIN:12345678901234567");
-        toBePrinted.add("2/F 670 SGT BUMATAY ST.");
-        toBePrinted.add("PLAINVIEW, MANDALUYONG");
-        toBePrinted.add("SERIAL NO. ASDFG1234567890");
-        toBePrinted.add("PTU No. FP121234-123-1234567-12345\n");
-        toBePrinted.add("==============================================");
-        toBePrinted.add(report+"-READ");
-        if(x.equals("no")) {
-            toBePrinted.add("END-OF-DAY REPORT");
-            toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : "+date);
-            toBePrinted.add("BRANCH : HEAD OFFICE");
-            toBePrinted.add("SHIFT : ALL\t\tTRANS#" + trans + "\n");
+        printArray.add("ABZTRAK DEMO STORE");
+        printArray.add("VAT REG TIN:000-111-111-001");
+        printArray.add("MIN:12345678901234567");
+        printArray.add("2/F 670 SGT BUMATAY ST.");
+        printArray.add("PLAINVIEW, MANDALUYONG");
+        printArray.add("SERIAL NO. ASDFG1234567890");
+        printArray.add("PTU No. FP121234-123-1234567-12345\n");
+        printArray.add("==============================================");
+        printArray.add(reportLetter + "-READ");
+        if (reportType.equals("no")) {
+            printArray.add("END-OF-DAY REPORT");
+            printArray.add("==============================================");
+            printArray.add("BIZDATE : " + date);
+            printArray.add("BRANCH : HEAD OFFICE");
+            printArray.add("SHIFT : ALL\t\tTRANS#" + transactionString + "\n");
         }else {
-            toBePrinted.add("CASHIER REPORT");
-            toBePrinted.add("==============================================");
-            toBePrinted.add("BIZDATE : " + dateToStr + " " + currentTime);
-            toBePrinted.add("CASHIER : "+x);
-            toBePrinted.add("SHIFT : 1\t\tTRANS#" + trans + "\n");
+            printArray.add("CASHIER REPORT");
+            printArray.add("==============================================");
+            printArray.add("BIZDATE : " + dateToStr + " " + currentTime);
+            printArray.add("CASHIER : " + reportType);
+            printArray.add("TRANS#" + transactionString + "\n");
         }
-        double mGrossBaKamo = gross + credit;
-        toBePrinted.add("GROSS SALES\t\t" + mGrossBaKamo);
-        toBePrinted.add(" SALES DISCOUNT\t\t-" + net_discount);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("NET SALES\t\t"+ net +"\n");
+        printArray.add("GROSS SALES\t\t" + moneyDecimal.format(grossNormal +
+                creditSales));
+        printArray.add(" SALES DISCOUNT\t\t-" +
+                moneyDecimal.format(discountTotal));
+        printArray.add("----------------------------------------------");
+        printArray.add("NET SALES\t\t" +
+                moneyDecimal.format(saleNet) + "\n");
 
-        toBePrinted.add("TAX CODE\tSALES\tTAX");
-        toBePrinted.add("----------------------------------------------");
+        printArray.add("REFUND\tNo.\t" + refundCount);
+        printArray.add(moneyDecimal.format(refundTotal) + "\n");
+
+        printArray.add("TAX CODE\tSALES\tTAX");
+        printArray.add("----------------------------------------------");
 //        toBePrinted.add("[n] N-Sal\tX.XX\tX.XX");
-        toBePrinted.add("[v] V-Sal\t" + vsale + "\t" + vtax);
-        toBePrinted.add("[x] E-Sal\t" + xsale + "\t" + xtax);
-        toBePrinted.add("[z] Z-Rat\t" + zsale + "\t" + ztax + "\n");
+        printArray.add("[v] V-Sale\t" + saleVatted);
+        printArray.add("[t] V-12%\t" + tax);
+        printArray.add("[x] E-Sale\t" + saleExempt);
+        printArray.add("[z] Z-Rate\t" + saleZero + "\n");
 
-        if(x.equals("no")){
-            double dngt = ogt + net;
-            String zf = String.format(Locale.ENGLISH, "%1$05d", z);
+        if (reportType.equals("no")) {
+            printArray.add("OLD GT\t000-" + grandTotalOld);
+            printArray.add("NEW GT\t000-" + (grandTotalOld + saleNet) + "\n");
+            printArray.add("Z Count\t\t" + String.format(Locale.ENGLISH, "%1$05d", zCount) + "\n");
+            printArray.add("Trans #\t\t" + String.format(Locale.ENGLISH, "%1$06d",
+                    transactionExtent[0]) + " - " + String.format(Locale.ENGLISH, "%1$06d",
+                    transactionExtent[1]));
+            printArray.add("\t\t\t" + (transactionExtent[1] - transactionExtent[0]) + "\n");
 
-            String t1 = String.format(Locale.ENGLISH, "%1$06d", transArray[0]);
-            String t2 = String.format(Locale.ENGLISH, "%1$06d", transArray[1]);
-            int t3 = transArray[1] - transArray[0];
-
-            toBePrinted.add("OLD GT\t000-" + ogt);
-            toBePrinted.add("NEW GT\t000-" + dngt + "\n");
-
-            toBePrinted.add("Z Count\t\t" + zf + "\n");
-            toBePrinted.add("Trans #\t\t" + t1 + " - " + t2);
-            toBePrinted.add("\t\t\t" + t3 + "\n");
-
-            toBePrinted.add("OR #\t\t" + or1 + " - " + or2);
+            printArray.add("OR #\t\t" + invoiceStart + " - " + invoiceEnd);
         }
-        toBePrinted.add("CASH SALES\t\t" + gross);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH IN DRAWER\t\t" + gross);
+        printArray.add("CASH SALES\t\t" + moneyDecimal.format(grossNormal));
+        printArray.add("----------------------------------------------");
+        printArray.add("CASH IN DRAWER\t\t" + moneyDecimal.format(grossNormal + cashFlow));
 
-        toBePrinted.add("CASH COUNT\t\t" + moneyCount + currentCashInOutEveryShift);
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("CASH SHORT/OVER\t\t" + over + "\n");
-        toBePrinted.add("TRANSACTION\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("NORMAL SALES\t\tX,XXX.XX\n");
+        printArray.add("CASH COUNT\t\t" + moneyDecimal.format(moneyCount));
+        printArray.add("----------------------------------------------");
+        printArray.add("CASH SHORT/OVER\t\t" + moneyDecimal.format(cashDifference) + "\n");
+//        printArray.add("TRANSACTION\t\tAMOUNT");
+        printArray.add("----------------------------------------------");
+//        printArray.add("NORMAL SALES\t\t"+grossNormal+"\n");
 
-        toBePrinted.add("TENDER\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("TOTAL CASH\t" + gross);
-        toBePrinted.add("TOTAL CREDIT CA\t" + credit + "\n");
+        printArray.add("TENDER\t\tAMOUNT");
+        printArray.add("----------------------------------------------");
+        printArray.add("TOTAL CASH\t" + moneyDecimal.format(grossNormal));
+        printArray.add("TOTAL CREDIT CA\t" + moneyDecimal.format(creditSales) + "\n");
 
-        toBePrinted.add("DISCOUNT\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("SCD 20%\t\t-" + discount);
-        toBePrinted.add("Tax - Exempt\t\t-"+exemptDiscount1);
-        toBePrinted.add("TOTAL DEDUCTION\t\t-" + net_discount + "\n");
+        printArray.add("DISCOUNT\t\tAMOUNT");
+        printArray.add("----------------------------------------------");
+        printArray.add("SCD 20%\t\t-" + discountSales);
+        printArray.add("Less VAT\t\t-" + moneyDecimal.format(lessVat));
+        printArray.add("TOTAL DEDUCTION\t\t-" + moneyDecimal.format(discountTotal) + "\n");
 
-        toBePrinted.add("ITEM SALES\t\tAMOUNT");
-        toBePrinted.add("----------------------------------------------");
+        printArray.add("ITEM SALES\t\tAMOUNT");
+        printArray.add("----------------------------------------------");
+        Cursor cursorItem = db_data.getItems(reportType);
+        cursorItem.moveToFirst();
 
-            Cursor c = db_data.getAllItems(x);//// TODO: 8/2/2017  
-            c.moveToFirst();
-
-        while(!c.isAfterLast()){
-            Double price = c.getDouble(c.getColumnIndex(COLUMN_ITEM_PRICE)) * c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
-            Double total = price - c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
-            toBePrinted.add(c.getString(c.getColumnIndex(COLUMN_ITEM_NAME))+"\n"+c.getString(c.getColumnIndex(COLUMN_ITEM_DESC))+"\t"+price);//example I don't know the order you need
-            toBePrinted.add("x"+c.getString(c.getColumnIndex(COLUMN_ITEM_QUANTITY))+".0000\td-"+c.getString(c.getColumnIndex(COLUMN_ITEM_DISCOUNT))+"\t"+total+"\n");//example I don't know the order you need
-            totalQty = totalQty + c.getInt(c.getColumnIndex(COLUMN_ITEM_QUANTITY));
-            totalGross = totalGross + price;
-            totalDeduction = totalDeduction + c.getDouble(c.getColumnIndex(COLUMN_ITEM_DISCOUNT));
-            c.moveToNext();
+        while (!cursorItem.isAfterLast()) {
+            double mItemPrice = cursorItem.getDouble(4) * cursorItem.getInt(2);
+            printArray.add(cursorItem.getString(0) + "\n" + cursorItem.getString(1) + "\t" + cursorItem.getDouble(4));
+            printArray.add("x" + cursorItem.getString(2) +
+                    ".0000\td-" + cursorItem.getString(3) + "\t" +
+                    (mItemPrice - cursorItem.getDouble(3)) + "\n");
+            quantityTotal = quantityTotal + cursorItem.getInt(2);
+            grossTotal = grossTotal + mItemPrice;
+            deductionTotal = deductionTotal + cursorItem.getDouble(3);
+            cursorItem.moveToNext();
         }
-            c.close();
+        cursorItem.close();
 
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("TOTAL QTY\t\t"+totalQty+".0000");
-        toBePrinted.add("GROSS SALES\t\t"+totalGross);
-        toBePrinted.add("TOTAL DEDUCTIONS\t\t-"+totalDeduction);
-        Double totalNet = totalGross - totalDeduction;
-        toBePrinted.add("NET SALES\t\t"+totalNet+"\n\n\n");
-        toBePrinted.add("----------------------------------------------");
-        toBePrinted.add("HOURLY SALES\t\t\t\t\tAMOUNT");
+        printArray.add("----------------------------------------------");
+        printArray.add("TOTAL QTY\t\t" + quantityTotal + ".0000");
+        printArray.add("GROSS SALES\t\t" + moneyDecimal.format(grossTotal));
+        printArray.add("TOTAL DEDUCTIONS\t\t-" + moneyDecimal.format(deductionTotal));
+        printArray.add("NET SALES\t\t" + moneyDecimal.format(grossTotal - deductionTotal) + "\n\n\n");
+        printArray.add("----------------------------------------------");
+        printArray.add("HOURLY SALES\t\t\t\t\tAMOUNT");
         for(int mHour=0;mHour<24;mHour++){
-            if(mHour<12) {
-                String time = String.format(Locale.ENGLISH, "%1$02d", mHour);
-                toBePrinted.add(time + ":00AM - " + time + ":59AM\t\t" + hourlyGrossSale[mHour]);
-            }
-            else {
-                String time = String.format(Locale.ENGLISH, "%1$02d", mHour - 12);
-                toBePrinted.add(time + ":00PM - " + time + ":59PM\t\t" + hourlyGrossSale[mHour]);
-            }
+            String mTime = String.format(Locale.ENGLISH, "%1$02d", mHour);
+            if (grossHourly[mHour] > 0)
+                printArray.add(mTime + ":00 - " + mTime + ":59\t\t" +
+                        moneyDecimal.format(grossHourly[mHour]));
         }
+        quantityTotal = 0;
+        grossTotal = 0;
+        deductionTotal = 0;
 
-//        Cursor cursor = db_data.sales();
+//        Cursor testCursor = db_data.testTransaction();
+//        testCursor.moveToFirst();
+//        while(!testCursor.isAfterLast()){
+//            toBePrinted.add(testCursor.getString(0));
+//            toBePrinted.add(testCursor.getString(1));
+//            testCursor.moveToNext();
+//        }
+//        testCursor.close();
+//        Cursor cursor = db_data.getSale();
 //        cursor.moveToFirst();
 //        toBePrinted.add("Vattable"+cursor.getInt(0));
 //        cursor.close();
 //
-//        Cursor cursor1 = db_data.tax();
+//        Cursor cursor1 = db_data.getTax();
 //        cursor1.moveToFirst();
 //        toBePrinted.add("Vat"+cursor1.getInt(0));
 //        cursor1.close();
-        toBePrinted.add("\n\n\n\n\n");
-        toBePrinted.add("");
+        printArray.add("\n\n\n\n\n");
+        printArray.add("");
 
 //        toBePrinted.add("DEPARTMENT SALES\t\tAMOUNT");
 //        toBePrinted.add("----------------------------------------------");
@@ -290,7 +296,7 @@ catch (Exception e){
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//        Cursor cursor = db_data.searchInvoiceTransactions(x);
+//        Cursor cursor = db_data.searchInvoiceTransactions(reportType);
 //            cursor.moveToFirst();
 //             while (!cursor.isAfterLast()) {
 //                Cursor curseInvoice = db_data.searchInvoice(cursor.getInt(0));
@@ -348,7 +354,7 @@ catch (Exception e){
 //        }
 //    }
 
-    ArrayList<String> getToBePrinted(){
-        return toBePrinted;
+    ArrayList<String> getPrintArray() {
+        return printArray;
     }
 }

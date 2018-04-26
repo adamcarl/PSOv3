@@ -32,9 +32,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static android.provider.BaseColumns._ID;
-import static com.example.sydney.psov3.Cashier.unLockCashBox;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_PRODUCT;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_QUANTITY;
 import static com.example.sydney.psov3.Constants.COLUMN_ITEM_ZREPORT;
@@ -50,6 +50,9 @@ import static com.example.sydney.psov3.Constants.TABLE_ITEM;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT;
 import static com.example.sydney.psov3.Constants.TABLE_PRODUCT_TEMP;
 import static com.example.sydney.psov3.Constants.TABLE_TRANSACTION;
+import static com.example.sydney.psov3.Constants.functionKeys;
+import static com.example.sydney.psov3.Constants.functionKeysID;
+import static com.example.sydney.psov3.POJO.FunctionCall.unLockCashBox;
 
 public class MainActivity extends AppCompatActivity {
     //For Database
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Button btn_login;
     TextView tv_signup;
     //For FragmentSignUp
-    LinearLayout layout_signup;
+    LinearLayout layout_signup, layout_keys;
     EditText et_regName,et_regUsernum,et_regPass;
     Spinner spn_regPosition;
     Button btn_cancel,btn_register;
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     CharSequence userText;
     AlertDialog.Builder builder;
     AlertDialog alertTerminal;
+
+    private Button[] functionKeysBtn = new Button[12];
 
     protected void onSaveInstanceState(Bundle savedInstanceState){
         userText = o+"";
@@ -85,10 +90,13 @@ public class MainActivity extends AppCompatActivity {
             layout_signup.setVisibility(View.GONE);
             flexNiLogin.setVisibility(View.VISIBLE);
             o=or;
+            refreshFunctionKeys(o);
+
         }else if(or==1) {
             flexNiLogin.setVisibility(View.GONE);
             layout_signup.setVisibility(View.VISIBLE);
             o=or;
+            refreshFunctionKeys(o);
         }
     }
     @Override
@@ -96,8 +104,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
-
         getSupportActionBar().hide();
+
+        layout_keys.setVisibility(View.VISIBLE);
+        layout_signup.setVisibility(View.GONE);
+        refreshFunctionKeys(o);
 
         if (db_data.checkSerial() > 0) {
             try {
@@ -115,15 +126,17 @@ public class MainActivity extends AppCompatActivity {
                     flexNiLogin.setVisibility(View.GONE);
                     layout_signup.setVisibility(View.VISIBLE);
                     o = 1;
+                    refreshFunctionKeys(o);
+
                 }
             });
             btn_login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (chk_admin.isChecked())
+//                    if (chk_admin.isChecked())
                         loginBaKamo();
-                    else
-                    checkZReadPending();
+//                    else
+//                    checkZReadPending();
                 }
             });
             //For SignUp
@@ -139,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                     et_usernum.setText("");
                     et_pass.setText("");
                     o = 0;
+                    refreshFunctionKeys(0);
+
                 }
             });
             btn_register.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +199,9 @@ public class MainActivity extends AppCompatActivity {
         btn_cancel=(Button)findViewById(R.id.btnSignupCancel);
         btn_register=(Button)findViewById(R.id.btnRegister);
 
+        //For Keys
+        layout_keys = (LinearLayout) findViewById(R.id.ll_keys);
+
         //For Register
         et_regName=(EditText)findViewById(R.id.etRegName);
         et_regUsernum=(EditText)findViewById(R.id.etRegUsernum);
@@ -192,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
 
         flexNiLogin = (FlexboxLayout)findViewById(R.id.flexNiLogin);
         flexNiSignUp = (FlexboxLayout)findViewById(R.id.flexNiSignUp);
+
+        for (int a = 0; a < functionKeysBtn.length; a++)
+            functionKeysBtn[a] = (Button) findViewById(functionKeysID[a]);
     }
     //BackButton Holder
     public void onBackPressed(){
@@ -290,14 +311,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    int checkZReadPending() {
+    int checkZReadPending(String muser) {
         int mStatus = db_data.checkForPendingZRead();
         switch (mStatus) {
             case 0:
-                loginBaKamo();
+                Intent myIntent = new Intent(getApplicationContext(), Cashier.class);
+                myIntent.putExtra("CashNum", muser);
+                et_usernum.setText("");
+                et_pass.setText("");
+                startActivity(myIntent);
+                Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                break;
             case 1:
-                userAuthZreport();
-                loginBaKamo();
+                userAuthZreport(muser);
+                break;
+//                loginBaKamo();
         }
         return 0;
     }
@@ -321,13 +349,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             int result = db_data.cashierLogin(muser, mpass);
             if (result > 0) {
-                Intent myIntent = new Intent(getApplicationContext(), Cashier.class);
+//                Intent myIntent = new Intent(getApplicationContext(), Cashier.class);
                 //PASS INDEX
-                myIntent.putExtra("CashNum", muser);
-                et_usernum.setText("");
-                et_pass.setText("");
-                Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                startActivity(myIntent);
+                checkZReadPending(muser);
+//                myIntent.putExtra("CashNum", muser);
+//                et_usernum.setText("");
+//                et_pass.setText("");
+//                Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+//                startActivity(myIntent);
             } else {
                 Toast.makeText(this, "Incorrect ID number/Password!", Toast.LENGTH_SHORT).show();
                 et_pass.setText("");
@@ -335,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void userAuthZreport() {
+    void userAuthZreport(final String muser) {
         AlertDialog.Builder authenticateBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         final View alertLayout = inflater.inflate(R.layout.custom_alertdialog_login, null);
@@ -362,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
                                 db_data.getTheCashierLevel(
                                         etUsername.getText().toString()).equals("Supervisor")) {
                             alertAuthenticate.dismiss();
-                            zReportBaKamo(etUsername.getText().toString());
+                            zReportBaKamo(etUsername.getText().toString(), muser);
                             unLockCashBox();
                         } else {
                             Toast.makeText(getApplicationContext(), "Unauthorized account.",
@@ -374,13 +403,13 @@ public class MainActivity extends AppCompatActivity {
                         alertAuthenticate.dismiss();
                     }
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         });
     }
 
-    void zReportBaKamo(final String userNum) {
+    void zReportBaKamo(final String userNum, final String muser) {
         final SQLiteDatabase dbReader = db_data.getReadableDatabase();
         final SQLiteDatabase dbWriter = db_data.getWritableDatabase();
         final ReportBaKamo reportBaKamo = new ReportBaKamo();
@@ -425,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
                     reportBaKamo.setDb_data(db_data);
                     reportBaKamo.main("no", getCurrentDate(), bcd, enteredCashDrawer);
                     ArrayList<String> paPrintNaman;
-                    paPrintNaman = reportBaKamo.getToBePrinted();
+                    paPrintNaman = reportBaKamo.getPrintArray();
                     printFunction(paPrintNaman);
                     String[] printBaKamo = paPrintNaman.toArray(new String[paPrintNaman.size()]);
                     String printBaHanapMo = "";
@@ -467,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
                     //END OF EXPORT CSV
 
-                    db_data.updateTransactions(userNum);
+                    db_data.updateTransactions("no");
 
                     //GETTING QUANTITY SALES
                     ContentValues cv = new ContentValues();
@@ -476,8 +505,13 @@ public class MainActivity extends AppCompatActivity {
                     String[] WhereArgBaKamo = {"0"};
                     dbWriter.update(TABLE_ITEM, cv, whereBaKamo, WhereArgBaKamo);
                     //END OF QUANTITY SALES
-
                     paPrintNaman.clear();
+                    Intent myIntent = new Intent(getApplicationContext(), Cashier.class);
+                    myIntent.putExtra("CashNum", muser);
+                    et_usernum.setText("");
+                    et_pass.setText("");
+                    startActivity(myIntent);
+                    Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -510,9 +544,15 @@ public class MainActivity extends AppCompatActivity {
 
     String getCurrentDate() {
         Calendar c = Calendar.getInstance();
-        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm a");
+        final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM-dd-yyyy HH:mm", Locale.ENGLISH);
         c.add(Calendar.DATE, -1);
         return dateTimeFormat.format(c.getTime());
+    }
+
+    public void refreshFunctionKeys(int mode) {
+        for (int i = 0; i < functionKeysBtn.length; i++) {
+            functionKeysBtn[i].setText(functionKeys[mode][i]);
+        }
     }
 
     //Fragments
@@ -521,6 +561,14 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_signup, container, false);
+        }
+    }
+
+    public static class FragmentFunctionKeys extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_function, container, false);
         }
     }
 }

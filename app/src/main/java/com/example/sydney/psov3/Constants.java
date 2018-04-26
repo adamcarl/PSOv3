@@ -33,8 +33,9 @@ interface Constants extends BaseColumns {
     String COLUMN_INVOICE_CASHIER_NUMBER = "InCashierNum"; //CASHIER IDENTIFICATION
     String COLUMN_INVOICE_ZREPORT_STATUS = "InZreport";
     String COLUMN_INVOICE_XREPORT_STATUS = "InXreport";
-    String COLUMN_INVOICE_VATTABLE = "InVattable"; //FROM VATTABLE IF CUSTOMER HAS NO DISCOUNT!
-    String COLUMN_INVOICE_VATTED = "InVatted"; //TAX OF VATTABLED ITEMS
+    String COLUMN_INVOICE_VATTABLE = "InVattable"; //FROM VATABLE IF CUSTOMER HAS NO DISCOUNT!
+    //    String COLUMN_INVOICE_EXEMPT="InExempt";
+    String COLUMN_INVOICE_VATTED = "InVatted"; //TAX OF VATABLE ITEMS
     String COLUMN_INVOICE_VAT_STATUS = "InVatStatus"; //V,X,Z
     String COLUMN_INVOICE_CREDITSALE = "InCreditSale";
     String COLUMN_INVOICE_DATEANDTIME = "InDateTime";
@@ -84,6 +85,14 @@ interface Constants extends BaseColumns {
 
     String TABLE_TOTAL= "tbl_total";
     String COLUMN_TOTAL_GRAND= "total_grand";
+
+    String TABLE_NONSALE = "tbl_non_sale";
+    String COLUMN_NONSALE_CASH = "non_sale_cash";
+    String COLUMN_NONSALE_TYPE = "non_sale_type";
+    String COLUMN_NONSALE_XREPORT = "non_sale_x";
+    String COLUMN_NONSALE_ZREPORT = "non_sale_z";
+    String COLUMN_NONSALE_PRINT = "non_sale_print";
+    String COLUMN_NONSALE_DATETIME = "none_sale_date";
 
     String TABLE_PRODUCT_TEMP = "tbl_product_temp";
     String COLUMN_PRODUCT_ID_TEMP = "ProdId_temp";
@@ -199,6 +208,23 @@ interface Constants extends BaseColumns {
             TAB_PRODUCT_TEMP, TAB_INVOICE, TAB_ITEM, TAB_PRODUCTLOGS, TAB_CREDIT_CARD,
             TAB_XREPORT, TAB_ZREPORT, TAB_TRANSACTION, TAB_LOG, TAB_TOTAL, TAB_CASH,
             TAB_CASHTRANS, TAB_RETRIEVED_JOINTAB, TAB_TEMP_INVOICING};
+
+    int[] functionKeysID = new int[]{R.id.btn_f01, R.id.btn_f02, R.id.btn_f03, R.id.btn_f04,
+            R.id.btn_f05, R.id.btn_f06, R.id.btn_f07, R.id.btn_f08, R.id.btn_f09, R.id.btn_f10,
+            R.id.btn_f11, R.id.btn_f12};
+
+    String[][] functionKeys = new String[][]{{"LogIn", "Admin", "SignUp", " ", " ", " ", " ", " ", " ", " ", " ", " "},    //0 LogIn
+            {"Register", "Cancel", "", "", "", "", "", "", "", "", "", ""},                                                //1 SignUp
+            {"Quantity", "Refund", "Delete", "Cancel", "", "", "", "", "", "", "Payment", "Shift"},                        //2 Invoice
+            {"Complete", "Payment", "Discount", "Cancel", "", "", "", "", "", "", "Invoice", "Shift"},                     //3 Payment
+            {"Cash", "Credit", "Debit", "Gift", "Discount", "Other", "", "", "", "", "", "Back"},                          //4 Payment Method
+            {"Normal", "Senior", "Diplomat", "", "", "", "", "", "", "", "", "Back"},                                      //5 Discount
+            {"X-Read", "Z-Read", "Cash", "LogOut", "", "", "", "", "", "", "Invoice", "Payment"},                          //6 Shift
+            {"", "", "", "", "", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", ""},
+            {"", "", "", "", "", "", "", "", "", "", "", ""}};
 }
 
 //"SELECT c1."+COLUMN_PRODUCT_ID + "," +
