@@ -19,37 +19,40 @@
             app:layout_flexBasisPercent="@fraction/fraction80percent">
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
                 android:id="@+id/etRegName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_edittext_login"
                 android:elevation="4dp"
                 android:hint="Full Name"
-                android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
+                android:singleLine="true"
+                android:textColorHint="@color/myColorBackgroundOrange" />
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
                 android:id="@+id/etRegUsernum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_edittext_login"
                 android:elevation="4dp"
                 android:hint="User number"
-                android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
+                android:singleLine="true"
+                android:textColorHint="@color/myColorBackgroundOrange" />
 
             <android.support.v7.widget.AppCompatEditText
-                android:layout_marginTop="10dp"
                 android:id="@+id/etRegPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/custom_edittext_login"
                 android:elevation="4dp"
                 android:hint="Password"
-                android:textColorHint="@color/myColorBackgroundOrange"
                 android:shadowColor="@color/myColorActionBar"
-                android:background="@drawable/custom_edittext_login"/>
+                android:singleLine="true"
+                android:textColorHint="@color/myColorBackgroundOrange" />
 
             <android.support.v7.widget.AppCompatSpinner
                 android:layout_marginTop="10dp"

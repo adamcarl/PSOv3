@@ -38,7 +38,7 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/myColorCardViewCashier"
             app:cardCornerRadius="4dp"
@@ -56,12 +56,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center"
+                android:gravity="top"
                 android:orientation="vertical"
                 android:padding="15dp">
-
 
 
                 <LinearLayout
@@ -72,7 +71,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:padding="4dp">
@@ -80,7 +79,7 @@
                         <Button
                             android:id="@+id/btnCash"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_weight=".3"
                             android:background="@drawable/custom_button_payment_mode"
@@ -91,7 +90,7 @@
                         <Button
                             android:id="@+id/btnCredit"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_weight=".3"
@@ -102,7 +101,7 @@
                         <Button
                             android:id="@+id/btnDebit"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_weight=".3"
@@ -116,7 +115,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         android:padding="4dp">
@@ -124,7 +123,7 @@
                         <Button
                             android:id="@+id/btnGift"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_weight=".3"
@@ -137,7 +136,7 @@
                         <Button
                             android:id="@+id/btnDiscount"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_weight=".3"
@@ -161,7 +160,7 @@
                         <Button
                             android:id="@+id/btnOthers"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:layout_weight=".3"
@@ -178,7 +177,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:padding="10dp">
 
                         <RadioButton
                             android:id="@+id/rb_ndisc"
@@ -223,7 +222,7 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/myColorCardViewCashier"
         app:cardCornerRadius="4dp"
         app:cardElevation="2dp"
@@ -270,7 +269,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
 
 
                 <TextView
@@ -382,7 +380,7 @@
                     android:text="Due :"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/myColorHeading"
-                    android:textSize="30sp"/>
+                    android:textSize="30sp" />
 
                 <TextView
                     android:id="@+id/lbl_due"

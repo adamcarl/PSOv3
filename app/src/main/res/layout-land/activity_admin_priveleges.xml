@@ -113,10 +113,19 @@
             android:textColor="@color/myColorWhite"
             app:drawableTopCompat="@drawable/ic_assignment_black_48px"
             app:layout_flexBasisPercent="28%" />
-
     </com.google.android.flexbox.FlexboxLayout>
 
-
-
-
+    <LinearLayout
+        android:id="@+id/ll_keys"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:padding="4dip">
+        <fragment
+            android:id="@+id/fragment_keys"
+            android:name="com.example.sydney.psov3.MainActivity$FragmentFunctionKeys"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </LinearLayout>

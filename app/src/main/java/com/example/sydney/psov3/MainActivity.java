@@ -11,17 +11,22 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sydney.psov3.POJO.SetListener;
 import com.google.android.flexbox.FlexboxLayout;
 import com.jolimark.JmPrinter;
 
@@ -54,7 +59,7 @@ import static com.example.sydney.psov3.Constants.functionKeys;
 import static com.example.sydney.psov3.Constants.functionKeysID;
 import static com.example.sydney.psov3.POJO.FunctionCall.unLockCashBox;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnKeyListener {
     //For Database
     DB_Data db_data;
     //For ActivityLogin
@@ -76,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     AlertDialog alertTerminal;
 
+    private SetListener setListener;
+
     private Button[] functionKeysBtn = new Button[12];
+    private int functionKeysMode;
 
     protected void onSaveInstanceState(Bundle savedInstanceState){
         userText = o+"";
@@ -90,13 +98,15 @@ public class MainActivity extends AppCompatActivity {
             layout_signup.setVisibility(View.GONE);
             flexNiLogin.setVisibility(View.VISIBLE);
             o=or;
-            refreshFunctionKeys(o);
+            functionKeysMode = o;
+            refreshFunctionKeys();
 
         }else if(or==1) {
             flexNiLogin.setVisibility(View.GONE);
             layout_signup.setVisibility(View.VISIBLE);
             o=or;
-            refreshFunctionKeys(o);
+            functionKeysMode = o;
+            refreshFunctionKeys();
         }
     }
     @Override
@@ -108,7 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
         layout_keys.setVisibility(View.VISIBLE);
         layout_signup.setVisibility(View.GONE);
-        refreshFunctionKeys(o);
+        functionKeysMode = o;
+        refreshFunctionKeys();
 
         if (db_data.checkSerial() > 0) {
             try {
@@ -123,11 +134,7 @@ public class MainActivity extends AppCompatActivity {
             tv_signup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    flexNiLogin.setVisibility(View.GONE);
-                    layout_signup.setVisibility(View.VISIBLE);
-                    o = 1;
-                    refreshFunctionKeys(o);
-
+                    setCallRegister();
                 }
             });
             btn_login.setOnClickListener(new View.OnClickListener() {
@@ -143,44 +150,29 @@ public class MainActivity extends AppCompatActivity {
             btn_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    layout_signup.setVisibility(View.GONE);
-                    flexNiLogin.setVisibility(View.VISIBLE);
-                    et_regName.setText("");
-                    et_regUsernum.setText("");
-                    et_regPass.setText("");
-                    spn_regPosition.setSelection(0);
-                    et_usernum.setText("");
-                    et_pass.setText("");
-                    o = 0;
-                    refreshFunctionKeys(0);
-
+                    setCancel();
                 }
             });
             btn_register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String mname = et_regName.getText().toString().trim();
-                    String mnum = et_regUsernum.getText().toString().trim();
-                    String mpass = et_regPass.getText().toString().trim();
-                    String mpos = spn_regPosition.getSelectedItem().toString();
-                    try {
-                        et_regName.setText("");
-                        et_regUsernum.setText("");
-                        et_regPass.setText("");
-                        spn_regPosition.setSelection(0);
 
-                        db_data.addCashier(mname, mnum, mpass, mpos);
-                        Toast.makeText(MainActivity.this, "Registration successful!",
-                                Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             });
         } else {
             terminalBaKamo();
         }
 
+        for (int i = 0; i < functionKeysBtn.length; i++) {
+            final int functionKeysCode = i;
+            functionKeysBtn[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    functionKeysDo(functionKeysCode);
+                    functionKeysBtn[functionKeysCode].setOnKeyListener(MainActivity.this);
+                }
+            });
+        }
     }
     //Initialization
     private void init() {
@@ -213,6 +205,21 @@ public class MainActivity extends AppCompatActivity {
 
         for (int a = 0; a < functionKeysBtn.length; a++)
             functionKeysBtn[a] = (Button) findViewById(functionKeysID[a]);
+//
+//        et_usernum.setOnKeyListener(this);
+//        et_pass.setOnKeyListener(this);
+//        btn_login.setOn
+
+        setListener = new SetListener();
+
+        setListener.setListener(new EditText[]{et_usernum,et_pass,et_regName,et_regPass},
+                new ImageButton[]{},
+                new Button[]{btn_cancel,btn_login,btn_register},
+                new RadioButton[]{},
+                new CheckBox[]{chk_admin},
+                new Spinner[]{spn_regPosition},
+                new CustomButtonForDrawableTop[]{},
+                this);
     }
     //BackButton Holder
     public void onBackPressed(){
@@ -549,10 +556,176 @@ public class MainActivity extends AppCompatActivity {
         return dateTimeFormat.format(c.getTime());
     }
 
-    public void refreshFunctionKeys(int mode) {
-        for (int i = 0; i < functionKeysBtn.length; i++) {
-            functionKeysBtn[i].setText(functionKeys[mode][i]);
+    private void setCallRegister(){
+        flexNiLogin.setVisibility(View.GONE);
+        layout_signup.setVisibility(View.VISIBLE);
+        o = 1;
+        functionKeysMode = o;
+        refreshFunctionKeys();
+    }
+    private void setCancel(){
+        layout_signup.setVisibility(View.GONE);
+        flexNiLogin.setVisibility(View.VISIBLE);
+        et_regName.setText("");
+        et_regUsernum.setText("");
+        et_regPass.setText("");
+        spn_regPosition.setSelection(0);
+        et_usernum.setText("");
+        et_pass.setText("");
+        o = 0;
+        functionKeysMode = o;
+        refreshFunctionKeys();
+    }
+    private void setRegister(){
+        String mname = et_regName.getText().toString().trim();
+        String mnum = et_regUsernum.getText().toString().trim();
+        String mpass = et_regPass.getText().toString().trim();
+        String mpos = spn_regPosition.getSelectedItem().toString();
+        try {
+            et_regName.setText("");
+            et_regUsernum.setText("");
+            et_regPass.setText("");
+            spn_regPosition.setSelection(0);
+
+            db_data.addCashier(mname, mnum, mpass, mpos);
+            Toast.makeText(MainActivity.this, "Registration successful!",
+                    Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public void refreshFunctionKeys() {
+        for (int i = 0; i < functionKeysBtn.length; i++) {
+            functionKeysBtn[i].setText(functionKeys[functionKeysMode][i]);
+        }
+    }
+
+    private void functionKeysDo(int functionKeysCode){
+        switch(functionKeysMode){
+            case 0:
+                switch (functionKeysCode){
+                    case 0:
+                        loginBaKamo();
+                        Toast.makeText(this,"LogIn",Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        if (chk_admin.isChecked()) {
+                            chk_admin.setChecked(false);
+                            break;
+                        }
+                        else {
+                            chk_admin.setChecked(true);
+                            break;
+                        }
+//                        Toast.makeText(this,"Admin",Toast.LENGTH_LONG).show();
+                    case 2:
+                        setCallRegister();
+                        functionKeysMode = 1;
+                        refreshFunctionKeys();
+                        Toast.makeText(this,"SignUp",Toast.LENGTH_LONG).show();
+                        break;
+                }
+                break;
+            case 1:
+                switch (functionKeysCode){
+                    case 0:
+                        setRegister();
+                        Toast.makeText(this,"Register",Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        functionKeysMode = 0;
+                        refreshFunctionKeys();
+                        setCancel();
+                        Toast.makeText(this,"Cancel",Toast.LENGTH_LONG).show();
+                        break;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        switch(keyCode){
+            case KeyEvent.KEYCODE_F1:
+                functionKeysDo(0);
+                return true;
+            case KeyEvent.KEYCODE_F2:
+                functionKeysDo(1);
+                return true;
+            case KeyEvent.KEYCODE_F3:
+                functionKeysDo(2);
+                return true;
+            case KeyEvent.KEYCODE_F4:
+                functionKeysDo(3);
+                return true;
+            case KeyEvent.KEYCODE_F5:
+                functionKeysDo(4);
+                return true;
+            case KeyEvent.KEYCODE_F6:
+                functionKeysDo(5);
+                return true;
+            case KeyEvent.KEYCODE_F7:
+                functionKeysDo(6);
+                return true;
+            case KeyEvent.KEYCODE_F8:
+                functionKeysDo(7);
+                return true;
+            case KeyEvent.KEYCODE_F9:
+                functionKeysDo(8);
+                return true;
+            case KeyEvent.KEYCODE_F10:
+                functionKeysDo(9);
+                return true;
+            case KeyEvent.KEYCODE_F11:
+                functionKeysDo(10);
+                return true;
+            case KeyEvent.KEYCODE_F12:
+                functionKeysDo(11);
+                return true;
+        }
+//        switch(functionKeysMode){
+//            case 0:
+//                switch (keyCode){
+//                    case KeyEvent.KEYCODE_F1:
+//                        loginBaKamo();
+//                        Toast.makeText(this,"LogIn",Toast.LENGTH_LONG).show();
+//                        break;
+//                    case KeyEvent.KEYCODE_F2:
+//                        if (chk_admin.isChecked()){
+//                            chk_admin.setChecked(false);
+//                            break;
+//                        }
+//                        else {
+//                            chk_admin.setChecked(true);
+//                            break;
+//                        }
+////                        Toast.makeText(this,"Admin",Toast.LENGTH_LONG).show();
+//                    case KeyEvent.KEYCODE_F3:
+//                        setCallRegister();
+//                        functionKeysMode = 1;
+//                        refreshFunctionKeys();
+//                        Toast.makeText(this,"SignUp",Toast.LENGTH_LONG).show();
+//                        break;
+//                }
+//                break;
+//            case 1:
+//                switch (keyCode){
+//                    case KeyEvent.KEYCODE_F1:
+//                        setRegister();
+//                        Toast.makeText(this,"Register",Toast.LENGTH_LONG).show();
+//                        break;
+//                    case KeyEvent.KEYCODE_F2:
+//                        functionKeysMode = 0;
+//                        refreshFunctionKeys();
+//                        setCancel();
+//                        Toast.makeText(this,"Cancel",Toast.LENGTH_LONG).show();
+//                        break;
+//                }
+//                break;
+//        }
+        Toast.makeText(this,keyCode+" is pressed.",Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     //Fragments
@@ -563,7 +736,6 @@ public class MainActivity extends AppCompatActivity {
             return inflater.inflate(R.layout.fragment_signup, container, false);
         }
     }
-
     public static class FragmentFunctionKeys extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

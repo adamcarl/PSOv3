@@ -32,6 +32,7 @@
                 android:layout_width="280dp"
                 android:layout_height="match_parent"
                 android:ems="10"
+                android:singleLine="true"
                 android:visibility="invisible" />
 
             <Button

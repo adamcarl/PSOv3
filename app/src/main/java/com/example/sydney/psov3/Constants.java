@@ -213,13 +213,13 @@ interface Constants extends BaseColumns {
             R.id.btn_f05, R.id.btn_f06, R.id.btn_f07, R.id.btn_f08, R.id.btn_f09, R.id.btn_f10,
             R.id.btn_f11, R.id.btn_f12};
 
-    String[][] functionKeys = new String[][]{{"LogIn", "Admin", "SignUp", " ", " ", " ", " ", " ", " ", " ", " ", " "},    //0 LogIn
-            {"Register", "Cancel", "", "", "", "", "", "", "", "", "", ""},                                                //1 SignUp
-            {"Quantity", "Refund", "Delete", "Cancel", "", "", "", "", "", "", "Payment", "Shift"},                        //2 Invoice
-            {"Complete", "Payment", "Discount", "Cancel", "", "", "", "", "", "", "Invoice", "Shift"},                     //3 Payment
-            {"Cash", "Credit", "Debit", "Gift", "Discount", "Other", "", "", "", "", "", "Back"},                          //4 Payment Method
-            {"Normal", "Senior", "Diplomat", "", "", "", "", "", "", "", "", "Back"},                                      //5 Discount
-            {"X-Read", "Z-Read", "Cash", "LogOut", "", "", "", "", "", "", "Invoice", "Payment"},                          //6 Shift
+    String[][] functionKeys = new String[][]{{"LogIn", "Admin", "SignUp", " ", " ", " ", " ", " ", " ", " ", " ", " "},    //0 LogIn            //MainActivity
+            {"Register", "Cancel", "", "", "", "", "", "", "", "", "", ""},                                                //1 SignUp           //MainActivity
+            {"Quantity", "Refund", "Delete", "", "", "", "", "", "", "Cancel", "Payment", "Shift"},                        //2 Invoice          //Cashier
+            {"Complete", "Payment", "Discount", "", "", "", "", "", "", "Cancel", "Invoice", "Shift"},                     //3 Payment          //Cashier
+            {"Cash", "Credit", "Debit", "Gift", "Discount", "Other", "", "", "", "", "", "Back"},                          //4 Payment Method   //Cashier_Payment
+            {"Normal", "Senior", "Diplomat", "", "", "", "", "", "", "", "", "Back"},                                      //5 Discount         //Cashier_Payment
+            {"X-Read", "Z-Read", "Cash", "LogOut", "", "", "", "", "", "", "Invoice", "Payment"},                          //6 Shift            //Cashier
             {"", "", "", "", "", "", "", "", "", "", "", ""},
             {"", "", "", "", "", "", "", "", "", "", "", ""},
             {"", "", "", "", "", "", "", "", "", "", "", ""},
