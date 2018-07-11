@@ -20,7 +20,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,13 +34,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +52,6 @@ import com.jolimark.UsbPrinter;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -193,7 +189,7 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
     private JmPrinter mPrinter;
     private UsbPrinter marksPrinter = new UsbPrinter();
     private PL2303Driver.BaudRate mBaudrate = PL2303Driver.BaudRate.B9600;
-    private FunctionCall fuc = new FunctionCall();
+    private FunctionCall fuc = FunctionCall.getinstance();
 
     private Button[] functionKeysBtn = new Button[12];
     private int functionKeysMode;
@@ -306,50 +302,50 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
                 "INSERT INTO sessions(time,date,username) VALUES(time('now'),date('now'),'" +
                         userNum + "') ");
 
-        txt_cash.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    if (!s.toString().equals(current)) {
-                        txt_cash.removeTextChangedListener(this);
-
-                        String cleanString = s.toString().replaceAll("[P,.]", "");
-
-                        parsed = Double.parseDouble(cleanString);
-                        formatted = moneyDecimal.format(parsed / 100);
-                        current = formatted;
-                        txt_cash.setText(formatted);
-                        txt_cash.setSelection(formatted.length());
-
-                        txt_cash.addTextChangedListener(this);
-
-//                        if (mDue < 0 ) {
-//                            btn_print.setEnabled(false);
-//                        } else if (mDue >= 0) {
-//                            btn_print.setEnabled(true);
-//                            btn_print.setText("" + "Print Receipt" + "");
-//                            lbl_dc.setText("" + "Change" + "");
-//                        }
+//        txt_cash.addTextChangedListener(new TextWatcher() {
+//            private String current = "";
 //
-//                        refreshPaymentInformation();
-
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//            @Override
+//            public void afterTextChanged(Editable arg0) {
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+////                try {
+////                    if (!s.toString().equals(current)) {
+////                        txt_cash.removeTextChangedListener(this);
+////
+////                        String cleanString = s.toString().replaceAll("[P,.]", "");
+////
+////                        parsed = Double.parseDouble(cleanString);
+////                        formatted = moneyDecimal.format(parsed / 100);
+////                        current = formatted;
+////                        txt_cash.setText(formatted);
+////                        txt_cash.setSelection(formatted.length());
+////
+////                        txt_cash.addTextChangedListener(this);
+////
+//////                        if (mDue < 0 ) {
+//////                            btn_print.setEnabled(false);
+//////                        } else if (mDue >= 0) {
+//////                            btn_print.setEnabled(true);
+//////                            btn_print.setText("" + "Print Receipt" + "");
+//////                            lbl_dc.setText("" + "Change" + "");
+//////                        }
+//////
+//////                        refreshPaymentInformation();
+////
+////                    }
+////
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//        });
 
         rg_discount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -865,7 +861,8 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
             tenderCashStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
-
+            functionKeysMode = 3;
+            refreshFunctionKeys();
         }
     }
     private void setTenderDebit(){
@@ -898,6 +895,8 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
                         txt_cash.setText("" + "P0.00" + "");
                         refreshPaymentInformation();
                         alertDebit.dismiss();
+                        functionKeysMode = 3;
+                        refreshFunctionKeys();
                     }
                 }
             });
@@ -913,6 +912,8 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
             tenderDiscountStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
+            functionKeysMode = 3;
+            refreshFunctionKeys();
         }
     }
     private void setTenderGift(){
@@ -923,6 +924,8 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
             tenderGiftStatus = 1;
             refreshPaymentInformation();
             txt_cash.setText("" + "P0.00" + "");
+            functionKeysMode = 3;
+            refreshFunctionKeys();
         }
     }
     private void setXReport(){
@@ -1813,7 +1816,7 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
         for (int a = 0; a < functionKeysBtn.length; a++)
             functionKeysBtn[a] = (Button) findViewById(functionKeysID[a]);
 
-        setListener.setListener(new EditText[]{},
+        setListener.setListener(new EditText[]{txt_search, txt_cash},
                 new ImageButton[]{btn_cashier_refund,btn_cashier_delete},
                 new Button[]{btn_cashier_cancelRefund,btn_cashier_confirmDelete,btn_print,btnCreditCard,btnSetQuantity},
                 new RadioButton[]{rb_ddisc,rb_spdisc,rb_ndisc},new CheckBox[]{},new Spinner[]{},
@@ -2144,47 +2147,137 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(event.getAction()!=KeyEvent.ACTION_DOWN)
-        switch(keyCode){
-            case KeyEvent.KEYCODE_F1:
-                functionKeysDo(0);
-                return true;
-            case KeyEvent.KEYCODE_F2:
-                functionKeysDo(1);
-                return true;
-            case KeyEvent.KEYCODE_F3:
-                functionKeysDo(2);
-                return true;
-            case KeyEvent.KEYCODE_F4:
-                functionKeysDo(3);
-                return true;
-            case KeyEvent.KEYCODE_F5:
-                functionKeysDo(4);
-                return true;
-            case KeyEvent.KEYCODE_F6:
-                functionKeysDo(5);
-                return true;
-            case KeyEvent.KEYCODE_F7:
-                functionKeysDo(6);
-                return true;
-            case KeyEvent.KEYCODE_F8:
-                functionKeysDo(7);
-                return true;
-            case KeyEvent.KEYCODE_F9:
-                functionKeysDo(8);
-                return true;
-            case KeyEvent.KEYCODE_F10:
-                functionKeysDo(9);
-                return true;
-            case KeyEvent.KEYCODE_F11:
-                functionKeysDo(10);
-                return true;
-            case KeyEvent.KEYCODE_F12:
-                functionKeysDo(11);
-                return true;
-            // TODO: 5/21/2018 Add action to every number for barcode and cash
-//            case KeyEvent.KEYCODE_0:
+        String mSearch = new String();
+        if (event.getAction() != KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_F1:
+                    functionKeysDo(0);
+                    return true;
+                case KeyEvent.KEYCODE_F2:
+                    functionKeysDo(1);
+                    return true;
+                case KeyEvent.KEYCODE_F3:
+                    functionKeysDo(2);
+                    return true;
+                case KeyEvent.KEYCODE_F4:
+                    functionKeysDo(3);
+                    return true;
+                case KeyEvent.KEYCODE_F5:
+                    functionKeysDo(4);
+                    return true;
+                case KeyEvent.KEYCODE_F6:
+                    functionKeysDo(5);
+                    return true;
+                case KeyEvent.KEYCODE_F7:
+                    functionKeysDo(6);
+                    return true;
+                case KeyEvent.KEYCODE_F8:
+                    functionKeysDo(7);
+                    return true;
+                case KeyEvent.KEYCODE_F9:
+                    functionKeysDo(8);
+                    return true;
+                case KeyEvent.KEYCODE_F10:
+                    functionKeysDo(9);
+                    return true;
+                case KeyEvent.KEYCODE_F11:
+                    functionKeysDo(10);
+                    return true;
+                case KeyEvent.KEYCODE_F12:
+                    functionKeysDo(11);
+                    return true;
+            }
+            if (txt_cash.isFocused()) {
+                String cleanString = "";
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_0:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "0";
+                        break;
+                    case KeyEvent.KEYCODE_1:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "1";
+                        break;
+                    case KeyEvent.KEYCODE_2:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "2";
+                        break;
+                    case KeyEvent.KEYCODE_3:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "3";
+                        break;
+                    case KeyEvent.KEYCODE_4:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "4";
+                        break;
+                    case KeyEvent.KEYCODE_5:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "5";
+                        break;
+                    case KeyEvent.KEYCODE_6:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "6";
+                        break;
+                    case KeyEvent.KEYCODE_7:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "7";
+                        break;
+                    case KeyEvent.KEYCODE_8:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "8";
+                        break;
+                    case KeyEvent.KEYCODE_9:
+                        cleanString = txt_cash.getText().toString().replaceAll("[P,.]", "") + "9";
+                        break;
+                    case KeyEvent.KEYCODE_DEL:
+                        txt_cash.setText(fuc.removeLast(txt_cash.getText().toString()));
+                        Toast.makeText(this, "Back", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                if (cleanString.equals(""))
+                    cleanString = cleanString + 0;
+                parsed = Double.parseDouble(cleanString);
+                formatted = moneyDecimal.format(parsed / 100);
+                txt_cash.setText(formatted);
+            } else if (txt_search.isFocused()) {
+                switch (keyCode) {
 
+                    // TODO: 5/21/2018 Add action to every number for barcode and cash
+                    case KeyEvent.KEYCODE_0:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "0");
+                        return true;
+                    case KeyEvent.KEYCODE_1:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "1");
+                        return true;
+                    case KeyEvent.KEYCODE_2:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "2");
+                        return true;
+                    case KeyEvent.KEYCODE_3:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "3");
+                        return true;
+                    case KeyEvent.KEYCODE_4:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "4");
+                        return true;
+                    case KeyEvent.KEYCODE_5:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "5");
+                        return true;
+                    case KeyEvent.KEYCODE_6:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "6");
+                        return true;
+                    case KeyEvent.KEYCODE_7:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "7");
+                        return true;
+                    case KeyEvent.KEYCODE_8:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "8");
+                        return true;
+                    case KeyEvent.KEYCODE_9:
+                        mSearch = txt_search.getText().toString();
+                        txt_search.setText(mSearch + "9");
+                        return true;
+                    case KeyEvent.KEYCODE_DEL:
+                        txt_search.setText(fuc.removeLast(txt_search.getText().toString()));
+                        Toast.makeText(this, "Back", Toast.LENGTH_SHORT).show();
+                        return true;
 //            case KeyEvent.KEYCODE_ENTER:
 //                if(functionKeysMode==2){
 //                    long mCode = txt_search.getText().length();
@@ -2193,6 +2286,8 @@ public class Cashier extends AppCompatActivity implements View.OnKeyListener {
 //                    }
 //                }
 //                return true;
+                }
+            }
         }
         return true;
     }

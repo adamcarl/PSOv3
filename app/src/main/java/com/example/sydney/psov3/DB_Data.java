@@ -29,7 +29,7 @@ class DB_Data extends SQLiteOpenHelper {
     private SQLiteDatabase dbr = this.getReadableDatabase();
     private SQLiteDatabase dbw = this.getWritableDatabase();
     private ContentValues cv = new ContentValues();
-    private FunctionCall fuc = new FunctionCall();
+    private FunctionCall fuc = FunctionCall.getinstance();
 
     DB_Data(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);

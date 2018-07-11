@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -25,6 +26,19 @@ import java.util.Locale;
  */
 
 public class FunctionCall {
+    private static FunctionCall singleton = null;
+    DecimalFormat moneyDecimal = new DecimalFormat("0.00");
+
+    private FunctionCall() {
+    }
+
+    public static FunctionCall getinstance() {
+        if (singleton == null) {
+            singleton = new FunctionCall();
+        }
+        return singleton;
+    }
+
     public static boolean unLockCashBox() {
         boolean retnValue = false;
         UsbPrinter tmpUsbDev = new UsbPrinter();
@@ -125,5 +139,12 @@ public class FunctionCall {
         String mCash = cash.getText().toString().replaceAll("[P,$]", "");
         if (mCash == null || mCash.equals("")) return 0.0;
         else return Double.parseDouble(mCash);
+    }
+
+    public String removeLast(String str) {
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
     }
 }

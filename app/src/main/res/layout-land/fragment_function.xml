@@ -21,42 +21,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f03"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f04"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f05"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f06"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,42 +75,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f08"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f09"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
             <Button
                 android:id="@+id/btn_f12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Button"
+                android:textColor="@color/myColorButtonBlack" />
 
         </LinearLayout>
 
